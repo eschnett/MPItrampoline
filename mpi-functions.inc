@@ -420,6 +420,27 @@ FUNCTION(int, File_get_info, (MT(File) fh, MT(Info) * info_used),
 
 FUNCTION(MT(Comm), Comm_f2c, (MT(Fint) comm), ((MP(Fint))comm))
 
+FUNCTION(int, Comm_set_errhandler, (MT(Comm) comm, MT(Errhandler) errhandler),
+         ((MP(Comm))comm, (MP(Errhandler))errhandler))
+FUNCTION(int, Error_string, (int errorcode, char *string, int *resultlen),
+         (errorcode, string, resultlen))
+FUNCTION(int, Info_dup, (MT(Info) info, MT(Info) * newinfo),
+         ((MP(Info))info, (MP(Info) *)newinfo))
+FUNCTION(int, Comm_create_keyval,
+         (MT(Comm_copy_attr_function) * comm_copy_attr_fn,
+          MT(Comm_delete_attr_function) * comm_delete_attr_fn, int *comm_keyval,
+          void *extra_state),
+         ((MP(Comm_copy_attr_function) *)comm_copy_attr_fn,
+          (MP(Comm_delete_attr_function) *)comm_delete_attr_fn, comm_keyval,
+          extra_state))
+FUNCTION(int, Info_free, (MT(Info) * info), ((MP(Info) *)info))
+
+// MPI_COMM_NULL_COPY_FN
+// MPI_Comm_set_attr
+// MPI_Comm_free_keyval
+
+////////////////////////////////////////////////////////////////////////////////
+
 FUNCTION(double, Wtick, (), ())
 FUNCTION(double, Wtime, (), ())
 

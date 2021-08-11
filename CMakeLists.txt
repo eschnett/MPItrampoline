@@ -1,10 +1,10 @@
 #[[
 rm -rf build
-cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff
+cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff
 cmake --build build && cmake --install build
 
-env MPITRAMPOLINE_LIB=/Users/eschnett/src/c/MPIstuff/lib/libmpiwrapper.dylib /Users/eschnett/src/c/MPIstuff/bin/hello
-mpiexec-openmpi-gcc11 -n 4 env MPITRAMPOLINE_LIB=/Users/eschnett/src/c/MPIstuff/lib/libmpiwrapper.dylib /Users/eschnett/src/c/MPIstuff/bin/hello
+env MPITRAMPOLINE_LIB=/Users/eschnett/src/c/MPIstuff/lib/libmpiwrapper.dylib /Users/eschnett/src/c/MPIstuff/bin/mpi-hello
+/Users/eschnett/src/c/MPIstuff/bin/mpiexec -n 4 /Users/eschnett/src/c/MPIstuff/bin/mpi-hello
 ]]
 
 cmake_minimum_required(VERSION 3.12...3.20)

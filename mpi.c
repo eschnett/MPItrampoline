@@ -8,9 +8,11 @@
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#define CONSTANT(TYPE, NAME) MPI_##TYPE MPI_##NAME;
+#define MT(TYPE) MPI_##TYPE
+#define CONSTANT(TYPE, NAME) TYPE MPI_##NAME;
 #include "mpi-constants.inc"
 #undef CONSTANT
+#undef MT
 
 #define MT(TYPE) MPI_##TYPE
 #define FUNCTION(RTYPE, NAME, PTYPES, PNAMES) RTYPE(*MPI_##NAME) PTYPES = NULL;
@@ -44,10 +46,12 @@ void __attribute__((__constructor__)) init_mpiwrapper() {
   }
 
   // Read constants
+#define MT(TYPE) MPI_##TYPE
 #define CONSTANT(TYPE, NAME)                                                   \
-  MPI_##NAME = *(const MPI_##TYPE *)dlsym1(handle, "MPIWRAPPER_" #NAME);
+  MPI_##NAME = *(const TYPE *)dlsym1(handle, "MPIWRAPPER_" #NAME);
 #include "mpi-constants.inc"
 #undef CONSTANT
+#undef MT
 
   // Read function pointers
 #define MT(TYPE) MPI_##TYPE
