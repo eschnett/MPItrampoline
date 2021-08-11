@@ -542,6 +542,19 @@ FUNCTION(int, Type_get_true_extent_x,
 FUNCTION(int, Type_size_x, (MT(Datatype) datatype, MT(Count) * size),
          ((MP(Datatype))datatype, (MP(Count) *)size))
 
+FUNCTION(int, Type_create_hindexed_block,
+         (int count, int blocklength, const MT(Aint) array_of_displacements[],
+          MT(Datatype) oldtype, MT(Datatype) * newtype),
+         (count, blocklength, (const MP(Aint) *)array_of_displacements,
+          (MP(Datatype))oldtype, (MP(Datatype) *)newtype))
+FUNCTION(int, Type_create_resized,
+         (MT(Datatype) oldtype, MT(Aint) lb, MT(Aint) extent,
+          MT(Datatype) * newtype),
+         ((MP(Datatype))oldtype, (MP(Aint))lb, (MP(Aint))extent,
+          (MP(Datatype) *)newtype))
+FUNCTION(int, Type_dup, (MT(Datatype) oldtype, MT(Datatype) * newtype),
+         ((MP(Datatype))oldtype, (MP(Datatype) *)newtype))
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FUNCTION(double, Wtick, (), ())
