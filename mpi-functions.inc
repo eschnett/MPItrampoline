@@ -193,7 +193,6 @@ FUNCTION(int, Type_indexed,
           MT(Datatype) * newtype),
          (count, array_of_blocklengths, array_of_displacements,
           (MP(Datatype))oldtype, (MP(Datatype) *)newtype))
-#warning "handle this array correctly"
 FUNCTION(int, Type_create_hindexed,
          (int count, const int array_of_blocklengths[],
           const MT(Aint) array_of_displacements[], MT(Datatype) oldtype,
@@ -218,7 +217,7 @@ FUNCTION(int, Type_create_hindexed_block,
           MT(Datatype) oldtype, MT(Datatype) * newtype),
          (count, blocklength, (const MP(Aint) *)array_of_displacements,
           (MP(Datatype))oldtype, (MP(Datatype) *)newtype))
-#warning "handle this array correctly"
+#ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Type_create_struct,
          (int count, const int array_of_blocklengths[],
           const MT(Aint) array_of_displacements[],
@@ -233,6 +232,7 @@ FUNCTION(int, Type_create_struct,
 //           MT(Datatype) * newtype),
 //          (count, array_of_blocklengths, (MP(Aint) *)array_of_displacements,
 //           (MP(Datatype) *)array_of_types, (MP(Datatype) *)newtype))
+#endif
 FUNCTION(int, Type_create_subarray,
          (int ndims, const int array_of_sizes[], const int array_of_subsizes[],
           const int array_of_starts[], int ordder, MT(Datatype) oldtype,
@@ -292,7 +292,7 @@ FUNCTION(int, Type_get_envelope,
           int *num_datatypes, int *combiner),
          ((MP(Datatype))datatype, num_integers, num_addresses, num_datatypes,
           combiner))
-#warning "handle this array correctly"
+#ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Type_get_contents,
          (MT(Datatype) datatype, int max_integers, int max_addresses,
           int max_datatypes, int array_of_integers[],
@@ -300,6 +300,7 @@ FUNCTION(int, Type_get_contents,
          ((MP(Datatype))datatype, max_integers, max_addresses, max_datatypes,
           array_of_integers, (MP(Aint) *)array_of_addresses,
           (MP(Datatype) *)array_of_datatypes))
+#endif
 // Does not exist in OpenMPI 4.1.1
 // FUNCTION(int, Address, (void *location, MT(Aint) * address),
 //          (location, (MP(Aint) *)address))
