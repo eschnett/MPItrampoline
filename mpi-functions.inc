@@ -473,6 +473,11 @@ FUNCTION(int, Type_create_hindexed,
           (const MP(Aint) *)array_of_displacements, (MP(Datatype))oldtype,
           (MP(Datatype) *)newtype))
 
+FUNCTION(MT(Aint), Aint_add, (MT(Aint) base, MT(Aint) disp),
+         ((MP(Aint))base, (MP(Aint))disp))
+FUNCTION(MT(Aint), Aint_diff, (MT(Aint) addr1, MT(Aint) addr2),
+         ((MP(Aint))addr1, (MP(Aint))addr2))
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FUNCTION(double, Wtick, (), ())
