@@ -15,9 +15,11 @@
 #define MPI_SUBVERSION 1
 #define MPI_VERSION 3 // we pretend to support 3.1
 
-typedef int MPI_Fint;
+typedef uintptr_t MPI_Aint;
 typedef ptrdiff_t MPI_Count;
 typedef ptrdiff_t MPI_Offset;
+
+typedef int MPI_Fint;
 
 typedef uintptr_t MPI_Comm;
 typedef uintptr_t MPI_Datatype;
