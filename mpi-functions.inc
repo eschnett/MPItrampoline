@@ -393,6 +393,8 @@ FUNCTION(int, Comm_remote_group, (MT(Comm) comm, MT(Group) * group),
 
 ////////////////////////////////////////////////////////////////////////////////
 
+FUNCTION(MT(Comm), Comm_f2c, (MT(Fint) comm), ((MP(Fint))comm))
+
 FUNCTION(double, Wtick, (), ())
 FUNCTION(double, Wtime, (), ())
 
