@@ -1,0 +1,3 @@
+#!/bin/sh
+
+exec cc -I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib "$@" -lmpi

@@ -25,6 +25,14 @@ install(
   TARGETS mpi mpi-hello
   )
 
+configure_file(mpicc.in mpicc @ONLY)
+configure_file(mpic++.in mpic++ @ONLY)
+install(
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpicc" "${CMAKE_CURRENT_BINARY_DIR}/mpic++"
+  DESTINATION bin
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+  )
+
 install(
   FILES "mpiexec"
   DESTINATION bin
