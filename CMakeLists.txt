@@ -18,9 +18,15 @@ project(
 add_library(mpi STATIC mpi.h mpi.c)
 set_target_properties(mpi PROPERTIES PUBLIC_HEADER "mpi.h")
 
-add_executable(hello hello.c)
-target_link_libraries(hello mpi)
+add_executable(mpi-hello hello.c)
+target_link_libraries(mpi-hello mpi)
 
 install(
-  TARGETS mpi hello
+  TARGETS mpi mpi-hello
+  )
+
+install(
+  FILES "mpiexec"
+  DESTINATION bin
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
