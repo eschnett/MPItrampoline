@@ -394,6 +394,28 @@ FUNCTION(int, Comm_remote_size, (MT(Comm) comm, int *size),
 FUNCTION(int, Comm_remote_group, (MT(Comm) comm, MT(Group) * group),
          ((MP(Comm))comm, (MP(Group) *)group))
 
+// 13.2 File Manipulation
+FUNCTION(int, File_open,
+         (MT(Comm) comm, const char *filename, int amode, MT(Info) info,
+          MT(File) * fh),
+         ((MP(Comm))comm, filename, amode, (MP(Info))info, (MP(File) *)fh))
+FUNCTION(int, File_close, (MT(File) * fh), ((MP(File) *)fh))
+FUNCTION(int, File_delete, (const char *filename, MT(Info) info),
+         (filename, (MP(Info))info))
+FUNCTION(int, File_set_size, (MT(File) fh, MT(Offset) size),
+         ((MP(File))fh, (MP(Offset))size))
+FUNCTION(int, File_preallocate, (MT(File) fh, MT(Offset) size),
+         ((MP(File))fh, (MP(Offset))size))
+FUNCTION(int, File_get_size, (MT(File) fh, MT(Offset) * size),
+         ((MP(File))fh, (MP(Offset) *)size))
+FUNCTION(int, File_get_group, (MT(File) fh, MT(Group) * group),
+         ((MP(File))fh, (MP(Group) *)group))
+FUNCTION(int, File_get_amode, (MT(File) fh, int *amode), ((MP(File))fh, amode))
+FUNCTION(int, File_set_info, (MT(File) fh, MT(Info) info),
+         ((MP(File))fh, (MP(Info))info))
+FUNCTION(int, File_get_info, (MT(File) fh, MT(Info) * info_used),
+         ((MP(File))fh, (MP(Info) *)info_used))
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FUNCTION(MT(Comm), Comm_f2c, (MT(Fint) comm), ((MP(Fint))comm))

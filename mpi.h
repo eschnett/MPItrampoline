@@ -11,6 +11,7 @@ typedef ptrdiff_t MPI_Offset;
 
 typedef uintptr_t MPI_Comm;
 typedef uintptr_t MPI_Datatype;
+typedef uintptr_t MPI_File;
 typedef uintptr_t MPI_Group;
 typedef uintptr_t MPI_Info;
 typedef uintptr_t MPI_Op;
