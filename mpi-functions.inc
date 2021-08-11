@@ -464,6 +464,15 @@ FUNCTION(int, Type_get_extent,
          (MT(Datatype) datatype, MT(Aint) * lb, MT(Aint) * extent),
          ((MP(Datatype))datatype, (MP(Aint) *)lb, (MP(Aint) *)extent))
 
+#warning "handle this array correctly"
+FUNCTION(int, Type_create_hindexed,
+         (int count, const int array_of_blocklengths[],
+          const MT(Aint) array_of_displacements[], MT(Datatype) oldtype,
+          MT(Datatype) * newtype),
+         (count, array_of_blocklengths,
+          (const MP(Aint) *)array_of_displacements, (MP(Datatype))oldtype,
+          (MP(Datatype) *)newtype))
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FUNCTION(double, Wtick, (), ())
