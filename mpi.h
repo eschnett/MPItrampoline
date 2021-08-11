@@ -20,9 +20,9 @@
 // Simple types
 
 typedef uintptr_t MPI_Aint;
-typedef ptrdiff_t MPI_Count;
+typedef int64_t MPI_Count;
 typedef int MPI_Fint;
-typedef ptrdiff_t MPI_Offset;
+typedef int64_t MPI_Offset;
 
 // Handles
 

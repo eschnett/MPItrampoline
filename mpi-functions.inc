@@ -97,6 +97,26 @@ FUNCTION(int, Iprobe,
          (source, tag, (MP(Comm))comm, flag, (MP(StatusPtr))status))
 FUNCTION(int, Probe, (int source, int tag, MT(Comm) comm, MT(StatusPtr) status),
          (source, tag, (MP(Comm))comm, (MP(StatusPtr))status))
+FUNCTION(int, Improbe,
+         (int source, int tag, MT(Comm) comm, int *flag, MT(Message) * message,
+          MT(StatusPtr) status),
+         (source, tag, (MP(Comm))comm, flag, (MP(Message) *)message,
+          (MP(StatusPtr))status))
+FUNCTION(int, Mprobe,
+         (int source, int tag, MT(Comm) comm, MT(Message) * message,
+          MT(StatusPtr) status),
+         (source, tag, (MP(Comm))comm, (MP(Message) *)message,
+          (MP(StatusPtr))status))
+FUNCTION(int, Mrecv,
+         (void *buf, int count, MT(Datatype) datatype, MT(Message) * message,
+          MT(StatusPtr) status),
+         (buf, count, (MP(Datatype))datatype, (MP(Message) *)message,
+          (MP(StatusPtr))status))
+FUNCTION(int, Imrecv,
+         (void *buf, int count, MT(Datatype) datatype, MT(Message) * message,
+          MT(Request) * request),
+         (buf, count, (MP(Datatype))datatype, (MP(Message) *)message,
+          (MP(Request) *)request))
 FUNCTION(int, Cancel, (MT(Request) * request), ((MP(Request) *)request))
 FUNCTION(int, Test_cancelled, (MT(const_StatusPtr) status, int *flag),
          ((MP(const_StatusPtr))status, flag))
@@ -156,6 +176,11 @@ FUNCTION(int, Type_vector,
           MT(Datatype) * newtype),
          (count, blocklength, stride, (MP(Datatype))oldtype,
           (MP(Datatype) *)newtype))
+FUNCTION(int, Type_create_hvector,
+         (int count, int blocklength, MT(Aint) stride, MT(Datatype) oldtype,
+          MT(Datatype) * newtype),
+         (count, blocklength, (MP(Aint))stride, (MP(Datatype))oldtype,
+          (MP(Datatype) *)newtype))
 // Does not exist in OpenMPI 4.1.1
 // FUNCTION(int, Type_hvector,
 //          (int count, int blocklength, MT(Aint) stride, MT(Datatype) oldtype,
@@ -168,6 +193,14 @@ FUNCTION(int, Type_indexed,
           MT(Datatype) * newtype),
          (count, array_of_blocklengths, array_of_displacements,
           (MP(Datatype))oldtype, (MP(Datatype) *)newtype))
+#warning "handle this array correctly"
+FUNCTION(int, Type_create_hindexed,
+         (int count, const int array_of_blocklengths[],
+          const MT(Aint) array_of_displacements[], MT(Datatype) oldtype,
+          MT(Datatype) * newtype),
+         (count, array_of_blocklengths,
+          (const MP(Aint) *)array_of_displacements, (MP(Datatype))oldtype,
+          (MP(Datatype) *)newtype))
 // Does not exist in OpenMPI 4.1.1
 // FUNCTION(int, Type_hindexed,
 //          (int count, int *array_of_blocklengths,
@@ -175,6 +208,24 @@ FUNCTION(int, Type_indexed,
 //           MT(Datatype) * newtype),
 //          (count, array_of_blocklengths, (MP(Aint) *)array_of_displacements,
 //           (MP(Datatype))oldtype, (MP(Datatype) *)newtype))
+FUNCTION(int, Type_create_indexed_block,
+         (int count, int blocklength, const int array_of_displacements[],
+          MT(Datatype) oldtype, MT(Datatype) * newtype),
+         (count, blocklength, array_of_displacements, (MP(Datatype))oldtype,
+          (MP(Datatype) *)newtype))
+FUNCTION(int, Type_create_hindexed_block,
+         (int count, int blocklength, const MT(Aint) array_of_displacements[],
+          MT(Datatype) oldtype, MT(Datatype) * newtype),
+         (count, blocklength, (const MP(Aint) *)array_of_displacements,
+          (MP(Datatype))oldtype, (MP(Datatype) *)newtype))
+#warning "handle this array correctly"
+FUNCTION(int, Type_create_struct,
+         (int count, const int array_of_blocklengths[],
+          const MT(Aint) array_of_displacements[],
+          const MT(Datatype) array_of_types[], MT(Datatype) * newtype),
+         (count, array_of_blocklengths,
+          (const MP(Aint) *)array_of_displacements,
+          (const MP(Datatype) *)array_of_types, (MP(Datatype) *)newtype))
 // Does not exist in OpenMPI 4.1.1
 // FUNCTION(int, Type_struct,
 //          (int count, int *array_of_blocklengths,
@@ -182,26 +233,85 @@ FUNCTION(int, Type_indexed,
 //           MT(Datatype) * newtype),
 //          (count, array_of_blocklengths, (MP(Aint) *)array_of_displacements,
 //           (MP(Datatype) *)array_of_types, (MP(Datatype) *)newtype))
+FUNCTION(int, Type_create_subarray,
+         (int ndims, const int array_of_sizes[], const int array_of_subsizes[],
+          const int array_of_starts[], int ordder, MT(Datatype) oldtype,
+          MT(Datatype) * newtype),
+         (ndims, array_of_sizes, array_of_subsizes, array_of_starts, ordder,
+          (MP(Datatype))oldtype, (MP(Datatype) *)newtype))
+FUNCTION(int, Type_create_darray,
+         (int size, int rank, int ndims, const int array_of_gsizes[],
+          const int array_of_distribs[], const int array_of_dargs[],
+          const int array_of_psizes[], int order, MT(Datatype) oldtype,
+          MT(Datatype) * newtype),
+         (size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs,
+          array_of_psizes, order, (MP(Datatype))oldtype,
+          (MP(Datatype) *)newtype))
+FUNCTION(int, Get_address, (const void *location, MT(Aint) * address),
+         (location, (MP(Aint) *)address))
+FUNCTION(MT(Aint), Aint_add, (MT(Aint) base, MT(Aint) disp),
+         ((MP(Aint))base, (MP(Aint))disp))
+FUNCTION(MT(Aint), Aint_diff, (MT(Aint) addr1, MT(Aint) addr2),
+         ((MP(Aint))addr1, (MP(Aint))addr2))
+FUNCTION(int, Type_size, (MT(Datatype) datatype, int *size),
+         ((MP(Datatype))datatype, size))
+FUNCTION(int, Type_size_x, (MT(Datatype) datatype, MT(Count) * size),
+         ((MP(Datatype))datatype, (MP(Count) *)size))
+FUNCTION(int, Type_get_extent,
+         (MT(Datatype) datatype, MT(Aint) * lb, MT(Aint) * extent),
+         ((MP(Datatype))datatype, (MP(Aint) *)lb, (MP(Aint) *)extent))
+FUNCTION(int, Type_get_extent_x,
+         (MT(Datatype) datatype, MT(Count) * lb, MT(Count) * extent),
+         ((MP(Datatype))datatype, (MP(Count) *)lb, (MP(Count) *)extent))
+FUNCTION(int, Type_create_resized,
+         (MT(Datatype) oldtype, MT(Aint) lb, MT(Aint) extent,
+          MT(Datatype) * newtype),
+         ((MP(Datatype))oldtype, (MP(Aint))lb, (MP(Aint))extent,
+          (MP(Datatype) *)newtype))
+FUNCTION(int, Type_get_true_extent,
+         (MT(Datatype) datatype, MT(Aint) * true_lb, MT(Aint) * true_extent),
+         ((MP(Datatype))datatype, (MP(Aint) *)true_lb, (MP(Aint) *)true_extent))
+FUNCTION(int, Type_get_true_extent_x,
+         (MT(Datatype) datatype, MT(Count) * true_lb, MT(Count) * true_extent),
+         ((MP(Datatype))datatype, (MP(Count) *)true_lb,
+          (MP(Count) *)true_extent))
+FUNCTION(int, Type_commit, (MT(Datatype) * datatype),
+         ((MP(Datatype) *)datatype))
+FUNCTION(int, Type_free, (MT(Datatype) * datatype), ((MP(Datatype) *)datatype))
+FUNCTION(int, Type_dup, (MT(Datatype) oldtype, MT(Datatype) * newtype),
+         ((MP(Datatype))oldtype, (MP(Datatype) *)newtype))
+FUNCTION(int, Get_elements,
+         (MT(const_StatusPtr) status, MT(Datatype) datatype, int *count),
+         ((MP(const_StatusPtr))status, (MP(Datatype))datatype, count))
+FUNCTION(int, Get_elements_x,
+         (MT(const_StatusPtr) status, MT(Datatype) datatype, MT(Count) * count),
+         ((MP(const_StatusPtr))status, (MP(Datatype))datatype,
+          (MP(Count) *)count))
+FUNCTION(int, Type_get_envelope,
+         (MT(Datatype) datatype, int *num_integers, int *num_addresses,
+          int *num_datatypes, int *combiner),
+         ((MP(Datatype))datatype, num_integers, num_addresses, num_datatypes,
+          combiner))
+#warning "handle this array correctly"
+FUNCTION(int, Type_get_contents,
+         (MT(Datatype) datatype, int max_integers, int max_addresses,
+          int max_datatypes, int array_of_integers[],
+          MT(Aint) array_of_addresses[], MT(Datatype) array_of_datatypes[]),
+         ((MP(Datatype))datatype, max_integers, max_addresses, max_datatypes,
+          array_of_integers, (MP(Aint) *)array_of_addresses,
+          (MP(Datatype) *)array_of_datatypes))
 // Does not exist in OpenMPI 4.1.1
 // FUNCTION(int, Address, (void *location, MT(Aint) * address),
 //          (location, (MP(Aint) *)address))
 // Does not exist in OpenMPI 4.1.1
 // FUNCTION(int, Type_extent, (MT(Datatype) datatype, MT(Aint) * extent),
 //          ((MP(Datatype))datatype, (MP(Aint) *)extent))
-FUNCTION(int, Type_size, (MT(Datatype) datatype, int *size),
-         ((MP(Datatype))datatype, size))
 // Does not exist in OpenMPI 4.1.1
 // FUNCTION(int, Type_lb, (MT(Datatype) datatype, MT(Aint) * displacement),
 //          ((MP(Datatype))datatype, (MP(Aint) *)displacement))
 // Does not exist in OpenMPI 4.1.1
 // FUNCTION(int, Type_ub, (MT(Datatype) datatype, MT(Aint) * displacement),
 //          ((MP(Datatype))datatype, (MP(Aint) *)displacement))
-FUNCTION(int, Type_commit, (MT(Datatype) * datatype),
-         ((MP(Datatype) *)datatype))
-FUNCTION(int, Type_free, (MT(Datatype) * datatype), ((MP(Datatype) *)datatype))
-FUNCTION(int, Get_elements,
-         (MT(const_StatusPtr) status, MT(Datatype) datatype, int *count),
-         ((MP(const_StatusPtr))status, (MP(Datatype))datatype, count))
 
 // 4.2 Pack and Unpack
 FUNCTION(int, Pack,
@@ -447,48 +557,6 @@ FUNCTION(int, Info_get,
          (MT(Info) info, const char *key, int valuelen, char *value, int *flag),
          ((MP(Info))info, key, valuelen, value, flag))
 
-FUNCTION(int, Type_create_hvector,
-         (int count, int blocklength, MT(Aint) stride, MT(Datatype) oldtype,
-          MT(Datatype) * newtype),
-         (count, blocklength, (MP(Aint))stride, (MP(Datatype))oldtype,
-          (MP(Datatype) *)newtype))
-#warning "handle this array correctly"
-FUNCTION(int, Type_create_struct,
-         (int count, const int array_of_blocklengths[],
-          const MT(Aint) array_of_displacements[],
-          const MT(Datatype) array_of_types[], MT(Datatype) * newtype),
-         (count, array_of_blocklengths,
-          (const MP(Aint) *)array_of_displacements,
-          (const MP(Datatype) *)array_of_types, (MP(Datatype) *)newtype))
-FUNCTION(int, Type_get_extent,
-         (MT(Datatype) datatype, MT(Aint) * lb, MT(Aint) * extent),
-         ((MP(Datatype))datatype, (MP(Aint) *)lb, (MP(Aint) *)extent))
-
-#warning "handle this array correctly"
-FUNCTION(int, Type_create_hindexed,
-         (int count, const int array_of_blocklengths[],
-          const MT(Aint) array_of_displacements[], MT(Datatype) oldtype,
-          MT(Datatype) * newtype),
-         (count, array_of_blocklengths,
-          (const MP(Aint) *)array_of_displacements, (MP(Datatype))oldtype,
-          (MP(Datatype) *)newtype))
-
-FUNCTION(MT(Aint), Aint_add, (MT(Aint) base, MT(Aint) disp),
-         ((MP(Aint))base, (MP(Aint))disp))
-FUNCTION(MT(Aint), Aint_diff, (MT(Aint) addr1, MT(Aint) addr2),
-         ((MP(Aint))addr1, (MP(Aint))addr2))
-
-FUNCTION(int, Mprobe,
-         (int source, int tag, MT(Comm) comm, MT(Message) * message,
-          MT(StatusPtr) status),
-         (source, tag, (MP(Comm))comm, (MP(Message) *)message,
-          (MP(StatusPtr))status))
-FUNCTION(int, Imrecv,
-         (void *buf, int count, MT(Datatype) datatype, MT(Message) * message,
-          MT(Request) * request),
-         (buf, count, (MP(Datatype))datatype, (MP(Message) *)message,
-          (MP(Request) *)request))
-
 FUNCTION(int, File_set_atomicity, (MT(File) fh, int flag), ((MP(File))fh, flag))
 FUNCTION(int, File_get_atomicity, (MT(File) fh, int *flag),
          ((MP(File))fh, flag))
@@ -526,34 +594,9 @@ FUNCTION(int, File_write_at_all,
          ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
           (MP(StatusPtr))status))
 
-FUNCTION(int, Get_elements_x,
-         (MT(const_StatusPtr) status, MT(Datatype) datatype, MT(Count) * count),
-         ((MP(const_StatusPtr))status, (MP(Datatype))datatype,
-          (MP(Count) *)count))
 FUNCTION(int, Status_set_elements_x,
          (MT(StatusPtr) status, MT(Datatype) datatype, MT(Count) count),
          ((MP(StatusPtr))status, (MP(Datatype))datatype, (MP(Count))count))
-FUNCTION(int, Type_get_extent_x,
-         (MT(Datatype) datatype, MT(Count) * lb, MT(Count) * extent),
-         ((MP(Datatype))datatype, (MP(Count) *)lb, (MP(Count) *)extent))
-FUNCTION(int, Type_get_true_extent_x,
-         (MT(Datatype) datatype, MT(Count) * lb, MT(Count) * extent),
-         ((MP(Datatype))datatype, (MP(Count) *)lb, (MP(Count) *)extent))
-FUNCTION(int, Type_size_x, (MT(Datatype) datatype, MT(Count) * size),
-         ((MP(Datatype))datatype, (MP(Count) *)size))
-
-FUNCTION(int, Type_create_hindexed_block,
-         (int count, int blocklength, const MT(Aint) array_of_displacements[],
-          MT(Datatype) oldtype, MT(Datatype) * newtype),
-         (count, blocklength, (const MP(Aint) *)array_of_displacements,
-          (MP(Datatype))oldtype, (MP(Datatype) *)newtype))
-FUNCTION(int, Type_create_resized,
-         (MT(Datatype) oldtype, MT(Aint) lb, MT(Aint) extent,
-          MT(Datatype) * newtype),
-         ((MP(Datatype))oldtype, (MP(Aint))lb, (MP(Aint))extent,
-          (MP(Datatype) *)newtype))
-FUNCTION(int, Type_dup, (MT(Datatype) oldtype, MT(Datatype) * newtype),
-         ((MP(Datatype))oldtype, (MP(Datatype) *)newtype))
 
 ////////////////////////////////////////////////////////////////////////////////
 
