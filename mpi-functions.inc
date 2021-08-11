@@ -328,6 +328,24 @@ FUNCTION(int, Pack_size,
          (int incount, MT(Datatype) datatype, MT(Comm) comm, int *size),
          (incount, (MP(Datatype))datatype, (MP(Comm))comm, size))
 
+// 4.3 Canonical MPI_PACK and MPI_UNPACK
+FUNCTION(int, Pack_external,
+         (const char datarep[], const void *inbuf, int incount,
+          MT(Datatype) datatype, void *outbuf, MT(Aint) outsize,
+          MT(Aint) * position),
+         (datarep, inbuf, incount, (MP(Datatype))datatype, outbuf,
+          (MP(Aint))outsize, (MP(Aint) *)position))
+FUNCTION(int, Unpack_external,
+         (const char datarep[], const void *inbuf, MT(Aint) insize,
+          MT(Aint) * position, void *outbuf, int outcount,
+          MT(Datatype) datatype),
+         (datarep, inbuf, (MP(Aint))insize, (MP(Aint) *)position, outbuf,
+          outcount, (MP(Datatype))datatype))
+FUNCTION(int, Pack_external_size,
+         (const char datarep[], int incount, MT(Datatype) datatype,
+          MT(Aint) * size),
+         (datarep, incount, (MP(Datatype))datatype, (MP(Aint) *)size))
+
 // 5.3 Barrier Synchronization
 FUNCTION(int, Barrier, (MT(Comm) comm), ((MP(Comm))comm))
 
