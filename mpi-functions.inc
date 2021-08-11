@@ -489,6 +489,59 @@ FUNCTION(int, Imrecv,
          (buf, count, (MP(Datatype))datatype, (MP(Message) *)message,
           (MP(Request) *)request))
 
+FUNCTION(int, File_set_atomicity, (MT(File) fh, int flag), ((MP(File))fh, flag))
+FUNCTION(int, File_get_atomicity, (MT(File) fh, int *flag),
+         ((MP(File))fh, flag))
+FUNCTION(int, File_sync, (MT(File) fh), ((MP(File))fh))
+
+FUNCTION(int, File_set_view,
+         (MT(File) fh, MT(Offset) disp, MT(Datatype) etype,
+          MT(Datatype) filetype, const char *datarep, MT(Info) info),
+         ((MP(File))fh, (MP(Offset))disp, (MP(Datatype))etype,
+          (MP(Datatype))filetype, datarep, (MP(Info))info))
+FUNCTION(int, File_get_view,
+         (MT(File) fh, MT(Offset) * disp, MT(Datatype) * etype,
+          MT(Datatype) * filetype, char *datarep),
+         ((MP(File))fh, (MP(Offset) *)disp, (MP(Datatype) *)etype,
+          (MP(Datatype) *)filetype, datarep))
+
+FUNCTION(int, File_read_at,
+         (MT(File) fh, MT(Offset) offset, void *buf, int count,
+          MT(Datatype) datatype, MT(StatusPtr) status),
+         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
+FUNCTION(int, File_read_at_all,
+         (MT(File) fh, MT(Offset) offset, void *buf, int count,
+          MT(Datatype) datatype, MT(StatusPtr) status),
+         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
+FUNCTION(int, File_write_at,
+         (MT(File) fh, MT(Offset) offset, const void *buf, int count,
+          MT(Datatype) datatype, MT(StatusPtr) status),
+         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
+FUNCTION(int, File_write_at_all,
+         (MT(File) fh, MT(Offset) offset, const void *buf, int count,
+          MT(Datatype) datatype, MT(StatusPtr) status),
+         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
+
+FUNCTION(int, Get_elements_x,
+         (MT(const_StatusPtr) status, MT(Datatype) datatype, MT(Count) * count),
+         ((MP(const_StatusPtr))status, (MP(Datatype))datatype,
+          (MP(Count) *)count))
+FUNCTION(int, Status_set_elements_x,
+         (MT(StatusPtr) status, MT(Datatype) datatype, MT(Count) count),
+         ((MP(StatusPtr))status, (MP(Datatype))datatype, (MP(Count))count))
+FUNCTION(int, Type_get_extent_x,
+         (MT(Datatype) datatype, MT(Count) * lb, MT(Count) * extent),
+         ((MP(Datatype))datatype, (MP(Count) *)lb, (MP(Count) *)extent))
+FUNCTION(int, Type_get_true_extent_x,
+         (MT(Datatype) datatype, MT(Count) * lb, MT(Count) * extent),
+         ((MP(Datatype))datatype, (MP(Count) *)lb, (MP(Count) *)extent))
+FUNCTION(int, Type_size_x, (MT(Datatype) datatype, MT(Count) * size),
+         ((MP(Datatype))datatype, (MP(Count) *)size))
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FUNCTION(double, Wtick, (), ())
