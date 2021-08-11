@@ -39,12 +39,12 @@ typedef MPI_Status *MPI_StatusPtr;
 typedef const MPI_Status *MPI_const_StatusPtr;
 
 #define CONSTANT(TYPE, NAME) extern MPI_##TYPE MPI_##NAME;
-#include "constants.inc"
+#include "mpi-constants.inc"
 #undef CONSTANT
 
 #define MT(TYPE) MPI_##TYPE
 #define FUNCTION(RTYPE, NAME, PTYPES, PNAMES) extern RTYPE(*MPI_##NAME) PTYPES;
-#include "functions.inc"
+#include "mpi-functions.inc"
 #undef FUNCTION
 #undef MT
 
