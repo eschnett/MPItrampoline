@@ -478,6 +478,17 @@ FUNCTION(MT(Aint), Aint_add, (MT(Aint) base, MT(Aint) disp),
 FUNCTION(MT(Aint), Aint_diff, (MT(Aint) addr1, MT(Aint) addr2),
          ((MP(Aint))addr1, (MP(Aint))addr2))
 
+FUNCTION(int, Mprobe,
+         (int source, int tag, MT(Comm) comm, MT(Message) * message,
+          MT(StatusPtr) status),
+         (source, tag, (MP(Comm))comm, (MP(Message) *)message,
+          (MP(StatusPtr))status))
+FUNCTION(int, Imrecv,
+         (void *buf, int count, MT(Datatype) datatype, MT(Message) * message,
+          MT(Request) * request),
+         (buf, count, (MP(Datatype))datatype, (MP(Message) *)message,
+          (MP(Request) *)request))
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FUNCTION(double, Wtick, (), ())

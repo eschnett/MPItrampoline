@@ -32,6 +32,7 @@ typedef uintptr_t MPI_Errhandler;
 typedef uintptr_t MPI_File;
 typedef uintptr_t MPI_Group;
 typedef uintptr_t MPI_Info;
+typedef uintptr_t MPI_Message;
 typedef uintptr_t MPI_Op;
 typedef uintptr_t MPI_Request;
 typedef uintptr_t MPI_Win;
