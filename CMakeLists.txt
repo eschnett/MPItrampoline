@@ -15,7 +15,7 @@ project(
   )
 
 add_library(mpi STATIC mpi.h mpi-constants.inc mpi-functions.inc mpi.c)
-set_target_properties(mpi PROPERTIES PUBLIC_HEADER "mpi.h;mpi-constants.inc;mpi-functions.inc")
+set_target_properties(mpi PROPERTIES PUBLIC_HEADER "mpi.h;mpio.h;mpi-constants.inc;mpi-functions.inc")
 
 add_executable(mpi-hello hello.c)
 target_link_libraries(mpi-hello mpi)
