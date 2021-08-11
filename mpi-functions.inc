@@ -295,9 +295,12 @@ FUNCTION(int, Reduce,
           MT(Op) op, int root, MT(Comm) comm),
          (sendbuf, recvbuf, count, (MP(Datatype))datatype, (MP(Op))op, root,
           (MP(Comm))comm))
-// TODO
-// int MPI_Op_create(MPI_User_function *user_fn, int commute, MPI_Op *op)
-// int MPI_Op_free(MPI_Op *op)
+#ifndef SKIP_ARRAY_TYPES
+FUNCTION(int, Op_create,
+         (MT(User_function) * user_fn, int commute, MT(Op) * op),
+         ((MP(User_function) *)user_fn, commute, (MP(Op) *)op))
+FUNCTION(int, Op_free, (MT(Op) * op), ((MP(Op) *)op))
+#endif
 FUNCTION(int, Allreduce,
          (const void *sendbuf, void *recvbuf, int count, MT(Datatype) datatype,
           MT(Op) op, MT(Comm) comm),

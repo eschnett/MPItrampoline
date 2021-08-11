@@ -42,6 +42,9 @@ typedef struct {
 typedef MPI_Status *MPI_StatusPtr;
 typedef const MPI_Status *MPI_const_StatusPtr;
 
+typedef void(MPI_User_function)(void *a, void *b, int *len,
+                                MPI_Datatype *datatype);
+
 #define CONSTANT(TYPE, NAME) extern MPI_##TYPE MPI_##NAME;
 #include "mpi-constants.inc"
 #undef CONSTANT
