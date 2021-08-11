@@ -4,7 +4,11 @@
 #include <stddef.h>
 #include <stdint.h>
 
-// typedef uintptr_t MPI_Aint;
+typedef uintptr_t MPI_Aint;
+typedef int MPI_Fint;
+typedef ptrdiff_t MPI_Count;
+typedef ptrdiff_t MPI_Offset;
+
 typedef uintptr_t MPI_Comm;
 typedef uintptr_t MPI_Datatype;
 typedef uintptr_t MPI_Group;
