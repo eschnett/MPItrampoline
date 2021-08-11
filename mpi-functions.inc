@@ -434,10 +434,10 @@ FUNCTION(int, Comm_create_keyval,
           (MP(Comm_delete_attr_function) *)comm_delete_attr_fn, comm_keyval,
           extra_state))
 FUNCTION(int, Info_free, (MT(Info) * info), ((MP(Info) *)info))
-
-// MPI_COMM_NULL_COPY_FN
-// MPI_Comm_set_attr
-// MPI_Comm_free_keyval
+FUNCTION(int, Comm_set_attr,
+         (MT(Comm) comm, int comm_keyval, void *attribute_val),
+         ((MP(Comm))comm, comm_keyval, attribute_val))
+FUNCTION(int, Comm_free_keyval, (int *comm_keyval), (comm_keyval))
 
 ////////////////////////////////////////////////////////////////////////////////
 
