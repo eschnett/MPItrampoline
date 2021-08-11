@@ -4,6 +4,8 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// Compile-time constants
+
 // #define MPI_MAX_DATAREP_STRING
 #define MPI_MAX_ERROR_STRING 1024           // MPICH's default
 #define MPI_MAX_INFO_KEY 255                // from MPICH
@@ -15,11 +17,14 @@
 #define MPI_SUBVERSION 1
 #define MPI_VERSION 3 // we pretend to support 3.1
 
+// Simple types
+
 typedef uintptr_t MPI_Aint;
 typedef ptrdiff_t MPI_Count;
+typedef int MPI_Fint;
 typedef ptrdiff_t MPI_Offset;
 
-typedef int MPI_Fint;
+// Handles
 
 typedef uintptr_t MPI_Comm;
 typedef uintptr_t MPI_Datatype;
@@ -30,6 +35,8 @@ typedef uintptr_t MPI_Info;
 typedef uintptr_t MPI_Op;
 typedef uintptr_t MPI_Request;
 typedef uintptr_t MPI_Win;
+
+// MPI_Status
 
 typedef struct {
   union {
@@ -57,6 +64,8 @@ typedef struct {
 typedef MPI_Status *MPI_StatusPtr;
 typedef const MPI_Status *MPI_const_StatusPtr;
 
+// Callback function types
+
 typedef int(MPI_Comm_copy_attr_function)(MPI_Comm, int, void *, void *, void *,
                                          int *);
 typedef int(MPI_Comm_delete_attr_function)(MPI_Comm, int, void *, void *);
@@ -73,11 +82,15 @@ typedef int(MPI_Win_copy_attr_function)(MPI_Win, int, void *, void *, void *,
 typedef int(MPI_Win_delete_attr_function)(MPI_Win, int, void *, void *);
 typedef void(MPI_Win_errhandler_function)(MPI_Win *, int *, ...);
 
+// Constants
+
 #define MT(TYPE) MPI_##TYPE
 #define CONSTANT(TYPE, NAME) extern TYPE MPI_##NAME;
 #include "mpi-constants.inc"
 #undef CONSTANT
 #undef MT
+
+// Functions
 
 #define MT(TYPE) MPI_##TYPE
 #define FUNCTION(RTYPE, NAME, PTYPES, PNAMES) extern RTYPE(*MPI_##NAME) PTYPES;

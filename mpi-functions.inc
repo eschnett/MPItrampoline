@@ -62,7 +62,7 @@ FUNCTION(int, Wait, (MT(Request) * request, MT(StatusPtr) status),
 FUNCTION(int, Test, (MT(Request) * request, int *flag, MT(StatusPtr) status),
          ((MP(Request) *)request, flag, (MP(StatusPtr))status))
 FUNCTION(int, Request_free, (MT(Request) * request), ((MP(Request) *)request))
-#ifndef SKIP_ARRAY_TYPES
+#ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Waitany,
          (int count, MT(Request) array_of_requests[], int *indx,
           MT(StatusPtr) status),
@@ -128,7 +128,7 @@ FUNCTION(int, Recv_init,
          (buf, count, (MP(Datatype))datatype, source, tag, (MP(Comm))comm,
           (MP(Request) *)request))
 FUNCTION(int, Start, (MT(Request) * request), ((MP(Request) *)request))
-#ifndef SKIP_ARRAY_TYPES
+#ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Startall, (int count, MT(Request) array_of_requests[]),
          (count, (MP(Request) *)array_of_requests))
 #endif
@@ -280,7 +280,7 @@ FUNCTION(int, Alltoallv,
           const int *rdispls, MT(Datatype) recvtype, MT(Comm) comm),
          (sendbuf, sendcounts, sdispls, (MP(Datatype))sendtype, recvbuf,
           recvcounts, rdispls, (MP(Datatype))recvtype, (MP(Comm))comm))
-#ifndef SKIP_ARRAY_TYPES
+#ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Alltoallw,
          (const void *sendbuf, const int sendcounts[], const int sdispls[],
           const MT(Datatype) sendtypes[], void *recvbuf, const int recvcounts[],
@@ -295,7 +295,7 @@ FUNCTION(int, Reduce,
           MT(Op) op, int root, MT(Comm) comm),
          (sendbuf, recvbuf, count, (MP(Datatype))datatype, (MP(Op))op, root,
           (MP(Comm))comm))
-#ifndef SKIP_ARRAY_TYPES
+#ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Op_create,
          (MT(User_function) * user_fn, int commute, MT(Op) * op),
          ((MP(User_function) *)user_fn, commute, (MP(Op) *)op))
@@ -439,6 +439,31 @@ FUNCTION(int, Comm_set_attr,
          ((MP(Comm))comm, comm_keyval, attribute_val))
 FUNCTION(int, Comm_free_keyval, (int *comm_keyval), (comm_keyval))
 
+FUNCTION(int, Info_get_nkeys, (MT(Info) info, int *nkeys),
+         ((MP(Info))info, nkeys))
+FUNCTION(int, Info_get_nthkey, (MT(Info) info, int n, char *key),
+         ((MP(Info))info, n, key))
+FUNCTION(int, Info_get,
+         (MT(Info) info, const char *key, int valuelen, char *value, int *flag),
+         ((MP(Info))info, key, valuelen, value, flag))
+
+FUNCTION(int, Type_create_hvector,
+         (int count, int blocklength, MT(Aint) stride, MT(Datatype) oldtype,
+          MT(Datatype) * newtype),
+         (count, blocklength, (MP(Aint))stride, (MP(Datatype))oldtype,
+          (MP(Datatype) *)newtype))
+#warning "handle this array correctly"
+FUNCTION(int, Type_create_struct,
+         (int count, const int array_of_blocklengths[],
+          const MT(Aint) array_of_displacements[],
+          const MT(Datatype) array_of_types[], MT(Datatype) * newtype),
+         (count, array_of_blocklengths,
+          (const MP(Aint) *)array_of_displacements,
+          (const MP(Datatype) *)array_of_types, (MP(Datatype) *)newtype))
+FUNCTION(int, Type_get_extent,
+         (MT(Datatype) datatype, MT(Aint) * lb, MT(Aint) * extent),
+         ((MP(Datatype))datatype, (MP(Aint) *)lb, (MP(Aint) *)extent))
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FUNCTION(double, Wtick, (), ())
@@ -450,6 +475,7 @@ FUNCTION(int, Finalize, (), ())
 FUNCTION(int, Finalized, (int *flag), (flag))
 FUNCTION(int, Init, (int *argc, char ***argv), (argc, argv))
 FUNCTION(int, Initialized, (int *flag), (flag))
+
 FUNCTION(int, Get_processor_name, (char *name, int *resultlen),
          (name, resultlen))
 FUNCTION(int, Get_version, (int *version, int *subversion),
