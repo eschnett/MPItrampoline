@@ -48,9 +48,9 @@ jobs:
         sudo apt-get install ${packages}
         git clone https://github.com/eschnett/MPIwrapper
         cd MPIwrapper
-        cmake -B ${{github.workspace}}/build -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/mpiwrapper-${{matrix.mpi}}
-        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
-        cmake --install ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+        cmake -B ${{github.workspace}}/MPIwrapper/build -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/mpiwrapper-${{matrix.mpi}}
+        cmake --build ${{github.workspace}}/MPIwrapper/build --config ${{env.BUILD_TYPE}}
+        cmake --install ${{github.workspace}}/MPIwrapper/build --config ${{env.BUILD_TYPE}}
 
     - name: Test ${{matrix.mpi}}
       run: |
