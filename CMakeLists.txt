@@ -3,8 +3,8 @@ rm -rf build ../MPIstuff
 cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff
 cmake --build build && cmake --install build
 
-env MPITRAMPOLINE_LIB=/Users/eschnett/src/c/MPIstuff/lib/libmpiwrapper.dylib /Users/eschnett/src/c/MPIstuff/bin/mpi-hello
-/Users/eschnett/src/c/MPIstuff/bin/mpiexec -n 4 /Users/eschnett/src/c/MPIstuff/bin/mpi-hello
+env MPITRAMPOLINE_LIB=/Users/eschnett/src/c/MPIstuff/lib/libmpiwrapper.dylib /Users/eschnett/src/c/MPIstuff/bin/mpi-test
+/Users/eschnett/src/c/MPIstuff/bin/mpiexec -n 4 /Users/eschnett/src/c/MPIstuff/bin/mpi-test
 
 
 
@@ -13,9 +13,9 @@ rm -rf build ../MPIstuff
 cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff
 cmake --build build && cmake --install build
 
-env MPITRAMPOLINE_LIB=$HOME/src/c/MPIstuff-openmpi/lib/libmpiwrapper.so /cm/shared/apps/openmpi/gcc-9/64/4.1.0/bin/mpiexec -n 4 -mca oob_tcp_if_include lo --mca btl self,vader $HOME/src/c/MPIstuff/bin/mpi-hello
+env MPITRAMPOLINE_LIB=$HOME/src/c/MPIstuff-openmpi/lib/libmpiwrapper.so /cm/shared/apps/openmpi/gcc-9/64/4.1.0/bin/mpiexec -n 4 -mca oob_tcp_if_include lo --mca btl self,vader $HOME/src/c/MPIstuff/bin/mpi-test
 
-env MPITRAMPOLINE_LIB=$HOME/src/c/MPIstuff-intel/lib/libmpiwrapper.so /cm/shared/apps/intel/mpi/2021.1.1/bin/mpiexec -n 4 $HOME/src/c/MPIstuff/bin/mpi-hello
+env MPITRAMPOLINE_LIB=$HOME/src/c/MPIstuff-intel/lib/libmpiwrapper.so /cm/shared/apps/intel/mpi/2021.1.1/bin/mpiexec -n 4 $HOME/src/c/MPIstuff/bin/mpi-test
 ]]
 
 cmake_minimum_required(VERSION 3.12...3.20)
@@ -72,7 +72,7 @@ install(
 
 
 
-add_executable(mpi-hello hello.c)
-target_link_libraries(mpi-hello mpi)
+add_executable(mpi-test mpi-test.c)
+target_link_libraries(mpi-test mpi)
 
-install(TARGETS mpi-hello)
+install(TARGETS mpi-test)
