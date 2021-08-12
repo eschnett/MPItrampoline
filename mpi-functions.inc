@@ -429,12 +429,12 @@ FUNCTION(int, Reduce,
           MT(Op) op, int root, MT(Comm) comm),
          (sendbuf, recvbuf, count, (MP(Datatype))datatype, (MP(Op))op, root,
           (MP(Comm))comm))
-#ifndef SKIP_MANUAL_FUNCTIONS
+// #ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Op_create,
          (MT(User_function) * user_fn, int commute, MT(Op) * op),
          ((MP(User_function) *)user_fn, commute, (MP(Op) *)op))
 FUNCTION(int, Op_free, (MT(Op) * op), ((MP(Op) *)op))
-#endif
+// #endif
 FUNCTION(int, Allreduce,
          (const void *sendbuf, void *recvbuf, int count, MT(Datatype) datatype,
           MT(Op) op, MT(Comm) comm),
