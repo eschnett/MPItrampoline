@@ -1,39 +1,76 @@
 #[[
-rm -rf build
-cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff
+rm -rf build ../MPIstuff
+cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff
 cmake --build build && cmake --install build
 
 env MPITRAMPOLINE_LIB=/Users/eschnett/src/c/MPIstuff/lib/libmpiwrapper.dylib /Users/eschnett/src/c/MPIstuff/bin/mpi-hello
 /Users/eschnett/src/c/MPIstuff/bin/mpiexec -n 4 /Users/eschnett/src/c/MPIstuff/bin/mpi-hello
+
+
+
+export PATH=$HOME/src/spack/opt/spack/linux-ubuntu18.04-skylake_avx512/gcc-11.2.0/cmake-3.21.1-ztbpwc6mr65mqagnikcuuiifn3ox6btv/bin:$PATH
+rm -rf build ../MPIstuff
+cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff
+cmake --build build && cmake --install build
+
+env MPITRAMPOLINE_LIB=$HOME/src/c/MPIstuff-openmpi/lib/libmpiwrapper.so /cm/shared/apps/openmpi/gcc-9/64/4.1.0/bin/mpiexec -n 4 -mca oob_tcp_if_include lo --mca btl self,vader $HOME/src/c/MPIstuff/bin/mpi-hello
 ]]
 
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 1.0
+  MPItrampoline VERSION 1.0.0
   DESCRIPTION "MPI trampoline"
   LANGUAGES C
   )
 
-add_library(mpi STATIC mpi.h mpi-constants.inc mpi-functions.inc mpi.c)
-set_target_properties(mpi PROPERTIES PUBLIC_HEADER "mpi.h;mpio.h;mpi-constants.inc;mpi-functions.inc")
+include(CMakePackageConfigHelpers)
+include(GNUInstallDirs)
 
-add_executable(mpi-hello hello.c)
-target_link_libraries(mpi-hello mpi)
+add_library(mpi mpi.c)
+target_link_libraries(mpi ${CMAKE_DL_LIBS})
+set_target_properties(mpi PROPERTIES
+  VERSION ${PROJECT_VERSION}
+  SOVERSION 1
+  PUBLIC_HEADER "mpi.h;mpio.h;mpi-constants.inc;mpi-functions.inc"
+  )
+install(TARGETS mpi EXPORT MPItrampoline)
+export(EXPORT MPItrampoline FILE MPItrampolineConfig.cmake)
 
+write_basic_package_version_file(
+  ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfigVersion.cmake
+  VERSION ${VERSION}
+  COMPATIBILITY SameMajorVersion
+  )
 install(
-  TARGETS mpi mpi-hello
+  FILES
+  ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfig.cmake
+  ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfigVersion.cmake
+  DESTINATION share/MPItrampoline/cmake
+  )
+
+configure_file(MPItrampoline.pc.in MPItrampoline.pc @ONLY)
+install(
+  FILES ${CMAKE_BINARY_DIR}/MPItrampoline.pc
+  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
   )
 
 configure_file(mpicc.in mpicc @ONLY)
 configure_file(mpic++.in mpic++ @ONLY)
 install(
-  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpicc" "${CMAKE_CURRENT_BINARY_DIR}/mpic++"
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/mpicc ${CMAKE_CURRENT_BINARY_DIR}/mpic++
   DESTINATION bin
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
 
 install(
-  FILES "mpiexec"
+  FILES mpiexec mpiexec-mpich mpiexec-openmpi
   DESTINATION bin
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
+
+
+
+add_executable(mpi-hello hello.c)
+target_link_libraries(mpi-hello mpi)
+
+install(TARGETS mpi-hello)

@@ -115,8 +115,8 @@ CONSTANT(MT(Comm_delete_attr_function) *, COMM_NULL_DELETE_FN)
 
 CONSTANT(MT(Copy_function) *, NULL_COPY_FN)
 
-CONSTANT(MT(Datatype), 2COMPLEX)
-CONSTANT(MT(Datatype), 2DOUBLE_COMPLEX)
+// CONSTANT(MT(Datatype), 2COMPLEX)
+// CONSTANT(MT(Datatype), 2DOUBLE_COMPLEX)
 CONSTANT(MT(Datatype), 2INT)
 CONSTANT(MT(Datatype), AINT)
 CONSTANT(MT(Datatype), BYTE)

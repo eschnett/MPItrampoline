@@ -47,14 +47,14 @@ typedef struct {
       int f2;
       int f3;
       size_t f4;
-    } OpenMPI;
+    } padding_OpenMPI;
     struct {
       int f0;
       int f1;
       int f2;
       int f3;
       int f4;
-    } MPICH;
+    } padding_MPICH;
   } wrapped;
   int MPI_SOURCE;
   int MPI_TAG;

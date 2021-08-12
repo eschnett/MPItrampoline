@@ -28,18 +28,19 @@ static void *dlsym1(void *handle, const char *name) {
     fprintf(stderr, "Could not resolve symbol \"%s\"\n", name);
     exit(1);
   }
+  fprintf(stderr, "dlsym: %s = %p\n", name, ptr);
   return ptr;
 }
 
 void __attribute__((__constructor__)) init_mpiwrapper() {
   const char *const libname = getenv("MPITRAMPOLINE_LIB");
   if (!libname) {
-    fprintf(stderr, "MPI wrapper library not set. Define the environment "
-                    "variable MPITRAMPOLINE_LIB.\n");
+    fprintf(stderr, "MPI wrapper library not set. Set the environment variable "
+                    "MPITRAMPOLINE_LIB.\n");
     exit(1);
   }
 
-  void *handle = dlopen(libname, RTLD_NOW);
+  void *handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL);
   if (!handle) {
     fprintf(stderr, "Could not dlopen MPI wrapper library \"%s\".\n", libname);
     exit(1);

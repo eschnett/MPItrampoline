@@ -1,0 +1,4 @@
+#!/bin/sh
+
+export MPITRAMPOLINE_LIB=/Users/eschnett/src/c/MPIstuff-mpich/lib/libmpiwrapper.dylib
+exec mpiexec-mpich-gcc10 "$@"
