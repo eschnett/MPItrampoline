@@ -13,7 +13,7 @@ jobs:
   build:
     strategy:
       matrix:
-        mpi: [MPICH]            # OpenMPI
+        mpi: [MPICH, OpenMPI]
 
     # The CMake configure and build commands are platform agnostic and
     # should work equally well on Windows or Mac. You can convert this
@@ -35,13 +35,24 @@ jobs:
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
-    - name: Test
-      working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration. See
-      # https://cmake.org/cmake/help/latest/manual/ctest.1.html for
-      # more detail
-      run: ctest -C ${{env.BUILD_TYPE}}
-
     - name: Install
       # Install your program
       run: cmake --install ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Install mpiwrapper/${{matrix.mpi}}
+      run: |
+        case "${{matrix.mpi}}" in
+            MPICH) packages=libmpich-dev;;
+            OpenMPI) packages=libopenmpi-dev;;
+        esac
+        sudo apt-get install ${packages}
+        git clone https://github.com/eschnett/MPIwrapper
+        cd MPIwrapper
+        cmake -B ${{github.workspace}}/build -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/mpiwrapper-${{matrix.mpi}}
+        cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+        cmake --install ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+
+    - name: Test ${{matrix.mpi}}
+      run: |
+        export MPITRAMPOLINE_LIB=${{github.workspace}}/mpiwrapper-${{matrix.mpi}}/libmpiwrapper.so
+        mpiexec -n 4 ${{github.workspace}}/mpitrampoline/bin/mpi-hello
