@@ -1,5 +1,8 @@
 # MPItrampoline
 
+* [![GitHub
+  CI](https://github.com/eschnett/MPItrampoline/workflows/CI/badge.svg)](https://github.com/eschnett/MPItrampoline/actions)
+
 [MPI](https://www.mpi-forum.org) is the de-facto standard for
 inter-node communication on HPC systems, and has been for the past 25
 years. While highly successful, MPI is a standard for source code (it
