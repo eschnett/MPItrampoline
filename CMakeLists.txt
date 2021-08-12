@@ -14,6 +14,8 @@ cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_BUILD_TYPE=Debug -
 cmake --build build && cmake --install build
 
 env MPITRAMPOLINE_LIB=$HOME/src/c/MPIstuff-openmpi/lib/libmpiwrapper.so /cm/shared/apps/openmpi/gcc-9/64/4.1.0/bin/mpiexec -n 4 -mca oob_tcp_if_include lo --mca btl self,vader $HOME/src/c/MPIstuff/bin/mpi-hello
+
+env MPITRAMPOLINE_LIB=$HOME/src/c/MPIstuff-intel/lib/libmpiwrapper.so /cm/shared/apps/intel/mpi/2021.1.1/bin/mpiexec -n 4 $HOME/src/c/MPIstuff/bin/mpi-hello
 ]]
 
 cmake_minimum_required(VERSION 3.12...3.20)
