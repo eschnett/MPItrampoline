@@ -1,10 +1,10 @@
 # MPItrampoline
 
-* [![GitHub
+* MPI wrapper library: [![GitHub
   CI](https://github.com/eschnett/MPIwrapper/actions/workflows/CI.yml/badge.svg)](https://github.com/eschnett/MPIwrapper/actions)
-* [![GitHub
+* MPI trampoline library: [![GitHub
   CI](https://github.com/eschnett/MPItrampoline/actions/workflows/CI.yml/badge.svg)](https://github.com/eschnett/MPItrampoline/actions)
-* [![GitHub
+* MPI integration tests: [![GitHub
   CI](https://github.com/eschnett/MPItest/actions/workflows/CI.yml/badge.svg)](https://github.com/eschnett/MPItest/actions)
 
 [MPI](https://www.mpi-forum.org) is the de-facto standard for

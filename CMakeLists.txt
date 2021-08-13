@@ -1,6 +1,6 @@
 #[[
-rm -rf build ../MPIstuff
-cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_CXX_COMPILER=g++-mp-11 -DCMAKE_Fortran_COMPILER=gfortran-mp-11 -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff
+rm -rf build $HOME/src/c/MPIstuff/mpitrampoline
+cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff/mpitrampoline
 cmake --build build && cmake --install build
 
 env MPITRAMPOLINE_LIB=/Users/eschnett/src/c/MPIstuff/lib/libmpiwrapper.dylib /Users/eschnett/src/c/MPIstuff/bin/mpi-test
@@ -40,17 +40,17 @@ set_target_properties(mpi PROPERTIES
 install(TARGETS mpi EXPORT MPItrampoline)
 export(EXPORT MPItrampoline FILE MPItrampolineConfig.cmake)
 
-write_basic_package_version_file(
-  ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfigVersion.cmake
-  VERSION ${VERSION}
-  COMPATIBILITY SameMajorVersion
-  )
-install(
-  FILES
-  ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfig.cmake
-  ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfigVersion.cmake
-  DESTINATION share/MPItrampoline/cmake
-  )
+# write_basic_package_version_file(
+#   ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfigVersion.cmake
+#   VERSION ${VERSION}
+#   COMPATIBILITY SameMajorVersion
+#   )
+# install(
+#   FILES
+#   ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfig.cmake
+#   ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfigVersion.cmake
+#   DESTINATION share/MPItrampoline/cmake
+#   )
 
 configure_file(MPItrampoline.pc.in MPItrampoline.pc @ONLY)
 install(
@@ -60,16 +60,16 @@ install(
 
 configure_file(mpicc.in mpicc @ONLY)
 configure_file(mpicxx.in mpicxx @ONLY)
+configure_file(mpifc.in mpifc @ONLY)
 configure_file(mpifort.in mpifort @ONLY)
 install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/mpicc ${CMAKE_CURRENT_BINARY_DIR}/mpicxx ${CMAKE_CURRENT_BINARY_DIR}/mpifort
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/mpicc ${CMAKE_CURRENT_BINARY_DIR}/mpicxx ${CMAKE_CURRENT_BINARY_DIR}/mpifc ${CMAKE_CURRENT_BINARY_DIR}/mpifort
   DESTINATION bin
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
 
-# # TODO: Avoid these; they should come from MPIwrapper
-# install(
-#   FILES mpiexec mpiexec-mpich mpiexec-openmpi
-#   DESTINATION bin
-#   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
-#   )
+install(
+  FILES mpiexec
+  DESTINATION bin
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+  )
