@@ -1,4 +1,4 @@
 #!/bin/sh
 
-echo 'This is not the correct mpiexec.'
+# echo 'This is not the correct mpiexec.'
 true
