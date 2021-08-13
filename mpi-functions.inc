@@ -632,6 +632,9 @@ FUNCTION(int, Abort, (MT(Comm) comm, int errorcode),
 FUNCTION(int, Finalize, (), ())
 FUNCTION(int, Finalized, (int *flag), (flag))
 FUNCTION(int, Init, (int *argc, char ***argv), (argc, argv))
+FUNCTION(int, Init_thread,
+         (int *argc, char ***argv, int required, int *provided),
+         (argc, argv, required, provided))
 FUNCTION(int, Initialized, (int *flag), (flag))
 
 FUNCTION(int, Get_processor_name, (char *name, int *resultlen),
