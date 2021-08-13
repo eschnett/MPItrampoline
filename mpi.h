@@ -4,6 +4,16 @@
 #include <stddef.h>
 #include <stdint.h>
 
+// Identify ourselves
+// TODO: Use cmake to fill this in automatically
+#define MPITRAMPOLINE_VERSION_MAJOR 1
+#define MPITRAMPOLINE_VERSION_MINOR 0
+#define MPITRAMPOLINE_VERSION_PATCH 0
+
+// Pretend to be MPICH to pacify mpi4py
+// TODO: Don't do this!
+#define MPICH_NAME 3
+
 // Compile-time constants
 
 // #define MPI_MAX_DATAREP_STRING
