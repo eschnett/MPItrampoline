@@ -87,4 +87,3 @@ jobs:
         esac
         export MPITRAMPOLINE_LIB=${{github.workspace}}/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
         ${mpiexec} -n 4 ${{github.workspace}}/mpitrampoline/bin/mpi-test-f90
-        false
