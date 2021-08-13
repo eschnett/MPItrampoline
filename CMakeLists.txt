@@ -27,16 +27,13 @@ project(
   LANGUAGES C
   )
 
-# SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
-
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 
-# TODO: We don't know how to properly propagate the ${CMAKE_DL_LIBS}
-# dependency to other packages when building a static library. We thus
-# always build a shared library.
-# TODO: Trying static linking to break dependencies between
-# MPItrampoline MPI and run-time MPI
+# We always use static linking to avoid confusion between
+# MPItrampoline MPI and the wrapped MPI: Both define e.g. `MPI_Init`,
+# and our (MPItrampoline's) `MPI_Init` must not interpose the
+# `MPI_Init` defined by the wrapped MPI.
 add_library(mpi STATIC mpi.h mpio.h mpif.h mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc mpi.c)
 target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
 set_target_properties(mpi PROPERTIES
