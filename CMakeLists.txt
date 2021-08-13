@@ -24,18 +24,19 @@ cmake_minimum_required(VERSION 3.12...3.20)
 project(
   MPItrampoline VERSION 1.0.0
   DESCRIPTION "MPI trampoline"
+  # C++ and Fortan are only used for tests
   LANGUAGES C CXX Fortran
   )
 
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 
-add_library(mpi mpi.c mpif.c mpif.cxx)
+add_library(mpi mpi.h mpio.h mpif.h mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc mpi.c)
 target_link_libraries(mpi ${CMAKE_DL_LIBS})
 set_target_properties(mpi PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION 1
-  PUBLIC_HEADER "mpi.h;mpio.h;mpi-constants.inc;mpi-functions.inc"
+  PUBLIC_HEADER "mpi.h;mpio.h;mpif.h;mpi-constants.inc;mpi-functions.inc;mpi-constants-f.inc;mpi-functions-f.inc"
   )
 install(TARGETS mpi EXPORT MPItrampoline)
 export(EXPORT MPItrampoline FILE MPItrampolineConfig.cmake)

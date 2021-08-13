@@ -20,6 +20,26 @@
 #undef FUNCTION
 #undef MT
 
+#define MT(TYPE) MPI_##TYPE
+#define CONSTANT(TYPE, NAME) TYPE mpi_##NAME;
+#include "mpi-constants-f.inc"
+#undef CONSTANT
+#undef MT
+
+#define MT(TYPE) MPI_##TYPE
+#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
+  RTYPE(*mpitrampoline_##NAME) PTYPES = NULL;
+#include "mpi-functions-f.inc"
+#undef FUNCTION
+#undef MT
+
+#define MT(TYPE) MPI_##TYPE
+#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
+  RTYPE mpi_##NAME PTYPES { return mpitrampoline_##NAME PNAMES; }
+#include "mpi-functions-f.inc"
+#undef FUNCTION
+#undef MT
+
 ////////////////////////////////////////////////////////////////////////////////
 
 static void *dlsym1(void *handle, const char *name) {
@@ -45,7 +65,7 @@ void __attribute__((__constructor__)) init_mpiwrapper() {
     exit(1);
   }
 
-  // Read constants
+  // Read C constants
 #define MT(TYPE) MPI_##TYPE
 #define CONSTANT(TYPE, NAME)                                                   \
   MPI_##NAME = *(const TYPE *)dlsym1(handle, "MPIWRAPPER_" #NAME);
@@ -53,11 +73,31 @@ void __attribute__((__constructor__)) init_mpiwrapper() {
 #undef CONSTANT
 #undef MT
 
-  // Read function pointers
+  // Read C function pointers
 #define MT(TYPE) MPI_##TYPE
 #define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
   MPI_##NAME = dlsym1(handle, "MPIwrapper_" #NAME);
 #include "mpi-functions.inc"
+#undef FUNCTION
+#undef MT
+
+  void (*const mpiwrapper_export_fortran_constants)() =
+      dlsym1(handle, "mpiwrapper_export_fortran_constants_");
+  mpiwrapper_export_fortran_constants();
+
+  // Read Fortran constants
+#define MT(TYPE) MPI_##TYPE
+#define CONSTANT(TYPE, NAME)                                                   \
+  mpi_##NAME = *(const TYPE *)dlsym1(handle, "mpiwrapper_" #NAME);
+#include "mpi-constants-f.inc"
+#undef CONSTANT
+#undef MT
+
+  // Read Fortran function pointers
+#define MT(TYPE) MPI_##TYPE
+#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
+  mpitrampoline_##NAME = dlsym1(handle, "mpiwrapper_" #NAME);
+#include "mpi-functions-f.inc"
 #undef FUNCTION
 #undef MT
 }

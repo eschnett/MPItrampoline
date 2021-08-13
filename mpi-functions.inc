@@ -429,12 +429,10 @@ FUNCTION(int, Reduce,
           MT(Op) op, int root, MT(Comm) comm),
          (sendbuf, recvbuf, count, (MP(Datatype))datatype, (MP(Op))op, root,
           (MP(Comm))comm))
-// #ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Op_create,
          (MT(User_function) * user_fn, int commute, MT(Op) * op),
          ((MP(User_function) *)user_fn, commute, (MP(Op) *)op))
 FUNCTION(int, Op_free, (MT(Op) * op), ((MP(Op) *)op))
-// #endif
 FUNCTION(int, Allreduce,
          (const void *sendbuf, void *recvbuf, int count, MT(Datatype) datatype,
           MT(Op) op, MT(Comm) comm),
@@ -619,6 +617,31 @@ FUNCTION(int, File_write_at_all,
 FUNCTION(int, Status_set_elements_x,
          (MT(StatusPtr) status, MT(Datatype) datatype, MT(Count) count),
          ((MP(StatusPtr))status, (MP(Datatype))datatype, (MP(Count))count))
+
+////////////////////////////////////////////////////////////////////////////////
+
+FUNCTION(MT(Fint), Comm_c2f, (MT(Comm) comm), ((MP(Comm))comm))
+FUNCTION(MT(Comm), Comm_f2c, (MT(Fint) comm), (comm))
+FUNCTION(MT(Fint), File_c2f, (MT(File) file), ((MP(File))file))
+FUNCTION(MT(File), File_f2c, (MT(Fint) file), (file))
+FUNCTION(MT(Fint), Group_c2f, (MT(Group) group), ((MP(Group))group))
+FUNCTION(MT(Group), Group_f2c, (MT(Fint) group), (group))
+FUNCTION(MT(Fint), Info_c2f, (MT(Info) info), ((MP(Info))info))
+FUNCTION(MT(Info), Info_f2c, (MT(Fint) info), (info))
+FUNCTION(MT(Fint), Message_c2f, (MT(Message) message), ((MP(Message))message))
+FUNCTION(MT(Message), Message_f2c, (MT(Fint) message), (message))
+FUNCTION(MT(Fint), Op_c2f, (MT(Op) op), ((MP(Op))op))
+FUNCTION(MT(Op), Op_f2c, (MT(Fint) op), (op))
+FUNCTION(MT(Fint), Request_c2f, (MT(Request) request), ((MP(Request))request))
+FUNCTION(MT(Request), Request_f2c, (MT(Fint) request), (request))
+FUNCTION(MT(Fint), Type_c2f, (MT(Datatype) datatype), ((MP(Datatype))datatype))
+FUNCTION(MT(Datatype), Type_f2c, (MT(Fint) datatype), (datatype))
+FUNCTION(MT(Fint), Win_c2f, (MT(Win) win), ((MP(Win))win))
+FUNCTION(MT(Win), Win_f2c, (MT(Fint) win), (win))
+FUNCTION(int, Status_c2f, (MT(const_StatusPtr) c_status, MT(Fint) * f_status),
+         ((MP(const_StatusPtr))c_status, f_status))
+FUNCTION(int, Status_f2c, (const MT(Fint) * f_status, MT(StatusPtr) c_status),
+         (f_status, (MP(StatusPtr))c_status))
 
 ////////////////////////////////////////////////////////////////////////////////
 
