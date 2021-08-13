@@ -34,7 +34,7 @@ include(GNUInstallDirs)
 # dependency to other packages when building a static library. We thus
 # always build a shared library.
 add_library(mpi SHARED mpi.h mpio.h mpif.h mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc mpi.c)
-target_link_libraries(mpi PRIVATE ${CMAKE_DL_LIBS})
+target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
 set_target_properties(mpi PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION 1
