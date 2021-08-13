@@ -27,7 +27,7 @@ project(
   LANGUAGES C
   )
 
-SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
+# SET(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib")
 
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
@@ -44,25 +44,29 @@ set_target_properties(mpi PROPERTIES
   SOVERSION 1
   PUBLIC_HEADER "mpi.h;mpio.h;mpif.h;mpi-constants.inc;mpi-functions.inc"
   )
-install(TARGETS mpi EXPORT MPItrampoline)
-export(EXPORT MPItrampoline FILE MPItrampolineConfig.cmake)
+install(TARGETS mpi EXPORT MPItrampolineTargets)
 
-# write_basic_package_version_file(
-#   ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfigVersion.cmake
-#   VERSION ${VERSION}
-#   COMPATIBILITY SameMajorVersion
-#   )
-# install(
-#   FILES
-#   ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfig.cmake
-#   ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfigVersion.cmake
-#   DESTINATION share/MPItrampoline/cmake
-#   )
+write_basic_package_version_file(
+  ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfigVersion.cmake
+  VERSION ${VERSION}
+  COMPATIBILITY SameMajorVersion
+  )
+install(
+  EXPORT MPItrampolineTargets
+  FILE MPItrampolineTargets.cmake
+  NAMESPACE MPItrampoline::
+  DESTINATION lib/cmake/MPItrampoline
+  )
+configure_file(MPItrampolineConfig.cmake.in MPItrampolineConfig.cmake @ONLY)
+install(
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfigVersion.cmake"
+  DESTINATION lib/cmake/MPItrampoline
+  )
 
 configure_file(MPItrampoline.pc.in MPItrampoline.pc @ONLY)
 install(
   FILES ${CMAKE_BINARY_DIR}/MPItrampoline.pc
-  DESTINATION ${CMAKE_INSTALL_DATAROOTDIR}/pkgconfig
+  DESTINATION lib/pkgconfig
   )
 
 configure_file(mpicc.in mpicc @ONLY)
