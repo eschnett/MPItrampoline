@@ -68,7 +68,7 @@ void __attribute__((__constructor__)) init_mpiwrapper() {
   // Read C constants
 #define MT(TYPE) MPI_##TYPE
 #define CONSTANT(TYPE, NAME)                                                   \
-  MPI_##NAME = *(TYPE const *)dlsym1(handle, "MPIWRAPPER_" #NAME);
+  MPI_##NAME = *(TYPE const *)dlsym1(handle, "WPI_" #NAME);
 #include "mpi-constants.inc"
 #undef CONSTANT
 #undef MT
@@ -76,7 +76,7 @@ void __attribute__((__constructor__)) init_mpiwrapper() {
   // Read C function pointers
 #define MT(TYPE) MPI_##TYPE
 #define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
-  MPI_##NAME = dlsym1(handle, "MPIwrapper_" #NAME);
+  MPI_##NAME = dlsym1(handle, "WPI_" #NAME);
 #include "mpi-functions.inc"
 #undef FUNCTION
 #undef MT
@@ -88,7 +88,7 @@ void __attribute__((__constructor__)) init_mpiwrapper() {
   // Read Fortran constants
 #define MT(TYPE) MPI_##TYPE
 #define CONSTANT(TYPE, NAME)                                                   \
-  mpi_##NAME##_ = *(const TYPE *)dlsym1(handle, "mpiwrapper_" #NAME "_");
+  mpi_##NAME##_ = *(const TYPE *)dlsym1(handle, "wpi_" #NAME "_");
 #include "mpi-constants-f.inc"
 #undef CONSTANT
 #undef MT
@@ -96,7 +96,7 @@ void __attribute__((__constructor__)) init_mpiwrapper() {
   // Read Fortran function pointers
 #define MT(TYPE) MPI_##TYPE
 #define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
-  mpitrampoline_##NAME##_ = dlsym1(handle, "mpiwrapper_" #NAME "_");
+  mpitrampoline_##NAME##_ = dlsym1(handle, "wpi_" #NAME "_");
 #include "mpi-functions-f.inc"
 #undef FUNCTION
 #undef MT
