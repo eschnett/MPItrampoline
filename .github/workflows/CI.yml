@@ -28,7 +28,7 @@ jobs:
       run: |
         cmake -B ${{github.workspace}}/build \
             -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-            -DCMAKE_INSTALL_PREFIX=${{github.workspace}}/mpitrampoline
+            -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
 
     - name: Build
       # Build your program with the given configuration
