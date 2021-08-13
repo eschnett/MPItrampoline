@@ -1,3 +1,8 @@
 #!/bin/sh
 
+if [ "x$1" = "x-showme" ]; then
+    echo c++ -I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib -lmpi
+    exit 0
+fi
+
 exec c++ -I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib "$@" -lmpi
