@@ -57,9 +57,9 @@ install(
   )
 
 configure_file(mpicc.in mpicc @ONLY)
-configure_file(mpic++.in mpic++ @ONLY)
+configure_file(mpicxx.in mpicxx @ONLY)
 install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/mpicc ${CMAKE_CURRENT_BINARY_DIR}/mpic++
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/mpicc ${CMAKE_CURRENT_BINARY_DIR}/mpicxx
   DESTINATION bin
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
