@@ -28,7 +28,6 @@ static void *dlsym1(void *handle, const char *name) {
     fprintf(stderr, "Could not resolve symbol \"%s\"\n", name);
     exit(1);
   }
-  fprintf(stderr, "dlsym: %s = %p\n", name, ptr);
   return ptr;
 }
 
