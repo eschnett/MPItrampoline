@@ -35,7 +35,9 @@ include(GNUInstallDirs)
 # TODO: We don't know how to properly propagate the ${CMAKE_DL_LIBS}
 # dependency to other packages when building a static library. We thus
 # always build a shared library.
-add_library(mpi SHARED mpi.h mpio.h mpif.h mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc mpi.c)
+# TODO: Trying static linking to break dependencies between
+# MPItrampoline MPI and run-time MPI
+add_library(mpi STATIC mpi.h mpio.h mpif.h mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc mpi.c)
 target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
 set_target_properties(mpi PROPERTIES
   VERSION ${PROJECT_VERSION}
