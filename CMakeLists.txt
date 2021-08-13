@@ -58,6 +58,7 @@ install(
 
 configure_file(mpicc.in mpicc @ONLY)
 configure_file(mpicxx.in mpicxx @ONLY)
+# configure_file(mpifort.in mpifort @ONLY)
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/mpicc ${CMAKE_CURRENT_BINARY_DIR}/mpicxx
   DESTINATION bin
