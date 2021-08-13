@@ -68,7 +68,7 @@ void __attribute__((__constructor__)) init_mpiwrapper() {
   // Read C constants
 #define MT(TYPE) MPI_##TYPE
 #define CONSTANT(TYPE, NAME)                                                   \
-  MPI_##NAME = *(const TYPE *)dlsym1(handle, "MPIWRAPPER_" #NAME);
+  MPI_##NAME = *(TYPE const *)dlsym1(handle, "MPIWRAPPER_" #NAME);
 #include "mpi-constants.inc"
 #undef CONSTANT
 #undef MT
