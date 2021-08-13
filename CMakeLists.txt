@@ -67,9 +67,9 @@ install(
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
 
-# TODO: Avoid these; they should come from MPIwrapper
-install(
-  FILES mpiexec mpiexec-mpich mpiexec-openmpi
-  DESTINATION bin
-  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
-  )
+# # TODO: Avoid these; they should come from MPIwrapper
+# install(
+#   FILES mpiexec mpiexec-mpich mpiexec-openmpi
+#   DESTINATION bin
+#   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+#   )
