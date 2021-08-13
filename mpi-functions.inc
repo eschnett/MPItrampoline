@@ -552,8 +552,6 @@ FUNCTION(int, File_get_info, (MT(File) fh, MT(Info) * info_used),
 
 ////////////////////////////////////////////////////////////////////////////////
 
-FUNCTION(MT(Comm), Comm_f2c, (MT(Fint) comm), ((MP(Fint))comm))
-
 FUNCTION(int, Comm_set_errhandler, (MT(Comm) comm, MT(Errhandler) errhandler),
          ((MP(Comm))comm, (MP(Errhandler))errhandler))
 FUNCTION(int, Error_string, (int errorcode, char *string, int *resultlen),

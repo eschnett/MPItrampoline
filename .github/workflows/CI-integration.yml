@@ -52,11 +52,38 @@ jobs:
         cmake --build ${{github.workspace}}/MPIwrapper/build --config ${{env.BUILD_TYPE}}
         cmake --install ${{github.workspace}}/MPIwrapper/build --config ${{env.BUILD_TYPE}}
 
-    - name: Test ${{matrix.mpi}}
+    - name: Test C ${{matrix.mpi}}
       run: |
         case "${{matrix.mpi}}" in
             MPICH) mpiexec='mpiexec';;
             OpenMPI) mpiexec='mpiexec --oversubscribe';;
         esac
         export MPITRAMPOLINE_LIB=${{github.workspace}}/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
-        ${mpiexec} -n 4 ${{github.workspace}}/mpitrampoline/bin/mpi-test
+        ${mpiexec} -n 4 ${{github.workspace}}/mpitrampoline/bin/mpi-test-c
+
+    - name: Test C++ ${{matrix.mpi}}
+      run: |
+        case "${{matrix.mpi}}" in
+            MPICH) mpiexec='mpiexec';;
+            OpenMPI) mpiexec='mpiexec --oversubscribe';;
+        esac
+        export MPITRAMPOLINE_LIB=${{github.workspace}}/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
+        ${mpiexec} -n 4 ${{github.workspace}}/mpitrampoline/bin/mpi-test-cxx
+
+    - name: Test Fortran 77 ${{matrix.mpi}}
+      run: |
+        case "${{matrix.mpi}}" in
+            MPICH) mpiexec='mpiexec';;
+            OpenMPI) mpiexec='mpiexec --oversubscribe';;
+        esac
+        export MPITRAMPOLINE_LIB=${{github.workspace}}/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
+        ${mpiexec} -n 4 ${{github.workspace}}/mpitrampoline/bin/mpi-test-f
+
+    - name: Test Fortran 90 ${{matrix.mpi}}
+      run: |
+        case "${{matrix.mpi}}" in
+            MPICH) mpiexec='mpiexec';;
+            OpenMPI) mpiexec='mpiexec --oversubscribe';;
+        esac
+        export MPITRAMPOLINE_LIB=${{github.workspace}}/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
+        ${mpiexec} -n 4 ${{github.workspace}}/mpitrampoline/bin/mpi-test-f90

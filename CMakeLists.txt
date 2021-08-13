@@ -1,6 +1,6 @@
 #[[
 rm -rf build ../MPIstuff
-cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff
+cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_CXX_COMPILER=g++-mp-11 -DCMAKE_Fortran_COMPILER=gfortran-mp-11 -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff
 cmake --build build && cmake --install build
 
 env MPITRAMPOLINE_LIB=/Users/eschnett/src/c/MPIstuff/lib/libmpiwrapper.dylib /Users/eschnett/src/c/MPIstuff/bin/mpi-test
@@ -18,17 +18,19 @@ env MPITRAMPOLINE_LIB=$HOME/src/c/MPIstuff-openmpi/lib/libmpiwrapper.so /cm/shar
 env MPITRAMPOLINE_LIB=$HOME/src/c/MPIstuff-intel/lib/libmpiwrapper.so /cm/shared/apps/intel/mpi/2021.1.1/bin/mpiexec -n 4 $HOME/src/c/MPIstuff/bin/mpi-test
 ]]
 
+
+
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
   MPItrampoline VERSION 1.0.0
   DESCRIPTION "MPI trampoline"
-  LANGUAGES C
+  LANGUAGES C CXX Fortran
   )
 
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 
-add_library(mpi mpi.c)
+add_library(mpi mpi.c mpif.c mpif.cxx)
 target_link_libraries(mpi ${CMAKE_DL_LIBS})
 set_target_properties(mpi PROPERTIES
   VERSION ${PROJECT_VERSION}
@@ -58,9 +60,9 @@ install(
 
 configure_file(mpicc.in mpicc @ONLY)
 configure_file(mpicxx.in mpicxx @ONLY)
-# configure_file(mpifort.in mpifort @ONLY)
+configure_file(mpifort.in mpifort @ONLY)
 install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/mpicc ${CMAKE_CURRENT_BINARY_DIR}/mpicxx
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/mpicc ${CMAKE_CURRENT_BINARY_DIR}/mpicxx ${CMAKE_CURRENT_BINARY_DIR}/mpifort
   DESTINATION bin
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
@@ -73,7 +75,13 @@ install(
 
 
 
-add_executable(mpi-test mpi-test.c)
-target_link_libraries(mpi-test mpi)
+add_executable(mpi-test-c mpi-test-c.c)
+target_link_libraries(mpi-test-c mpi)
+add_executable(mpi-test-cxx mpi-test-cxx.cxx)
+target_link_libraries(mpi-test-cxx mpi)
+add_executable(mpi-test-f mpi-test-f.f)
+target_link_libraries(mpi-test-f mpi)
+add_executable(mpi-test-f90 mpi-test-f90.f90)
+target_link_libraries(mpi-test-f90 mpi)
 
-install(TARGETS mpi-test)
+install(TARGETS mpi-test-c mpi-test-cxx mpi-test-f mpi-test-f90)
