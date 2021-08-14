@@ -1222,3 +1222,7 @@ int MPI_Win_sync(MPI_Win win) MPICH_API_PUBLIC;
 ////////////////////////////////////////////////////////////////////////////////
 
 FUNCTION(int, Info_create, (MT(Info) * info), ((MP(Info) *)info))
+
+#ifndef SKIP_MANUAL_FUNCTIONS
+FUNCTION(int, Pcontrol, (const int level, ...), ())
+#endif
