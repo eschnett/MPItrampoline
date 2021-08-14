@@ -720,3 +720,46 @@ FUNCTION(int, Comm_get_info, (MT(Comm) comm, MT(Info) * info),
 
 FUNCTION(int, Is_thread_main, (int *flag), (flag))
 FUNCTION(int, Query_thread, (int *provided), (provided))
+
+/* One-Sided Communications */
+FUNCTION(int, Accumulate,
+         (const void *origin_addr, int origin_count,
+          MT(Datatype) origin_datatype, int target_rank, MT(Aint) target_disp,
+          int target_count, MT(Datatype) target_datatype, MT(Op) op,
+          MT(Win) win),
+         (origin_addr, origin_count, (MP(Datatype))origin_datatype, target_rank,
+          (MP(Aint))target_disp, target_count, (MP(Datatype))target_datatype,
+          (MP(Op))op, (MP(Win))win))
+FUNCTION(int, Get,
+         (void *origin_addr, int origin_count, MT(Datatype) origin_datatype,
+          int target_rank, MT(Aint) target_disp, int target_count,
+          MT(Datatype) target_datatype, MT(Win) win),
+         (origin_addr, origin_count, (MP(Datatype))origin_datatype, target_rank,
+          (MP(Aint))target_disp, target_count, (MP(Datatype))target_datatype,
+          (MP(Win))win))
+FUNCTION(int, Put,
+         (const void *origin_addr, int origin_count,
+          MT(Datatype) origin_datatype, int target_rank, MT(Aint) target_disp,
+          int target_count, MT(Datatype) target_datatype, MT(Win) win),
+         (origin_addr, origin_count, (MP(Datatype))origin_datatype, target_rank,
+          (MP(Aint))target_disp, target_count, (MP(Datatype))target_datatype,
+          (MP(Win))win))
+FUNCTION(int, Win_complete, (MT(Win) win), ((MP(Win))win))
+FUNCTION(int, Win_create,
+         (void *base, MT(Aint) size, int disp_unit, MT(Info) info,
+          MT(Comm) comm, MT(Win) * win),
+         (base, (MP(Aint))size, disp_unit, (MP(Info))info, (MP(Comm))comm,
+          (MP(Win) *)win))
+FUNCTION(int, Win_fence, (int assert, MT(Win) win), (assert, (MP(Win))win))
+FUNCTION(int, Win_free, (MT(Win) * win), ((MP(Win) *)win))
+FUNCTION(int, Win_get_group, (MT(Win) win, MT(Group) * group),
+         ((MP(Win))win, (MP(Group) *)group))
+FUNCTION(int, Win_lock, (int lock_type, int rank, int assert, MT(Win) win),
+         (lock_type, rank, assert, (MP(Win))win))
+FUNCTION(int, Win_post, (MT(Group) group, int assert, MT(Win) win),
+         ((MP(Group))group, assert, (MP(Win))win))
+FUNCTION(int, Win_start, (MT(Group) group, int assert, MT(Win) win),
+         ((MP(Group))group, assert, (MP(Win))win))
+FUNCTION(int, Win_test, (MT(Win) win, int *flag), ((MP(Win))win, flag))
+FUNCTION(int, Win_unlock, (int rank, MT(Win) win), (rank, (MP(Win))win))
+FUNCTION(int, Win_wait, (MT(Win) win), ((MP(Win))win))
