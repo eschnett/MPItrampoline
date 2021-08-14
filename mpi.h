@@ -10,9 +10,9 @@
 #define MPITRAMPOLINE_VERSION_MINOR 0
 #define MPITRAMPOLINE_VERSION_PATCH 0
 
-// Pretend to be MPICH to pacify mpi4py
-// TODO: Don't do this!
-#define MPICH_NAME 3
+// // Pretend to be MPICH to pacify mpi4py
+// // TODO: Don't do this!
+// #define MPICH_NAME 3
 
 // Compile-time constants
 

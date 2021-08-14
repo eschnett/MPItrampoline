@@ -766,3 +766,15 @@ FUNCTION(int, Win_wait, (MT(Win) win), ((MP(Win))win))
 
 FUNCTION(int, Comm_delete_attr, (MT(Comm) comm, int comm_keyval),
          ((MP(Comm))comm, comm_keyval))
+
+/* Fortran 90-related functions.  These routines are available only if
+   Fortran 90 support is enabled
+*/
+FUNCTION(int, Type_create_f90_integer, (int range, MT(Datatype) * newtype),
+         (range, (MP(Datatype) *)newtype))
+FUNCTION(int, Type_create_f90_real,
+         (int precision, int range, MT(Datatype) * newtype),
+         (precision, range, (MP(Datatype) *)newtype))
+FUNCTION(int, Type_create_f90_complex,
+         (int precision, int range, MT(Datatype) * newtype),
+         (precision, range, (MP(Datatype) *)newtype))
