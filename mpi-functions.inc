@@ -659,6 +659,55 @@ FUNCTION(int, Intercomm_merge,
 
 // note: i checked the standard; we are complete from the top to here
 
+// 6.7 Communicators
+FUNCTION(int, Comm_create_keyval,
+         (MT(Comm_copy_attr_function) * comm_copy_attr_fn,
+          MT(Comm_delete_attr_function) * comm_delete_attr_fn, int *comm_keyval,
+          void *extra_state),
+         ((MP(Comm_copy_attr_function) *)comm_copy_attr_fn,
+          (MP(Comm_delete_attr_function) *)comm_delete_attr_fn, comm_keyval,
+          extra_state))
+FUNCTION(int, Comm_free_keyval, (int *comm_keyval), (comm_keyval))
+FUNCTION(int, Comm_set_attr,
+         (MT(Comm) comm, int comm_keyval, void *attribute_val),
+         ((MP(Comm))comm, comm_keyval, attribute_val))
+FUNCTION(int, Comm_get_attr,
+         (MT(Comm) comm, int comm_keyval, void *attribute_val, int *flag),
+         ((MP(Comm))comm, comm_keyval, attribute_val, flag))
+FUNCTION(int, Comm_delete_attr, (MT(Comm) comm, int comm_keyval),
+         ((MP(Comm))comm, comm_keyval))
+FUNCTION(int, Win_create_keyval,
+         (MT(Win_copy_attr_function) * win_copy_attr_fn,
+          MT(Win_delete_attr_function) * win_delete_attr_fn, int *win_keyval,
+          void *extra_state),
+         ((MP(Win_copy_attr_function) *)win_copy_attr_fn,
+          (MP(Win_delete_attr_function) *)win_delete_attr_fn, win_keyval,
+          extra_state))
+FUNCTION(int, Win_free_keyval, (int *win_keyval), (win_keyval))
+FUNCTION(int, Win_set_attr, (MT(Win) win, int win_keyval, void *attribute_val),
+         ((MP(Win))win, win_keyval, attribute_val))
+FUNCTION(int, Win_get_attr,
+         (MT(Win) win, int win_keyval, void *attribute_val, int *flag),
+         ((MP(Win))win, win_keyval, attribute_val, flag))
+FUNCTION(int, Win_delete_attr, (MT(Win) win, int win_keyval),
+         ((MP(Win))win, win_keyval))
+FUNCTION(int, Type_create_keyval,
+         (MT(Type_copy_attr_function) * type_copy_attr_fn,
+          MT(Type_delete_attr_function) * type_delete_attr_fn, int *type_keyval,
+          void *extra_state),
+         ((MP(Type_copy_attr_function) *)type_copy_attr_fn,
+          (MP(Type_delete_attr_function) *)type_delete_attr_fn, type_keyval,
+          extra_state))
+FUNCTION(int, Type_free_keyval, (int *type_keyval), (type_keyval))
+FUNCTION(int, Type_set_attr,
+         (MT(Datatype) type, int type_keyval, void *attribute_val),
+         ((MP(Datatype))type, type_keyval, attribute_val))
+FUNCTION(int, Type_get_attr,
+         (MT(Datatype) type, int type_keyval, void *attribute_val, int *flag),
+         ((MP(Datatype))type, type_keyval, attribute_val, flag))
+FUNCTION(int, Type_delete_attr, (MT(Datatype) type, int type_keyval),
+         ((MP(Datatype))type, type_keyval))
+
 // 13.2 File Manipulation
 FUNCTION(int, File_open,
          (MT(Comm) comm, const char *filename, int amode, MT(Info) info,
@@ -689,18 +738,7 @@ FUNCTION(int, Error_string, (int errorcode, char *string, int *resultlen),
          (errorcode, string, resultlen))
 FUNCTION(int, Info_dup, (MT(Info) info, MT(Info) * newinfo),
          ((MP(Info))info, (MP(Info) *)newinfo))
-FUNCTION(int, Comm_create_keyval,
-         (MT(Comm_copy_attr_function) * comm_copy_attr_fn,
-          MT(Comm_delete_attr_function) * comm_delete_attr_fn, int *comm_keyval,
-          void *extra_state),
-         ((MP(Comm_copy_attr_function) *)comm_copy_attr_fn,
-          (MP(Comm_delete_attr_function) *)comm_delete_attr_fn, comm_keyval,
-          extra_state))
 FUNCTION(int, Info_free, (MT(Info) * info), ((MP(Info) *)info))
-FUNCTION(int, Comm_set_attr,
-         (MT(Comm) comm, int comm_keyval, void *attribute_val),
-         ((MP(Comm))comm, comm_keyval, attribute_val))
-FUNCTION(int, Comm_free_keyval, (int *comm_keyval), (comm_keyval))
 
 FUNCTION(int, Info_get_nkeys, (MT(Info) info, int *nkeys),
          ((MP(Info))info, nkeys))
@@ -802,10 +840,6 @@ FUNCTION(int, Get_library_version, (char *version, int *resultlen),
 
 ////////////////////////////////////////////////////////////////////////////////
 
-FUNCTION(int, Comm_get_attr,
-         (MT(Comm) comm, int comm_keyval, void *attribute_val, int *flag),
-         ((MP(Comm))comm, comm_keyval, attribute_val, flag))
-
 FUNCTION(int, Close_port, (const char *port_name), (port_name))
 FUNCTION(int, Comm_accept,
          (const char *port_name, MT(Info) info, int root, MT(Comm) comm,
@@ -892,9 +926,6 @@ FUNCTION(int, Win_start, (MT(Group) group, int assert, MT(Win) win),
 FUNCTION(int, Win_test, (MT(Win) win, int *flag), ((MP(Win))win, flag))
 FUNCTION(int, Win_unlock, (int rank, MT(Win) win), (rank, (MP(Win))win))
 FUNCTION(int, Win_wait, (MT(Win) win), ((MP(Win))win))
-
-FUNCTION(int, Comm_delete_attr, (MT(Comm) comm, int comm_keyval),
-         ((MP(Comm))comm, comm_keyval))
 
 /* Fortran 90-related functions.  These routines are available only if
    Fortran 90 support is enabled
