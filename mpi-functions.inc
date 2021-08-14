@@ -641,14 +641,23 @@ FUNCTION(int, Comm_set_info, (MT(Comm) comm, MT(Info) info),
 FUNCTION(int, Comm_get_info, (MT(Comm) comm, MT(Info) * info),
          ((MP(Comm))comm, (MP(Info) *)info))
 
-// note: i checked the standard; we are complete from the top to here
-
+// 6.6 Inter-Communication
 FUNCTION(int, Comm_test_inter, (MT(Comm) comm, int *flag),
          ((MP(Comm))comm, flag))
 FUNCTION(int, Comm_remote_size, (MT(Comm) comm, int *size),
          ((MP(Comm))comm, size))
 FUNCTION(int, Comm_remote_group, (MT(Comm) comm, MT(Group) * group),
          ((MP(Comm))comm, (MP(Group) *)group))
+FUNCTION(int, Intercomm_create,
+         (MT(Comm) local_comm, int local_leader, MT(Comm) peer_comm,
+          int remote_leader, int tag, MT(Comm) * newintercomm),
+         ((MP(Comm))local_comm, local_leader, (MP(Comm))peer_comm,
+          remote_leader, tag, (MP(Comm) *)newintercomm))
+FUNCTION(int, Intercomm_merge,
+         (MT(Comm) intercomm, int high, MT(Comm) * newintracomm),
+         ((MP(Comm))intercomm, high, (MP(Comm) *)newintracomm))
+
+// note: i checked the standard; we are complete from the top to here
 
 // 13.2 File Manipulation
 FUNCTION(int, File_open,
