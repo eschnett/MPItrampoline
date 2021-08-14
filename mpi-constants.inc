@@ -3,6 +3,10 @@ CONSTANT(int, ANY_TAG)
 CONSTANT(int, PROC_NULL)
 CONSTANT(int, ROOT)
 
+CONSTANT(int, CART)
+CONSTANT(int, DIST_GRAPH)
+CONSTANT(int, GRAPH)
+
 // Results of compare operations
 CONSTANT(int, CONGRUENT)
 CONSTANT(int, IDENT)

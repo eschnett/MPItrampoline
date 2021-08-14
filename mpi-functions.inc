@@ -1166,3 +1166,10 @@ int MPI_Win_sync(MPI_Win win) MPICH_API_PUBLIC;
 ////////////////////////////////////////////////////////////////////////////////
 
 FUNCTION(int, Info_create, (MT(Info) * info), ((MP(Info) *)info))
+
+FUNCTION(int, Error_class, (int errorcode, int *errorclass),
+         (errorcode, errorclass))
+
+FUNCTION(int, Alloc_mem, (MT(Aint) size, MT(Info) info, void *baseptr),
+         ((MP(Aint))size, (MP(Info))info, baseptr))
+FUNCTION(int, Free_mem, (void *base), (base))
