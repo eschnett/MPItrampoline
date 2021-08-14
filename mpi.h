@@ -74,10 +74,10 @@ typedef struct {
   int MPI_ERROR;
 } MPI_Status;
 
-#ifdef __cplusplus
-static_assert(MPI_STATUS_SIZE * sizeof(MPI_Fint) == sizeof(MPI_Status));
-#else
-_Static_assert(MPI_STATUS_SIZE * sizeof(MPI_Fint) == sizeof(MPI_Status));
+#if defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
+_Static_assert(MPI_STATUS_SIZE * sizeof(MPI_Fint) == sizeof(MPI_Status), "");
+#elif defined __cplusplus && __cplusplus >= 201103L
+static_assert(MPI_STATUS_SIZE * sizeof(MPI_Fint) == sizeof(MPI_Status), "");
 #endif
 
 // TODO: Don't define these publicly
