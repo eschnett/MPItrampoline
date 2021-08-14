@@ -826,8 +826,6 @@ FUNCTION(int, Neighbor_alltoallw,
           (MP(Comm))comm))
 #endif
 
-// ES: i checked the standard; we are complete from the top to here
-
 // 7.7 Nonblocking Neighborhood Communication on Process Topologies
 FUNCTION(int, Ineighbor_allgather,
          (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
@@ -868,6 +866,84 @@ FUNCTION(int, Ineighbor_alltoallw,
           (MP(Comm))comm, (MP(Request) *)request))
 #endif
 
+// 8.1 Implementation Information
+
+#ifndef SKIP_MANUAL_FUNCTIONS
+FUNCTION(int, Get_version, (int *version, int *subversion),
+         (version, subversion))
+#endif
+FUNCTION(int, Get_library_version, (char *version, int *resultlen),
+         (version, resultlen))
+FUNCTION(int, Get_processor_name, (char *name, int *resultlen),
+         (name, resultlen))
+
+// 8.2 Memory Allocation
+FUNCTION(int, Alloc_mem, (MT(Aint) size, MT(Info) info, void *baseptr),
+         ((MP(Aint))size, (MP(Info))info, baseptr))
+FUNCTION(int, Free_mem, (void *base), (base))
+
+// 8.3 Error Handling
+FUNCTION(int, Comm_create_errhandler,
+         (MT(Comm_errhandler_function) * comm_errhandler_fn,
+          MT(Errhandler) * errhandler),
+         ((MP(Comm_errhandler_function) *)comm_errhandler_fn,
+          (MP(Errhandler) *)errhandler))
+FUNCTION(int, Comm_set_errhandler, (MT(Comm) comm, MT(Errhandler) errhandler),
+         ((MP(Comm))comm, (MP(Errhandler))errhandler))
+FUNCTION(int, Comm_get_errhandler, (MT(Comm) comm, MT(Errhandler) * errhandler),
+         ((MP(Comm))comm, (MP(Errhandler) *)errhandler))
+FUNCTION(int, Win_create_errhandler,
+         (MT(Win_errhandler_function) * win_errhandler_fn,
+          MT(Errhandler) * errhandler),
+         ((MP(Win_errhandler_function) *)win_errhandler_fn,
+          (MP(Errhandler) *)errhandler))
+FUNCTION(int, Win_set_errhandler, (MT(Win) win, MT(Errhandler) errhandler),
+         ((MP(Win))win, (MP(Errhandler))errhandler))
+FUNCTION(int, Win_get_errhandler, (MT(Win) win, MT(Errhandler) * errhandler),
+         ((MP(Win))win, (MP(Errhandler) *)errhandler))
+FUNCTION(int, File_create_errhandler,
+         (MT(File_errhandler_function) * file_errhandler_fn,
+          MT(Errhandler) * errhandler),
+         ((MP(File_errhandler_function) *)file_errhandler_fn,
+          (MP(Errhandler) *)errhandler))
+FUNCTION(int, File_set_errhandler, (MT(File) file, MT(Errhandler) errhandler),
+         ((MP(File))file, (MP(Errhandler))errhandler))
+FUNCTION(int, File_get_errhandler, (MT(File) file, MT(Errhandler) * errhandler),
+         ((MP(File))file, (MP(Errhandler) *)errhandler))
+FUNCTION(int, Errhandler_free, (MT(Errhandler) * errhandler),
+         ((MP(Errhandler) *)errhandler))
+
+// 8.4 Error Codes and Classes
+FUNCTION(int, Error_class, (int errorcode, int *errorclass),
+         (errorcode, errorclass))
+
+// 8.5 Error Classes, Error Codes, and Error Handlers
+FUNCTION(int, Add_error_class, (int *errorclass), (errorclass))
+FUNCTION(int, Add_error_code, (int errorclass, int *errorcode),
+         (errorclass, errorcode))
+FUNCTION(int, Add_error_string, (int errorcode, const char *string),
+         (errorcode, string))
+FUNCTION(int, Comm_call_errhandler, (MT(Comm) comm, int errorcode),
+         ((MP(Comm))comm, errorcode))
+FUNCTION(int, Win_call_errhandler, (MT(Win) win, int errorcode),
+         ((MP(Win))win, errorcode))
+FUNCTION(int, File_call_errhandler, (MT(File) file, int errorcode),
+         ((MP(File))file, errorcode))
+
+// 8.6 Times and Synchronization
+FUNCTION(double, Wtime, (), ())
+FUNCTION(double, Wtick, (), ())
+
+// 8.7 Startup
+FUNCTION(int, Init, (int *argc, char ***argv), (argc, argv))
+FUNCTION(int, Finalize, (), ())
+FUNCTION(int, Initialized, (int *flag), (flag))
+FUNCTION(int, Abort, (MT(Comm) comm, int errorcode),
+         ((MP(Comm))comm, errorcode))
+FUNCTION(int, Finalized, (int *flag), (flag))
+
+// ES: i checked the standard; we are complete from the top to here
+
 // 13.2 File Manipulation
 FUNCTION(int, File_open,
          (MT(Comm) comm, const char *filename, int amode, MT(Info) info,
@@ -892,8 +968,6 @@ FUNCTION(int, File_get_info, (MT(File) fh, MT(Info) * info_used),
 
 ////////////////////////////////////////////////////////////////////////////////
 
-FUNCTION(int, Comm_set_errhandler, (MT(Comm) comm, MT(Errhandler) errhandler),
-         ((MP(Comm))comm, (MP(Errhandler))errhandler))
 FUNCTION(int, Error_string, (int errorcode, char *string, int *resultlen),
          (errorcode, string, resultlen))
 FUNCTION(int, Info_dup, (MT(Info) info, MT(Info) * newinfo),
@@ -976,27 +1050,9 @@ FUNCTION(int, Status_f2c, (const MT(Fint) * f_status, MT(StatusPtr) c_status),
 
 ////////////////////////////////////////////////////////////////////////////////
 
-FUNCTION(double, Wtick, (), ())
-FUNCTION(double, Wtime, (), ())
-
-FUNCTION(int, Abort, (MT(Comm) comm, int errorcode),
-         ((MP(Comm))comm, errorcode))
-FUNCTION(int, Finalize, (), ())
-FUNCTION(int, Finalized, (int *flag), (flag))
-FUNCTION(int, Init, (int *argc, char ***argv), (argc, argv))
 FUNCTION(int, Init_thread,
          (int *argc, char ***argv, int required, int *provided),
          (argc, argv, required, provided))
-FUNCTION(int, Initialized, (int *flag), (flag))
-
-FUNCTION(int, Get_processor_name, (char *name, int *resultlen),
-         (name, resultlen))
-#ifndef SKIP_MANUAL_FUNCTIONS
-FUNCTION(int, Get_version, (int *version, int *subversion),
-         (version, subversion))
-#endif
-FUNCTION(int, Get_library_version, (char *version, int *resultlen),
-         (version, resultlen))
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1166,10 +1222,3 @@ int MPI_Win_sync(MPI_Win win) MPICH_API_PUBLIC;
 ////////////////////////////////////////////////////////////////////////////////
 
 FUNCTION(int, Info_create, (MT(Info) * info), ((MP(Info) *)info))
-
-FUNCTION(int, Error_class, (int errorcode, int *errorclass),
-         (errorcode, errorclass))
-
-FUNCTION(int, Alloc_mem, (MT(Aint) size, MT(Info) info, void *baseptr),
-         ((MP(Aint))size, (MP(Info))info, baseptr))
-FUNCTION(int, Free_mem, (void *base), (base))
