@@ -88,7 +88,7 @@ void __attribute__((__constructor__)) init_mpiwrapper() {
   // Read Fortran constants
 #define MT(TYPE) MPI_##TYPE
 #define CONSTANT(TYPE, NAME)                                                   \
-  mpi_##NAME##_ = *(const TYPE *)dlsym1(handle, "wpi_" #NAME "_");
+  mpi_##NAME##_ = *(TYPE const *)dlsym1(handle, "wpi_" #NAME "_");
 #include "mpi-constants-f.inc"
 #undef CONSTANT
 #undef MT
