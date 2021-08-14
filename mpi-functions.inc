@@ -666,3 +666,9 @@ FUNCTION(int, Get_version, (int *version, int *subversion),
 #endif
 FUNCTION(int, Get_library_version, (char *version, int *resultlen),
          (version, resultlen))
+
+////////////////////////////////////////////////////////////////////////////////
+
+FUNCTION(int, Comm_get_attr,
+         (MT(Comm) comm, int comm_keyval, void *attribute_val, int *flag),
+         ((MP(Comm))comm, comm_keyval, attribute_val, flag))
