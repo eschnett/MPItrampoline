@@ -672,3 +672,51 @@ FUNCTION(int, Get_library_version, (char *version, int *resultlen),
 FUNCTION(int, Comm_get_attr,
          (MT(Comm) comm, int comm_keyval, void *attribute_val, int *flag),
          ((MP(Comm))comm, comm_keyval, attribute_val, flag))
+
+FUNCTION(int, Close_port, (const char *port_name), (port_name))
+FUNCTION(int, Comm_accept,
+         (const char *port_name, MT(Info) info, int root, MT(Comm) comm,
+          MT(Comm) * newcomm),
+         (port_name, (MP(Info))info, root, (MP(Comm))comm, (MP(Comm) *)newcomm))
+FUNCTION(int, Comm_connect,
+         (const char *port_name, MT(Info) info, int root, MT(Comm) comm,
+          MT(Comm) * newcomm),
+         (port_name, (MP(Info))info, root, (MP(Comm))comm, (MP(Comm) *)newcomm))
+FUNCTION(int, Comm_disconnect, (MT(Comm) * comm), ((MP(Comm) *)comm))
+FUNCTION(int, Comm_get_parent, (MT(Comm) * parent), ((MP(Comm) *)parent))
+FUNCTION(int, Comm_join, (int fd, MT(Comm) * intercomm),
+         (fd, (MP(Comm) *)intercomm))
+FUNCTION(int, Comm_spawn,
+         (const char *command, char *argv[], int maxprocs, MT(Info) info,
+          int root, MT(Comm) comm, MT(Comm) * intercomm,
+          int array_of_errcodes[]),
+         (command, argv, maxprocs, (MP(Info))info, root, (MP(Comm))comm,
+          (MP(Comm) *)intercomm, array_of_errcodes))
+#ifndef SKIP_MANUAL_FUNCTIONS
+FUNCTION(int, Comm_spawn_multiple,
+         (int count, char *array_of_commands[], char **array_of_argv[],
+          const int array_of_maxprocs[], const MT(Info) array_of_info[],
+          int root, MT(Comm) comm, MT(Comm) * intercomm,
+          int array_of_errcodes[]),
+         (count, array_of_commands, array_of_argv, array_of_maxprocs,
+          (const MP(Info) *)array_of_info, root, (MP(Comm))comm,
+          (MP(Comm) *)intercomm, array_of_errcodes))
+#endif
+FUNCTION(int, Lookup_name,
+         (const char *service_name, MT(Info) info, char *port_name),
+         (service_name, (MP(Info))info, port_name))
+FUNCTION(int, Open_port, (MT(Info) info, char *port_name),
+         ((MP(Info))info, port_name))
+FUNCTION(int, Publish_name,
+         (const char *service_name, MT(Info) info, const char *port_name),
+         (service_name, (MP(Info))info, port_name))
+FUNCTION(int, Unpublish_name,
+         (const char *service_name, MT(Info) info, const char *port_name),
+         (service_name, (MP(Info))info, port_name))
+FUNCTION(int, Comm_set_info, (MT(Comm) comm, MT(Info) info),
+         ((MP(Comm))comm, (MP(Info))info))
+FUNCTION(int, Comm_get_info, (MT(Comm) comm, MT(Info) * info),
+         ((MP(Comm))comm, (MP(Info) *)info))
+
+FUNCTION(int, Is_thread_main, (int *flag), (flag))
+FUNCTION(int, Query_thread, (int *provided), (provided))
