@@ -706,8 +706,6 @@ FUNCTION(int, Type_get_attr,
 FUNCTION(int, Type_delete_attr, (MT(Datatype) type, int type_keyval),
          ((MP(Datatype))type, type_keyval))
 
-// note: i checked the standard; we are complete from the top to here
-
 // 6.8 Naming Objects
 FUNCTION(int, Comm_set_name, (MT(Comm) comm, const char *comm_name),
          ((MP(Comm))comm, comm_name))
@@ -722,6 +720,153 @@ FUNCTION(int, Win_set_name, (MT(Win) win, const char *win_name),
          ((MP(Win))win, win_name))
 FUNCTION(int, Win_get_name, (MT(Win) win, char *win_name, int *resultlen),
          ((MP(Win))win, win_name, resultlen))
+
+// 7.5 Topology Constructors
+FUNCTION(int, Cart_create,
+         (MT(Comm) comm_old, int ndims, const int dims[], const int periods[],
+          int reorder, MT(Comm) * comm_cart),
+         ((MP(Comm))comm_old, ndims, dims, periods, reorder,
+          (MP(Comm) *)comm_cart))
+FUNCTION(int, Dims_create, (int nnodes, int ndims, int dims[]),
+         (nnodes, ndims, dims))
+FUNCTION(int, Graph_create,
+         (MT(Comm) comm_old, int nnodes, const int index[], const int edges[],
+          int reorder, MT(Comm) * comm_graph),
+         ((MP(Comm))comm_old, nnodes, index, edges, reorder,
+          (MP(Comm) *)comm_graph))
+FUNCTION(int, Dist_graph_create_adjacent,
+         (MT(Comm) comm_old, int indegree, const int sources[],
+          const int sourceweights[], int outdegree, const int destinations[],
+          const int destweights[], MT(Info) info, int reorder,
+          MT(Comm) * comm_dist_graph),
+         ((MP(Comm))comm_old, indegree, sources, sourceweights, outdegree,
+          destinations, destweights, (MP(Info))info, reorder,
+          (MP(Comm) *)comm_dist_graph))
+FUNCTION(int, Dist_graph_create,
+         (MT(Comm) comm_old, int n, const int sources[], const int degrees[],
+          const int destinations[], const int weights[], MT(Info) info,
+          int reorder, MT(Comm) * comm_dist_graph),
+         ((MP(Comm))comm_old, n, sources, degrees, destinations, weights,
+          (MP(Info))info, reorder, (MP(Comm) *)comm_dist_graph))
+FUNCTION(int, Topo_test, (MT(Comm) comm, int *status), ((MP(Comm))comm, status))
+FUNCTION(int, Graphdims_get, (MT(Comm) comm, int *nnodes, int *nedges),
+         ((MP(Comm))comm, nnodes, nedges))
+FUNCTION(int, Graph_get,
+         (MT(Comm) comm, int maxindex, int maxedges, int index[], int edges[]),
+         ((MP(Comm))comm, maxindex, maxedges, index, edges))
+FUNCTION(int, Cartdim_get, (MT(Comm) comm, int *ndims), ((MP(Comm))comm, ndims))
+FUNCTION(int, Cart_get,
+         (MT(Comm) comm, int maxdims, int dims[], int periods[], int coords[]),
+         ((MP(Comm))comm, maxdims, dims, periods, coords))
+FUNCTION(int, Cart_rank, (MT(Comm) comm, const int coords[], int *rank),
+         ((MP(Comm))comm, coords, rank))
+FUNCTION(int, Cart_coords, (MT(Comm) comm, int rank, int maxdims, int coords[]),
+         ((MP(Comm))comm, rank, maxdims, coords))
+FUNCTION(int, Graph_neighbors_count, (MT(Comm) comm, int rank, int *nneighbors),
+         ((MP(Comm))comm, rank, nneighbors))
+FUNCTION(int, Graph_neighbors,
+         (MT(Comm) comm, int rank, int maxneighbors, int neighbors[]),
+         ((MP(Comm))comm, rank, maxneighbors, neighbors))
+FUNCTION(int, Dist_graph_neighbors_count,
+         (MT(Comm) comm, int *indegree, int *outdegree, int *weighted),
+         ((MP(Comm))comm, indegree, outdegree, weighted))
+FUNCTION(int, Dist_graph_neighbors,
+         (MT(Comm) comm, int maxindeegree, int sources[], int wourceweights[],
+          int maxoutdegree, int destinations[], int destweights[]),
+         ((MP(Comm))comm, maxindeegree, sources, wourceweights, maxoutdegree,
+          destinations, destweights))
+FUNCTION(int, Cart_shift,
+         (MT(Comm) comm, int direction, int disp, int *rank_source,
+          int *rank_dest),
+         ((MP(Comm))comm, direction, disp, rank_source, rank_dest))
+FUNCTION(int, Cart_sub,
+         (MT(Comm) comm, const int remain_dims[], MT(Comm) * newcomm),
+         ((MP(Comm))comm, remain_dims, (MP(Comm) *)newcomm))
+FUNCTION(int, Cart_map,
+         (MT(Comm) comm, int ndims, const int dims[], const int periods[],
+          int *newrank),
+         ((MP(Comm))comm, ndims, dims, periods, newrank))
+FUNCTION(int, Graph_map,
+         (MT(Comm) comm, int nnodes, const int index[], const int edges[],
+          int *newrank),
+         ((MP(Comm))comm, nnodes, index, edges, newrank))
+
+// 7.6 Neighborhood Collective Communication on Procerss Topologies
+FUNCTION(int, Neighbor_allgather,
+         (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
+          void *recvbuf, int recvcount, MT(Datatype) recvtype, MT(Comm) comm),
+         (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcount,
+          (MP(Datatype))recvtype, (MP(Comm))comm))
+FUNCTION(int, Neighbor_allgatherv,
+         (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
+          void *recvbuf, const int recvcounts[], const int displs[],
+          MT(Datatype) recvtype, MT(Comm) comm),
+         (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcounts,
+          displs, (MP(Datatype))recvtype, (MP(Comm))comm))
+FUNCTION(int, Neighbor_alltoall,
+         (const void *sendbuf, int sendcount, MT(Datatype) senddtype,
+          void *recvbuf, int recvcount, MT(Datatype) recvtype, MT(Comm) comm),
+         (sendbuf, sendcount, (MP(Datatype))senddtype, recvbuf, recvcount,
+          (MP(Datatype))recvtype, (MP(Comm))comm))
+FUNCTION(int, Neighbor_alltoallv,
+         (const void *sendbuf, const int sendcounts[], const int sdispls[],
+          MT(Datatype) senddtype, void *recvbuf, const int recvcounts[],
+          const int rdispls[], MT(Datatype) recvtype, MT(Comm) comm),
+         (sendbuf, sendcounts, sdispls, (MP(Datatype))senddtype, recvbuf,
+          recvcounts, rdispls, (MP(Datatype))recvtype, (MP(Comm))comm))
+#ifndef SKIP_MANUAL_FUNCTIONS
+FUNCTION(int, Neighbor_alltoallw,
+         (const void *sendbuf, const int sendcounts[], const MT(Aint) sdispls[],
+          const MT(Datatype) sendtypes[], void *recvbuf, const int recvcounts[],
+          const MT(Aint) rdispls[], const MT(Datatype) recvtypes[],
+          MT(Comm) comm),
+         (sendbuf, sendcounts, (const MP(Aint) *)sdispls,
+          (const MP(Datatype) *)sendtypes, recvbuf, recvcounts,
+          (const MP(Aint) *)rdispls, (const MP(Datatype) *)recvtypes,
+          (MP(Comm))comm))
+#endif
+
+// ES: i checked the standard; we are complete from the top to here
+
+// 7.7 Nonblocking Neighborhood Communication on Process Topologies
+FUNCTION(int, Ineighbor_allgather,
+         (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
+          void *recvbuf, int recvcount, MT(Datatype) recvtype, MT(Comm) comm,
+          MT(Request) * request),
+         (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcount,
+          (MP(Datatype))recvtype, (MP(Comm))comm, (MP(Request) *)request))
+FUNCTION(int, Ineighbor_allgatherv,
+         (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
+          void *recvbuf, const int recvcounts[], const int displs[],
+          MT(Datatype) recvtype, MT(Comm) comm, MT(Request) * request),
+         (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcounts,
+          displs, (MP(Datatype))recvtype, (MP(Comm))comm,
+          (MP(Request) *)request))
+FUNCTION(int, Ineighbor_alltoall,
+         (const void *sendbuf, int sendcount, MT(Datatype) senddtype,
+          void *recvbuf, int recvcount, MT(Datatype) recvtype, MT(Comm) comm,
+          MT(Request) * request),
+         (sendbuf, sendcount, (MP(Datatype))senddtype, recvbuf, recvcount,
+          (MP(Datatype))recvtype, (MP(Comm))comm, (MP(Request) *)request))
+FUNCTION(int, Ineighbor_alltoallv,
+         (const void *sendbuf, const int sendcounts[], const int sdispls[],
+          MT(Datatype) senddtype, void *recvbuf, const int recvcounts[],
+          const int rdispls[], MT(Datatype) recvtype, MT(Comm) comm,
+          MT(Request) * request),
+         (sendbuf, sendcounts, sdispls, (MP(Datatype))senddtype, recvbuf,
+          recvcounts, rdispls, (MP(Datatype))recvtype, (MP(Comm))comm,
+          (MP(Request) *)request))
+#ifndef SKIP_MANUAL_FUNCTIONS
+FUNCTION(int, Ineighbor_alltoallw,
+         (const void *sendbuf, const int sendcounts[], const MT(Aint) sdispls[],
+          const MT(Datatype) sendtypes[], void *recvbuf, const int recvcounts[],
+          const MT(Aint) rdispls[], const MT(Datatype) recvtypes[],
+          MT(Comm) comm, MT(Request) * request),
+         (sendbuf, sendcounts, (const MP(Aint) *)sdispls,
+          (const MP(Datatype) *)sendtypes, recvbuf, recvcounts,
+          (const MP(Aint) *)rdispls, (const MP(Datatype) *)recvtypes,
+          (MP(Comm))comm, (MP(Request) *)request))
+#endif
 
 // 13.2 File Manipulation
 FUNCTION(int, File_open,
