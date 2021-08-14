@@ -942,6 +942,26 @@ FUNCTION(int, Abort, (MT(Comm) comm, int errorcode),
          ((MP(Comm))comm, errorcode))
 FUNCTION(int, Finalized, (int *flag), (flag))
 
+// 9 The Info Object
+FUNCTION(int, Info_create, (MT(Info) * info), ((MP(Info) *)info))
+FUNCTION(int, Info_set, (MT(Info) info, const char *key, const char *value),
+         ((MP(Info))info, key, value))
+FUNCTION(int, Info_delete, (MT(Info) info, const char *key),
+         ((MP(Info))info, key))
+FUNCTION(int, Info_get,
+         (MT(Info) info, const char *key, int valuelen, char *value, int *flag),
+         ((MP(Info))info, key, valuelen, value, flag))
+FUNCTION(int, Info_get_valuelen,
+         (MT(Info) info, const char *key, int *valuelen, int *flag),
+         ((MP(Info))info, key, valuelen, flag))
+FUNCTION(int, Info_get_nkeys, (MT(Info) info, int *nkeys),
+         ((MP(Info))info, nkeys))
+FUNCTION(int, Info_get_nthkey, (MT(Info) info, int n, char *key),
+         ((MP(Info))info, n, key))
+FUNCTION(int, Info_dup, (MT(Info) info, MT(Info) * newinfo),
+         ((MP(Info))info, (MP(Info) *)newinfo))
+FUNCTION(int, Info_free, (MT(Info) * info), ((MP(Info) *)info))
+
 // ES: i checked the standard; we are complete from the top to here
 
 // 13.2 File Manipulation
@@ -970,17 +990,6 @@ FUNCTION(int, File_get_info, (MT(File) fh, MT(Info) * info_used),
 
 FUNCTION(int, Error_string, (int errorcode, char *string, int *resultlen),
          (errorcode, string, resultlen))
-FUNCTION(int, Info_dup, (MT(Info) info, MT(Info) * newinfo),
-         ((MP(Info))info, (MP(Info) *)newinfo))
-FUNCTION(int, Info_free, (MT(Info) * info), ((MP(Info) *)info))
-
-FUNCTION(int, Info_get_nkeys, (MT(Info) info, int *nkeys),
-         ((MP(Info))info, nkeys))
-FUNCTION(int, Info_get_nthkey, (MT(Info) info, int n, char *key),
-         ((MP(Info))info, n, key))
-FUNCTION(int, Info_get,
-         (MT(Info) info, const char *key, int valuelen, char *value, int *flag),
-         ((MP(Info))info, key, valuelen, value, flag))
 
 FUNCTION(int, File_set_atomicity, (MT(File) fh, int flag), ((MP(File))fh, flag))
 FUNCTION(int, File_get_atomicity, (MT(File) fh, int *flag),
@@ -1220,8 +1229,6 @@ int MPI_Win_sync(MPI_Win win) MPICH_API_PUBLIC;
 #endif
 
 ////////////////////////////////////////////////////////////////////////////////
-
-FUNCTION(int, Info_create, (MT(Info) * info), ((MP(Info) *)info))
 
 #ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Pcontrol, (const int level, ...), ())
