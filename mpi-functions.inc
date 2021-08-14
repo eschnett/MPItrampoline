@@ -763,3 +763,6 @@ FUNCTION(int, Win_start, (MT(Group) group, int assert, MT(Win) win),
 FUNCTION(int, Win_test, (MT(Win) win, int *flag), ((MP(Win))win, flag))
 FUNCTION(int, Win_unlock, (int rank, MT(Win) win), (rank, (MP(Win))win))
 FUNCTION(int, Win_wait, (MT(Win) win), ((MP(Win))win))
+
+FUNCTION(int, Comm_delete_attr, (MT(Comm) comm, int comm_keyval),
+         ((MP(Comm))comm, comm_keyval))
