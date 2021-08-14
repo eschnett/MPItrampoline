@@ -10,12 +10,9 @@
 #define MPITRAMPOLINE_VERSION_MINOR 0
 #define MPITRAMPOLINE_VERSION_PATCH 0
 
-// // Pretend to be MPICH to pacify mpi4py
-// // TODO: Don't do this!
-// #define MPICH_NAME 3
-
 // Compile-time constants
 
+// TODO: Check whether these limits are compatible with the wrapped MPI
 // #define MPI_MAX_DATAREP_STRING
 #define MPI_MAX_ERROR_STRING 1024           // MPICH's default
 #define MPI_MAX_INFO_KEY 255                // from MPICH

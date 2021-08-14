@@ -438,6 +438,11 @@ FUNCTION(int, Allreduce,
           MT(Op) op, MT(Comm) comm),
          (sendbuf, recvbuf, count, (MP(Datatype))datatype, (MP(Op))op,
           (MP(Comm))comm))
+FUNCTION(int, Reduce_local,
+         (const void *inbuf, void *inoutbuf, int count, MT(Datatype) datatype,
+          MT(Op) op),
+         (inbuf, inoutbuf, count, (MP(Datatype))datatype, (MP(Op))op))
+FUNCTION(int, Op_commutative, (MT(Op) op, int *commute), ((MP(Op))op, commute))
 
 // 5.10 Reduce-Scatter
 FUNCTION(int, Reduce_scatter_block,
@@ -464,8 +469,110 @@ FUNCTION(int, Exscan,
           (MP(Comm))comm))
 
 // 5.12 Nonblocking Collective Operations
-
-// TODO
+FUNCTION(int, Ibarrier, (MT(Comm) comm, MT(Request) * request),
+         ((MP(Comm))comm, (MP(Request) *)request))
+FUNCTION(int, Ibcast,
+         (void *buffer, int count, MT(Datatype) datatype, int root,
+          MT(Comm) comm, MT(Request) * request),
+         (buffer, count, (MP(Datatype))datatype, root, (MP(Comm))comm,
+          (MP(Request) *)request))
+FUNCTION(int, Igather,
+         (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
+          void *recvbuf, int recvcount, MT(Datatype) recvtype, int root,
+          MT(Comm) comm, MT(Request) * request),
+         (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcount,
+          (MP(Datatype))recvtype, root, (MP(Comm))comm, (MP(Request) *)request))
+FUNCTION(int, Igatherv,
+         (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
+          void *recvbuf, const int *recvcounts, const int *displs,
+          MT(Datatype) recvtype, int root, MT(Comm) comm,
+          MT(Request) * request),
+         (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcounts,
+          displs, (MP(Datatype))recvtype, root, (MP(Comm))comm,
+          (MP(Request) *)request))
+FUNCTION(int, Iscatter,
+         (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
+          void *recvbuf, int recvcount, MT(Datatype) recvtype, int root,
+          MT(Comm) comm, MT(Request) * request),
+         (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcount,
+          (MP(Datatype))recvtype, root, (MP(Comm))comm, (MP(Request) *)request))
+FUNCTION(int, Iscatterv,
+         (const void *sendbuf, const int *sendcounts, const int *displs,
+          MT(Datatype) sendtype, void *recvbuf, int recvcount,
+          MT(Datatype) recvtype, int root, MT(Comm) comm,
+          MT(Request) * request),
+         (sendbuf, sendcounts, displs, (MP(Datatype))sendtype, recvbuf,
+          recvcount, (MP(Datatype))recvtype, root, (MP(Comm))comm,
+          (MP(Request) *)request))
+FUNCTION(int, Iallgather,
+         (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
+          void *recvbuf, int recvcount, MT(Datatype) recvtype, MT(Comm) comm,
+          MT(Request) * request),
+         (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcount,
+          (MP(Datatype))recvtype, (MP(Comm))comm, (MP(Request) *)request))
+FUNCTION(int, Iallgatherv,
+         (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
+          void *recvbuf, const int *recvcounts, const int *displs,
+          MT(Datatype) recvtype, MT(Comm) comm, MT(Request) * request),
+         (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcounts,
+          displs, (MP(Datatype))recvtype, (MP(Comm))comm,
+          (MP(Request) *)request))
+FUNCTION(int, Ialltoall,
+         (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
+          void *recvbuf, int recvcount, MT(Datatype) recvtype, MT(Comm) comm,
+          MT(Request) * request),
+         (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcount,
+          (MP(Datatype))recvtype, (MP(Comm))comm, (MP(Request) *)request))
+FUNCTION(int, Ialltoallv,
+         (const void *sendbuf, const int *sendcounts, const int *sdispls,
+          MT(Datatype) sendtype, void *recvbuf, const int *recvcounts,
+          const int *rdispls, MT(Datatype) recvtype, MT(Comm) comm,
+          MT(Request) * request),
+         (sendbuf, sendcounts, sdispls, (MP(Datatype))sendtype, recvbuf,
+          recvcounts, rdispls, (MP(Datatype))recvtype, (MP(Comm))comm,
+          (MP(Request) *)request))
+#ifndef SKIP_MANUAL_FUNCTIONS
+FUNCTION(int, Ialltoallw,
+         (const void *sendbuf, const int sendcounts[], const int sdispls[],
+          const MT(Datatype) sendtypes[], void *recvbuf, const int recvcounts[],
+          const int rdispls[], const MT(Datatype) recvtypes[], MT(Comm) comm,
+          MT(Request) * request),
+         (sendbuf, sendcounts, sdispls, (MP(Datatype) *)sendtypes, recvbuf,
+          recvcounts, rdispls, (const MP(Datatype) *)recvtypes, (MP(Comm))comm,
+          (MP(Request) *)request))
+#endif
+FUNCTION(int, Ireduce,
+         (const void *sendbuf, void *recvbuf, int count, MT(Datatype) datatype,
+          MT(Op) op, int root, MT(Comm) comm, MT(Request) * request),
+         (sendbuf, recvbuf, count, (MP(Datatype))datatype, (MP(Op))op, root,
+          (MP(Comm))comm, (MP(Request) *)request))
+FUNCTION(int, Iallreduce,
+         (const void *sendbuf, void *recvbuf, int count, MT(Datatype) datatype,
+          MT(Op) op, MT(Comm) comm, MT(Request) * request),
+         (sendbuf, recvbuf, count, (MP(Datatype))datatype, (MP(Op))op,
+          (MP(Comm))comm, (MP(Request) *)request))
+FUNCTION(int, Ireduce_scatter_block,
+         (const void *sendbuf, void *recvbuf, int recvcount,
+          MT(Datatype) datatype, MT(Op) op, MT(Comm) comm,
+          MT(Request) * request),
+         (sendbuf, recvbuf, recvcount, (MP(Datatype))datatype, (MP(Op))op,
+          (MP(Comm))comm, (MP(Request) *)request))
+FUNCTION(int, Ireduce_scatter,
+         (const void *sendbuf, void *recvbuf, const int recvcounts[],
+          MT(Datatype) datatype, MT(Op) op, MT(Comm) comm,
+          MT(Request) * request),
+         (sendbuf, recvbuf, recvcounts, (MP(Datatype))datatype, (MP(Op))op,
+          (MP(Comm))comm, (MP(Request) *)request))
+FUNCTION(int, Iscan,
+         (const void *sendbuf, void *recvbuf, int count, MT(Datatype) datatype,
+          MT(Op) op, MT(Comm) comm, MT(Request) * request),
+         (sendbuf, recvbuf, count, (MP(Datatype))datatype, (MP(Op))op,
+          (MP(Comm))comm, (MP(Request) *)request))
+FUNCTION(int, Iexscan,
+         (const void *sendbuf, void *recvbuf, int count, MT(Datatype) datatype,
+          MT(Op) op, MT(Comm) comm, MT(Request) * request),
+         (sendbuf, recvbuf, count, (MP(Datatype))datatype, (MP(Op))op,
+          (MP(Comm))comm, (MP(Request) *)request))
 
 // 6.3 Group Management
 FUNCTION(int, Group_size, (MT(Group) group, int *size),
@@ -778,3 +885,67 @@ FUNCTION(int, Type_create_f90_real,
 FUNCTION(int, Type_create_f90_complex,
          (int precision, int range, MT(Datatype) * newtype),
          (precision, range, (MP(Datatype) *)newtype))
+
+#if 0
+/* MPI-3 One-Sided Communication Routines */
+int MPI_Win_allocate(MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm comm,
+                     void *baseptr, MPI_Win *win) MPICH_API_PUBLIC;
+int MPI_Win_allocate_shared(MPI_Aint size, int disp_unit, MPI_Info info,
+                            MPI_Comm comm, void *baseptr,
+                            MPI_Win *win) MPICH_API_PUBLIC;
+int MPI_Win_shared_query(MPI_Win win, int rank, MPI_Aint *size, int *disp_unit,
+                         void *baseptr) MPICH_API_PUBLIC;
+int MPI_Win_create_dynamic(MPI_Info info, MPI_Comm comm,
+                           MPI_Win *win) MPICH_API_PUBLIC;
+int MPI_Win_attach(MPI_Win win, void *base, MPI_Aint size) MPICH_API_PUBLIC;
+int MPI_Win_detach(MPI_Win win, const void *base) MPICH_API_PUBLIC;
+int MPI_Win_get_info(MPI_Win win, MPI_Info *info_used) MPICH_API_PUBLIC;
+int MPI_Win_set_info(MPI_Win win, MPI_Info info) MPICH_API_PUBLIC;
+int MPI_Get_accumulate(const void *origin_addr, int origin_count,
+                       MPI_Datatype origin_datatype, void *result_addr,
+                       int result_count, MPI_Datatype result_datatype,
+                       int target_rank, MPI_Aint target_disp, int target_count,
+                       MPI_Datatype target_datatype, MPI_Op op, MPI_Win win)
+    MPICH_ATTR_POINTER_WITH_TYPE_TAG(1, 3)
+        MPICH_ATTR_POINTER_WITH_TYPE_TAG(4, 6) MPICH_API_PUBLIC;
+int MPI_Fetch_and_op(const void *origin_addr, void *result_addr,
+                     MPI_Datatype datatype, int target_rank,
+                     MPI_Aint target_disp, MPI_Op op, MPI_Win win)
+    MPICH_ATTR_POINTER_WITH_TYPE_TAG(1, 3) MPICH_API_PUBLIC;
+int MPI_Compare_and_swap(const void *origin_addr, const void *compare_addr,
+                         void *result_addr, MPI_Datatype datatype,
+                         int target_rank, MPI_Aint target_disp, MPI_Win win)
+    MPICH_ATTR_POINTER_WITH_TYPE_TAG(1, 4)
+        MPICH_ATTR_POINTER_WITH_TYPE_TAG(2, 4)
+            MPICH_ATTR_POINTER_WITH_TYPE_TAG(3, 4) MPICH_API_PUBLIC;
+int MPI_Rput(const void *origin_addr, int origin_count,
+             MPI_Datatype origin_datatype, int target_rank,
+             MPI_Aint target_disp, int target_count,
+             MPI_Datatype target_datatype, MPI_Win win, MPI_Request *request)
+    MPICH_ATTR_POINTER_WITH_TYPE_TAG(1, 3) MPICH_API_PUBLIC;
+int MPI_Rget(void *origin_addr, int origin_count, MPI_Datatype origin_datatype,
+             int target_rank, MPI_Aint target_disp, int target_count,
+             MPI_Datatype target_datatype, MPI_Win win, MPI_Request *request)
+    MPICH_ATTR_POINTER_WITH_TYPE_TAG(1, 3) MPICH_API_PUBLIC;
+int MPI_Raccumulate(const void *origin_addr, int origin_count,
+                    MPI_Datatype origin_datatype, int target_rank,
+                    MPI_Aint target_disp, int target_count,
+                    MPI_Datatype target_datatype, MPI_Op op, MPI_Win win,
+                    MPI_Request *request)
+    MPICH_ATTR_POINTER_WITH_TYPE_TAG(1, 3) MPICH_API_PUBLIC;
+int MPI_Rget_accumulate(const void *origin_addr, int origin_count,
+                        MPI_Datatype origin_datatype, void *result_addr,
+                        int result_count, MPI_Datatype result_datatype,
+                        int target_rank, MPI_Aint target_disp, int target_count,
+                        MPI_Datatype target_datatype, MPI_Op op, MPI_Win win,
+                        MPI_Request *request)
+    MPICH_ATTR_POINTER_WITH_TYPE_TAG(1, 3)
+        MPICH_ATTR_POINTER_WITH_TYPE_TAG(4, 6) MPICH_API_PUBLIC;
+int MPI_Win_lock_all(int assert, MPI_Win win) MPICH_API_PUBLIC;
+int MPI_Win_unlock_all(MPI_Win win) MPICH_API_PUBLIC;
+int MPI_Win_flush(int rank, MPI_Win win) MPICH_API_PUBLIC;
+int MPI_Win_flush_all(MPI_Win win) MPICH_API_PUBLIC;
+int MPI_Win_flush_local(int rank, MPI_Win win) MPICH_API_PUBLIC;
+int MPI_Win_flush_local_all(MPI_Win win) MPICH_API_PUBLIC;
+int MPI_Win_sync(MPI_Win win) MPICH_API_PUBLIC;
+#endif
