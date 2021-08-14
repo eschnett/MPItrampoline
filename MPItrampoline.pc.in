@@ -9,5 +9,5 @@ Version: @PROJECT_VERSION@
 
 Requires:
 Cflags: -I${includedir}
-Libs: -L${libdir} -lmpi
+Libs: -L${libdir} -lmpitrampoline
 Libs.private: -ldl

@@ -1,8 +1,8 @@
 #!/bin/sh
 
 if [ "x$1" = "x-showme" ]; then
-    echo 'cc -I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib -lmpi -ldl'
+    echo 'cc -I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib -lmpitrampoline -ldl'
     exit 0
 fi
 
-exec cc -I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib "$@" -lmpi -ldl
+exec cc -I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib "$@" -lmpitrampoline -ldl

@@ -34,14 +34,14 @@ include(GNUInstallDirs)
 # MPItrampoline MPI and the wrapped MPI: Both define e.g. `MPI_Init`,
 # and our (MPItrampoline's) `MPI_Init` must not interpose the
 # `MPI_Init` defined by the wrapped MPI.
-add_library(mpi STATIC mpi.h mpio.h mpif.h mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc mpi.c)
-target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
-set_target_properties(mpi PROPERTIES
+add_library(mpitrampoline STATIC mpi.h mpio.h mpif.h mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc mpi.c)
+target_link_libraries(mpitrampoline PUBLIC ${CMAKE_DL_LIBS})
+set_target_properties(mpitrampoline PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION 1
   PUBLIC_HEADER "mpi.h;mpio.h;mpif.h;mpi-constants.inc;mpi-functions.inc"
   )
-install(TARGETS mpi EXPORT MPItrampolineTargets)
+install(TARGETS mpitrampoline EXPORT MPItrampolineTargets)
 
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfigVersion.cmake
