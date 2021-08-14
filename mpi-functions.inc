@@ -949,3 +949,7 @@ int MPI_Win_flush_local(int rank, MPI_Win win) MPICH_API_PUBLIC;
 int MPI_Win_flush_local_all(MPI_Win win) MPICH_API_PUBLIC;
 int MPI_Win_sync(MPI_Win win) MPICH_API_PUBLIC;
 #endif
+
+////////////////////////////////////////////////////////////////////////////////
+
+FUNCTION(int, Info_create, (MT(Info) * info), ((MP(Info) *)info))
