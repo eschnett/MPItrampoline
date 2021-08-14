@@ -620,12 +620,29 @@ FUNCTION(int, Comm_dup, (MT(Comm) comm, MT(Comm) * newcomm),
 FUNCTION(int, Comm_dup_with_info,
          (MT(Comm) comm, MT(Info) info, MT(Comm) * newcomm),
          ((MP(Comm))comm, (MP(Info))info, (MP(Comm) *)newcomm))
+FUNCTION(int, Comm_idup,
+         (MT(Comm) comm, MT(Comm) * newcomm, MT(Request) * request),
+         ((MP(Comm))comm, (MP(Comm) *)newcomm, (MP(Request) *)request))
 FUNCTION(int, Comm_create, (MT(Comm) comm, MT(Group) group, MT(Comm) * newcomm),
          ((MP(Comm))comm, (MP(Group))group, (MP(Comm) *)newcomm))
+FUNCTION(int, Comm_create_group,
+         (MT(Comm) comm, MT(Group) group, int tag, MT(Comm) * newcomm),
+         ((MP(Comm))comm, (MP(Group))group, tag, (MP(Comm) *)newcomm))
 FUNCTION(int, Comm_split,
          (MT(Comm) comm, int color, int key, MT(Comm) * newcomm),
          ((MP(Comm))comm, color, key, (MP(Comm) *)newcomm))
+FUNCTION(int, Comm_split_type,
+         (MT(Comm) comm, int split_type, int key, MT(Info) info,
+          MT(Comm) * newcomm),
+         ((MP(Comm))comm, split_type, key, (MP(Info))info, (MP(Comm) *)newcomm))
 FUNCTION(int, Comm_free, (MT(Comm) * comm), ((MP(Comm) *)comm))
+FUNCTION(int, Comm_set_info, (MT(Comm) comm, MT(Info) info),
+         ((MP(Comm))comm, (MP(Info))info))
+FUNCTION(int, Comm_get_info, (MT(Comm) comm, MT(Info) * info),
+         ((MP(Comm))comm, (MP(Info) *)info))
+
+// note: i checked the standard; we are complete from the top to here
+
 FUNCTION(int, Comm_test_inter, (MT(Comm) comm, int *flag),
          ((MP(Comm))comm, flag))
 FUNCTION(int, Comm_remote_size, (MT(Comm) comm, int *size),
@@ -820,10 +837,6 @@ FUNCTION(int, Publish_name,
 FUNCTION(int, Unpublish_name,
          (const char *service_name, MT(Info) info, const char *port_name),
          (service_name, (MP(Info))info, port_name))
-FUNCTION(int, Comm_set_info, (MT(Comm) comm, MT(Info) info),
-         ((MP(Comm))comm, (MP(Info))info))
-FUNCTION(int, Comm_get_info, (MT(Comm) comm, MT(Info) * info),
-         ((MP(Comm))comm, (MP(Info) *)info))
 
 FUNCTION(int, Is_thread_main, (int *flag), (flag))
 FUNCTION(int, Query_thread, (int *provided), (provided))
