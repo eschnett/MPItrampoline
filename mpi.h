@@ -26,7 +26,7 @@
 
 // Simple types
 
-typedef uintptr_t MPI_Aint;
+typedef intptr_t MPI_Aint;
 typedef int64_t MPI_Count;
 typedef int MPI_Fint;
 typedef int64_t MPI_Offset;
@@ -43,6 +43,18 @@ typedef uintptr_t MPI_Message;
 typedef uintptr_t MPI_Op;
 typedef uintptr_t MPI_Request;
 typedef uintptr_t MPI_Win;
+
+// TODO: Don't define these publicly
+typedef MPI_Comm *MPI_CommPtr;
+typedef MPI_Datatype *MPI_DatatypePtr;
+typedef MPI_Errhandler *MPI_ErrhandlerPtr;
+typedef MPI_File *MPI_FilePtr;
+typedef MPI_Group *MPI_GroupPtr;
+typedef MPI_Info *MPI_InfoPtr;
+typedef MPI_Message *MPI_MessagePtr;
+typedef MPI_Op *MPI_OpPtr;
+typedef MPI_Request *MPI_RequestPtr;
+typedef MPI_Win *MPI_WinPtr;
 
 // MPI_Status
 

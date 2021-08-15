@@ -39,61 +39,63 @@ FUNCTION(int, Buffer_detach, (void *buffer_addr, int *size),
 // 3.7 Nonblocking Communication
 FUNCTION(int, Isend,
          (const void *buf, int count, MT(Datatype) datatype, int dest, int tag,
-          MT(Comm) comm, MT(Request) * request),
+          MT(Comm) comm, MT(RequestPtr) request),
          (buf, count, (MP(Datatype))datatype, dest, tag, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 FUNCTION(int, Ibsend,
          (const void *buf, int count, MT(Datatype) datatype, int dest, int tag,
-          MT(Comm) comm, MT(Request) * request),
+          MT(Comm) comm, MT(RequestPtr) request),
          (buf, count, (MP(Datatype))datatype, dest, tag, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 FUNCTION(int, Issend,
          (const void *buf, int count, MT(Datatype) datatype, int dest, int tag,
-          MT(Comm) comm, MT(Request) * request),
+          MT(Comm) comm, MT(RequestPtr) request),
          (buf, count, (MP(Datatype))datatype, dest, tag, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 FUNCTION(int, Irsend,
          (const void *buf, int count, MT(Datatype) datatype, int dest, int tag,
-          MT(Comm) comm, MT(Request) * request),
+          MT(Comm) comm, MT(RequestPtr) request),
          (buf, count, (MP(Datatype))datatype, dest, tag, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 FUNCTION(int, Irecv,
          (void *buf, int count, MT(Datatype) datatype, int source, int tag,
-          MT(Comm) comm, MT(Request) * request),
+          MT(Comm) comm, MT(RequestPtr) request),
          (buf, count, (MP(Datatype))datatype, source, tag, (MP(Comm))comm,
-          (MP(Request) *)request))
-FUNCTION(int, Wait, (MT(Request) * request, MT(StatusPtr) status),
-         ((MP(Request) *)request, (MP(StatusPtr))status))
-FUNCTION(int, Test, (MT(Request) * request, int *flag, MT(StatusPtr) status),
-         ((MP(Request) *)request, flag, (MP(StatusPtr))status))
-FUNCTION(int, Request_free, (MT(Request) * request), ((MP(Request) *)request))
+          (MP(RequestPtr))request))
+FUNCTION(int, Wait, (MT(RequestPtr) request, MT(StatusPtr) status),
+         ((MP(RequestPtr))request, (MP(StatusPtr))status))
+FUNCTION(int, Test, (MT(RequestPtr) request, int *flag, MT(StatusPtr) status),
+         ((MP(RequestPtr))request, flag, (MP(StatusPtr))status))
+FUNCTION(int, Request_free, (MT(RequestPtr) request), ((MP(RequestPtr))request))
 #ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Waitany,
          (int count, MT(Request) array_of_requests[], int *indx,
           MT(StatusPtr) status),
-         (count, (MP(Request) *)array_of_requests, indx, (MP(StatusPtr))status))
+         (count, (MP(RequestPtr))array_of_requests, indx,
+          (MP(StatusPtr))status))
 FUNCTION(int, Testany,
          (int count, MT(Request) array_of_requests[], int *indx, int *flag,
           MT(StatusPtr) status),
-         (count, (MP(Request) *)array_of_requests, indx, flag,
+         (count, (MP(RequestPtr))array_of_requests, indx, flag,
           (MP(StatusPtr))status))
 FUNCTION(int, Waitall,
          (int count, MT(Request) array_of_requests[], MT(StatusPtr) status),
-         (count, (MP(Request) *)array_of_requests, (MP(StatusPtr))status))
+         (count, (MP(RequestPtr))array_of_requests, (MP(StatusPtr))status))
 FUNCTION(int, Testall,
          (int count, MT(Request) array_of_requests[], int *flag,
           MT(StatusPtr) status),
-         (count, (MP(Request) *)array_of_requests, flag, (MP(StatusPtr))status))
+         (count, (MP(RequestPtr))array_of_requests, flag,
+          (MP(StatusPtr))status))
 FUNCTION(int, Waitsome,
          (int incount, MT(Request) array_of_requests[], int *outcount,
           int array_of_indices[], MT(Status) array_of_statuses[]),
-         (incount, (MP(Request) *)array_of_requests, outcount, array_of_indices,
-          (MP(Status) *)array_of_statuses))
+         (incount, (MP(RequestPtr))array_of_requests, outcount,
+          array_of_indices, (MP(StatusPtr))array_of_statuses))
 FUNCTION(int, Testsome,
          (int incount, MT(Request) array_of_requests[], int *outcount,
           int array_of_indices[], MT(Status) array_of_statuses[]),
-         (incount, (MP(Request) *)array_of_requests, outcount, array_of_indices,
-          (MP(Status) *)array_of_statuses))
+         (incount, (MP(RequestPtr))array_of_requests, outcount,
+          array_of_indices, (MP(StatusPtr))array_of_statuses))
 #endif
 
 // 3.8 Probe and Cancel
@@ -103,59 +105,59 @@ FUNCTION(int, Iprobe,
 FUNCTION(int, Probe, (int source, int tag, MT(Comm) comm, MT(StatusPtr) status),
          (source, tag, (MP(Comm))comm, (MP(StatusPtr))status))
 FUNCTION(int, Improbe,
-         (int source, int tag, MT(Comm) comm, int *flag, MT(Message) * message,
+         (int source, int tag, MT(Comm) comm, int *flag, MT(MessagePtr) message,
           MT(StatusPtr) status),
-         (source, tag, (MP(Comm))comm, flag, (MP(Message) *)message,
+         (source, tag, (MP(Comm))comm, flag, (MP(MessagePtr))message,
           (MP(StatusPtr))status))
 FUNCTION(int, Mprobe,
-         (int source, int tag, MT(Comm) comm, MT(Message) * message,
+         (int source, int tag, MT(Comm) comm, MT(MessagePtr) message,
           MT(StatusPtr) status),
-         (source, tag, (MP(Comm))comm, (MP(Message) *)message,
+         (source, tag, (MP(Comm))comm, (MP(MessagePtr))message,
           (MP(StatusPtr))status))
 FUNCTION(int, Mrecv,
-         (void *buf, int count, MT(Datatype) datatype, MT(Message) * message,
+         (void *buf, int count, MT(Datatype) datatype, MT(MessagePtr) message,
           MT(StatusPtr) status),
-         (buf, count, (MP(Datatype))datatype, (MP(Message) *)message,
+         (buf, count, (MP(Datatype))datatype, (MP(MessagePtr))message,
           (MP(StatusPtr))status))
 FUNCTION(int, Imrecv,
-         (void *buf, int count, MT(Datatype) datatype, MT(Message) * message,
-          MT(Request) * request),
-         (buf, count, (MP(Datatype))datatype, (MP(Message) *)message,
-          (MP(Request) *)request))
-FUNCTION(int, Cancel, (MT(Request) * request), ((MP(Request) *)request))
+         (void *buf, int count, MT(Datatype) datatype, MT(MessagePtr) message,
+          MT(RequestPtr) request),
+         (buf, count, (MP(Datatype))datatype, (MP(MessagePtr))message,
+          (MP(RequestPtr))request))
+FUNCTION(int, Cancel, (MT(RequestPtr) request), ((MP(RequestPtr))request))
 FUNCTION(int, Test_cancelled, (MT(const_StatusPtr) status, int *flag),
          ((MP(const_StatusPtr))status, flag))
 
 // 3.9 Persistent Communication Requests
 FUNCTION(int, Send_init,
          (const void *buf, int count, MT(Datatype) datatype, int dest, int tag,
-          MT(Comm) comm, MT(Request) * request),
+          MT(Comm) comm, MT(RequestPtr) request),
          (buf, count, (MP(Datatype))datatype, dest, tag, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 FUNCTION(int, Bsend_init,
          (const void *buf, int count, MT(Datatype) datatype, int dest, int tag,
-          MT(Comm) comm, MT(Request) * request),
+          MT(Comm) comm, MT(RequestPtr) request),
          (buf, count, (MP(Datatype))datatype, dest, tag, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 FUNCTION(int, Ssend_init,
          (const void *buf, int count, MT(Datatype) datatype, int dest, int tag,
-          MT(Comm) comm, MT(Request) * request),
+          MT(Comm) comm, MT(RequestPtr) request),
          (buf, count, (MP(Datatype))datatype, dest, tag, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 FUNCTION(int, Rsend_init,
          (const void *buf, int count, MT(Datatype) datatype, int dest, int tag,
-          MT(Comm) comm, MT(Request) * request),
+          MT(Comm) comm, MT(RequestPtr) request),
          (buf, count, (MP(Datatype))datatype, dest, tag, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 FUNCTION(int, Recv_init,
          (void *buf, int count, MT(Datatype) datatype, int source, int tag,
-          MT(Comm) comm, MT(Request) * request),
+          MT(Comm) comm, MT(RequestPtr) request),
          (buf, count, (MP(Datatype))datatype, source, tag, (MP(Comm))comm,
-          (MP(Request) *)request))
-FUNCTION(int, Start, (MT(Request) * request), ((MP(Request) *)request))
+          (MP(RequestPtr))request))
+FUNCTION(int, Start, (MT(RequestPtr) request), ((MP(RequestPtr))request))
 #ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Startall, (int count, MT(Request) array_of_requests[]),
-         (count, (MP(Request) *)array_of_requests))
+         (count, (MP(RequestPtr))array_of_requests))
 #endif
 
 // 3.10 Send-Receive
@@ -174,84 +176,84 @@ FUNCTION(int, Sendrecv_replace,
 
 // 4.1 Derived Datatypes
 FUNCTION(int, Type_contiguous,
-         (int count, MT(Datatype) oldtype, MT(Datatype) * newtype),
-         (count, (MP(Datatype))oldtype, (MP(Datatype) *)newtype))
+         (int count, MT(Datatype) oldtype, MT(DatatypePtr) newtype),
+         (count, (MP(Datatype))oldtype, (MP(DatatypePtr))newtype))
 FUNCTION(int, Type_vector,
          (int count, int blocklength, int stride, MT(Datatype) oldtype,
-          MT(Datatype) * newtype),
+          MT(DatatypePtr) newtype),
          (count, blocklength, stride, (MP(Datatype))oldtype,
-          (MP(Datatype) *)newtype))
+          (MP(DatatypePtr))newtype))
 FUNCTION(int, Type_create_hvector,
          (int count, int blocklength, MT(Aint) stride, MT(Datatype) oldtype,
-          MT(Datatype) * newtype),
+          MT(DatatypePtr) newtype),
          (count, blocklength, (MP(Aint))stride, (MP(Datatype))oldtype,
-          (MP(Datatype) *)newtype))
+          (MP(DatatypePtr))newtype))
 // Does not exist in OpenMPI 4.1.1
 // FUNCTION(int, Type_hvector,
 //          (int count, int blocklength, MT(Aint) stride, MT(Datatype) oldtype,
-//           MT(Datatype) * newtype),
+//           MT(DatatypePtr) newtype),
 //          (count, blocklength, (MP(Aint))stride, (MP(Datatype))oldtype,
-//           (MP(Datatype) *)newtype))
+//           (MP(DatatypePtr))newtype))
 FUNCTION(int, Type_indexed,
          (int count, const int *array_of_blocklengths,
           const int *array_of_displacements, MT(Datatype) oldtype,
-          MT(Datatype) * newtype),
+          MT(DatatypePtr) newtype),
          (count, array_of_blocklengths, array_of_displacements,
-          (MP(Datatype))oldtype, (MP(Datatype) *)newtype))
+          (MP(Datatype))oldtype, (MP(DatatypePtr))newtype))
 FUNCTION(int, Type_create_hindexed,
          (int count, const int array_of_blocklengths[],
           const MT(Aint) array_of_displacements[], MT(Datatype) oldtype,
-          MT(Datatype) * newtype),
+          MT(DatatypePtr) newtype),
          (count, array_of_blocklengths,
           (const MP(Aint) *)array_of_displacements, (MP(Datatype))oldtype,
-          (MP(Datatype) *)newtype))
+          (MP(DatatypePtr))newtype))
 // Does not exist in OpenMPI 4.1.1
 // FUNCTION(int, Type_hindexed,
 //          (int count, int *array_of_blocklengths,
-//           MT(Aint) * array_of_displacements, MT(Datatype) oldtype,
-//           MT(Datatype) * newtype),
-//          (count, array_of_blocklengths, (MP(Aint) *)array_of_displacements,
-//           (MP(Datatype))oldtype, (MP(Datatype) *)newtype))
+//           MT(Aint)* array_of_displacements, MT(Datatype) oldtype,
+//           MT(DatatypePtr) newtype),
+//          (count, array_of_blocklengths, (MP(Aint)*)array_of_displacements,
+//           (MP(Datatype))oldtype, (MP(DatatypePtr))newtype))
 FUNCTION(int, Type_create_indexed_block,
          (int count, int blocklength, const int array_of_displacements[],
-          MT(Datatype) oldtype, MT(Datatype) * newtype),
+          MT(Datatype) oldtype, MT(DatatypePtr) newtype),
          (count, blocklength, array_of_displacements, (MP(Datatype))oldtype,
-          (MP(Datatype) *)newtype))
+          (MP(DatatypePtr))newtype))
 FUNCTION(int, Type_create_hindexed_block,
          (int count, int blocklength, const MT(Aint) array_of_displacements[],
-          MT(Datatype) oldtype, MT(Datatype) * newtype),
+          MT(Datatype) oldtype, MT(DatatypePtr) newtype),
          (count, blocklength, (const MP(Aint) *)array_of_displacements,
-          (MP(Datatype))oldtype, (MP(Datatype) *)newtype))
+          (MP(Datatype))oldtype, (MP(DatatypePtr))newtype))
 #ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Type_create_struct,
          (int count, const int array_of_blocklengths[],
           const MT(Aint) array_of_displacements[],
-          const MT(Datatype) array_of_types[], MT(Datatype) * newtype),
+          const MT(Datatype) array_of_types[], MT(DatatypePtr) newtype),
          (count, array_of_blocklengths,
           (const MP(Aint) *)array_of_displacements,
-          (const MP(Datatype) *)array_of_types, (MP(Datatype) *)newtype))
+          (const MP(DatatypePtr))array_of_types, (MP(DatatypePtr))newtype))
 // Does not exist in OpenMPI 4.1.1
 // FUNCTION(int, Type_struct,
 //          (int count, int *array_of_blocklengths,
-//           MT(Aint) * array_of_displacements, MT(Datatype) * array_of_types,
-//           MT(Datatype) * newtype),
-//          (count, array_of_blocklengths, (MP(Aint) *)array_of_displacements,
-//           (MP(Datatype) *)array_of_types, (MP(Datatype) *)newtype))
+//           MT(Aint)* array_of_displacements, MT(DatatypePtr) array_of_types,
+//           MT(DatatypePtr) newtype),
+//          (count, array_of_blocklengths, (MP(Aint)*)array_of_displacements,
+//           (MP(DatatypePtr))array_of_types, (MP(DatatypePtr))newtype))
 #endif
 FUNCTION(int, Type_create_subarray,
          (int ndims, const int array_of_sizes[], const int array_of_subsizes[],
           const int array_of_starts[], int ordder, MT(Datatype) oldtype,
-          MT(Datatype) * newtype),
+          MT(DatatypePtr) newtype),
          (ndims, array_of_sizes, array_of_subsizes, array_of_starts, ordder,
-          (MP(Datatype))oldtype, (MP(Datatype) *)newtype))
+          (MP(Datatype))oldtype, (MP(DatatypePtr))newtype))
 FUNCTION(int, Type_create_darray,
          (int size, int rank, int ndims, const int array_of_gsizes[],
           const int array_of_distribs[], const int array_of_dargs[],
           const int array_of_psizes[], int order, MT(Datatype) oldtype,
-          MT(Datatype) * newtype),
+          MT(DatatypePtr) newtype),
          (size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs,
           array_of_psizes, order, (MP(Datatype))oldtype,
-          (MP(Datatype) *)newtype))
+          (MP(DatatypePtr))newtype))
 FUNCTION(int, Get_address, (const void *location, MT(Aint) * address),
          (location, (MP(Aint) *)address))
 FUNCTION(MT(Aint), Aint_add, (MT(Aint) base, MT(Aint) disp),
@@ -270,9 +272,9 @@ FUNCTION(int, Type_get_extent_x,
          ((MP(Datatype))datatype, (MP(Count) *)lb, (MP(Count) *)extent))
 FUNCTION(int, Type_create_resized,
          (MT(Datatype) oldtype, MT(Aint) lb, MT(Aint) extent,
-          MT(Datatype) * newtype),
+          MT(DatatypePtr) newtype),
          ((MP(Datatype))oldtype, (MP(Aint))lb, (MP(Aint))extent,
-          (MP(Datatype) *)newtype))
+          (MP(DatatypePtr))newtype))
 FUNCTION(int, Type_get_true_extent,
          (MT(Datatype) datatype, MT(Aint) * true_lb, MT(Aint) * true_extent),
          ((MP(Datatype))datatype, (MP(Aint) *)true_lb, (MP(Aint) *)true_extent))
@@ -280,11 +282,12 @@ FUNCTION(int, Type_get_true_extent_x,
          (MT(Datatype) datatype, MT(Count) * true_lb, MT(Count) * true_extent),
          ((MP(Datatype))datatype, (MP(Count) *)true_lb,
           (MP(Count) *)true_extent))
-FUNCTION(int, Type_commit, (MT(Datatype) * datatype),
-         ((MP(Datatype) *)datatype))
-FUNCTION(int, Type_free, (MT(Datatype) * datatype), ((MP(Datatype) *)datatype))
-FUNCTION(int, Type_dup, (MT(Datatype) oldtype, MT(Datatype) * newtype),
-         ((MP(Datatype))oldtype, (MP(Datatype) *)newtype))
+FUNCTION(int, Type_commit, (MT(DatatypePtr) datatype),
+         ((MP(DatatypePtr))datatype))
+FUNCTION(int, Type_free, (MT(DatatypePtr) datatype),
+         ((MP(DatatypePtr))datatype))
+FUNCTION(int, Type_dup, (MT(Datatype) oldtype, MT(DatatypePtr) newtype),
+         ((MP(Datatype))oldtype, (MP(DatatypePtr))newtype))
 FUNCTION(int, Get_elements,
          (MT(const_StatusPtr) status, MT(Datatype) datatype, int *count),
          ((MP(const_StatusPtr))status, (MP(Datatype))datatype, count))
@@ -304,20 +307,20 @@ FUNCTION(int, Type_get_contents,
           MT(Aint) array_of_addresses[], MT(Datatype) array_of_datatypes[]),
          ((MP(Datatype))datatype, max_integers, max_addresses, max_datatypes,
           array_of_integers, (MP(Aint) *)array_of_addresses,
-          (MP(Datatype) *)array_of_datatypes))
+          (MP(DatatypePtr))array_of_datatypes))
 #endif
 // Does not exist in OpenMPI 4.1.1
-// FUNCTION(int, Address, (void *location, MT(Aint) * address),
-//          (location, (MP(Aint) *)address))
+// FUNCTION(int, Address, (void *location, MT(Aint)* address),
+//          (location, (MP(Aint)*)address))
 // Does not exist in OpenMPI 4.1.1
-// FUNCTION(int, Type_extent, (MT(Datatype) datatype, MT(Aint) * extent),
-//          ((MP(Datatype))datatype, (MP(Aint) *)extent))
+// FUNCTION(int, Type_extent, (MT(Datatype) datatype, MT(Aint)* extent),
+//          ((MP(Datatype))datatype, (MP(Aint)*)extent))
 // Does not exist in OpenMPI 4.1.1
-// FUNCTION(int, Type_lb, (MT(Datatype) datatype, MT(Aint) * displacement),
-//          ((MP(Datatype))datatype, (MP(Aint) *)displacement))
+// FUNCTION(int, Type_lb, (MT(Datatype) datatype, MT(Aint)* displacement),
+//          ((MP(Datatype))datatype, (MP(Aint)*)displacement))
 // Does not exist in OpenMPI 4.1.1
-// FUNCTION(int, Type_ub, (MT(Datatype) datatype, MT(Aint) * displacement),
-//          ((MP(Datatype))datatype, (MP(Aint) *)displacement))
+// FUNCTION(int, Type_ub, (MT(Datatype) datatype, MT(Aint)* displacement),
+//          ((MP(Datatype))datatype, (MP(Aint)*)displacement))
 
 // 4.2 Pack and Unpack
 FUNCTION(int, Pack,
@@ -419,8 +422,9 @@ FUNCTION(int, Alltoallw,
          (const void *sendbuf, const int sendcounts[], const int sdispls[],
           const MT(Datatype) sendtypes[], void *recvbuf, const int recvcounts[],
           const int rdispls[], const MT(Datatype) recvtypes[], MT(Comm) comm),
-         (sendbuf, sendcounts, sdispls, (MP(Datatype) *)sendtypes, recvbuf,
-          recvcounts, rdispls, (const MP(Datatype) *)recvtypes, (MP(Comm))comm))
+         (sendbuf, sendcounts, sdispls, (MP(DatatypePtr))sendtypes, recvbuf,
+          recvcounts, rdispls, (const MP(DatatypePtr))recvtypes,
+          (MP(Comm))comm))
 #endif
 
 // 5.9 Global Reduction Operations
@@ -430,9 +434,9 @@ FUNCTION(int, Reduce,
          (sendbuf, recvbuf, count, (MP(Datatype))datatype, (MP(Op))op, root,
           (MP(Comm))comm))
 FUNCTION(int, Op_create,
-         (MT(User_function) * user_fn, int commute, MT(Op) * op),
-         ((MP(User_function) *)user_fn, commute, (MP(Op) *)op))
-FUNCTION(int, Op_free, (MT(Op) * op), ((MP(Op) *)op))
+         (MT(User_function) * user_fn, int commute, MT(OpPtr) op),
+         ((MP(User_function) *)user_fn, commute, (MP(OpPtr))op))
+FUNCTION(int, Op_free, (MT(OpPtr) op), ((MP(OpPtr))op))
 FUNCTION(int, Allreduce,
          (const void *sendbuf, void *recvbuf, int count, MT(Datatype) datatype,
           MT(Op) op, MT(Comm) comm),
@@ -469,110 +473,112 @@ FUNCTION(int, Exscan,
           (MP(Comm))comm))
 
 // 5.12 Nonblocking Collective Operations
-FUNCTION(int, Ibarrier, (MT(Comm) comm, MT(Request) * request),
-         ((MP(Comm))comm, (MP(Request) *)request))
+FUNCTION(int, Ibarrier, (MT(Comm) comm, MT(RequestPtr) request),
+         ((MP(Comm))comm, (MP(RequestPtr))request))
 FUNCTION(int, Ibcast,
          (void *buffer, int count, MT(Datatype) datatype, int root,
-          MT(Comm) comm, MT(Request) * request),
+          MT(Comm) comm, MT(RequestPtr) request),
          (buffer, count, (MP(Datatype))datatype, root, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 FUNCTION(int, Igather,
          (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
           void *recvbuf, int recvcount, MT(Datatype) recvtype, int root,
-          MT(Comm) comm, MT(Request) * request),
+          MT(Comm) comm, MT(RequestPtr) request),
          (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcount,
-          (MP(Datatype))recvtype, root, (MP(Comm))comm, (MP(Request) *)request))
+          (MP(Datatype))recvtype, root, (MP(Comm))comm,
+          (MP(RequestPtr))request))
 FUNCTION(int, Igatherv,
          (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
           void *recvbuf, const int *recvcounts, const int *displs,
           MT(Datatype) recvtype, int root, MT(Comm) comm,
-          MT(Request) * request),
+          MT(RequestPtr) request),
          (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcounts,
           displs, (MP(Datatype))recvtype, root, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 FUNCTION(int, Iscatter,
          (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
           void *recvbuf, int recvcount, MT(Datatype) recvtype, int root,
-          MT(Comm) comm, MT(Request) * request),
+          MT(Comm) comm, MT(RequestPtr) request),
          (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcount,
-          (MP(Datatype))recvtype, root, (MP(Comm))comm, (MP(Request) *)request))
+          (MP(Datatype))recvtype, root, (MP(Comm))comm,
+          (MP(RequestPtr))request))
 FUNCTION(int, Iscatterv,
          (const void *sendbuf, const int *sendcounts, const int *displs,
           MT(Datatype) sendtype, void *recvbuf, int recvcount,
           MT(Datatype) recvtype, int root, MT(Comm) comm,
-          MT(Request) * request),
+          MT(RequestPtr) request),
          (sendbuf, sendcounts, displs, (MP(Datatype))sendtype, recvbuf,
           recvcount, (MP(Datatype))recvtype, root, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 FUNCTION(int, Iallgather,
          (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
           void *recvbuf, int recvcount, MT(Datatype) recvtype, MT(Comm) comm,
-          MT(Request) * request),
+          MT(RequestPtr) request),
          (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcount,
-          (MP(Datatype))recvtype, (MP(Comm))comm, (MP(Request) *)request))
+          (MP(Datatype))recvtype, (MP(Comm))comm, (MP(RequestPtr))request))
 FUNCTION(int, Iallgatherv,
          (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
           void *recvbuf, const int *recvcounts, const int *displs,
-          MT(Datatype) recvtype, MT(Comm) comm, MT(Request) * request),
+          MT(Datatype) recvtype, MT(Comm) comm, MT(RequestPtr) request),
          (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcounts,
           displs, (MP(Datatype))recvtype, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 FUNCTION(int, Ialltoall,
          (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
           void *recvbuf, int recvcount, MT(Datatype) recvtype, MT(Comm) comm,
-          MT(Request) * request),
+          MT(RequestPtr) request),
          (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcount,
-          (MP(Datatype))recvtype, (MP(Comm))comm, (MP(Request) *)request))
+          (MP(Datatype))recvtype, (MP(Comm))comm, (MP(RequestPtr))request))
 FUNCTION(int, Ialltoallv,
          (const void *sendbuf, const int *sendcounts, const int *sdispls,
           MT(Datatype) sendtype, void *recvbuf, const int *recvcounts,
           const int *rdispls, MT(Datatype) recvtype, MT(Comm) comm,
-          MT(Request) * request),
+          MT(RequestPtr) request),
          (sendbuf, sendcounts, sdispls, (MP(Datatype))sendtype, recvbuf,
           recvcounts, rdispls, (MP(Datatype))recvtype, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 #ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Ialltoallw,
          (const void *sendbuf, const int sendcounts[], const int sdispls[],
           const MT(Datatype) sendtypes[], void *recvbuf, const int recvcounts[],
           const int rdispls[], const MT(Datatype) recvtypes[], MT(Comm) comm,
-          MT(Request) * request),
-         (sendbuf, sendcounts, sdispls, (MP(Datatype) *)sendtypes, recvbuf,
-          recvcounts, rdispls, (const MP(Datatype) *)recvtypes, (MP(Comm))comm,
-          (MP(Request) *)request))
+          MT(RequestPtr) request),
+         (sendbuf, sendcounts, sdispls, (MP(DatatypePtr))sendtypes, recvbuf,
+          recvcounts, rdispls, (const MP(DatatypePtr))recvtypes, (MP(Comm))comm,
+          (MP(RequestPtr))request))
 #endif
 FUNCTION(int, Ireduce,
          (const void *sendbuf, void *recvbuf, int count, MT(Datatype) datatype,
-          MT(Op) op, int root, MT(Comm) comm, MT(Request) * request),
+          MT(Op) op, int root, MT(Comm) comm, MT(RequestPtr) request),
          (sendbuf, recvbuf, count, (MP(Datatype))datatype, (MP(Op))op, root,
-          (MP(Comm))comm, (MP(Request) *)request))
+          (MP(Comm))comm, (MP(RequestPtr))request))
 FUNCTION(int, Iallreduce,
          (const void *sendbuf, void *recvbuf, int count, MT(Datatype) datatype,
-          MT(Op) op, MT(Comm) comm, MT(Request) * request),
+          MT(Op) op, MT(Comm) comm, MT(RequestPtr) request),
          (sendbuf, recvbuf, count, (MP(Datatype))datatype, (MP(Op))op,
-          (MP(Comm))comm, (MP(Request) *)request))
+          (MP(Comm))comm, (MP(RequestPtr))request))
 FUNCTION(int, Ireduce_scatter_block,
          (const void *sendbuf, void *recvbuf, int recvcount,
           MT(Datatype) datatype, MT(Op) op, MT(Comm) comm,
-          MT(Request) * request),
+          MT(RequestPtr) request),
          (sendbuf, recvbuf, recvcount, (MP(Datatype))datatype, (MP(Op))op,
-          (MP(Comm))comm, (MP(Request) *)request))
+          (MP(Comm))comm, (MP(RequestPtr))request))
 FUNCTION(int, Ireduce_scatter,
          (const void *sendbuf, void *recvbuf, const int recvcounts[],
           MT(Datatype) datatype, MT(Op) op, MT(Comm) comm,
-          MT(Request) * request),
+          MT(RequestPtr) request),
          (sendbuf, recvbuf, recvcounts, (MP(Datatype))datatype, (MP(Op))op,
-          (MP(Comm))comm, (MP(Request) *)request))
+          (MP(Comm))comm, (MP(RequestPtr))request))
 FUNCTION(int, Iscan,
          (const void *sendbuf, void *recvbuf, int count, MT(Datatype) datatype,
-          MT(Op) op, MT(Comm) comm, MT(Request) * request),
+          MT(Op) op, MT(Comm) comm, MT(RequestPtr) request),
          (sendbuf, recvbuf, count, (MP(Datatype))datatype, (MP(Op))op,
-          (MP(Comm))comm, (MP(Request) *)request))
+          (MP(Comm))comm, (MP(RequestPtr))request))
 FUNCTION(int, Iexscan,
          (const void *sendbuf, void *recvbuf, int count, MT(Datatype) datatype,
-          MT(Op) op, MT(Comm) comm, MT(Request) * request),
+          MT(Op) op, MT(Comm) comm, MT(RequestPtr) request),
          (sendbuf, recvbuf, count, (MP(Datatype))datatype, (MP(Op))op,
-          (MP(Comm))comm, (MP(Request) *)request))
+          (MP(Comm))comm, (MP(RequestPtr))request))
 
 // 6.3 Group Management
 FUNCTION(int, Group_size, (MT(Group) group, int *size),
@@ -585,77 +591,79 @@ FUNCTION(int, Group_translate_ranks,
          ((MP(Group))group1, n, ranks1, (MP(Group))group2, ranks2))
 FUNCTION(int, Group_compare, (MT(Group) group1, MT(Group) group2, int *result),
          ((MP(Group))group1, (MP(Group))group2, result))
-FUNCTION(int, Comm_group, (MT(Comm) comm, MT(Group) * group),
-         ((MP(Comm))comm, (MP(Group) *)group))
+FUNCTION(int, Comm_group, (MT(Comm) comm, MT(GroupPtr) group),
+         ((MP(Comm))comm, (MP(GroupPtr))group))
 FUNCTION(int, Group_union,
-         (MT(Group) group1, MT(Group) group2, MT(Group) * newgroup),
-         ((MP(Group))group1, (MP(Group))group2, (MP(Group) *)newgroup))
+         (MT(Group) group1, MT(Group) group2, MT(GroupPtr) newgroup),
+         ((MP(Group))group1, (MP(Group))group2, (MP(GroupPtr))newgroup))
 FUNCTION(int, Group_intersection,
-         (MT(Group) group1, MT(Group) group2, MT(Group) * newgroup),
-         ((MP(Group))group1, (MP(Group))group2, (MP(Group) *)newgroup))
+         (MT(Group) group1, MT(Group) group2, MT(GroupPtr) newgroup),
+         ((MP(Group))group1, (MP(Group))group2, (MP(GroupPtr))newgroup))
 FUNCTION(int, Group_difference,
-         (MT(Group) group1, MT(Group) group2, MT(Group) * newgroup),
-         ((MP(Group))group1, (MP(Group))group2, (MP(Group) *)newgroup))
+         (MT(Group) group1, MT(Group) group2, MT(GroupPtr) newgroup),
+         ((MP(Group))group1, (MP(Group))group2, (MP(GroupPtr))newgroup))
 FUNCTION(int, Group_incl,
-         (MT(Group) group, int n, const int ranks[], MT(Group) * newgroup),
-         ((MP(Group))group, n, ranks, (MP(Group) *)newgroup))
+         (MT(Group) group, int n, const int ranks[], MT(GroupPtr) newgroup),
+         ((MP(Group))group, n, ranks, (MP(GroupPtr))newgroup))
 FUNCTION(int, Group_excl,
-         (MT(Group) group, int n, const int ranks[], MT(Group) * newgroup),
-         ((MP(Group))group, n, ranks, (MP(Group) *)newgroup))
+         (MT(Group) group, int n, const int ranks[], MT(GroupPtr) newgroup),
+         ((MP(Group))group, n, ranks, (MP(GroupPtr))newgroup))
 FUNCTION(int, Group_range_incl,
-         (MT(Group) group, int n, int ranges[][3], MT(Group) * newgroup),
-         ((MP(Group))group, n, ranges, (MP(Group) *)newgroup))
+         (MT(Group) group, int n, int ranges[][3], MT(GroupPtr) newgroup),
+         ((MP(Group))group, n, ranges, (MP(GroupPtr))newgroup))
 FUNCTION(int, Group_range_excl,
-         (MT(Group) group, int n, int ranges[][3], MT(Group) * newgroup),
-         ((MP(Group))group, n, ranges, (MP(Group) *)newgroup))
-FUNCTION(int, Group_free, (MT(Group) * group), ((MP(Group) *)group))
+         (MT(Group) group, int n, int ranges[][3], MT(GroupPtr) newgroup),
+         ((MP(Group))group, n, ranges, (MP(GroupPtr))newgroup))
+FUNCTION(int, Group_free, (MT(GroupPtr) group), ((MP(GroupPtr))group))
 
 // 6.4 Communicator Management
 FUNCTION(int, Comm_size, (MT(Comm) comm, int *size), ((MP(Comm))comm, size))
 FUNCTION(int, Comm_rank, (MT(Comm) comm, int *rank), ((MP(Comm))comm, rank))
 FUNCTION(int, Comm_compare, (MT(Comm) comm1, MT(Comm) comm2, int *result),
          ((MP(Comm))comm1, (MP(Comm))comm2, result))
-FUNCTION(int, Comm_dup, (MT(Comm) comm, MT(Comm) * newcomm),
-         ((MP(Comm))comm, (MP(Comm) *)newcomm))
+FUNCTION(int, Comm_dup, (MT(Comm) comm, MT(CommPtr) newcomm),
+         ((MP(Comm))comm, (MP(CommPtr))newcomm))
 FUNCTION(int, Comm_dup_with_info,
-         (MT(Comm) comm, MT(Info) info, MT(Comm) * newcomm),
-         ((MP(Comm))comm, (MP(Info))info, (MP(Comm) *)newcomm))
+         (MT(Comm) comm, MT(Info) info, MT(CommPtr) newcomm),
+         ((MP(Comm))comm, (MP(Info))info, (MP(CommPtr))newcomm))
 FUNCTION(int, Comm_idup,
-         (MT(Comm) comm, MT(Comm) * newcomm, MT(Request) * request),
-         ((MP(Comm))comm, (MP(Comm) *)newcomm, (MP(Request) *)request))
-FUNCTION(int, Comm_create, (MT(Comm) comm, MT(Group) group, MT(Comm) * newcomm),
-         ((MP(Comm))comm, (MP(Group))group, (MP(Comm) *)newcomm))
+         (MT(Comm) comm, MT(CommPtr) newcomm, MT(RequestPtr) request),
+         ((MP(Comm))comm, (MP(CommPtr))newcomm, (MP(RequestPtr))request))
+FUNCTION(int, Comm_create,
+         (MT(Comm) comm, MT(Group) group, MT(CommPtr) newcomm),
+         ((MP(Comm))comm, (MP(Group))group, (MP(CommPtr))newcomm))
 FUNCTION(int, Comm_create_group,
-         (MT(Comm) comm, MT(Group) group, int tag, MT(Comm) * newcomm),
-         ((MP(Comm))comm, (MP(Group))group, tag, (MP(Comm) *)newcomm))
+         (MT(Comm) comm, MT(Group) group, int tag, MT(CommPtr) newcomm),
+         ((MP(Comm))comm, (MP(Group))group, tag, (MP(CommPtr))newcomm))
 FUNCTION(int, Comm_split,
-         (MT(Comm) comm, int color, int key, MT(Comm) * newcomm),
-         ((MP(Comm))comm, color, key, (MP(Comm) *)newcomm))
+         (MT(Comm) comm, int color, int key, MT(CommPtr) newcomm),
+         ((MP(Comm))comm, color, key, (MP(CommPtr))newcomm))
 FUNCTION(int, Comm_split_type,
          (MT(Comm) comm, int split_type, int key, MT(Info) info,
-          MT(Comm) * newcomm),
-         ((MP(Comm))comm, split_type, key, (MP(Info))info, (MP(Comm) *)newcomm))
-FUNCTION(int, Comm_free, (MT(Comm) * comm), ((MP(Comm) *)comm))
+          MT(CommPtr) newcomm),
+         ((MP(Comm))comm, split_type, key, (MP(Info))info,
+          (MP(CommPtr))newcomm))
+FUNCTION(int, Comm_free, (MT(CommPtr) comm), ((MP(CommPtr))comm))
 FUNCTION(int, Comm_set_info, (MT(Comm) comm, MT(Info) info),
          ((MP(Comm))comm, (MP(Info))info))
-FUNCTION(int, Comm_get_info, (MT(Comm) comm, MT(Info) * info),
-         ((MP(Comm))comm, (MP(Info) *)info))
+FUNCTION(int, Comm_get_info, (MT(Comm) comm, MT(InfoPtr) info),
+         ((MP(Comm))comm, (MP(InfoPtr))info))
 
 // 6.6 Inter-Communication
 FUNCTION(int, Comm_test_inter, (MT(Comm) comm, int *flag),
          ((MP(Comm))comm, flag))
 FUNCTION(int, Comm_remote_size, (MT(Comm) comm, int *size),
          ((MP(Comm))comm, size))
-FUNCTION(int, Comm_remote_group, (MT(Comm) comm, MT(Group) * group),
-         ((MP(Comm))comm, (MP(Group) *)group))
+FUNCTION(int, Comm_remote_group, (MT(Comm) comm, MT(GroupPtr) group),
+         ((MP(Comm))comm, (MP(GroupPtr))group))
 FUNCTION(int, Intercomm_create,
          (MT(Comm) local_comm, int local_leader, MT(Comm) peer_comm,
-          int remote_leader, int tag, MT(Comm) * newintercomm),
+          int remote_leader, int tag, MT(CommPtr) newintercomm),
          ((MP(Comm))local_comm, local_leader, (MP(Comm))peer_comm,
-          remote_leader, tag, (MP(Comm) *)newintercomm))
+          remote_leader, tag, (MP(CommPtr))newintercomm))
 FUNCTION(int, Intercomm_merge,
-         (MT(Comm) intercomm, int high, MT(Comm) * newintracomm),
-         ((MP(Comm))intercomm, high, (MP(Comm) *)newintracomm))
+         (MT(Comm) intercomm, int high, MT(CommPtr) newintracomm),
+         ((MP(Comm))intercomm, high, (MP(CommPtr))newintracomm))
 
 // 6.7 Communicators
 FUNCTION(int, Comm_create_keyval,
@@ -724,30 +732,30 @@ FUNCTION(int, Win_get_name, (MT(Win) win, char *win_name, int *resultlen),
 // 7.5 Topology Constructors
 FUNCTION(int, Cart_create,
          (MT(Comm) comm_old, int ndims, const int dims[], const int periods[],
-          int reorder, MT(Comm) * comm_cart),
+          int reorder, MT(CommPtr) comm_cart),
          ((MP(Comm))comm_old, ndims, dims, periods, reorder,
-          (MP(Comm) *)comm_cart))
+          (MP(CommPtr))comm_cart))
 FUNCTION(int, Dims_create, (int nnodes, int ndims, int dims[]),
          (nnodes, ndims, dims))
 FUNCTION(int, Graph_create,
          (MT(Comm) comm_old, int nnodes, const int index[], const int edges[],
-          int reorder, MT(Comm) * comm_graph),
+          int reorder, MT(CommPtr) comm_graph),
          ((MP(Comm))comm_old, nnodes, index, edges, reorder,
-          (MP(Comm) *)comm_graph))
+          (MP(CommPtr))comm_graph))
 FUNCTION(int, Dist_graph_create_adjacent,
          (MT(Comm) comm_old, int indegree, const int sources[],
           const int sourceweights[], int outdegree, const int destinations[],
           const int destweights[], MT(Info) info, int reorder,
-          MT(Comm) * comm_dist_graph),
+          MT(CommPtr) comm_dist_graph),
          ((MP(Comm))comm_old, indegree, sources, sourceweights, outdegree,
           destinations, destweights, (MP(Info))info, reorder,
-          (MP(Comm) *)comm_dist_graph))
+          (MP(CommPtr))comm_dist_graph))
 FUNCTION(int, Dist_graph_create,
          (MT(Comm) comm_old, int n, const int sources[], const int degrees[],
           const int destinations[], const int weights[], MT(Info) info,
-          int reorder, MT(Comm) * comm_dist_graph),
+          int reorder, MT(CommPtr) comm_dist_graph),
          ((MP(Comm))comm_old, n, sources, degrees, destinations, weights,
-          (MP(Info))info, reorder, (MP(Comm) *)comm_dist_graph))
+          (MP(Info))info, reorder, (MP(CommPtr))comm_dist_graph))
 FUNCTION(int, Topo_test, (MT(Comm) comm, int *status), ((MP(Comm))comm, status))
 FUNCTION(int, Graphdims_get, (MT(Comm) comm, int *nnodes, int *nedges),
          ((MP(Comm))comm, nnodes, nedges))
@@ -780,8 +788,8 @@ FUNCTION(int, Cart_shift,
           int *rank_dest),
          ((MP(Comm))comm, direction, disp, rank_source, rank_dest))
 FUNCTION(int, Cart_sub,
-         (MT(Comm) comm, const int remain_dims[], MT(Comm) * newcomm),
-         ((MP(Comm))comm, remain_dims, (MP(Comm) *)newcomm))
+         (MT(Comm) comm, const int remain_dims[], MT(CommPtr) newcomm),
+         ((MP(Comm))comm, remain_dims, (MP(CommPtr))newcomm))
 FUNCTION(int, Cart_map,
          (MT(Comm) comm, int ndims, const int dims[], const int periods[],
           int *newrank),
@@ -821,8 +829,8 @@ FUNCTION(int, Neighbor_alltoallw,
           const MT(Aint) rdispls[], const MT(Datatype) recvtypes[],
           MT(Comm) comm),
          (sendbuf, sendcounts, (const MP(Aint) *)sdispls,
-          (const MP(Datatype) *)sendtypes, recvbuf, recvcounts,
-          (const MP(Aint) *)rdispls, (const MP(Datatype) *)recvtypes,
+          (const MP(DatatypePtr))sendtypes, recvbuf, recvcounts,
+          (const MP(Aint) *)rdispls, (const MP(DatatypePtr))recvtypes,
           (MP(Comm))comm))
 #endif
 
@@ -830,40 +838,40 @@ FUNCTION(int, Neighbor_alltoallw,
 FUNCTION(int, Ineighbor_allgather,
          (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
           void *recvbuf, int recvcount, MT(Datatype) recvtype, MT(Comm) comm,
-          MT(Request) * request),
+          MT(RequestPtr) request),
          (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcount,
-          (MP(Datatype))recvtype, (MP(Comm))comm, (MP(Request) *)request))
+          (MP(Datatype))recvtype, (MP(Comm))comm, (MP(RequestPtr))request))
 FUNCTION(int, Ineighbor_allgatherv,
          (const void *sendbuf, int sendcount, MT(Datatype) sendtype,
           void *recvbuf, const int recvcounts[], const int displs[],
-          MT(Datatype) recvtype, MT(Comm) comm, MT(Request) * request),
+          MT(Datatype) recvtype, MT(Comm) comm, MT(RequestPtr) request),
          (sendbuf, sendcount, (MP(Datatype))sendtype, recvbuf, recvcounts,
           displs, (MP(Datatype))recvtype, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 FUNCTION(int, Ineighbor_alltoall,
          (const void *sendbuf, int sendcount, MT(Datatype) senddtype,
           void *recvbuf, int recvcount, MT(Datatype) recvtype, MT(Comm) comm,
-          MT(Request) * request),
+          MT(RequestPtr) request),
          (sendbuf, sendcount, (MP(Datatype))senddtype, recvbuf, recvcount,
-          (MP(Datatype))recvtype, (MP(Comm))comm, (MP(Request) *)request))
+          (MP(Datatype))recvtype, (MP(Comm))comm, (MP(RequestPtr))request))
 FUNCTION(int, Ineighbor_alltoallv,
          (const void *sendbuf, const int sendcounts[], const int sdispls[],
           MT(Datatype) senddtype, void *recvbuf, const int recvcounts[],
           const int rdispls[], MT(Datatype) recvtype, MT(Comm) comm,
-          MT(Request) * request),
+          MT(RequestPtr) request),
          (sendbuf, sendcounts, sdispls, (MP(Datatype))senddtype, recvbuf,
           recvcounts, rdispls, (MP(Datatype))recvtype, (MP(Comm))comm,
-          (MP(Request) *)request))
+          (MP(RequestPtr))request))
 #ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Ineighbor_alltoallw,
          (const void *sendbuf, const int sendcounts[], const MT(Aint) sdispls[],
           const MT(Datatype) sendtypes[], void *recvbuf, const int recvcounts[],
           const MT(Aint) rdispls[], const MT(Datatype) recvtypes[],
-          MT(Comm) comm, MT(Request) * request),
+          MT(Comm) comm, MT(RequestPtr) request),
          (sendbuf, sendcounts, (const MP(Aint) *)sdispls,
-          (const MP(Datatype) *)sendtypes, recvbuf, recvcounts,
-          (const MP(Aint) *)rdispls, (const MP(Datatype) *)recvtypes,
-          (MP(Comm))comm, (MP(Request) *)request))
+          (const MP(DatatypePtr))sendtypes, recvbuf, recvcounts,
+          (const MP(Aint) *)rdispls, (const MP(DatatypePtr))recvtypes,
+          (MP(Comm))comm, (MP(RequestPtr))request))
 #endif
 
 // 8.1 Implementation Information
@@ -885,33 +893,35 @@ FUNCTION(int, Free_mem, (void *base), (base))
 // 8.3 Error Handling
 FUNCTION(int, Comm_create_errhandler,
          (MT(Comm_errhandler_function) * comm_errhandler_fn,
-          MT(Errhandler) * errhandler),
+          MT(ErrhandlerPtr) errhandler),
          ((MP(Comm_errhandler_function) *)comm_errhandler_fn,
-          (MP(Errhandler) *)errhandler))
+          (MP(ErrhandlerPtr))errhandler))
 FUNCTION(int, Comm_set_errhandler, (MT(Comm) comm, MT(Errhandler) errhandler),
          ((MP(Comm))comm, (MP(Errhandler))errhandler))
-FUNCTION(int, Comm_get_errhandler, (MT(Comm) comm, MT(Errhandler) * errhandler),
-         ((MP(Comm))comm, (MP(Errhandler) *)errhandler))
+FUNCTION(int, Comm_get_errhandler,
+         (MT(Comm) comm, MT(ErrhandlerPtr) errhandler),
+         ((MP(Comm))comm, (MP(ErrhandlerPtr))errhandler))
 FUNCTION(int, Win_create_errhandler,
          (MT(Win_errhandler_function) * win_errhandler_fn,
-          MT(Errhandler) * errhandler),
+          MT(ErrhandlerPtr) errhandler),
          ((MP(Win_errhandler_function) *)win_errhandler_fn,
-          (MP(Errhandler) *)errhandler))
+          (MP(ErrhandlerPtr))errhandler))
 FUNCTION(int, Win_set_errhandler, (MT(Win) win, MT(Errhandler) errhandler),
          ((MP(Win))win, (MP(Errhandler))errhandler))
-FUNCTION(int, Win_get_errhandler, (MT(Win) win, MT(Errhandler) * errhandler),
-         ((MP(Win))win, (MP(Errhandler) *)errhandler))
+FUNCTION(int, Win_get_errhandler, (MT(Win) win, MT(ErrhandlerPtr) errhandler),
+         ((MP(Win))win, (MP(ErrhandlerPtr))errhandler))
 FUNCTION(int, File_create_errhandler,
          (MT(File_errhandler_function) * file_errhandler_fn,
-          MT(Errhandler) * errhandler),
+          MT(ErrhandlerPtr) errhandler),
          ((MP(File_errhandler_function) *)file_errhandler_fn,
-          (MP(Errhandler) *)errhandler))
+          (MP(ErrhandlerPtr))errhandler))
 FUNCTION(int, File_set_errhandler, (MT(File) file, MT(Errhandler) errhandler),
          ((MP(File))file, (MP(Errhandler))errhandler))
-FUNCTION(int, File_get_errhandler, (MT(File) file, MT(Errhandler) * errhandler),
-         ((MP(File))file, (MP(Errhandler) *)errhandler))
-FUNCTION(int, Errhandler_free, (MT(Errhandler) * errhandler),
-         ((MP(Errhandler) *)errhandler))
+FUNCTION(int, File_get_errhandler,
+         (MT(File) file, MT(ErrhandlerPtr) errhandler),
+         ((MP(File))file, (MP(ErrhandlerPtr))errhandler))
+FUNCTION(int, Errhandler_free, (MT(ErrhandlerPtr) errhandler),
+         ((MP(ErrhandlerPtr))errhandler))
 
 // 8.4 Error Codes and Classes
 FUNCTION(int, Error_class, (int errorcode, int *errorclass),
@@ -943,7 +953,7 @@ FUNCTION(int, Abort, (MT(Comm) comm, int errorcode),
 FUNCTION(int, Finalized, (int *flag), (flag))
 
 // 9 The Info Object
-FUNCTION(int, Info_create, (MT(Info) * info), ((MP(Info) *)info))
+FUNCTION(int, Info_create, (MT(InfoPtr) info), ((MP(InfoPtr))info))
 FUNCTION(int, Info_set, (MT(Info) info, const char *key, const char *value),
          ((MP(Info))info, key, value))
 FUNCTION(int, Info_delete, (MT(Info) info, const char *key),
@@ -958,18 +968,18 @@ FUNCTION(int, Info_get_nkeys, (MT(Info) info, int *nkeys),
          ((MP(Info))info, nkeys))
 FUNCTION(int, Info_get_nthkey, (MT(Info) info, int n, char *key),
          ((MP(Info))info, n, key))
-FUNCTION(int, Info_dup, (MT(Info) info, MT(Info) * newinfo),
-         ((MP(Info))info, (MP(Info) *)newinfo))
-FUNCTION(int, Info_free, (MT(Info) * info), ((MP(Info) *)info))
+FUNCTION(int, Info_dup, (MT(Info) info, MT(InfoPtr) newinfo),
+         ((MP(Info))info, (MP(InfoPtr))newinfo))
+FUNCTION(int, Info_free, (MT(InfoPtr) info), ((MP(InfoPtr))info))
 
 // ES: i checked the standard; we are complete from the top to here
 
 // 13.2 File Manipulation
 FUNCTION(int, File_open,
          (MT(Comm) comm, const char *filename, int amode, MT(Info) info,
-          MT(File) * fh),
-         ((MP(Comm))comm, filename, amode, (MP(Info))info, (MP(File) *)fh))
-FUNCTION(int, File_close, (MT(File) * fh), ((MP(File) *)fh))
+          MT(FilePtr) fh),
+         ((MP(Comm))comm, filename, amode, (MP(Info))info, (MP(FilePtr))fh))
+FUNCTION(int, File_close, (MT(FilePtr) fh), ((MP(FilePtr))fh))
 FUNCTION(int, File_delete, (const char *filename, MT(Info) info),
          (filename, (MP(Info))info))
 FUNCTION(int, File_set_size, (MT(File) fh, MT(Offset) size),
@@ -978,13 +988,13 @@ FUNCTION(int, File_preallocate, (MT(File) fh, MT(Offset) size),
          ((MP(File))fh, (MP(Offset))size))
 FUNCTION(int, File_get_size, (MT(File) fh, MT(Offset) * size),
          ((MP(File))fh, (MP(Offset) *)size))
-FUNCTION(int, File_get_group, (MT(File) fh, MT(Group) * group),
-         ((MP(File))fh, (MP(Group) *)group))
+FUNCTION(int, File_get_group, (MT(File) fh, MT(GroupPtr) group),
+         ((MP(File))fh, (MP(GroupPtr))group))
 FUNCTION(int, File_get_amode, (MT(File) fh, int *amode), ((MP(File))fh, amode))
 FUNCTION(int, File_set_info, (MT(File) fh, MT(Info) info),
          ((MP(File))fh, (MP(Info))info))
-FUNCTION(int, File_get_info, (MT(File) fh, MT(Info) * info_used),
-         ((MP(File))fh, (MP(Info) *)info_used))
+FUNCTION(int, File_get_info, (MT(File) fh, MT(InfoPtr) info_used),
+         ((MP(File))fh, (MP(InfoPtr))info_used))
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -1002,10 +1012,10 @@ FUNCTION(int, File_set_view,
          ((MP(File))fh, (MP(Offset))disp, (MP(Datatype))etype,
           (MP(Datatype))filetype, datarep, (MP(Info))info))
 FUNCTION(int, File_get_view,
-         (MT(File) fh, MT(Offset) * disp, MT(Datatype) * etype,
-          MT(Datatype) * filetype, char *datarep),
-         ((MP(File))fh, (MP(Offset) *)disp, (MP(Datatype) *)etype,
-          (MP(Datatype) *)filetype, datarep))
+         (MT(File) fh, MT(Offset) * disp, MT(DatatypePtr) etype,
+          MT(DatatypePtr) filetype, char *datarep),
+         ((MP(File))fh, (MP(Offset) *)disp, (MP(DatatypePtr))etype,
+          (MP(DatatypePtr))filetype, datarep))
 
 FUNCTION(int, File_read_at,
          (MT(File) fh, MT(Offset) offset, void *buf, int count,
@@ -1068,31 +1078,33 @@ FUNCTION(int, Init_thread,
 FUNCTION(int, Close_port, (const char *port_name), (port_name))
 FUNCTION(int, Comm_accept,
          (const char *port_name, MT(Info) info, int root, MT(Comm) comm,
-          MT(Comm) * newcomm),
-         (port_name, (MP(Info))info, root, (MP(Comm))comm, (MP(Comm) *)newcomm))
+          MT(CommPtr) newcomm),
+         (port_name, (MP(Info))info, root, (MP(Comm))comm,
+          (MP(CommPtr))newcomm))
 FUNCTION(int, Comm_connect,
          (const char *port_name, MT(Info) info, int root, MT(Comm) comm,
-          MT(Comm) * newcomm),
-         (port_name, (MP(Info))info, root, (MP(Comm))comm, (MP(Comm) *)newcomm))
-FUNCTION(int, Comm_disconnect, (MT(Comm) * comm), ((MP(Comm) *)comm))
-FUNCTION(int, Comm_get_parent, (MT(Comm) * parent), ((MP(Comm) *)parent))
-FUNCTION(int, Comm_join, (int fd, MT(Comm) * intercomm),
-         (fd, (MP(Comm) *)intercomm))
+          MT(CommPtr) newcomm),
+         (port_name, (MP(Info))info, root, (MP(Comm))comm,
+          (MP(CommPtr))newcomm))
+FUNCTION(int, Comm_disconnect, (MT(CommPtr) comm), ((MP(CommPtr))comm))
+FUNCTION(int, Comm_get_parent, (MT(CommPtr) parent), ((MP(CommPtr))parent))
+FUNCTION(int, Comm_join, (int fd, MT(CommPtr) intercomm),
+         (fd, (MP(CommPtr))intercomm))
 FUNCTION(int, Comm_spawn,
          (const char *command, char *argv[], int maxprocs, MT(Info) info,
-          int root, MT(Comm) comm, MT(Comm) * intercomm,
+          int root, MT(Comm) comm, MT(CommPtr) intercomm,
           int array_of_errcodes[]),
          (command, argv, maxprocs, (MP(Info))info, root, (MP(Comm))comm,
-          (MP(Comm) *)intercomm, array_of_errcodes))
+          (MP(CommPtr))intercomm, array_of_errcodes))
 #ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Comm_spawn_multiple,
          (int count, char *array_of_commands[], char **array_of_argv[],
           const int array_of_maxprocs[], const MT(Info) array_of_info[],
-          int root, MT(Comm) comm, MT(Comm) * intercomm,
+          int root, MT(Comm) comm, MT(CommPtr) intercomm,
           int array_of_errcodes[]),
          (count, array_of_commands, array_of_argv, array_of_maxprocs,
-          (const MP(Info) *)array_of_info, root, (MP(Comm))comm,
-          (MP(Comm) *)intercomm, array_of_errcodes))
+          (const MP(InfoPtr))array_of_info, root, (MP(Comm))comm,
+          (MP(CommPtr))intercomm, array_of_errcodes))
 #endif
 FUNCTION(int, Lookup_name,
          (const char *service_name, MT(Info) info, char *port_name),
@@ -1135,13 +1147,13 @@ FUNCTION(int, Put,
 FUNCTION(int, Win_complete, (MT(Win) win), ((MP(Win))win))
 FUNCTION(int, Win_create,
          (void *base, MT(Aint) size, int disp_unit, MT(Info) info,
-          MT(Comm) comm, MT(Win) * win),
+          MT(Comm) comm, MT(WinPtr) win),
          (base, (MP(Aint))size, disp_unit, (MP(Info))info, (MP(Comm))comm,
-          (MP(Win) *)win))
+          (MP(WinPtr))win))
 FUNCTION(int, Win_fence, (int assert, MT(Win) win), (assert, (MP(Win))win))
-FUNCTION(int, Win_free, (MT(Win) * win), ((MP(Win) *)win))
-FUNCTION(int, Win_get_group, (MT(Win) win, MT(Group) * group),
-         ((MP(Win))win, (MP(Group) *)group))
+FUNCTION(int, Win_free, (MT(WinPtr) win), ((MP(WinPtr))win))
+FUNCTION(int, Win_get_group, (MT(Win) win, MT(GroupPtr) group),
+         ((MP(Win))win, (MP(GroupPtr))group))
 FUNCTION(int, Win_lock, (int lock_type, int rank, int assert, MT(Win) win),
          (lock_type, rank, assert, (MP(Win))win))
 FUNCTION(int, Win_post, (MT(Group) group, int assert, MT(Win) win),
@@ -1155,14 +1167,14 @@ FUNCTION(int, Win_wait, (MT(Win) win), ((MP(Win))win))
 /* Fortran 90-related functions.  These routines are available only if
    Fortran 90 support is enabled
 */
-FUNCTION(int, Type_create_f90_integer, (int range, MT(Datatype) * newtype),
-         (range, (MP(Datatype) *)newtype))
+FUNCTION(int, Type_create_f90_integer, (int range, MT(DatatypePtr) newtype),
+         (range, (MP(DatatypePtr))newtype))
 FUNCTION(int, Type_create_f90_real,
-         (int precision, int range, MT(Datatype) * newtype),
-         (precision, range, (MP(Datatype) *)newtype))
+         (int precision, int range, MT(DatatypePtr) newtype),
+         (precision, range, (MP(DatatypePtr))newtype))
 FUNCTION(int, Type_create_f90_complex,
-         (int precision, int range, MT(Datatype) * newtype),
-         (precision, range, (MP(Datatype) *)newtype))
+         (int precision, int range, MT(DatatypePtr) newtype),
+         (precision, range, (MP(DatatypePtr))newtype))
 
 #if 0
 /* MPI-3 One-Sided Communication Routines */
