@@ -1,0 +1,20 @@
+      integer MPI_STATUS_SIZE
+      parameter (MPI_STATUS_SIZE = 10)
+
+#define MT(TYPE) MPI_##TYPE
+#define CONSTANT(TYPE, NAME) \
+      [n]integer MPI_##NAME \
+      [n]common /MPI_##NAME/ [c]MPI_##NAME
+#include "mpi-constants-f.inc"
+#undef CONSTANT
+#undef MT
+
+#define MT(TYPE) MPI_##TYPE
+#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES) \
+      [n]external MPI_##NAME
+#include "mpi-functions-f.inc"
+#undef FUNCTION
+#undef MT
+
+      double precision MPI_Wtime
+      double precision MPI_Wtick

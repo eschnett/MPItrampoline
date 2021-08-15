@@ -54,8 +54,10 @@ static void *dlsym1(void *handle, const char *name) {
 void __attribute__((__constructor__)) init_mpiwrapper() {
   const char *const libname = getenv("MPITRAMPOLINE_LIB");
   if (!libname) {
-    fprintf(stderr, "MPI wrapper library not set. Set the environment variable "
-                    "MPITRAMPOLINE_LIB.\n");
+    fprintf(stderr,
+            "Set the environment variable MPITRAMPOLINE_LIB to point to a "
+            "wrapped MPI library.\n"
+            "See <https://github.com/eschnett/MPItrampoline> for details.\n");
     exit(1);
   }
 

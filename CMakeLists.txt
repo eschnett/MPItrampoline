@@ -3,9 +3,6 @@ rm -rf build $HOME/src/c/MPIstuff/mpitrampoline
 cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff/mpitrampoline
 cmake --build build && cmake --install build
 
-env MPITRAMPOLINE_LIB=/Users/eschnett/src/c/MPIstuff/lib/libmpiwrapper.dylib /Users/eschnett/src/c/MPIstuff/bin/mpi-test
-/Users/eschnett/src/c/MPIstuff/bin/mpiexec -n 4 /Users/eschnett/src/c/MPIstuff/bin/mpi-test
-
 
 
 export PATH=$HOME/src/spack/opt/spack/linux-ubuntu18.04-skylake_avx512/gcc-11.2.0/cmake-3.21.1-ztbpwc6mr65mqagnikcuuiifn3ox6btv/bin:$PATH
@@ -30,6 +27,16 @@ project(
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 
+add_custom_command(
+  OUTPUT mpif.h
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fortran-cpp.sh ${CMAKE_CURRENT_SOURCE_DIR}/mpif.h.in mpif.h
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mpif.h.in ${CMAKE_CURRENT_SOURCE_DIR}/mpi-constants-f.inc ${CMAKE_CURRENT_SOURCE_DIR}/mpi-functions-f.inc
+  VERBATIM)
+install(
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpif.h"
+  DESTINATION include
+  )
+
 # We always use static linking to avoid confusion between
 # MPItrampoline MPI and the wrapped MPI: Both define e.g. `MPI_Init`,
 # and our (MPItrampoline's) `MPI_Init` must not interpose the
@@ -39,7 +46,8 @@ target_link_libraries(mpitrampoline PUBLIC ${CMAKE_DL_LIBS})
 set_target_properties(mpitrampoline PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION 1
-  PUBLIC_HEADER "mpi.h;mpio.h;mpif.h;mpi-constants.inc;mpi-functions.inc"
+  # TODO: Add mpif.h as public header instead of installing it manually
+  PUBLIC_HEADER "mpi.h;mpio.h;mpi-constants.inc;mpi-functions.inc"
   )
 install(TARGETS mpitrampoline EXPORT MPItrampolineTargets)
 
