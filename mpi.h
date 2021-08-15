@@ -126,10 +126,14 @@ extern "C" {
 #endif
 
 #define MT(TYPE) MPI_##TYPE
-#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES) extern RTYPE(*MPI_##NAME) PTYPES;
+#define MP(TYPE) MPI_##TYPE
+#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
+  extern RTYPE(*MPItrampoline_##NAME) PTYPES;                                  \
+  inline RTYPE MPI_##NAME PTYPES { return MPItrampoline_##NAME PNAMES; }
 #include "mpi-functions.inc"
 #undef FUNCTION
 #undef MT
+#undef MP
 
 #ifdef __cplusplus
 }

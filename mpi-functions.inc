@@ -1243,5 +1243,5 @@ int MPI_Win_sync(MPI_Win win) MPICH_API_PUBLIC;
 ////////////////////////////////////////////////////////////////////////////////
 
 #ifndef SKIP_MANUAL_FUNCTIONS
-FUNCTION(int, Pcontrol, (const int level, ...), ())
+FUNCTION(int, Pcontrol, (const int level, ...), (level))
 #endif

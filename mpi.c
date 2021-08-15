@@ -15,10 +15,13 @@
 #undef MT
 
 #define MT(TYPE) MPI_##TYPE
-#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES) RTYPE(*MPI_##NAME) PTYPES = NULL;
+#define MP(TYPE) MPI_##TYPE
+#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
+  RTYPE(*MPItrampoline_##NAME) PTYPES = NULL;
 #include "mpi-functions.inc"
 #undef FUNCTION
 #undef MT
+#undef MP
 
 #define MT(TYPE) MPI_##TYPE
 #define CONSTANT(TYPE, NAME) TYPE mpi_##NAME##_;
@@ -28,13 +31,7 @@
 
 #define MT(TYPE) MPI_##TYPE
 #define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
-  RTYPE(*mpitrampoline_##NAME##_) PTYPES = NULL;
-#include "mpi-functions-f.inc"
-#undef FUNCTION
-#undef MT
-
-#define MT(TYPE) MPI_##TYPE
-#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
+  RTYPE(*mpitrampoline_##NAME##_) PTYPES = NULL;                               \
   RTYPE mpi_##NAME##_ PTYPES { return mpitrampoline_##NAME##_ PNAMES; }
 #include "mpi-functions-f.inc"
 #undef FUNCTION
@@ -78,7 +75,7 @@ void __attribute__((__constructor__)) init_mpiwrapper() {
   // Read C function pointers
 #define MT(TYPE) MPI_##TYPE
 #define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
-  MPI_##NAME = dlsym1(handle, "WPI_" #NAME);
+  MPItrampoline_##NAME = dlsym1(handle, "WPI_" #NAME);
 #include "mpi-functions.inc"
 #undef FUNCTION
 #undef MT
