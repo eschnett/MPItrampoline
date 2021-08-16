@@ -1189,7 +1189,7 @@ FUNCTION(int, File_set_view,
 FUNCTION(int, File_get_view,
          (MT(File) fh, MT(Offset) * disp, MT(DatatypePtr) etype,
           MT(DatatypePtr) filetype, char *datarep),
-         (fh, disp, etype, filetype, datarep))
+         (fh, (MP(Offset) *)disp, etype, filetype, datarep))
 
 // 13.4 Data Access
 FUNCTION(int, File_read_at,
@@ -1259,10 +1259,10 @@ FUNCTION(int, File_iwrite_all,
 FUNCTION(int, File_seek, (MT(File) fh, MT(Offset) offset, int whence),
          (fh, offset, whence))
 FUNCTION(int, File_get_position, (MT(File) fh, MT(Offset) * offset),
-         (fh, offset))
+         (fh, (MP(Offset) *)offset))
 FUNCTION(int, File_get_byte_offset,
          (MT(File) fh, MT(Offset) offset, MT(Offset) * disp),
-         (fh, offset, disp))
+         (fh, (MP(Offset) *)offset, disp))
 FUNCTION(int, File_read_shared,
          (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
           MT(StatusPtr) status),
@@ -1290,7 +1290,7 @@ FUNCTION(int, File_write_ordered,
 FUNCTION(int, File_seek_shared, (MT(File) fh, MT(Offset) offset, int whence),
          (fh, offset, whence))
 FUNCTION(int, File_get_position_shared, (MT(File) fh, MT(Offset) * offset),
-         (fh, offset))
+         (fh, (MP(Offset) *)offset))
 FUNCTION(int, File_read_at_all_begin,
          (MT(File) fh, MT(Offset) offset, void *buf, int count,
           MT(Datatype) datatype),
