@@ -21,8 +21,10 @@ cmake_minimum_required(VERSION 3.12...3.20)
 project(
   MPItrampoline VERSION 1.0.0
   DESCRIPTION "MPI trampoline"
-  LANGUAGES C
+  LANGUAGES C Fortran
   )
+
+set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod_files)
 
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
@@ -41,7 +43,14 @@ install(
 # MPItrampoline MPI and the wrapped MPI: Both define e.g. `MPI_Init`,
 # and our (MPItrampoline's) `MPI_Init` must not interpose the
 # `MPI_Init` defined by the wrapped MPI.
-add_library(mpitrampoline STATIC mpi.h mpio.h mpif.h mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc mpi.c)
+add_library(
+  mpitrampoline STATIC
+  mpi.h mpio.h mpif.h
+  mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc
+  mpi.c
+  mpi.f90
+  mpi_f08.f90 mpi_f08_impl.f90
+  )
 target_link_libraries(mpitrampoline PUBLIC ${CMAKE_DL_LIBS})
 set_target_properties(mpitrampoline PROPERTIES
   VERSION ${PROJECT_VERSION}
@@ -50,6 +59,7 @@ set_target_properties(mpitrampoline PROPERTIES
   PUBLIC_HEADER "mpi.h;mpio.h;mpi-constants.inc;mpi-functions.inc"
   )
 install(TARGETS mpitrampoline EXPORT MPItrampolineTargets)
+install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION include)
 
 write_basic_package_version_file(
   ${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfigVersion.cmake
