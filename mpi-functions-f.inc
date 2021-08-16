@@ -15,6 +15,13 @@ FUNCTION(void, get_count,
           MT(Fint) * ierror),
          (status, datatype, count, ierror))
 
+// 6.4 Communicator Management
+FUNCTION(void, comm_size, (MT(Fint) * comm, MT(Fint) * size, MT(Fint) * ierror),
+         (comm, size, ierror))
+FUNCTION(void, comm_rank, (MT(Fint) * comm, MT(Fint) * rank, MT(Fint) * ierror),
+         (comm, rank, ierror))
+// ...
+
 // 8.6 Times and Synchronization
 FUNCTION(double, wtime, (), ())
 FUNCTION(double, wtick, (), ())

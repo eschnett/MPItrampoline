@@ -1,5 +1,5 @@
       integer MPI_STATUS_SIZE
-      parameter (MPI_STATUS_SIZE = 10)
+      parameter (MPI_STATUS_SIZE = 6)
 
 #define MT(TYPE) MPI_##TYPE
 #define CONSTANT(TYPE, NAME) \

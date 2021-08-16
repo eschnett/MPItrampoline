@@ -6,6 +6,9 @@
 #include <stdio.h>
 #include <stdlib.h>
 
+void mpitrampoline_mpi_init_();
+void mpitrampoline_mpi_f08_init_();
+
 ////////////////////////////////////////////////////////////////////////////////
 
 #define MT(TYPE) MPI_##TYPE
@@ -25,7 +28,7 @@
 #undef MP
 
 #define MT(TYPE) MPI_##TYPE
-#define CONSTANT(TYPE, NAME) TYPE mpi_##NAME##_;
+#define CONSTANT(TYPE, NAME) MPI_Fint mpi_##NAME##_;
 #include "mpi-constants-f.inc"
 #undef CONSTANT
 #undef MT
@@ -88,7 +91,7 @@ void __attribute__((__constructor__)) init_mpiwrapper() {
   // Read Fortran constants
 #define MT(TYPE) MPI_##TYPE
 #define CONSTANT(TYPE, NAME)                                                   \
-  mpi_##NAME##_ = *(TYPE const *)dlsym1(handle, "wpi_" #NAME "_");
+  mpi_##NAME##_ = *(MPI_Fint const *)dlsym1(handle, "wpi_" #NAME "_");
 #include "mpi-constants-f.inc"
 #undef CONSTANT
 #undef MT
@@ -100,4 +103,7 @@ void __attribute__((__constructor__)) init_mpiwrapper() {
 #include "mpi-functions-f.inc"
 #undef FUNCTION
 #undef MT
+
+  mpitrampoline_mpi_init_();
+  mpitrampoline_mpi_f08_init_();
 }
