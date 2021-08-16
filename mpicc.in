@@ -8,14 +8,14 @@
 # We impersonate OpenMPI.
 
 if [ "x$1" = "x-showme:compile" ]; then
-    echo 'cc -I@CMAKE_INSTALL_PREFIX@/include'
+    echo '-I@CMAKE_INSTALL_PREFIX@/include'
     exit 0
 elif [ "x$1" = "x-showme:link" ]; then
-    echo 'cc -L@CMAKE_INSTALL_PREFIX@/lib -lmpitrampoline -ldl'
+    echo '-L@CMAKE_INSTALL_PREFIX@/lib -lmpitrampoline -ldl'
     exit 0
 elif [ "x$1" = "x-showme" ]; then
-    echo 'cc -I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib -lmpitrampoline -ldl'
+    echo '-I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib -lmpitrampoline -ldl'
     exit 0
 fi
 
-exec cc -I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib "$@" -lmpitrampoline -ldl
+exec ${MPITRAMPOLINE_CC:-cc} -I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib "$@" -lmpitrampoline -ldl

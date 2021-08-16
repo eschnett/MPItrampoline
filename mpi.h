@@ -125,11 +125,12 @@ typedef void(MPI_Win_errhandler_function)(MPI_Win *, int *, ...);
 extern "C" {
 #endif
 
+// TODO: Use inline function wrappers
 #define MT(TYPE) MPI_##TYPE
 #define MP(TYPE) MPI_##TYPE
 #define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
   extern RTYPE(*MPItrampoline_##NAME) PTYPES;                                  \
-  inline RTYPE MPI_##NAME PTYPES { return MPItrampoline_##NAME PNAMES; }
+  RTYPE MPI_##NAME PTYPES;
 #include "mpi-functions.inc"
 #undef FUNCTION
 #undef MT
