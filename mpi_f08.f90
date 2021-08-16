@@ -5,6 +5,8 @@ module mpi_f08
   implicit none
   save
 
+  ! TODO: Make everything private by default
+
   private mpi_status_size
 
   type :: mpi_comm

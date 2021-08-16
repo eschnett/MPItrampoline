@@ -972,6 +972,54 @@ FUNCTION(int, Info_dup, (MT(Info) info, MT(InfoPtr) newinfo),
          ((MP(Info))info, (MP(InfoPtr))newinfo))
 FUNCTION(int, Info_free, (MT(InfoPtr) info), ((MP(InfoPtr))info))
 
+// 10.3 Process Manager Interface
+FUNCTION(int, Comm_spawn,
+         (const char *command, char *argv[], int maxprocs, MT(Info) info,
+          int root, MT(Comm) comm, MT(CommPtr) intercomm,
+          int array_off_errcodes[]),
+         (command, argv, maxprocs, (MP(Info))info, root, (MP(Comm))comm,
+          (MP(CommPtr))intercomm, array_off_errcodes))
+FUNCTION(int, Comm_get_parent, (MT(CommPtr) parent), ((MP(CommPtr))parent))
+#ifndef SKIP_MANUAL_FUNCTIONS
+FUNCTION(int, Comm_spawn_multiple,
+         (int count, char *array_of_commands[], char **array_of_argv[],
+          const int array_of_maxprocs[], const MT(Info) array_of_info[],
+          int root, MT(Comm) comm, MT(CommPtr) intercomm,
+          int array_of_errcodes[]),
+         (count, array_of_commands, array_of_argv, array_of_maxprocs,
+          (const MP(InfoPtr))array_of_info, root, (MP(Comm))comm,
+          (MP(CommPtr))intercomm, array_of_errcodes))
+#endif
+
+// 10.4 Establishing Communication
+FUNCTION(int, Open_port, (MT(Info) info, char *port_name),
+         ((MP(Info))info, port_name))
+FUNCTION(int, Close_port, (const char *port_name), (port_name))
+FUNCTION(int, Comm_accept,
+         (const char *port_name, MT(Info) info, int root, MT(Comm) comm,
+          MT(CommPtr) newcomm),
+         (port_name, (MP(Info))info, root, (MP(Comm))comm,
+          (MP(CommPtr))newcomm))
+FUNCTION(int, Comm_connect,
+         (const char *port_name, MT(Info) info, int root, MT(Comm) comm,
+          MT(CommPtr) newcomm),
+         (port_name, (MP(Info))info, root, (MP(Comm))comm,
+          (MP(CommPtr))newcomm))
+FUNCTION(int, Publish_name,
+         (const char *service_name, MT(Info) info, const char *port_name),
+         (service_name, (MP(Info))info, port_name))
+FUNCTION(int, Unpublish_name,
+         (const char *service_name, MT(Info) info, const char *port_name),
+         (service_name, (MP(Info))info, port_name))
+FUNCTION(int, Lookup_name,
+         (const char *service_name, MT(Info) info, char *port_name),
+         (service_name, (MP(Info))info, port_name))
+
+// 10.5 Other Functionality
+FUNCTION(int, Comm_disconnect, (MT(CommPtr) comm), ((MP(CommPtr))comm))
+FUNCTION(int, Comm_join, (int fd, MT(CommPtr) intercomm),
+         (fd, (MP(CommPtr))intercomm))
+
 // ES: i checked the standard; we are complete from the top to here
 
 // 13.2 File Manipulation
@@ -1074,49 +1122,6 @@ FUNCTION(int, Init_thread,
          (argc, argv, required, provided))
 
 ////////////////////////////////////////////////////////////////////////////////
-
-FUNCTION(int, Close_port, (const char *port_name), (port_name))
-FUNCTION(int, Comm_accept,
-         (const char *port_name, MT(Info) info, int root, MT(Comm) comm,
-          MT(CommPtr) newcomm),
-         (port_name, (MP(Info))info, root, (MP(Comm))comm,
-          (MP(CommPtr))newcomm))
-FUNCTION(int, Comm_connect,
-         (const char *port_name, MT(Info) info, int root, MT(Comm) comm,
-          MT(CommPtr) newcomm),
-         (port_name, (MP(Info))info, root, (MP(Comm))comm,
-          (MP(CommPtr))newcomm))
-FUNCTION(int, Comm_disconnect, (MT(CommPtr) comm), ((MP(CommPtr))comm))
-FUNCTION(int, Comm_get_parent, (MT(CommPtr) parent), ((MP(CommPtr))parent))
-FUNCTION(int, Comm_join, (int fd, MT(CommPtr) intercomm),
-         (fd, (MP(CommPtr))intercomm))
-FUNCTION(int, Comm_spawn,
-         (const char *command, char *argv[], int maxprocs, MT(Info) info,
-          int root, MT(Comm) comm, MT(CommPtr) intercomm,
-          int array_of_errcodes[]),
-         (command, argv, maxprocs, (MP(Info))info, root, (MP(Comm))comm,
-          (MP(CommPtr))intercomm, array_of_errcodes))
-#ifndef SKIP_MANUAL_FUNCTIONS
-FUNCTION(int, Comm_spawn_multiple,
-         (int count, char *array_of_commands[], char **array_of_argv[],
-          const int array_of_maxprocs[], const MT(Info) array_of_info[],
-          int root, MT(Comm) comm, MT(CommPtr) intercomm,
-          int array_of_errcodes[]),
-         (count, array_of_commands, array_of_argv, array_of_maxprocs,
-          (const MP(InfoPtr))array_of_info, root, (MP(Comm))comm,
-          (MP(CommPtr))intercomm, array_of_errcodes))
-#endif
-FUNCTION(int, Lookup_name,
-         (const char *service_name, MT(Info) info, char *port_name),
-         (service_name, (MP(Info))info, port_name))
-FUNCTION(int, Open_port, (MT(Info) info, char *port_name),
-         ((MP(Info))info, port_name))
-FUNCTION(int, Publish_name,
-         (const char *service_name, MT(Info) info, const char *port_name),
-         (service_name, (MP(Info))info, port_name))
-FUNCTION(int, Unpublish_name,
-         (const char *service_name, MT(Info) info, const char *port_name),
-         (service_name, (MP(Info))info, port_name))
 
 FUNCTION(int, Is_thread_main, (int *flag), (flag))
 FUNCTION(int, Query_thread, (int *provided), (provided))

@@ -15,6 +15,8 @@ module mpi
   integer mpi_int
   integer mpi_integer
 
+  ! TOOD: We can just declare `mpi_send` etc. as `external`. (But we cannot do this for `mpi_f08`.)
+
   interface mpi_send
      subroutine mpi_send_impl_integer_0(buf, count, datatype, dest, tag, comm, ierror)
        implicit none
