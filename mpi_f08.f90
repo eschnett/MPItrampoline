@@ -30,6 +30,16 @@ module mpi_f08
   type(mpi_datatype) :: mpi_int
   type(mpi_datatype) :: mpi_integer
 
+  interface operator (.eq.)
+     module procedure mpi_comm_eq
+     module procedure mpi_datatype_eq
+  end interface operator (.eq.)
+
+  interface operator (.ne.)
+     module procedure mpi_comm_ne
+     module procedure mpi_datatype_ne
+  end interface operator (.ne.)
+
   interface mpi_send
      subroutine mpi_send_f08_impl_integer_0(buf, count, datatype, dest, tag, comm, ierror)
        import mpi_comm, mpi_datatype
@@ -148,5 +158,27 @@ module mpi_f08
        implicit none
      end function mpi_wtick
   end interface mpi_wtick
+
+contains
+
+  logical function mpi_comm_eq(comm1, comm2)
+    type(mpi_comm), intent(in) :: comm1, comm2
+    mpi_comm_eq = comm1%comm .eq. comm2%comm
+  end function mpi_comm_eq
+
+  logical function mpi_comm_ne(comm1, comm2)
+    type(mpi_comm), intent(in) :: comm1, comm2
+    mpi_comm_ne = comm1%comm .ne. comm2%comm
+  end function mpi_comm_ne
+
+  logical function mpi_datatype_eq(datatype1, datatype2)
+    type(mpi_datatype), intent(in) :: datatype1, datatype2
+    mpi_datatype_eq = datatype1%datatype .eq. datatype2%datatype
+  end function mpi_datatype_eq
+
+  logical function mpi_datatype_ne(datatype1, datatype2)
+    type(mpi_datatype), intent(in) :: datatype1, datatype2
+    mpi_datatype_ne = datatype1%datatype .ne. datatype2%datatype
+  end function mpi_datatype_ne
 
 end module mpi_f08
