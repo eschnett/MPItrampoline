@@ -95,21 +95,50 @@ typedef const MPI_Status *MPI_const_StatusPtr;
 
 // Callback function types
 
-typedef int(MPI_Comm_copy_attr_function)(MPI_Comm, int, void *, void *, void *,
-                                         int *);
-typedef int(MPI_Comm_delete_attr_function)(MPI_Comm, int, void *, void *);
-typedef void(MPI_Comm_errhandler_function)(MPI_Comm *, int *, ...);
-typedef int(MPI_Copy_function)(MPI_Comm, int, void *, void *, void *, int *);
-typedef int(MPI_Delete_function)(MPI_Comm, int, void *, void *);
-typedef void(MPI_File_errhandler_function)(MPI_File *, int *, ...);
-typedef int(MPI_Type_copy_attr_function)(MPI_Datatype, int, void *, void *,
-                                         void *, int *);
-typedef int(MPI_Type_delete_attr_function)(MPI_Datatype, int, void *, void *);
-typedef void(MPI_User_function)(void *, void *, int *, MPI_Datatype *);
-typedef int(MPI_Win_copy_attr_function)(MPI_Win, int, void *, void *, void *,
-                                        int *);
-typedef int(MPI_Win_delete_attr_function)(MPI_Win, int, void *, void *);
-typedef void(MPI_Win_errhandler_function)(MPI_Win *, int *, ...);
+typedef int MPI_Comm_copy_attr_function(MPI_Comm oldcomm, int comm_keyval,
+                                        void *extra_state,
+                                        void *attribute_val_in,
+                                        void *attribute_val, int *flag);
+typedef int MPI_Comm_delete_attr_function(MPI_Comm comm, int comm_keyval,
+                                          void *attribute_val,
+                                          void *extra_state);
+typedef void MPI_Comm_errhandler_function(MPI_Comm *, int *, ...);
+typedef MPI_Comm_copy_attr_function MPI_Copy_function;
+#if 0
+// TODO: Handle conversions
+typedef int MPI_Datarep_conversion_function(void *userbuf,
+                                            MPI_Datatype datatype, int count,
+                                            void *filebuf, MPI_Offset position,
+                                            void *extra_state);
+typedef int MPI_Datarep_extent_function(MPI_Datatype datatype,
+                                        MPI_Aint *file_extent,
+                                        void *extra_state);
+#endif
+typedef MPI_Comm_delete_attr_function MPI_Delete_function;
+typedef void MPI_File_errhandler_function(MPI_File *, int *, ...);
+typedef int MPI_Grequest_cancel_function(void *extra_state, int complete);
+typedef int MPI_Grequest_free_function(void *extra_state);
+#if 0
+// TODO: Handle status correctly
+typedef int MPI_Grequest_query_function(void *extra_state, MPI_Status *status);
+#endif
+typedef int MPI_Type_copy_attr_function(MPI_Datatype oldtype, int type_keyval,
+                                        void *extra_state,
+                                        void *attribute_val_in,
+                                        void *attribute_val_out, int *flag);
+typedef int MPI_Type_delete_attr_function(MPI_Datatype datatype,
+                                          int type_keyval, void *attribute_val,
+                                          void *extra_state);
+typedef void MPI_User_function(void *invec, void *inoutvec, int *len,
+                               MPI_Datatype *datatype);
+typedef int MPI_Win_copy_attr_function(MPI_Win oldwin, int win_keyval,
+                                       void *extra_state,
+                                       void *attribute_val_in,
+                                       void *attribute_val_out, int *flag);
+typedef int MPI_Win_delete_attr_function(MPI_Win win, int win_keyval,
+                                         void *attribute_val,
+                                         void *extra_state);
+typedef void MPI_Win_errhandler_function(MPI_Win *, int *, ...);
 
 // Constants
 

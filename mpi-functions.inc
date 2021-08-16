@@ -1,7 +1,4 @@
-// We follow the naming conventions of MPICH. (Thank you, MPICH
-// developers!)
-
-// The section names follow the MPI 3.1 standard.
+// The section names and function parameter names follow the MPI 3.1 standard.
 
 // 3.2 Blocking Send and Receive Operations
 FUNCTION(int, Send,
@@ -1136,7 +1133,31 @@ FUNCTION(int, Win_flush_local, (int rank, MT(Win) win), (rank, win))
 FUNCTION(int, Win_flush_local_all, (MT(Win) win), (win))
 FUNCTION(int, Win_sync, (MT(Win) win), (win))
 
-// ES: i checked the standard; we are complete from the top to here
+// 12.2 Generalized Requests
+#if 0
+// TODO: Handle status correctly
+FUNCTION(int, Grequest_start,
+         (MT(Grequest_query_function) * query_fn,
+          MT(Grequest_free_function) * free_fn,
+          MT(Grequest_cancel_function) * cancel_fn, void *extra_state,
+          MT(RequestPtr) request),
+         (query_fn, free_fn, cancel_fn, extra_state, request))
+#endif
+FUNCTION(int, Grequest_complete, (MT(Request) request), (request))
+
+// 12.3 Associating Information with Status
+FUNCTION(int, Status_set_elements,
+         (MT(StatusPtr) status, MT(Datatype) datatype, int count),
+         ((MP(StatusPtr))status, datatype, count))
+FUNCTION(int, Status_set_cancelled, (MT(StatusPtr) status, int flag),
+         ((MP(StatusPtr))status, flag))
+
+// 12.4 MPI and Threads
+FUNCTION(int, Init_thread,
+         (int *argc, char ***argv, int required, int *provided),
+         (argc, argv, required, provided))
+FUNCTION(int, Query_thread, (int *provided), (provided))
+FUNCTION(int, Is_thread_main, (int *flag), (flag))
 
 // 13.2 File Manipulation
 FUNCTION(int, File_open,
@@ -1160,47 +1181,179 @@ FUNCTION(int, File_set_info, (MT(File) fh, MT(Info) info),
 FUNCTION(int, File_get_info, (MT(File) fh, MT(InfoPtr) info_used),
          ((MP(File))fh, (MP(InfoPtr))info_used))
 
+// 13.3 File View
+FUNCTION(int, File_set_view,
+         (MT(File) fh, MT(Offset) disp, MT(Datatype) etype,
+          MT(Datatype) filetype, const char *datarep, MT(Info) info),
+         (fh, disp, etype, filetype, datarep, info))
+FUNCTION(int, File_get_view,
+         (MT(File) fh, MT(Offset) * disp, MT(DatatypePtr) etype,
+          MT(DatatypePtr) filetype, char *datarep),
+         (fh, disp, etype, filetype, datarep))
+
+// 13.4 Data Access
+FUNCTION(int, File_read_at,
+         (MT(File) fh, MT(Offset) offset, void *buf, int count,
+          MT(Datatype) datatype, MT(StatusPtr) status),
+         (fh, offset, buf, count, datatype, (MP(StatusPtr))status))
+FUNCTION(int, File_read_at_all,
+         (MT(File) fh, MT(Offset) offset, void *buf, int count,
+          MT(Datatype) datatype, MT(StatusPtr) status),
+         (fh, offset, buf, count, datatype, (MP(StatusPtr))status))
+FUNCTION(int, File_write_at,
+         (MT(File) fh, MT(Offset) offset, const void *buf, int count,
+          MT(Datatype) datatype, MT(StatusPtr) status),
+         (fh, offset, buf, count, datatype, (MP(StatusPtr))status))
+FUNCTION(int, File_write_at_all,
+         (MT(File) fh, MT(Offset) offset, const void *buf, int count,
+          MT(Datatype) datatype, MT(StatusPtr) status),
+         (fh, offset, buf, count, datatype, (MP(StatusPtr))status))
+FUNCTION(int, File_iread_at,
+         (MT(File) fh, MT(Offset) offset, void *buf, int count,
+          MT(Datatype) datatype, MT(RequestPtr) request),
+         (fh, offset, buf, count, datatype, request))
+FUNCTION(int, File_iread_at_all,
+         (MT(File) fh, MT(Offset) offset, void *buf, int count,
+          MT(Datatype) datatype, MT(RequestPtr) request),
+         (fh, offset, buf, count, datatype, request))
+FUNCTION(int, File_iwrite_at,
+         (MT(File) fh, MT(Offset) offset, const void *buf, int count,
+          MT(Datatype) datatype, MT(RequestPtr) request),
+         (fh, offset, buf, count, datatype, request))
+FUNCTION(int, File_iwrite_at_all,
+         (MT(File) fh, MT(Offset) offset, const void *buf, int count,
+          MT(Datatype) datatype, MT(RequestPtr) request),
+         (fh, offset, buf, count, datatype, request))
+FUNCTION(int, File_read,
+         (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
+          MT(StatusPtr) status),
+         (fh, buf, count, datatype, (MP(StatusPtr))status))
+FUNCTION(int, File_read_all,
+         (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
+          MT(StatusPtr) status),
+         (fh, buf, count, datatype, (MP(StatusPtr))status))
+FUNCTION(int, File_write,
+         (MT(File) fh, const void *buf, int count, MT(Datatype) datatype,
+          MT(StatusPtr) status),
+         (fh, buf, count, datatype, (MP(StatusPtr))status))
+FUNCTION(int, File_write_all,
+         (MT(File) fh, const void *buf, int count, MT(Datatype) datatype,
+          MT(StatusPtr) status),
+         (fh, buf, count, datatype, (MP(StatusPtr))status))
+FUNCTION(int, File_iread,
+         (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
+          MT(RequestPtr) request),
+         (fh, buf, count, datatype, request))
+FUNCTION(int, File_iread_all,
+         (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
+          MT(RequestPtr) request),
+         (fh, buf, count, datatype, request))
+FUNCTION(int, File_iwrite,
+         (MT(File) fh, const void *buf, int count, MT(Datatype) datatype,
+          MT(RequestPtr) request),
+         (fh, buf, count, datatype, request))
+FUNCTION(int, File_iwrite_all,
+         (MT(File) fh, const void *buf, int count, MT(Datatype) datatype,
+          MT(RequestPtr) request),
+         (fh, buf, count, datatype, request))
+FUNCTION(int, File_seek, (MT(File) fh, MT(Offset) offset, int whence),
+         (fh, offset, whence))
+FUNCTION(int, File_get_position, (MT(File) fh, MT(Offset) * offset),
+         (fh, offset))
+FUNCTION(int, File_get_byte_offset,
+         (MT(File) fh, MT(Offset) offset, MT(Offset) * disp),
+         (fh, offset, disp))
+FUNCTION(int, File_read_shared,
+         (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
+          MT(StatusPtr) status),
+         (fh, buf, count, datatype, (MP(StatusPtr))status))
+FUNCTION(int, File_write_shared,
+         (MT(File) fh, const void *buf, int count, MT(Datatype) datatype,
+          MT(StatusPtr) status),
+         (fh, buf, count, datatype, (MP(StatusPtr))status))
+FUNCTION(int, File_iread_shared,
+         (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
+          MT(RequestPtr) request),
+         (fh, buf, count, datatype, request))
+FUNCTION(int, File_iwrite_shared,
+         (MT(File) fh, const void *buf, int count, MT(Datatype) datatype,
+          MT(RequestPtr) request),
+         (fh, buf, count, datatype, request))
+FUNCTION(int, File_read_ordered,
+         (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
+          MT(StatusPtr) status),
+         (fh, buf, count, datatype, (MP(StatusPtr))status))
+FUNCTION(int, File_write_ordered,
+         (MT(File) fh, const void *buf, int count, MT(Datatype) datatype,
+          MT(StatusPtr) status),
+         (fh, buf, count, datatype, (MP(StatusPtr))status))
+FUNCTION(int, File_seek_shared, (MT(File) fh, MT(Offset) offset, int whence),
+         (fh, offset, whence))
+FUNCTION(int, File_get_position_shared, (MT(File) fh, MT(Offset) * offset),
+         (fh, offset))
+FUNCTION(int, File_read_at_all_begin,
+         (MT(File) fh, MT(Offset) offset, void *buf, int count,
+          MT(Datatype) datatype),
+         (fh, offset, buf, count, datatype))
+FUNCTION(int, File_read_at_all_end,
+         (MT(File) fh, void *buf, MT(StatusPtr) status),
+         (fh, buf, (MP(StatusPtr))status))
+FUNCTION(int, File_write_at_all_begin,
+         (MT(File) fh, MT(Offset) offset, const void *buf, int count,
+          MT(Datatype) datatype),
+         (fh, offset, buf, count, datatype))
+FUNCTION(int, File_write_at_all_end,
+         (MT(File) fh, const void *buf, MT(StatusPtr) status),
+         (fh, buf, (MP(StatusPtr))status))
+FUNCTION(int, File_read_all_begin,
+         (MT(File) fh, void *buf, int count, MT(Datatype) datatype),
+         (fh, buf, count, datatype))
+FUNCTION(int, File_read_all_end, (MT(File) fh, void *buf, MT(StatusPtr) status),
+         (fh, buf, (MP(StatusPtr))status))
+FUNCTION(int, File_write_all_begin,
+         (MT(File) fh, const void *buf, int count, MT(Datatype) datatype),
+         (fh, buf, count, datatype))
+FUNCTION(int, File_write_all_end,
+         (MT(File) fh, const void *buf, MT(StatusPtr) status),
+         (fh, buf, (MP(StatusPtr))status))
+FUNCTION(int, File_read_ordered_begin,
+         (MT(File) fh, void *buf, int count, MT(Datatype) datatype),
+         (fh, buf, count, datatype))
+FUNCTION(int, File_read_ordered_end,
+         (MT(File) fh, void *buf, MT(StatusPtr) status),
+         (fh, buf, (MP(StatusPtr))status))
+FUNCTION(int, File_write_ordered_begin,
+         (MT(File) fh, const void *buf, int count, MT(Datatype) datatype),
+         (fh, buf, count, datatype))
+FUNCTION(int, File_write_ordered_end,
+         (MT(File) fh, const void *buf, MT(StatusPtr) status),
+         (fh, buf, (MP(StatusPtr))status))
+
+// 13.5 File Interoperability
+FUNCTION(int, File_get_type_extent,
+         (MT(File) fh, MT(Datatype) datatype, MT(Aint) * extent),
+         (fh, datatype, extent))
+#if 0
+// TODO: Handle conversions
+FUNCTION(
+    int, Register_datarep,
+    (const char *datarep, MT(Datarep_conversion_function) * read_conversion_fn,
+     MT(Datarep_conversion_function) * write_conversion_fn,
+     MT(Datarep_extent_function) * dtype_file_extent_fn, void *extra_state),
+    (datarep, read_conversion_fn, write_conversion_fn, dtype_file_extent_fn))
+#endif
+
+// 13.6 Consistency and Semantics
+FUNCTION(int, File_set_atomicity, (MT(File) fh, int flag), (fh, flag))
+FUNCTION(int, File_get_atomicity, (MT(File) fh, int *flag), (fh, flag))
+FUNCTION(int, File_sync, (MT(File) fh), (fh))
+
+// ES: i checked the standard; we are complete from the top to here
+
 ////////////////////////////////////////////////////////////////////////////////
 
 FUNCTION(int, Error_string, (int errorcode, char *string, int *resultlen),
          (errorcode, string, resultlen))
-
-FUNCTION(int, File_set_atomicity, (MT(File) fh, int flag), ((MP(File))fh, flag))
-FUNCTION(int, File_get_atomicity, (MT(File) fh, int *flag),
-         ((MP(File))fh, flag))
-FUNCTION(int, File_sync, (MT(File) fh), ((MP(File))fh))
-
-FUNCTION(int, File_set_view,
-         (MT(File) fh, MT(Offset) disp, MT(Datatype) etype,
-          MT(Datatype) filetype, const char *datarep, MT(Info) info),
-         ((MP(File))fh, (MP(Offset))disp, (MP(Datatype))etype,
-          (MP(Datatype))filetype, datarep, (MP(Info))info))
-FUNCTION(int, File_get_view,
-         (MT(File) fh, MT(Offset) * disp, MT(DatatypePtr) etype,
-          MT(DatatypePtr) filetype, char *datarep),
-         ((MP(File))fh, (MP(Offset) *)disp, (MP(DatatypePtr))etype,
-          (MP(DatatypePtr))filetype, datarep))
-
-FUNCTION(int, File_read_at,
-         (MT(File) fh, MT(Offset) offset, void *buf, int count,
-          MT(Datatype) datatype, MT(StatusPtr) status),
-         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
-          (MP(StatusPtr))status))
-FUNCTION(int, File_read_at_all,
-         (MT(File) fh, MT(Offset) offset, void *buf, int count,
-          MT(Datatype) datatype, MT(StatusPtr) status),
-         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
-          (MP(StatusPtr))status))
-FUNCTION(int, File_write_at,
-         (MT(File) fh, MT(Offset) offset, const void *buf, int count,
-          MT(Datatype) datatype, MT(StatusPtr) status),
-         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
-          (MP(StatusPtr))status))
-FUNCTION(int, File_write_at_all,
-         (MT(File) fh, MT(Offset) offset, const void *buf, int count,
-          MT(Datatype) datatype, MT(StatusPtr) status),
-         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
-          (MP(StatusPtr))status))
 
 FUNCTION(int, Status_set_elements_x,
          (MT(StatusPtr) status, MT(Datatype) datatype, MT(Count) count),
@@ -1232,15 +1385,6 @@ FUNCTION(int, Status_f2c, (const MT(Fint) * f_status, MT(StatusPtr) c_status),
          (f_status, (MP(StatusPtr))c_status))
 
 ////////////////////////////////////////////////////////////////////////////////
-
-FUNCTION(int, Init_thread,
-         (int *argc, char ***argv, int required, int *provided),
-         (argc, argv, required, provided))
-
-////////////////////////////////////////////////////////////////////////////////
-
-FUNCTION(int, Is_thread_main, (int *flag), (flag))
-FUNCTION(int, Query_thread, (int *provided), (provided))
 
 /* One-Sided Communications */
 FUNCTION(int, Win_post, (MT(Group) group, int assert, MT(Win) win),
