@@ -1,21 +1,27 @@
 #!/bin/sh
 
+# MPICH supports "-compile-info" and "-link-info".
+#
 # All OpenMPI versions support "-showme". Modern OpenMPI version also
 # support "-showme:compile" and "-showme:link".
 #
-# MPICH supports " -compile-info" and "-link-info".
-#
-# We impersonate OpenMPI.
+# We choose to behave like MPICH in this respect.
 
-if [ "x$1" = "x-showme:compile" ]; then
-    echo '-I@CMAKE_INSTALL_PREFIX@/include'
-    exit 0
-elif [ "x$1" = "x-showme:link" ]; then
-    echo '-L@CMAKE_INSTALL_PREFIX@/lib -lmpitrampoline -ldl'
-    exit 0
-elif [ "x$1" = "x-showme" ]; then
-    echo '-I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib -lmpitrampoline -ldl'
+# if [ "x$1" = "x-showme:compile" ]; then
+#     echo '-I@CMAKE_INSTALL_PREFIX@/include'
+#     exit 0
+# elif [ "x$1" = "x-showme:link" ]; then
+#     echo '-L@CMAKE_INSTALL_PREFIX@/lib -lmpitrampoline -ldl'
+#     exit 0
+# elif [ "x$1" = "x-showme" ]; then
+#     echo '-I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib -lmpitrampoline -ldl'
+#     exit 0
+# fi
+
+if [ "x$1" = "x-compile-info" -o "x$1" = "x-link-info" ]; then
+    echo ${MPITRAMPOLINE_CC:-cc} -I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib "$@" -lmpitrampoline -ldl
     exit 0
 fi
 
 exec ${MPITRAMPOLINE_CC:-cc} -I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib "$@" -lmpitrampoline -ldl
+test
