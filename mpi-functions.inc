@@ -1020,6 +1020,122 @@ FUNCTION(int, Comm_disconnect, (MT(CommPtr) comm), ((MP(CommPtr))comm))
 FUNCTION(int, Comm_join, (int fd, MT(CommPtr) intercomm),
          (fd, (MP(CommPtr))intercomm))
 
+// 11.2 Initialization
+FUNCTION(int, Win_create,
+         (void *base, MT(Aint) size, int disp_unit, MT(Info) info,
+          MT(Comm) comm, MT(WinPtr) win),
+         (base, size, disp_unit, info, comm, win))
+FUNCTION(int, Win_allocate,
+         (MT(Aint) size, int disp_unit, MT(Info) info, MT(Comm) comm,
+          void *baseptr, MT(WinPtr) win),
+         (size, disp_unit, info, comm, baseptr, win))
+FUNCTION(int, Win_allocate_shared,
+         (MT(Aint) size, int disp_unit, MT(Info) info, MT(Comm) comm,
+          void *baseptr, MT(WinPtr) win),
+         (size, disp_unit, info, comm, baseptr, win))
+FUNCTION(int, Win_shared_query,
+         (MT(Win) win, int rank, MT(Aint) * size, int *disp_unit,
+          void *baseptr),
+         (win, rank, size, disp_unit, baseptr))
+FUNCTION(int, Win_create_dynamic,
+         (MT(Info) info, MT(Comm) comm, MT(WinPtr) win), (info, comm, win))
+FUNCTION(int, Win_attach, (MT(Win) win, void *base, MT(Aint) size),
+         (win, base, size))
+FUNCTION(int, Win_detach, (MT(Win) win, const void *base), (win, base))
+FUNCTION(int, Win_free, (MT(WinPtr) win), (win))
+FUNCTION(int, Win_get_group, (MT(Win) win, MT(GroupPtr) group), (win, group))
+FUNCTION(int, Win_set_info, (MT(Win) win, MT(Info) info), (win, info))
+FUNCTION(int, Win_get_info, (MT(Win) win, MT(InfoPtr) info_used),
+         (win, info_used))
+
+// 11.3 Communication Calls
+FUNCTION(int, Put,
+         (const void *origin_addr, int origin_count,
+          MT(Datatype) origin_datatype, int target_rank, MT(Aint) target_disp,
+          int target_count, MT(Datatype) target_datatype, MT(Win) win),
+         (origin_addr, origin_count, origin_datatype, target_rank, target_disp,
+          target_count, target_datatype, win))
+FUNCTION(int, Get,
+         (void *origin_addr, int origin_count, MT(Datatype) origin_datatype,
+          int target_rank, MT(Aint) target_disp, int target_count,
+          MT(Datatype) target_datatype, MT(Win) win),
+         (origin_addr, origin_count, origin_datatype, target_rank, target_disp,
+          target_count, target_datatype, win))
+FUNCTION(int, Accumulate,
+         (const void *origin_addr, int origin_count,
+          MT(Datatype) origin_datatype, int target_rank, MT(Aint) target_disp,
+          int target_count, MT(Datatype) target_datatype, MT(Op) op,
+          MT(Win) win),
+         (origin_addr, origin_count, origin_datatype, target_rank, target_disp,
+          target_count, target_datatype, op, win))
+FUNCTION(int, Get_accumulate,
+         (const void *origin_addr, int origin_count,
+          MT(Datatype) origin_datatype, void *result_addr, int result_count,
+          MT(Datatype) result_datatype, int target_rank, MT(Aint) target_disp,
+          int target_count, MT(Datatype) target_datatype, MT(Op) op,
+          MT(Win) win),
+         (origin_addr, origin_count, origin_datatype, result_addr, result_count,
+          result_datatype, target_rank, target_disp, target_count,
+          target_datatype, op, win))
+FUNCTION(int, Fetch_and_op,
+         (const void *origin_addr, void *result_addr, MT(Datatype) datatype,
+          int target_rank, MT(Aint) target_disp, MT(Op) op, MT(Win) win),
+         (origin_addr, result_addr, datatype, target_rank, target_disp, op,
+          win))
+FUNCTION(int, Compare_and_swap,
+         (const void *origin_addr, const void *compare_addr, void *result_addr,
+          MT(Datatype) datatype, int target_rank, MT(Aint) target_disp,
+          MT(Win) win),
+         (origin_addr, compare_addr, result_addr, datatype, target_rank,
+          target_disp, win))
+FUNCTION(int, Rput,
+         (const void *origin_addr, int origin_count,
+          MT(Datatype) origin_datatype, int target_rank, MT(Aint) target_disp,
+          int target_count, MT(Datatype) target_datatype, MT(Win) win,
+          MT(RequestPtr) request),
+         (origin_addr, origin_count, origin_datatype, target_rank, target_disp,
+          target_count, target_datatype, win, request))
+FUNCTION(int, Rget,
+         (void *origin_addr, int origin_count, MT(Datatype) origin_datatype,
+          int target_rank, MT(Aint) target_disp, int target_count,
+          MT(Datatype) target_datatype, MT(Win) win, MT(RequestPtr) request),
+         (origin_addr, origin_count, origin_datatype, target_rank, target_disp,
+          target_count, target_datatype, win, request))
+FUNCTION(int, Raccumulate,
+         (const void *origin_addr, int origin_count,
+          MT(Datatype) origin_datatype, int target_rank, MT(Aint) target_disp,
+          int target_count, MT(Datatype) target_datatype, MT(Op) op,
+          MT(Win) win, MT(RequestPtr) request),
+         (origin_addr, origin_count, origin_datatype, target_rank, target_disp,
+          target_count, target_datatype, op, win, request))
+FUNCTION(int, Rget_accumulate,
+         (const void *origin_addr, int origin_count,
+          MT(Datatype) origin_datatype, void *result_addr, int result_count,
+          MT(Datatype) result_datatype, int target_rank, MT(Aint) target_disp,
+          int target_count, MT(Datatype) target_datatype, MT(Op) op,
+          MT(Win) win, MT(RequestPtr) request),
+         (origin_addr, origin_count, origin_datatype, result_addr, result_count,
+          result_datatype, target_rank, target_disp, target_count,
+          target_datatype, op, win, request))
+
+// 11.5 Synchronization Calls
+FUNCTION(int, Win_fence, (int assert, MT(Win) win), (assert, win))
+FUNCTION(int, Win_start, (MT(Group) group, int assert, MT(Win) win),
+         (group, assert, win))
+FUNCTION(int, Win_complete, (MT(Win) win), (win))
+FUNCTION(int, Win_wait, (MT(Win) win), (win))
+FUNCTION(int, Win_test, (MT(Win) win, int *flag), (win, flag))
+FUNCTION(int, Win_lock, (int lock_type, int rank, int assert, MT(Win) win),
+         (lock_type, rank, assert, win))
+FUNCTION(int, Win_lock_all, (int assert, MT(Win) win), (assert, win))
+FUNCTION(int, Win_unlock, (int rank, MT(Win) win), (rank, win))
+FUNCTION(int, Win_unlock_all, (MT(Win) win), (win))
+FUNCTION(int, Win_flush, (int rank, MT(Win) win), (rank, win))
+FUNCTION(int, Win_flush_all, (MT(Win) win), (win))
+FUNCTION(int, Win_flush_local, (int rank, MT(Win) win), (rank, win))
+FUNCTION(int, Win_flush_local_all, (MT(Win) win), (win))
+FUNCTION(int, Win_sync, (MT(Win) win), (win))
+
 // ES: i checked the standard; we are complete from the top to here
 
 // 13.2 File Manipulation
@@ -1127,47 +1243,8 @@ FUNCTION(int, Is_thread_main, (int *flag), (flag))
 FUNCTION(int, Query_thread, (int *provided), (provided))
 
 /* One-Sided Communications */
-FUNCTION(int, Accumulate,
-         (const void *origin_addr, int origin_count,
-          MT(Datatype) origin_datatype, int target_rank, MT(Aint) target_disp,
-          int target_count, MT(Datatype) target_datatype, MT(Op) op,
-          MT(Win) win),
-         (origin_addr, origin_count, (MP(Datatype))origin_datatype, target_rank,
-          (MP(Aint))target_disp, target_count, (MP(Datatype))target_datatype,
-          (MP(Op))op, (MP(Win))win))
-FUNCTION(int, Get,
-         (void *origin_addr, int origin_count, MT(Datatype) origin_datatype,
-          int target_rank, MT(Aint) target_disp, int target_count,
-          MT(Datatype) target_datatype, MT(Win) win),
-         (origin_addr, origin_count, (MP(Datatype))origin_datatype, target_rank,
-          (MP(Aint))target_disp, target_count, (MP(Datatype))target_datatype,
-          (MP(Win))win))
-FUNCTION(int, Put,
-         (const void *origin_addr, int origin_count,
-          MT(Datatype) origin_datatype, int target_rank, MT(Aint) target_disp,
-          int target_count, MT(Datatype) target_datatype, MT(Win) win),
-         (origin_addr, origin_count, (MP(Datatype))origin_datatype, target_rank,
-          (MP(Aint))target_disp, target_count, (MP(Datatype))target_datatype,
-          (MP(Win))win))
-FUNCTION(int, Win_complete, (MT(Win) win), ((MP(Win))win))
-FUNCTION(int, Win_create,
-         (void *base, MT(Aint) size, int disp_unit, MT(Info) info,
-          MT(Comm) comm, MT(WinPtr) win),
-         (base, (MP(Aint))size, disp_unit, (MP(Info))info, (MP(Comm))comm,
-          (MP(WinPtr))win))
-FUNCTION(int, Win_fence, (int assert, MT(Win) win), (assert, (MP(Win))win))
-FUNCTION(int, Win_free, (MT(WinPtr) win), ((MP(WinPtr))win))
-FUNCTION(int, Win_get_group, (MT(Win) win, MT(GroupPtr) group),
-         ((MP(Win))win, (MP(GroupPtr))group))
-FUNCTION(int, Win_lock, (int lock_type, int rank, int assert, MT(Win) win),
-         (lock_type, rank, assert, (MP(Win))win))
 FUNCTION(int, Win_post, (MT(Group) group, int assert, MT(Win) win),
          ((MP(Group))group, assert, (MP(Win))win))
-FUNCTION(int, Win_start, (MT(Group) group, int assert, MT(Win) win),
-         ((MP(Group))group, assert, (MP(Win))win))
-FUNCTION(int, Win_test, (MT(Win) win, int *flag), ((MP(Win))win, flag))
-FUNCTION(int, Win_unlock, (int rank, MT(Win) win), (rank, (MP(Win))win))
-FUNCTION(int, Win_wait, (MT(Win) win), ((MP(Win))win))
 
 /* Fortran 90-related functions.  These routines are available only if
    Fortran 90 support is enabled
@@ -1180,70 +1257,6 @@ FUNCTION(int, Type_create_f90_real,
 FUNCTION(int, Type_create_f90_complex,
          (int precision, int range, MT(DatatypePtr) newtype),
          (precision, range, (MP(DatatypePtr))newtype))
-
-#if 0
-/* MPI-3 One-Sided Communication Routines */
-int MPI_Win_allocate(MPI_Aint size, int disp_unit, MPI_Info info, MPI_Comm comm,
-                     void *baseptr, MPI_Win *win) MPICH_API_PUBLIC;
-int MPI_Win_allocate_shared(MPI_Aint size, int disp_unit, MPI_Info info,
-                            MPI_Comm comm, void *baseptr,
-                            MPI_Win *win) MPICH_API_PUBLIC;
-int MPI_Win_shared_query(MPI_Win win, int rank, MPI_Aint *size, int *disp_unit,
-                         void *baseptr) MPICH_API_PUBLIC;
-int MPI_Win_create_dynamic(MPI_Info info, MPI_Comm comm,
-                           MPI_Win *win) MPICH_API_PUBLIC;
-int MPI_Win_attach(MPI_Win win, void *base, MPI_Aint size) MPICH_API_PUBLIC;
-int MPI_Win_detach(MPI_Win win, const void *base) MPICH_API_PUBLIC;
-int MPI_Win_get_info(MPI_Win win, MPI_Info *info_used) MPICH_API_PUBLIC;
-int MPI_Win_set_info(MPI_Win win, MPI_Info info) MPICH_API_PUBLIC;
-int MPI_Get_accumulate(const void *origin_addr, int origin_count,
-                       MPI_Datatype origin_datatype, void *result_addr,
-                       int result_count, MPI_Datatype result_datatype,
-                       int target_rank, MPI_Aint target_disp, int target_count,
-                       MPI_Datatype target_datatype, MPI_Op op, MPI_Win win)
-    MPICH_ATTR_POINTER_WITH_TYPE_TAG(1, 3)
-        MPICH_ATTR_POINTER_WITH_TYPE_TAG(4, 6) MPICH_API_PUBLIC;
-int MPI_Fetch_and_op(const void *origin_addr, void *result_addr,
-                     MPI_Datatype datatype, int target_rank,
-                     MPI_Aint target_disp, MPI_Op op, MPI_Win win)
-    MPICH_ATTR_POINTER_WITH_TYPE_TAG(1, 3) MPICH_API_PUBLIC;
-int MPI_Compare_and_swap(const void *origin_addr, const void *compare_addr,
-                         void *result_addr, MPI_Datatype datatype,
-                         int target_rank, MPI_Aint target_disp, MPI_Win win)
-    MPICH_ATTR_POINTER_WITH_TYPE_TAG(1, 4)
-        MPICH_ATTR_POINTER_WITH_TYPE_TAG(2, 4)
-            MPICH_ATTR_POINTER_WITH_TYPE_TAG(3, 4) MPICH_API_PUBLIC;
-int MPI_Rput(const void *origin_addr, int origin_count,
-             MPI_Datatype origin_datatype, int target_rank,
-             MPI_Aint target_disp, int target_count,
-             MPI_Datatype target_datatype, MPI_Win win, MPI_Request *request)
-    MPICH_ATTR_POINTER_WITH_TYPE_TAG(1, 3) MPICH_API_PUBLIC;
-int MPI_Rget(void *origin_addr, int origin_count, MPI_Datatype origin_datatype,
-             int target_rank, MPI_Aint target_disp, int target_count,
-             MPI_Datatype target_datatype, MPI_Win win, MPI_Request *request)
-    MPICH_ATTR_POINTER_WITH_TYPE_TAG(1, 3) MPICH_API_PUBLIC;
-int MPI_Raccumulate(const void *origin_addr, int origin_count,
-                    MPI_Datatype origin_datatype, int target_rank,
-                    MPI_Aint target_disp, int target_count,
-                    MPI_Datatype target_datatype, MPI_Op op, MPI_Win win,
-                    MPI_Request *request)
-    MPICH_ATTR_POINTER_WITH_TYPE_TAG(1, 3) MPICH_API_PUBLIC;
-int MPI_Rget_accumulate(const void *origin_addr, int origin_count,
-                        MPI_Datatype origin_datatype, void *result_addr,
-                        int result_count, MPI_Datatype result_datatype,
-                        int target_rank, MPI_Aint target_disp, int target_count,
-                        MPI_Datatype target_datatype, MPI_Op op, MPI_Win win,
-                        MPI_Request *request)
-    MPICH_ATTR_POINTER_WITH_TYPE_TAG(1, 3)
-        MPICH_ATTR_POINTER_WITH_TYPE_TAG(4, 6) MPICH_API_PUBLIC;
-int MPI_Win_lock_all(int assert, MPI_Win win) MPICH_API_PUBLIC;
-int MPI_Win_unlock_all(MPI_Win win) MPICH_API_PUBLIC;
-int MPI_Win_flush(int rank, MPI_Win win) MPICH_API_PUBLIC;
-int MPI_Win_flush_all(MPI_Win win) MPICH_API_PUBLIC;
-int MPI_Win_flush_local(int rank, MPI_Win win) MPICH_API_PUBLIC;
-int MPI_Win_flush_local_all(MPI_Win win) MPICH_API_PUBLIC;
-int MPI_Win_sync(MPI_Win win) MPICH_API_PUBLIC;
-#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
