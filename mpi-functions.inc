@@ -1262,7 +1262,7 @@ FUNCTION(int, File_get_position, (MT(File) fh, MT(Offset) * offset),
          (fh, (MP(Offset) *)offset))
 FUNCTION(int, File_get_byte_offset,
          (MT(File) fh, MT(Offset) offset, MT(Offset) * disp),
-         (fh, (MP(Offset) *)offset, disp))
+         (fh, offset, (MP(Offset) *)disp))
 FUNCTION(int, File_read_shared,
          (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
           MT(StatusPtr) status),
