@@ -18,7 +18,7 @@
 #define MP(TYPE) MPI_##TYPE
 #define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
   RTYPE(*MPItrampoline_##NAME) PTYPES = NULL;                                  \
-  RTYPE MPI_##NAME PTYPES { return MPItrampoline_##NAME PNAMES; }
+  extern inline RTYPE MPI_##NAME PTYPES;
 #include "mpi-functions.inc"
 #undef FUNCTION
 #undef MT
