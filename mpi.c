@@ -52,7 +52,12 @@ static void *dlsym1(void *handle, const char *name) {
   return ptr;
 }
 
-void __attribute__((__constructor__)) init_mpiwrapper() {
+#ifdef __APPLE__
+#define CONSTRUCTOR_PRIORITY
+#else
+#define CONSTRUCTOR_PRIORITY (1000)
+#endif
+void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY)) init_mpiwrapper() {
   const char *const libname = getenv("MPITRAMPOLINE_LIB");
   if (!libname) {
     fprintf(stderr,
