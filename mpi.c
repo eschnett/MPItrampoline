@@ -57,7 +57,8 @@ static void *dlsym1(void *handle, const char *name) {
 #else
 #define CONSTRUCTOR_PRIORITY (1000)
 #endif
-void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY)) init_mpiwrapper() {
+static void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
+init_mpiwrapper() {
   const char *const libname = getenv("MPITRAMPOLINE_LIB");
   if (!libname) {
     fprintf(stderr,
@@ -67,7 +68,11 @@ void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY)) init_mpiwrapper() {
     exit(1);
   }
 
-  void *handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL);
+#ifdef __APPLE__
+  void *handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL | RTLD_FIRST);
+#else
+  void *handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL | RTLD_DEEPBIND);
+#endif
   if (!handle) {
     fprintf(stderr, "Could not dlopen MPI wrapper library \"%s\".\n", libname);
     exit(1);

@@ -6,13 +6,9 @@ cmake --build build && cmake --install build
 
 
 export PATH=$HOME/src/spack/opt/spack/linux-ubuntu18.04-skylake_avx512/gcc-11.2.0/cmake-3.21.1-ztbpwc6mr65mqagnikcuuiifn3ox6btv/bin:$PATH
-rm -rf build ../MPIstuff
-cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_BUILD_TYPE=Debug -DBUILD_SHARED_LIBS=OFF -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff
+rm -rf build $HOME/src/c/MPIstuff/mpitrampoline
+cmake -S . -B build -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_BUILD_TYPE=Debug=OFF -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff/mpitrampoline
 cmake --build build && cmake --install build
-
-env MPITRAMPOLINE_LIB=$HOME/src/c/MPIstuff-openmpi/lib/libmpiwrapper.so /cm/shared/apps/openmpi/gcc-9/64/4.1.0/bin/mpiexec -n 4 -mca oob_tcp_if_include lo --mca btl self,vader $HOME/src/c/MPIstuff/bin/mpi-test
-
-env MPITRAMPOLINE_LIB=$HOME/src/c/MPIstuff-intel/lib/libmpiwrapper.so /cm/shared/apps/intel/mpi/2021.1.1/bin/mpiexec -n 4 $HOME/src/c/MPIstuff/bin/mpi-test
 ]]
 
 
@@ -39,12 +35,12 @@ install(
   DESTINATION include
   )
 
-# We always use static linking to avoid confusion between
-# MPItrampoline MPI and the wrapped MPI: Both define e.g. `MPI_Init`,
-# and our (MPItrampoline's) `MPI_Init` must not interpose the
-# `MPI_Init` defined by the wrapped MPI.
+# We always need to use static linking on macOS to avoid confusion
+# between MPItrampoline MPI and the wrapped MPI: Both define e.g.
+# `MPI_Init`, and our (MPItrampoline's) `MPI_Init` must not interpose
+# the `MPI_Init` defined by the wrapped MPI.
 add_library(
-  mpitrampoline STATIC
+  mpitrampoline
   mpi.h mpio.h mpif.h
   mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc
   mpi.c
