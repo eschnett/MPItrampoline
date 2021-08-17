@@ -48,8 +48,8 @@ add_library(
   mpi.h mpio.h mpif.h
   mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc
   mpi.c
-  mpi.f90 mpi_impl.f90 mpi_impl_integer_0.f90 mpi_impl_integer_1.f90
-  mpi_f08.f90 mpi_f08_impl.f90 mpi_f08_impl_integer_0.f90 mpi_f08_impl_integer_1.f90
+  mpi.f90 mpi_impl.f90
+  mpi_f08.f90 mpi_f08_impl.f90
   )
 target_include_directories(mpitrampoline PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(mpitrampoline PUBLIC ${CMAKE_DL_LIBS})

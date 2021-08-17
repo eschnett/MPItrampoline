@@ -2,6 +2,9 @@ module mpi
   implicit none
   save
 
+  logical, parameter :: mpi_async_protects_nonblocking = .false.
+  logical, parameter :: mpi_subarrays_supported = .false.
+
   integer, parameter :: mpi_status_size = 6
 
   integer mpi_error
@@ -15,59 +18,35 @@ module mpi
   integer mpi_int
   integer mpi_integer
 
-  ! TOOD: We can just declare `mpi_send` etc. as `external`. (But we cannot do this for `mpi_f08`.)
-
-  interface mpi_send
-     subroutine mpi_send_impl_integer_0(buf, count, datatype, dest, tag, comm, ierror)
-       implicit none
-       integer, intent(in) :: buf
-       integer, intent(in) :: count
-       integer, intent(in) :: datatype
-       integer, intent(in) :: dest
-       integer, intent(in) :: tag
-       integer, intent(in) :: comm
-       integer, intent(out) :: ierror
-     end subroutine mpi_send_impl_integer_0
-     subroutine mpi_send_impl_integer_1(buf, count, datatype, dest, tag, comm, ierror)
-       implicit none
-       integer, intent(in) :: buf(*)
-       integer, intent(in) :: count
-       integer, intent(in) :: datatype
-       integer, intent(in) :: dest
-       integer, intent(in) :: tag
-       integer, intent(in) :: comm
-       integer, intent(out) :: ierror
-     end subroutine mpi_send_impl_integer_1
-  end interface
-
-  interface mpi_recv
-     subroutine mpi_recv_impl_integer_0(buf, count, datatype, dest, tag, comm, status, ierror)
-       import mpi_status_size
-       implicit none
-       integer, intent(out) :: buf
-       integer, intent(in) :: count
-       integer, intent(in) :: datatype
-       integer, intent(in) :: dest
-       integer, intent(in) :: tag
-       integer, intent(in) :: comm
-       integer, intent(out) :: status(mpi_status_size)
-       integer, intent(out) :: ierror
-     end subroutine mpi_recv_impl_integer_0
-     subroutine mpi_recv_impl_integer_1(buf, count, datatype, dest, tag, comm, status, ierror)
-       import mpi_status_size
-       implicit none
-       integer, intent(out) :: buf(*)
-       integer, intent(in) :: count
-       integer, intent(in) :: datatype
-       integer, intent(in) :: dest
-       integer, intent(in) :: tag
-       integer, intent(in) :: comm
-       integer, intent(out) :: status(mpi_status_size)
-       integer, intent(out) :: ierror
-     end subroutine mpi_recv_impl_integer_1
-  end interface mpi_recv
+  ! TOOD: Define types for handles, as in `mpi_f08`
 
   interface
+     subroutine mpi_send(buf, count, datatype, dest, tag, comm, ierror)
+       implicit none
+       !gcc$ attributes no_arg_check :: buf
+       type(*), intent(in) :: buf(*)
+       integer, intent(in) :: count
+       integer, intent(in) :: datatype
+       integer, intent(in) :: dest
+       integer, intent(in) :: tag
+       integer, intent(in) :: comm
+       integer, intent(out) :: ierror
+     end subroutine mpi_send
+
+     subroutine mpi_recv(buf, count, datatype, dest, tag, comm, status, ierror)
+       import mpi_status_size
+       implicit none
+       !gcc$ attributes no_arg_check :: buf
+       integer :: buf(*)
+       integer, intent(in) :: count
+       integer, intent(in) :: datatype
+       integer, intent(in) :: dest
+       integer, intent(in) :: tag
+       integer, intent(in) :: comm
+       integer, intent(out) :: status(mpi_status_size)
+       integer, intent(out) :: ierror
+     end subroutine mpi_recv
+
      subroutine mpi_get_count(status, datatype, count, ierror)
        import mpi_status_size
        implicit none
