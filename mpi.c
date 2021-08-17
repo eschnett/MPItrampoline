@@ -5,6 +5,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <unistd.h>
 
 void mpitrampoline_mpi_init_();
 void mpitrampoline_mpi_f08_init_();
@@ -62,10 +63,13 @@ init_mpiwrapper() {
   const char *const libname = getenv("MPITRAMPOLINE_LIB");
   if (!libname) {
     fprintf(stderr,
-            "Set the environment variable MPITRAMPOLINE_LIB to point to a "
-            "wrapped MPI library.\n"
+            "WARNING: The environment variable MPITRAMPOLINE_LIB is not set.\n"
+            "MPI functions will not be available.\n"
+            "Set MPITRAMPOLINE_LIB to point to a wrapped MPI library.\n"
             "See <https://github.com/eschnett/MPItrampoline> for details.\n");
-    exit(1);
+    sleep(1);
+    // exit(1);
+    return;
   }
 
 #ifdef __APPLE__
