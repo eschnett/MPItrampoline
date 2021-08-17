@@ -24,4 +24,3 @@ fi
 # fi
 
 exec ${MPITRAMPOLINE_CC:-cc} -I@CMAKE_INSTALL_PREFIX@/include -L@CMAKE_INSTALL_PREFIX@/lib "$@" -lmpitrampoline -ldl
-test
