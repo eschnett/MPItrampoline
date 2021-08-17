@@ -67,6 +67,8 @@ init_mpiwrapper() {
             "MPI functions will not be available.\n"
             "Set MPITRAMPOLINE_LIB to point to a wrapped MPI library.\n"
             "See <https://github.com/eschnett/MPItrampoline> for details.\n");
+    // Don't abort when MPITRAMPOLINE_LIB is unset. It is convenient
+    // to let `configure` or similar tools run small executables.
     sleep(1);
     // exit(1);
     return;
