@@ -59,7 +59,11 @@ typedef MPI_Win *MPI_WinPtr;
 // MPI_Status
 
 // TODO: Don't define this publicly
+#ifdef __LP64__
 #define MPI_STATUS_SIZE 10
+#else
+#define MPI_STATUS_SIZE 8
+#endif
 
 typedef struct {
   union {
