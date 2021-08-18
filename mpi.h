@@ -107,6 +107,7 @@ typedef int MPI_Comm_delete_attr_function(MPI_Comm comm, int comm_keyval,
                                           void *attribute_val,
                                           void *extra_state);
 typedef void MPI_Comm_errhandler_function(MPI_Comm *, int *, ...);
+typedef MPI_Comm_errhandler_function MPI_Comm_errhandler_fn;
 typedef MPI_Comm_copy_attr_function MPI_Copy_function;
 #if 0
 // TODO: Handle conversions
@@ -120,6 +121,7 @@ typedef int MPI_Datarep_extent_function(MPI_Datatype datatype,
 #endif
 typedef MPI_Comm_delete_attr_function MPI_Delete_function;
 typedef void MPI_File_errhandler_function(MPI_File *, int *, ...);
+typedef MPI_File_errhandler_function MPI_File_errhandler_fn;
 typedef int MPI_Grequest_cancel_function(void *extra_state, int complete);
 typedef int MPI_Grequest_free_function(void *extra_state);
 #if 0
@@ -143,6 +145,7 @@ typedef int MPI_Win_delete_attr_function(MPI_Win win, int win_keyval,
                                          void *attribute_val,
                                          void *extra_state);
 typedef void MPI_Win_errhandler_function(MPI_Win *, int *, ...);
+typedef MPI_Win_errhandler_function MPI_Win_errhandler_fn;
 
 // Constants
 
