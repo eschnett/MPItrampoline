@@ -35,3 +35,12 @@ FUNCTION(void, abort,
          (MT(Fint) * comm, MT(Fint) * errorcode, MT(Fint) * ierror),
          (comm, errorcode, ierror))
 FUNCTION(void, finalized, (MT(Fint) * flag, MT(Fint) * ierror), (flag, ierror))
+
+////////////////////////////////////////////////////////////////////////////////
+
+FUNCTION(void, comm_dup,
+         (MT(Fint) * comm, MT(Fint) * newcomm, MT(Fint) * ierror),
+         (comm, newcomm, ierror))
+FUNCTION(void, type_size,
+         (MT(Fint) * datatype, MT(Fint) * size, MT(Fint) * ierror),
+         (datatype, size, ierror))
