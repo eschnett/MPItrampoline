@@ -15,8 +15,16 @@ module mpi
   integer mpi_comm_self
   integer mpi_comm_world
 
+  integer mpi_double
+  integer mpi_double_precision
+  integer mpi_float
   integer mpi_int
   integer mpi_integer
+  integer mpi_real
+
+  integer mpi_max
+  integer mpi_min
+  integer mpi_sum
 
   ! TOOD: Define types for handles, as in `mpi_f08`
 
