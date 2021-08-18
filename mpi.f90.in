@@ -2,29 +2,14 @@ module mpi
   implicit none
   save
 
-  logical, parameter :: mpi_async_protects_nonblocking = .false.
-  logical, parameter :: mpi_subarrays_supported = .false.
+  logical, parameter :: MPI_ASYNC_PROTECTS_NONBLOCKING = .false.
+  logical, parameter :: MPI_SUBARRAYS_SUPPORTED = .false.
 
-  integer, parameter :: mpi_status_size = 6
+  integer, parameter :: MPI_STATUS_SIZE = 6
 
-  integer mpi_error
-  integer mpi_source
-  integer mpi_tag
-
-  integer mpi_comm_null
-  integer mpi_comm_self
-  integer mpi_comm_world
-
-  integer mpi_double
-  integer mpi_double_precision
-  integer mpi_float
-  integer mpi_int
-  integer mpi_integer
-  integer mpi_real
-
-  integer mpi_max
-  integer mpi_min
-  integer mpi_sum
+#define CONSTANT(TYPE, NAME) integer MPI_##NAME
+#include "mpi-constants-f.inc"
+#undef CONSTANT
 
   ! TOOD: Define types for handles, as in `mpi_f08`
 

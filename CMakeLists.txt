@@ -30,8 +30,18 @@ add_custom_command(
   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fortran-cpp.sh ${CMAKE_CURRENT_SOURCE_DIR}/mpif.h.in mpif.h
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mpif.h.in ${CMAKE_CURRENT_SOURCE_DIR}/mpi-constants-f.inc ${CMAKE_CURRENT_SOURCE_DIR}/mpi-functions-f.inc
   VERBATIM)
+add_custom_command(
+  OUTPUT mpi.f90
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fortran-cpp.sh ${CMAKE_CURRENT_SOURCE_DIR}/mpi.f90.in mpi.f90
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mpi.f90.in ${CMAKE_CURRENT_SOURCE_DIR}/mpi-constants-f.inc ${CMAKE_CURRENT_SOURCE_DIR}/mpi-functions-f.inc
+  VERBATIM)
+add_custom_command(
+  OUTPUT mpi_impl.f90
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fortran-cpp.sh ${CMAKE_CURRENT_SOURCE_DIR}/mpi_impl.f90.in mpi_impl.f90
+  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mpi.f90.in ${CMAKE_CURRENT_SOURCE_DIR}/mpi-constants-f.inc ${CMAKE_CURRENT_SOURCE_DIR}/mpi-functions-f.inc
+  VERBATIM)
 install(
-  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpif.h"
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpif.h" "${CMAKE_CURRENT_BINARY_DIR}/mpi.f90"
   DESTINATION include
   )
 
