@@ -1,3 +1,4 @@
+#define MPIWRAPPER_EXTERN_CONST(const)
 #include "mpi.h"
 
 #include <dlfcn.h>

@@ -149,8 +149,13 @@ typedef MPI_Win_errhandler_function MPI_Win_errhandler_fn;
 
 // Constants
 
+#ifndef MPIWRAPPER_EXTERN_CONST
+#define MPIWRAPPER_EXTERN_CONST(const) const
+#endif
+
 #define MT(TYPE) MPI_##TYPE
-#define CONSTANT(TYPE, NAME) extern TYPE MPI_##NAME;
+#define CONSTANT(TYPE, NAME)                                                   \
+  extern TYPE MPIWRAPPER_EXTERN_CONST(const) MPI_##NAME;
 #include "mpi-constants.inc"
 #undef CONSTANT
 #undef MT
@@ -165,7 +170,7 @@ extern "C" {
 #define MT(TYPE) MPI_##TYPE
 #define MP(TYPE) MPI_##TYPE
 #define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
-  extern RTYPE(*MPItrampoline_##NAME) PTYPES;                                  \
+  extern RTYPE(*MPIWRAPPER_EXTERN_CONST(const) MPItrampoline_##NAME) PTYPES;   \
   inline RTYPE MPI_##NAME PTYPES { return MPItrampoline_##NAME PNAMES; }
 #include "mpi-functions.inc"
 #undef FUNCTION
