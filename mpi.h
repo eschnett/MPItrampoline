@@ -1,14 +1,10 @@
 #ifndef MPI_H
 #define MPI_H
 
+#include "mpi-version.h"
+
 #include <stddef.h>
 #include <stdint.h>
-
-// Identify ourselves
-// TODO: Use cmake to fill this in automatically
-#define MPITRAMPOLINE_VERSION_MAJOR 1
-#define MPITRAMPOLINE_VERSION_MINOR 0
-#define MPITRAMPOLINE_VERSION_PATCH 0
 
 // Compile-time constants
 

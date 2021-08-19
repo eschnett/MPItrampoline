@@ -25,6 +25,8 @@ set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod_files)
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 
+configure_file(mpi-version.h.in mpi-version.h @ONLY)
+
 add_custom_command(
   OUTPUT mpif.h
   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fortran-cpp.sh ${CMAKE_CURRENT_SOURCE_DIR}/mpif.h.in mpif.h
@@ -51,11 +53,12 @@ install(
 # the `MPI_Init` defined by the wrapped MPI.
 add_library(
   mpitrampoline
-  mpi.h mpio.h mpif.h
-  mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc
+  mpi.h mpi-version.h mpio.h
   mpi.c
+  mpif.h
   mpi.f90 mpi_impl.f90
   mpi_f08.f90 mpi_f08_impl.f90
+  mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc
   )
 target_include_directories(mpitrampoline PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(mpitrampoline PUBLIC ${CMAKE_DL_LIBS})

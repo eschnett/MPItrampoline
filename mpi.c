@@ -13,6 +13,13 @@ void mpitrampoline_mpi_f08_init_();
 
 ////////////////////////////////////////////////////////////////////////////////
 
+const char*const mpitrampoline_version = MPITRAMPOLINE_VERSION;
+const int mpitrampoline_version_major = MPITRAMPOLINE_VERSION_MAJOR;
+const int mpitrampoline_version_minor = MPITRAMPOLINE_VERSION_MINOR;
+const int mpitrampoline_version_patch = MPITRAMPOLINE_VERSION_PATCH;
+
+////////////////////////////////////////////////////////////////////////////////
+
 #define MT(TYPE) MPI_##TYPE
 #define CONSTANT(TYPE, NAME) TYPE MPI_##NAME;
 #include "mpi-constants.inc"
@@ -60,7 +67,7 @@ static void *dlsym1(void *handle, const char *name) {
 #define CONSTRUCTOR_PRIORITY (1000)
 #endif
 static void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
-init_mpiwrapper() {
+init_mpitrampoline() {
   const char *const libname = getenv("MPITRAMPOLINE_LIB");
   if (!libname) {
     fprintf(stderr,
