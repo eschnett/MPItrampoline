@@ -26,6 +26,10 @@ include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 
 configure_file(mpi-version.h.in mpi-version.h @ONLY)
+install(
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi-version.h"
+  DESTINATION include
+  )
 
 add_custom_command(
   OUTPUT mpif.h
@@ -65,7 +69,7 @@ target_link_libraries(mpitrampoline PUBLIC ${CMAKE_DL_LIBS})
 set_target_properties(mpitrampoline PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION 1
-  # TODO: Add mpif.h as public header instead of installing it manually
+  # TODO: Add mpi-version.h and mpif.h as publics header instead of installing them manually
   PUBLIC_HEADER "mpi.h;mpio.h;mpi-constants.inc;mpi-functions.inc"
   )
 install(TARGETS mpitrampoline EXPORT MPItrampolineTargets)
