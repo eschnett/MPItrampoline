@@ -44,3 +44,8 @@ FUNCTION(void, comm_dup,
 FUNCTION(void, type_size,
          (MT(Fint) * datatype, MT(Fint) * size, MT(Fint) * ierror),
          (datatype, size, ierror))
+FUNCTION(void, allreduce,
+         (const void *sendbuf, void *recvbuf, MT(Fint) * count,
+          MT(Fint) * datatype, MT(Fint) * op, MT(Fint) * comm,
+          MT(Fint) * ierror),
+         (sendbuf, recvbuf, count, datatype, op, comm, ierror))
