@@ -8,17 +8,18 @@
 
 // Compile-time constants
 
+#define MPI_VERSION 3 // we pretend to support 3.1
+#define MPI_SUBVERSION 1
+
 // TODO: Check whether these limits are compatible with the wrapped MPI
 // #define MPI_MAX_DATAREP_STRING
 #define MPI_MAX_ERROR_STRING 1024           // MPICH's default
-#define MPI_MAX_INFO_KEY 255                // from MPICH
+#define MPI_MAX_INFO_KEY 256                // from MPICH
 #define MPI_MAX_INFO_VAL 1024               // from MPICH
 #define MPI_MAX_LIBRARY_VERSION_STRING 8192 // MPICH's default
 #define MPI_MAX_OBJECT_NAME 128             // from MPICH
 #define MPI_MAX_PORT_NAME 256               // from MPICH
 #define MPI_MAX_PROCESSOR_NAME 128          // MPICH's default
-#define MPI_SUBVERSION 1
-#define MPI_VERSION 3 // we pretend to support 3.1
 
 // Simple types
 

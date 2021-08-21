@@ -5,7 +5,7 @@ cmake --build build && cmake --install build
 
 
 
-export PATH=$HOME/src/spack/opt/spack/linux-ubuntu18.04-skylake_avx512/gcc-11.2.0/cmake-3.21.1-ztbpwc6mr65mqagnikcuuiifn3ox6btv/bin:$PATH
+module load cmake
 rm -rf build $HOME/src/c/MPIstuff/mpitrampoline
 cmake -S . -B build -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_BUILD_TYPE=Debug=OFF -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff/mpitrampoline
 cmake --build build && cmake --install build

@@ -921,6 +921,8 @@ FUNCTION(int, File_get_errhandler,
          ((MP(File))file, (MP(ErrhandlerPtr))errhandler))
 FUNCTION(int, Errhandler_free, (MT(ErrhandlerPtr) errhandler),
          ((MP(ErrhandlerPtr))errhandler))
+FUNCTION(int, Error_string, (int errorcode, char *string, int *resultlen),
+         (errorcode, string, resultlen))
 
 // 8.4 Error Codes and Classes
 FUNCTION(int, Error_class, (int errorcode, int *errorclass),
@@ -1122,6 +1124,8 @@ FUNCTION(int, Win_fence, (int assert, MT(Win) win), (assert, win))
 FUNCTION(int, Win_start, (MT(Group) group, int assert, MT(Win) win),
          (group, assert, win))
 FUNCTION(int, Win_complete, (MT(Win) win), (win))
+FUNCTION(int, Win_post, (MT(Group) group, int assert, MT(Win) win),
+         ((MP(Group))group, assert, (MP(Win))win))
 FUNCTION(int, Win_wait, (MT(Win) win), (win))
 FUNCTION(int, Win_test, (MT(Win) win, int *flag), (win, flag))
 FUNCTION(int, Win_lock, (int lock_type, int rank, int assert, MT(Win) win),
@@ -1151,6 +1155,9 @@ FUNCTION(int, Grequest_complete, (MT(Request) request), (request))
 FUNCTION(int, Status_set_elements,
          (MT(StatusPtr) status, MT(Datatype) datatype, int count),
          ((MP(StatusPtr))status, datatype, count))
+FUNCTION(int, Status_set_elements_x,
+         (MT(StatusPtr) status, MT(Datatype) datatype, MT(Count) count),
+         ((MP(StatusPtr))status, (MP(Datatype))datatype, (MP(Count))count))
 FUNCTION(int, Status_set_cancelled, (MT(StatusPtr) status, int flag),
          ((MP(StatusPtr))status, flag))
 
@@ -1350,59 +1357,61 @@ FUNCTION(int, File_set_atomicity, (MT(File) fh, int flag), (fh, flag))
 FUNCTION(int, File_get_atomicity, (MT(File) fh, int *flag), (fh, flag))
 FUNCTION(int, File_sync, (MT(File) fh), (fh))
 
-// ES: i checked the standard; we are complete from the top to here
+// 17.1 Additional Support for Fortran Numeric Intrinsic Types
 
-////////////////////////////////////////////////////////////////////////////////
-
-FUNCTION(int, Error_string, (int errorcode, char *string, int *resultlen),
-         (errorcode, string, resultlen))
-
-FUNCTION(int, Status_set_elements_x,
-         (MT(StatusPtr) status, MT(Datatype) datatype, MT(Count) count),
-         ((MP(StatusPtr))status, (MP(Datatype))datatype, (MP(Count))count))
-
-////////////////////////////////////////////////////////////////////////////////
-
-FUNCTION(MT(Fint), Comm_c2f, (MT(Comm) comm), ((MP(Comm))comm))
-FUNCTION(MT(Comm), Comm_f2c, (MT(Fint) comm), (comm))
-FUNCTION(MT(Fint), File_c2f, (MT(File) file), ((MP(File))file))
-FUNCTION(MT(File), File_f2c, (MT(Fint) file), (file))
-FUNCTION(MT(Fint), Group_c2f, (MT(Group) group), ((MP(Group))group))
-FUNCTION(MT(Group), Group_f2c, (MT(Fint) group), (group))
-FUNCTION(MT(Fint), Info_c2f, (MT(Info) info), ((MP(Info))info))
-FUNCTION(MT(Info), Info_f2c, (MT(Fint) info), (info))
-FUNCTION(MT(Fint), Message_c2f, (MT(Message) message), ((MP(Message))message))
-FUNCTION(MT(Message), Message_f2c, (MT(Fint) message), (message))
-FUNCTION(MT(Fint), Op_c2f, (MT(Op) op), ((MP(Op))op))
-FUNCTION(MT(Op), Op_f2c, (MT(Fint) op), (op))
-FUNCTION(MT(Fint), Request_c2f, (MT(Request) request), ((MP(Request))request))
-FUNCTION(MT(Request), Request_f2c, (MT(Fint) request), (request))
-FUNCTION(MT(Fint), Type_c2f, (MT(Datatype) datatype), ((MP(Datatype))datatype))
-FUNCTION(MT(Datatype), Type_f2c, (MT(Fint) datatype), (datatype))
-FUNCTION(MT(Fint), Win_c2f, (MT(Win) win), ((MP(Win))win))
-FUNCTION(MT(Win), Win_f2c, (MT(Fint) win), (win))
-FUNCTION(int, Status_c2f, (MT(const_StatusPtr) c_status, MT(Fint) * f_status),
-         ((MP(const_StatusPtr))c_status, f_status))
-FUNCTION(int, Status_f2c, (const MT(Fint) * f_status, MT(StatusPtr) c_status),
-         (f_status, (MP(StatusPtr))c_status))
-
-////////////////////////////////////////////////////////////////////////////////
-
-/* One-Sided Communications */
-FUNCTION(int, Win_post, (MT(Group) group, int assert, MT(Win) win),
-         ((MP(Group))group, assert, (MP(Win))win))
-
-/* Fortran 90-related functions.  These routines are available only if
-   Fortran 90 support is enabled
-*/
-FUNCTION(int, Type_create_f90_integer, (int range, MT(DatatypePtr) newtype),
-         (range, (MP(DatatypePtr))newtype))
+// Fortran 90-related functions.  These routines are available only Fortran 90
+// support is enabled.
 FUNCTION(int, Type_create_f90_real,
          (int precision, int range, MT(DatatypePtr) newtype),
          (precision, range, (MP(DatatypePtr))newtype))
 FUNCTION(int, Type_create_f90_complex,
          (int precision, int range, MT(DatatypePtr) newtype),
          (precision, range, (MP(DatatypePtr))newtype))
+FUNCTION(int, Type_create_f90_integer, (int range, MT(DatatypePtr) newtype),
+         (range, (MP(DatatypePtr))newtype))
+FUNCTION(int, Type_match_size,
+         (int typeclass, int size, MT(DatatypePtr) datatype),
+         (typeclass, size, (MP(DatatypePtr))datatype))
+
+// 17.2 Language Interoperability
+FUNCTION(MT(Comm), Comm_f2c, (MT(Fint) comm), (comm))
+FUNCTION(MT(Fint), Comm_c2f, (MT(Comm) comm), ((MP(Comm))comm))
+FUNCTION(MT(Datatype), Type_f2c, (MT(Fint) datatype), (datatype))
+FUNCTION(MT(Fint), Type_c2f, (MT(Datatype) datatype), ((MP(Datatype))datatype))
+FUNCTION(MT(Group), Group_f2c, (MT(Fint) group), (group))
+FUNCTION(MT(Fint), Group_c2f, (MT(Group) group), ((MP(Group))group))
+FUNCTION(MT(Request), Request_f2c, (MT(Fint) request), (request))
+FUNCTION(MT(Fint), Request_c2f, (MT(Request) request), ((MP(Request))request))
+FUNCTION(MT(File), File_f2c, (MT(Fint) file), (file))
+FUNCTION(MT(Fint), File_c2f, (MT(File) file), ((MP(File))file))
+FUNCTION(MT(Win), Win_f2c, (MT(Fint) win), (win))
+FUNCTION(MT(Fint), Win_c2f, (MT(Win) win), ((MP(Win))win))
+FUNCTION(MT(Op), Op_f2c, (MT(Fint) op), (op))
+FUNCTION(MT(Fint), Op_c2f, (MT(Op) op), ((MP(Op))op))
+FUNCTION(MT(Info), Info_f2c, (MT(Fint) info), (info))
+FUNCTION(MT(Fint), Info_c2f, (MT(Info) info), ((MP(Info))info))
+FUNCTION(MT(Errhandler), Errhandler_f2c, (MT(Fint) info), (info))
+FUNCTION(MT(Fint), Errhandler_c2f, (MT(Errhandler) info),
+         ((MP(Errhandler))info))
+FUNCTION(MT(Message), Message_f2c, (MT(Fint) message), (message))
+FUNCTION(MT(Fint), Message_c2f, (MT(Message) message), ((MP(Message))message))
+FUNCTION(int, Status_f2c, (const MT(Fint) * f_status, MT(StatusPtr) c_status),
+         (f_status, (MP(StatusPtr))c_status))
+FUNCTION(int, Status_c2f, (MT(const_StatusPtr) c_status, MT(Fint) * f_status),
+         ((MP(const_StatusPtr))c_status, f_status))
+// TODO
+// FUNCTION(int, Status_f082c,
+//          (MT(const_F08_StatusPtr) f08_status, MT(StatusPtr) c_status),
+//          (f08_status, (MP(StatusPtr))c_status))
+// FUNCTION(int, Status_c2f08,
+//          (MT(const_StatusPtr) c_status, MT(F08_StatusPtr) f08_status),
+//          ((MP(const_StatusPtr))c_status, f08_status))
+// FUNCTION(int, Status_f2f08, (MT(Fint) * f_status, MT(F08_StatusPtr)
+// f08_status),
+//          ((MP(Fint) *)f_status, f08_status))
+// FUNCTION(int, Status_f082f,
+//          (MT(const_F08_StatusPtr) f08_status, MT(Fint) * f_status),
+//          (f08_status, (MP(Fint) *)f_status))
 
 ////////////////////////////////////////////////////////////////////////////////
 
