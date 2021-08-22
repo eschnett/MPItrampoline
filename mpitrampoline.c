@@ -5,6 +5,7 @@
 
 #include <dlfcn.h>
 
+#include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
@@ -85,6 +86,12 @@ static void *dlsym1(void *handle, const char *name) {
 #endif
 static void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
 init_mpitrampoline() {
+  const bool verbose = getenv("MPITRAMPOLINE_VERBOSE");
+  if (verbose)
+    fprintf(stderr, "[MPItrampoline] This is MPItrampoline %d.%d.%d\n",
+            MPITRAMPOLINE_VERSION_MAJOR, MPITRAMPOLINE_VERSION_MINOR,
+            MPITRAMPOLINE_VERSION_PATCH);
+
   const char *const libname = getenv("MPITRAMPOLINE_LIB");
   if (!libname) {
     fprintf(stderr,
@@ -97,6 +104,13 @@ init_mpitrampoline() {
     sleep(1);
     // exit(1);
     return;
+  }
+  if (verbose) {
+    fprintf(stderr, "[MPItrampoline] Using MPIwrapper library \"%s\"\n",
+            libname);
+    fprintf(stderr, "[MPItrampoline] Requiring MPI ABI version %d.%d.%d\n",
+            MPIABI_VERSION_REQUIRED_MAJOR, MPIABI_VERSION_REQUIRED_MINOR,
+            MPIABI_VERSION_REQUIRED_PATCH);
   }
 
 #ifdef __APPLE__
@@ -119,10 +133,17 @@ init_mpitrampoline() {
       *(int const *)dlsym1(handle, "mpiwrapper_version_minor");
   MPIWRAPPER_VERSION_PATCH =
       *(int const *)dlsym1(handle, "mpiwrapper_version_patch");
+  if (verbose)
+    fprintf(stderr, "[MPItrampoline] Loaded MPIwrapper %d.%d.%d\n",
+            MPIWRAPPER_VERSION_MAJOR, MPIWRAPPER_VERSION_MINOR,
+            MPIWRAPPER_VERSION_PATCH);
 
   MPIABI_VERSION_MAJOR = *(int const *)dlsym1(handle, "MPIABI_VERSION_MAJOR");
   MPIABI_VERSION_MINOR = *(int const *)dlsym1(handle, "MPIABI_VERSION_MINOR");
   MPIABI_VERSION_PATCH = *(int const *)dlsym1(handle, "MPIABI_VERSION_PATCH");
+  if (verbose)
+    fprintf(stderr, "[MPItrampoline] Found MPI ABI version %d.%d.%d\n",
+            MPIABI_VERSION_MAJOR, MPIABI_VERSION_MINOR, MPIABI_VERSION_PATCH);
 
   if (MPIABI_VERSION_MAJOR != MPIABI_VERSION_REQUIRED_MAJOR ||
       MPIABI_VERSION_MINOR < MPIABI_VERSION_REQUIRED_MINOR) {
@@ -180,4 +201,7 @@ init_mpitrampoline() {
 
   mpitrampoline_mpi_init_();
   mpitrampoline_mpi_f08_init_();
+
+  if (verbose)
+    fprintf(stderr, "[MPItrampoline] Initialization complete.\n");
 }
