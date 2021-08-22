@@ -13,7 +13,7 @@ void mpitrampoline_mpi_f08_init_();
 
 ////////////////////////////////////////////////////////////////////////////////
 
-const char*const mpitrampoline_version = MPITRAMPOLINE_VERSION;
+const char *const mpitrampoline_version = MPITRAMPOLINE_VERSION;
 const int mpitrampoline_version_major = MPITRAMPOLINE_VERSION_MAJOR;
 const int mpitrampoline_version_minor = MPITRAMPOLINE_VERSION_MINOR;
 const int mpitrampoline_version_patch = MPITRAMPOLINE_VERSION_PATCH;
@@ -56,6 +56,9 @@ static void *dlsym1(void *handle, const char *name) {
   void *ptr = dlsym(handle, name);
   if (!ptr) {
     fprintf(stderr, "Could not resolve symbol \"%s\"\n", name);
+    const char *const error = dlerror();
+    if (error)
+      fprintf(stderr, "dlerror: %s\n", error);
     exit(1);
   }
   return ptr;
@@ -88,7 +91,10 @@ init_mpitrampoline() {
   void *handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL | RTLD_DEEPBIND);
 #endif
   if (!handle) {
-    fprintf(stderr, "Could not dlopen MPI wrapper library \"%s\".\n", libname);
+    fprintf(stderr, "Could not dlopen MPI wrapper library \"%s\"\n", libname);
+    const char *const error = dlerror();
+    if (error)
+      fprintf(stderr, "dlerror: %s\n", error);
     exit(1);
   }
 
