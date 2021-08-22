@@ -68,7 +68,7 @@ target_include_directories(mpi PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
 set_target_properties(mpi PROPERTIES
   VERSION ${PROJECT_VERSION}
-  SOVERSION 1
+  # SOVERSION 1
   # TODO: Add mpi-version.h and mpif.h as publics header instead of installing them manually
   PUBLIC_HEADER "mpi.h;mpio.h;mpi-constants.inc;mpi-functions.inc"
   )
