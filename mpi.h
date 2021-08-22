@@ -6,7 +6,24 @@
 #include <stddef.h>
 #include <stdint.h>
 
+#ifndef MPITRAMPOLINE_EXTERN_CONST
+#define MPITRAMPOLINE_EXTERN_CONST(const) const
+#endif
+
 // Compile-time constants
+
+// Required MPI ABI version (we use SemVer)
+#define MPIABI_VERSION_REQUIRED_MAJOR 1
+#define MPIABI_VERSION_REQUIRED_MINOR 0
+#define MPIABI_VERSION_REQUIRED_PATCH 0
+
+extern int MPITRAMPOLINE_EXTERN_CONST(const) MPIABI_VERSION_MAJOR;
+extern int MPITRAMPOLINE_EXTERN_CONST(const) MPIABI_VERSION_MINOR;
+extern int MPITRAMPOLINE_EXTERN_CONST(const) MPIABI_VERSION_PATCH;
+
+extern int MPITRAMPOLINE_EXTERN_CONST(const) MPIRAPPER_VERSION_MAJOR;
+extern int MPITRAMPOLINE_EXTERN_CONST(const) MPIRAPPER_VERSION_MINOR;
+extern int MPITRAMPOLINE_EXTERN_CONST(const) MPIRAPPER_VERSION_PATCH;
 
 #define MPI_VERSION 3 // we pretend to support 3.1
 #define MPI_SUBVERSION 1
@@ -146,13 +163,9 @@ typedef MPI_Win_errhandler_function MPI_Win_errhandler_fn;
 
 // Constants
 
-#ifndef MPIWRAPPER_EXTERN_CONST
-#define MPIWRAPPER_EXTERN_CONST(const) const
-#endif
-
 #define MT(TYPE) MPI_##TYPE
 #define CONSTANT(TYPE, NAME)                                                   \
-  extern TYPE MPIWRAPPER_EXTERN_CONST(const) MPI_##NAME;
+  extern TYPE MPITRAMPOLINE_EXTERN_CONST(const) MPI_##NAME;
 #include "mpi-constants.inc"
 #undef CONSTANT
 #undef MT
@@ -167,7 +180,8 @@ extern "C" {
 #define MT(TYPE) MPI_##TYPE
 #define MP(TYPE) MPI_##TYPE
 #define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
-  extern RTYPE(*MPIWRAPPER_EXTERN_CONST(const) MPItrampoline_##NAME) PTYPES;   \
+  extern RTYPE(*MPITRAMPOLINE_EXTERN_CONST(const) MPItrampoline_##NAME)        \
+      PTYPES;                                                                  \
   inline RTYPE MPI_##NAME PTYPES { return MPItrampoline_##NAME PNAMES; }
 #include "mpi-functions.inc"
 #undef FUNCTION

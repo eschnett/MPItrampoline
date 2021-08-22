@@ -1,6 +1,6 @@
 #define _GNU_SOURCE
 
-#define MPIWRAPPER_EXTERN_CONST(const)
+#define MPITRAMPOLINE_EXTERN_CONST(const)
 #include "mpi.h"
 
 #include <dlfcn.h>
@@ -19,6 +19,18 @@ const char *const mpitrampoline_version = MPITRAMPOLINE_VERSION;
 const int mpitrampoline_version_major = MPITRAMPOLINE_VERSION_MAJOR;
 const int mpitrampoline_version_minor = MPITRAMPOLINE_VERSION_MINOR;
 const int mpitrampoline_version_patch = MPITRAMPOLINE_VERSION_PATCH;
+
+const int mpiabi_version_required_major = MPIABI_VERSION_REQUIRED_MAJOR;
+const int mpiabi_version_required_minor = MPIABI_VERSION_REQUIRED_MINOR;
+const int mpiabi_version_required_patch = MPIABI_VERSION_REQUIRED_PATCH;
+
+int MPIWRAPPER_VERSION_MAJOR = -1;
+int MPIWRAPPER_VERSION_MINOR = -1;
+int MPIWRAPPER_VERSION_PATCH = -1;
+
+int MPIABI_VERSION_MAJOR = -1;
+int MPIABI_VERSION_MINOR = -1;
+int MPIABI_VERSION_PATCH = -1;
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -98,6 +110,35 @@ init_mpitrampoline() {
     const char *const error = dlerror();
     if (error)
       fprintf(stderr, "dlerror: %s\n", error);
+    exit(1);
+  }
+
+  MPIWRAPPER_VERSION_MAJOR =
+      *(int const *)dlsym1(handle, "mpiwrapper_version_major");
+  MPIWRAPPER_VERSION_MINOR =
+      *(int const *)dlsym1(handle, "mpiwrapper_version_minor");
+  MPIWRAPPER_VERSION_PATCH =
+      *(int const *)dlsym1(handle, "mpiwrapper_version_patch");
+
+  MPIABI_VERSION_MAJOR = *(int const *)dlsym1(handle, "MPIABI_VERSION_MAJOR");
+  MPIABI_VERSION_MINOR = *(int const *)dlsym1(handle, "MPIABI_VERSION_MINOR");
+  MPIABI_VERSION_PATCH = *(int const *)dlsym1(handle, "MPIABI_VERSION_PATCH");
+
+  if (MPIABI_VERSION_MAJOR != MPIABI_VERSION_REQUIRED_MAJOR ||
+      MPIABI_VERSION_MINOR < MPIABI_VERSION_REQUIRED_MINOR) {
+    fprintf(
+        stderr,
+        "MPI ABI version mismatch:\n"
+        "This version of MPItrampoline requires MPI ABI version %d.%d.%d, "
+        "but the loaded MPIwrapper only provides MPI ABI version %d.%d.%d.\n"
+        "This is MPItrampoline version %d.%d.%d.\n"
+        "You loaded MPIwrapper version %d.%d.%d from file \"%s\".\n",
+        MPIABI_VERSION_REQUIRED_MAJOR, MPIABI_VERSION_REQUIRED_MINOR,
+        MPIABI_VERSION_REQUIRED_PATCH, MPIABI_VERSION_MAJOR,
+        MPIABI_VERSION_MINOR, MPIABI_VERSION_PATCH, MPITRAMPOLINE_VERSION_MAJOR,
+        MPITRAMPOLINE_VERSION_MINOR, MPITRAMPOLINE_VERSION_PATCH,
+        MPIWRAPPER_VERSION_MAJOR, MPIWRAPPER_VERSION_MINOR,
+        MPIWRAPPER_VERSION_PATCH, libname);
     exit(1);
   }
 
