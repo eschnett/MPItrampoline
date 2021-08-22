@@ -58,7 +58,7 @@ install(
 add_library(
   mpitrampoline
   mpi.h mpi-version.h mpio.h
-  mpi.c
+  mpitrampoline.c
   mpif.h
   mpi.f90 mpi_impl.f90
   mpi_f08.f90 mpi_f08_impl.f90
