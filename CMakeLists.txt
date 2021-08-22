@@ -56,23 +56,23 @@ install(
 # `MPI_Init`, and our (MPItrampoline's) `MPI_Init` must not interpose
 # the `MPI_Init` defined by the wrapped MPI.
 add_library(
-  mpitrampoline
+  mpi
   mpi.h mpi-version.h mpio.h
-  mpitrampoline.c
+  mpi.c
   mpif.h
   mpi.f90 mpi_impl.f90
   mpi_f08.f90 mpi_f08_impl.f90
   mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc
   )
-target_include_directories(mpitrampoline PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-target_link_libraries(mpitrampoline PUBLIC ${CMAKE_DL_LIBS})
-set_target_properties(mpitrampoline PROPERTIES
+target_include_directories(mpi PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
+set_target_properties(mpi PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION 1
   # TODO: Add mpi-version.h and mpif.h as publics header instead of installing them manually
   PUBLIC_HEADER "mpi.h;mpio.h;mpi-constants.inc;mpi-functions.inc"
   )
-install(TARGETS mpitrampoline EXPORT MPItrampolineTargets)
+install(TARGETS mpi EXPORT MPItrampolineTargets)
 install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION include)
 
 write_basic_package_version_file(
