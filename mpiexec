@@ -1,4 +1,10 @@
 #!/bin/sh
 
-echo 'This is not the correct mpiexec.'
-true
+if [ -z "$MPITRAMPOLINE_MPIEXEC" ]; then
+    echo "The environment variable MPITRAMPOLINE_MPIEXEC is not set."
+    echo "Running the application directly." 1>&2
+    sleep 1
+    exec "$@"
+else
+    exec $MPITRAMPOLINE_MPIEXEC "$@"
+fi
