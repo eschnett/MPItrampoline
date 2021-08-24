@@ -878,9 +878,9 @@ FUNCTION(int, Ineighbor_alltoallw,
 #ifndef SKIP_MANUAL_FUNCTIONS
 FUNCTION(int, Get_version, (int *version, int *subversion),
          (version, subversion))
-#endif
 FUNCTION(int, Get_library_version, (char *version, int *resultlen),
          (version, resultlen))
+#endif
 FUNCTION(int, Get_processor_name, (char *name, int *resultlen),
          (name, resultlen))
 

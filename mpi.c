@@ -87,10 +87,14 @@ static void *dlsym1(void *handle, const char *name) {
 static void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
 init_mpitrampoline() {
   const bool verbose = getenv("MPITRAMPOLINE_VERBOSE");
-  if (verbose)
+  if (verbose) {
     fprintf(stderr, "[MPItrampoline] This is MPItrampoline %d.%d.%d\n",
             MPITRAMPOLINE_VERSION_MAJOR, MPITRAMPOLINE_VERSION_MINOR,
             MPITRAMPOLINE_VERSION_PATCH);
+    fprintf(stderr, "[MPItrampoline] Requiring MPI ABI version %d.%d.%d\n",
+            MPIABI_VERSION_REQUIRED_MAJOR, MPIABI_VERSION_REQUIRED_MINOR,
+            MPIABI_VERSION_REQUIRED_PATCH);
+  }
 
   const char *const libname = getenv("MPITRAMPOLINE_LIB");
   if (!libname) {
@@ -105,13 +109,9 @@ init_mpitrampoline() {
     // exit(1);
     return;
   }
-  if (verbose) {
+  if (verbose)
     fprintf(stderr, "[MPItrampoline] Using MPIwrapper library \"%s\"\n",
             libname);
-    fprintf(stderr, "[MPItrampoline] Requiring MPI ABI version %d.%d.%d\n",
-            MPIABI_VERSION_REQUIRED_MAJOR, MPIABI_VERSION_REQUIRED_MINOR,
-            MPIABI_VERSION_REQUIRED_PATCH);
-  }
 
 #ifdef __APPLE__
   void *handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL | RTLD_FIRST);
