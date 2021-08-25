@@ -15,7 +15,7 @@ cmake --build build && cmake --install build
 
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 1.0.1
+  MPItrampoline VERSION 1.1.0
   DESCRIPTION "MPI trampoline"
   LANGUAGES C Fortran
   )
@@ -69,7 +69,7 @@ target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
 set_target_properties(mpi PROPERTIES
   VERSION ${PROJECT_VERSION}
   # SOVERSION 1
-  # TODO: Add mpi-version.h and mpif.h as publics header instead of installing them manually
+  # TODO: Add mpi-version.h and mpif.h as public headers instead of installing them manually
   PUBLIC_HEADER "mpi.h;mpio.h;mpi-constants.inc;mpi-functions.inc"
   )
 install(TARGETS mpi EXPORT MPItrampolineTargets)
