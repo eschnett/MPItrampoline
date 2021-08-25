@@ -76,13 +76,15 @@ FUNCTION(int, Testany,
          (count, (MP(RequestPtr))array_of_requests, indx, flag,
           (MP(StatusPtr))status))
 FUNCTION(int, Waitall,
-         (int count, MT(Request) array_of_requests[], MT(StatusPtr) status),
-         (count, (MP(RequestPtr))array_of_requests, (MP(StatusPtr))status))
+         (int count, MT(Request) array_of_requests[],
+          MT(Status) array_of_statuses[]),
+         (count, (MP(RequestPtr))array_of_requests,
+          (MP(StatusPtr))array_of_statuses))
 FUNCTION(int, Testall,
          (int count, MT(Request) array_of_requests[], int *flag,
-          MT(StatusPtr) status),
+          MT(Status) array_of_statuses[]),
          (count, (MP(RequestPtr))array_of_requests, flag,
-          (MP(StatusPtr))status))
+          (MP(StatusPtr))array_of_statuses))
 FUNCTION(int, Waitsome,
          (int incount, MT(Request) array_of_requests[], int *outcount,
           int array_of_indices[], MT(Status) array_of_statuses[]),
