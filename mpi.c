@@ -116,9 +116,10 @@ init_mpitrampoline() {
 #ifdef __APPLE__
   void *handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL | RTLD_FIRST);
 #else
+  // Using `dlmopen` doesn't quite work. It doesn't manage to load all
+  // the (transitive) dependencies of the loaded library.
   void *handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL | RTLD_DEEPBIND);
-  //TODO void *handle = dlmopen(LM_ID_NEWLM, libname, RTLD_LAZY);
-  //TODO void *handle = dlmopen(LM_ID_NEWLM, libname, RTLD_NOW);
+  // void *handle = dlmopen(LM_ID_NEWLM, libname, RTLD_LAZY);
 #endif
   if (!handle) {
     fprintf(stderr, "Could not dlopen MPI wrapper library \"%s\"\n", libname);
