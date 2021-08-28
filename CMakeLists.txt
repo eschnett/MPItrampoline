@@ -15,7 +15,7 @@ cmake --build build && cmake --install build
 
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 1.1.0
+  MPItrampoline VERSION 1.1.1
   DESCRIPTION "MPI trampoline"
   LANGUAGES C Fortran
   )
