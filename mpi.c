@@ -113,12 +113,28 @@ init_mpitrampoline() {
     fprintf(stderr, "[MPItrampoline] Using MPIwrapper library \"%s\"\n",
             libname);
 
+  // On Linux (with glibc), we use `RTLD_DEEPBIND` to ensure that the
+  // loaded `mpiwrapper.so` looks for its MPI symbols only in its
+  // dependencies (the "real" MPI library), and not in MPItrampoline.
+  // If this happens, the resulting recursion leads to a stack
+  // overflow and thus a segfault.
+  //
+  // The respective mechanism on macOS is to use two-level namespaces
+  // for the plugin `mpiwrapper.so`. This is a link-time option for
+  // `mpiwrapper.so`, and is also the default (`-twolevel_namespace`).
+  // If `libmpiwrapper.so` is accidentally built with the linker
+  // option `-flat_namespace`, things break as described above.
 #ifdef __APPLE__
   void *handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL | RTLD_FIRST);
 #else
-  // Using `dlmopen` doesn't quite work. It doesn't manage to load all
-  // the (transitive) dependencies of the loaded library.
   void *handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL | RTLD_DEEPBIND);
+  // Using `dlmopen` would be more elegant that `dlopen` with
+  // `RTLD_DEEPBIND`. Unfortunately, this doesn't work in practice --
+  // it doesn't manage to load all the (transitive) dependencies of
+  // the loaded library. I assume these might technically be errors in
+  // the way `libwrapper.so` or the "real" MPI libraries are built,
+  // but it would be difficult to avoid them.
+  //
   // void *handle = dlmopen(LM_ID_NEWLM, libname, RTLD_LAZY);
 #endif
   if (!handle) {
