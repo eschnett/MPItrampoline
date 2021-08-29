@@ -58,14 +58,15 @@ Build your application as usual, using MPItrampline as MPI library.
 
 At startup time, MPItrampoline needs to be told which MPIwrapper
 library to use. This is done via the environment variable
-`MPITRAMPOLINE_LIB`. You also need to use the `mpiexec` (or `mpirun`,
-or `srun`, ...) method for the MPI installation that was wrapped via
-MPIwrapper.
+`MPITRAMPOLINE_LIB`. You also need to point MPItrampoline's `mpiexec`
+to a respective wrapper created by MPIwrapper, using the environment
+variable `MPITRAMPOLINE_MPIEXEC`.
 
 For example:
 ```sh
-env MPITRAMPOLINE_LIB=$HOME/mpiwrapper/lib/libmpiwrapper.so mpiexec -n 4 ./your-application
+env MPITRAMPOLINE_MPIEXEC=$HOME/mpiwrapper/bin/mpiwrapper-mpiexec MPITRAMPOLINE_LIB=$HOME/mpiwrapper/lib/libmpiwrapper.so mpiexec -n 4 ./your-application
 ```
+The `mpiexec` you run here needs to be the one provided by MPItrampoline.
 
 ## Current state
 
@@ -78,13 +79,12 @@ FUNCTION(int, Send,
          (buf, count, (MP(Datatype))datatype, dest, tag, (MP(Comm))comm))
 ```
 
-Unfortunately, MPItrampoline does not yet wrap all MPI functions. It
-also currently only supports C and not yet Fortran. Your help is
-welcome.
+Unfortunately, MPItrampoline does not yet wrap the Fortran API. Your
+help is welcome.
 
 Wrapping Cray MPI, Intel MPI, MPICH, Microsoft-MPI, OpenMPI, and
 Spectrum MPI should be working with MPItrampoline. (Not all have been
 tested.) Certain MPI types, constants, and functions are difficult to
 wrap. Theoretically, there could be MPI libraries where it is not
-possible to implement the MPI ABI. If you encounter this, please let
-me know -- maybe there is a work-around.
+possible to implement the current MPI ABI. If you encounter this,
+please let me know -- maybe there is a work-around.

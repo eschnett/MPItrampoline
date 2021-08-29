@@ -98,6 +98,7 @@ install(
   DESTINATION lib/pkgconfig
   )
 
+# TODO: Bake in current C/C++/Fortran compilers, not default names
 configure_file(mpicc.in mpicc @ONLY)
 configure_file(mpicxx.in mpicxx @ONLY)
 configure_file(mpifc.in mpifc @ONLY)
