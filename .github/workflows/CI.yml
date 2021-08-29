@@ -22,11 +22,21 @@ jobs:
 
     - name: Configure
       run: |
-        cmake -B ${{github.workspace}}/build \
-            -DCMAKE_C_COMPILER=gcc-10 \
-            -DCMAKE_Fortran_COMPILER=gfortran-10 \
-            -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-            -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
+        case $RUNNER_OS in
+        Linux)
+            cmake -B ${{github.workspace}}/build \
+                -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+                -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
+            ;;
+        macOS)
+            # Use GCC-11 from Homebrew
+            cmake -B ${{github.workspace}}/build \
+                -DCMAKE_C_COMPILER=gcc-11 \
+                -DCMAKE_Fortran_COMPILER=gfortran-11 \
+                -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+                -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
+            ;;
+        esac
 
     - name: Build
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
