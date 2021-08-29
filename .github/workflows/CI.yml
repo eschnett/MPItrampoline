@@ -14,7 +14,6 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-20.04, macos-11]
-        mpi: [MPICH, OpenMPI]
 
     runs-on: ubuntu-latest
 
