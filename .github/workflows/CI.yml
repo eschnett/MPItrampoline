@@ -23,6 +23,8 @@ jobs:
     - name: Configure
       run: |
         cmake -B ${{github.workspace}}/build \
+            -DCMAKE_C_COMPILER=gcc-10 \
+            -DCMAKE_Fortran_COMPILER=gfortran-10 \
             -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
             -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
 
