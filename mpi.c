@@ -9,6 +9,7 @@
 #include <stddef.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include <unistd.h>
 
 void mpitrampoline_mpi_init_();
@@ -113,11 +114,11 @@ init_mpitrampoline() {
     fprintf(stderr, "[MPItrampoline] Using MPIwrapper library \"%s\"\n",
             libname);
 
-    // On Linux (with glibc), we use `RTLD_DEEPBIND` to ensure that the
-    // loaded `mpiwrapper.so` looks for its MPI symbols only in its
-    // dependencies (the "real" MPI library), and not in MPItrampoline.
-    // If this happens, the resulting recursion leads to a stack
-    // overflow and thus a segfault.
+    // On Linux (with glibc), we use `dlmopen` or `RTLD_DEEPBIND` to
+    // ensure that the loaded `mpiwrapper.so` looks for its MPI
+    // symbols only in its dependencies (the "real" MPI library), and
+    // not in MPItrampoline. If this happens, the resulting recursion
+    // leads to a stack overflow and thus a segfault.
     //
     // The respective mechanism on macOS is to use two-level namespaces
     // for the plugin `mpiwrapper.so`. This is a link-time option for
@@ -127,22 +128,29 @@ init_mpitrampoline() {
 #ifdef __APPLE__
   void *handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL | RTLD_FIRST);
 #else
-  const bool use_dlmopen = getenv("MPITRAMPOLINE_USE_DLMOPEN");
+  const char *const dlopen_mode = getenv("MPITRAMPOLINE_DLOPEN_MODE");
   void *handle = NULL;
-  if (!use_dlmopen) {
+  if (dlopen_mode == NULL || strcmp(dlopen_mode, "dlmopen") == 0) {
+    // Using `dlmopen` is more reliable than using `dlopen` with
+    // `RTLD_DEEPBIND`. Unfortunately, this doesn't always work -- it
+    // doesn't always load all the (transitive) dependencies of the
+    // loaded library. I assume this is due to configuration errors in
+    // the way `libwrapper.so` or its dependencies (the "real" MPI
+    // libraries) are built.
+    if (verbose)
+      fprintf(stderr, "Calling dlmopen\n");
+    handle = dlmopen(LM_ID_NEWLM, libname, RTLD_LAZY);
+  } else if (strcmp(dlopen_mode, "dlopen") == 0) {
     if (verbose)
       fprintf(stderr, "Calling dlopen\n");
     handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL | RTLD_DEEPBIND);
   } else {
-    // Using `dlmopen` would be more elegant than `dlopen` with
-    // `RTLD_DEEPBIND`. Unfortunately, this doesn't work in practice --
-    // it doesn't manage to load all the (transitive) dependencies of
-    // the loaded library. I assume these might technically be errors in
-    // the way `libwrapper.so` or the "real" MPI libraries are built,
-    // but it seems difficult to avoid them.
-    if (verbose)
-      fprintf(stderr, "Calling dlmopen\n");
-    handle = dlmopen(LM_ID_NEWLM, libname, RTLD_LAZY);
+    fprintf(
+        stderr,
+        "The environment variable MPITRAMPOLINE_DLOPEN_MODE is set to \"%s\".\n"
+        "Only the values \"dlopen\" and \"dlmopen\" are allowed.",
+        dlopen_mode);
+    exit(1);
   }
 #endif
   if (!handle) {
