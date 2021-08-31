@@ -132,7 +132,7 @@ init_mpitrampoline() {
   if (!use_dlmopen) {
     if (verbose)
       fprintf(stderr, "Calling dlopen\n");
-    *handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL | RTLD_DEEPBIND);
+    handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL | RTLD_DEEPBIND);
   } else {
     // Using `dlmopen` would be more elegant than `dlopen` with
     // `RTLD_DEEPBIND`. Unfortunately, this doesn't work in practice --
