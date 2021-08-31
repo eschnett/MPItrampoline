@@ -47,16 +47,27 @@ typedef int64_t MPI_Offset;
 
 // Handles
 
-typedef uintptr_t MPI_Comm;
-typedef uintptr_t MPI_Datatype;
-typedef uintptr_t MPI_Errhandler;
-typedef uintptr_t MPI_File;
-typedef uintptr_t MPI_Group;
-typedef uintptr_t MPI_Info;
-typedef uintptr_t MPI_Message;
-typedef uintptr_t MPI_Op;
-typedef uintptr_t MPI_Request;
-typedef uintptr_t MPI_Win;
+// typedef uintptr_t MPI_Comm;
+// typedef uintptr_t MPI_Datatype;
+// typedef uintptr_t MPI_Errhandler;
+// typedef uintptr_t MPI_File;
+// typedef uintptr_t MPI_Group;
+// typedef uintptr_t MPI_Info;
+// typedef uintptr_t MPI_Message;
+// typedef uintptr_t MPI_Op;
+// typedef uintptr_t MPI_Request;
+// typedef uintptr_t MPI_Win;
+
+typedef struct MPItrampoline_Comm *MPI_Comm;
+typedef struct MPItrampoline_Datatype *MPI_Datatype;
+typedef struct MPItrampoline_Errhandler *MPI_Errhandler;
+typedef struct MPItrampoline_File *MPI_File;
+typedef struct MPItrampoline_Group *MPI_Group;
+typedef struct MPItrampoline_Info *MPI_Info;
+typedef struct MPItrampoline_Message *MPI_Message;
+typedef struct MPItrampoline_Op *MPI_Op;
+typedef struct MPItrampoline_Request *MPI_Request;
+typedef struct MPItrampoline_Win *MPI_Win;
 
 // TODO: Don't define these publicly
 typedef MPI_Comm *MPI_CommPtr;
