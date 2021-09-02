@@ -117,7 +117,7 @@ init_mpitrampoline() {
             "The environment variable MPITRAMPOLINE_DLOPEN_BINDING is set to "
             "\"%s\".\n"
             "Only the values \"lazy\" (default) and \"now\" are allowed.",
-            dlopen_binding);
+            dlopen_binding_str);
     exit(1);
   }
 
@@ -157,7 +157,7 @@ init_mpitrampoline() {
         stderr,
         "The environment variable MPITRAMPOLINE_DLOPEN_MODE is set to \"%s\".\n"
         "Only the values \"dlmopen\" (default) and \"dlopen\" are allowed.",
-        dlopen_mode);
+        dlopen_mode_str);
     exit(1);
   }
 
