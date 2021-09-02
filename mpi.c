@@ -12,8 +12,8 @@
 #include <string.h>
 #include <unistd.h>
 
-void mpitrampoline_mpi_init_f_();
-void mpitrampoline_mpi_init_f08_();
+void mpitrampoline_initialize_fortran90_();
+void mpitrampoline_initialize_fortran08_();
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -33,6 +33,8 @@ int mpiwrapper_version_patch = -1;
 int mpiabi_loaded_version_major = -1;
 int mpiabi_loaded_version_minor = -1;
 int mpiabi_loaded_version_patch = -1;
+
+extern inline int MPI_Pcontrol(int level, ...);
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -181,8 +183,8 @@ init_mpitrampoline() {
 
 #include "mpi_initializations.h"
 
-  mpitrampoline_mpi_init_f_();
-  mpitrampoline_mpi_init_f08_();
+  mpitrampoline_initialize_fortran90_();
+  mpitrampoline_initialize_fortran08_();
 
   if (verbose)
     fprintf(stderr, "[MPItrampoline] Initialization complete.\n");

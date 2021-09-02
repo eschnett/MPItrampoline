@@ -7,9 +7,7 @@ module mpi
 
   integer, parameter :: MPI_STATUS_SIZE = 6
 
-#define CONSTANT(TYPE, NAME) integer MPI_##NAME
-#include "mpi-constants-f.inc"
-#undef CONSTANT
+  include "mpi_declarations_fortran90.h"
 
   ! TOOD: Define types for handles, as in `mpi_f08`
 

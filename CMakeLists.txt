@@ -79,35 +79,33 @@ install(
   DESTINATION include
   )
 
-# add_custom_command(
-#   OUTPUT mpif.h
-#   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fortran-cpp.sh ${CMAKE_CURRENT_SOURCE_DIR}/mpif.h.in mpif.h
-#   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mpif.h.in ${CMAKE_CURRENT_SOURCE_DIR}/mpi-constants-f.inc ${CMAKE_CURRENT_SOURCE_DIR}/mpi-functions-f.inc
-#   VERBATIM)
 add_custom_command(
-  OUTPUT mpi.f90
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fortran-cpp.sh ${CMAKE_CURRENT_SOURCE_DIR}/mpi.f90.in mpi.f90
-  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mpi.f90.in ${CMAKE_CURRENT_SOURCE_DIR}/mpi-constants-f.inc ${CMAKE_CURRENT_SOURCE_DIR}/mpi-functions-f.inc
-  VERBATIM)
-add_custom_command(
-  OUTPUT mpi_impl.f90
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fortran-cpp.sh ${CMAKE_CURRENT_SOURCE_DIR}/mpi_impl.f90.in mpi_impl.f90
-  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mpi.f90.in ${CMAKE_CURRENT_SOURCE_DIR}/mpi-constants-f.inc ${CMAKE_CURRENT_SOURCE_DIR}/mpi-functions-f.inc
-  VERBATIM)
+  OUTPUT mpi_declarations_fortran90.h
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_declarations_fortran90.py >mpi_declarations_fortran90.h
+  DEPENDS
+  ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_declarations_fortran90.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants_fortran.py
+  # ${CMAKE_CURRENT_SOURCE_DIR}/mpi_functions_fortran.py
+  )
 install(
-  FILES
-  # "${CMAKE_CURRENT_BINARY_DIR}/mpif.h"
-  "${CMAKE_CURRENT_BINARY_DIR}/mpi.f90"
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_declarations_fortran90.h"
   DESTINATION include
   )
 
+add_custom_command(
+  OUTPUT mpi_initializations_fortran90.h
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_initializations_fortran90.py >mpi_initializations_fortran90.h
+  DEPENDS
+  ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_initializations_fortran90.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants_fortran.py
+  )
+
 add_library(mpi
-  # mpiabi.h mpiabi_declarations.h
+  mpiabi.h
   mpi.c mpi.h mpi_version.h mpi_declarations.h mpio.h mpi_definitions.h mpi_initializations.h
   mpif.h mpi_declarations_fortran.h
-  mpi.f90 mpi_impl.f90
-  mpi_f08.f90 mpi_f08_impl.f90
-  mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc
+  mpi.f90 mpi_declarations_fortran90.h mpitrampoline_initialize_fortran90.f90 mpi_initializations_fortran90.h
+  mpi_f08.f90 mpitrampoline_initialize_fortran08.f90
   )
 target_include_directories(mpi PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})

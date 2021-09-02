@@ -42,9 +42,9 @@ for (tp, nm, args, flags) in functions:
 print()
 print("// Fortran constants")
 for (tp, nm) in constants_fortran:
-    subs = {'abi_tp': re.sub(r"MPI_\w+", "MPIABI_Fint", tp),
-            'abi_nm': re.sub(r"MPI_", "MPIABI_", nm).lower() + "_"}
-    print(Template("$abi_tp $abi_nm;").
+    subs = {'mpi_tp': re.sub(r"MPI_\w+", "MPIABI_Fint", tp),
+            'mpi_nm': nm.lower() + "_"}
+    print(Template("$mpi_tp $mpi_nm;").
           substitute(subs))
 
 print()

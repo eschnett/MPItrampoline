@@ -1,6 +1,6 @@
-!     These constants must be compatible with the C declaration. They
-!     need to be one less, since Fortran does not store a trailing NUL
-!     character.
+!     These constants must be compatible with the respective C
+!     declarations. They need to be one less since Fortran does not
+!     store a trailing NUL character.
 
       integer MPI_VERSION
       parameter (MPI_VERSION = 3)
@@ -32,7 +32,7 @@
       integer MPI_STATUS_SIZE
       parameter (MPI_STATUS_SIZE = 6)
 
-      include "mpi_declarations_fortran.h"
-
       double precision MPI_Wtime
       double precision MPI_Wtick
+
+      include "mpi_declarations_fortran.h"
