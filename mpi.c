@@ -197,7 +197,7 @@ init_mpitrampoline() {
 #ifdef __linux__
   {
     Lmid_t lmid;
-    const int ierr - dlinfo(handle, RTLD_DI_LMID, &lmid);
+    const int ierr = dlinfo(handle, RTLD_DI_LMID, &lmid);
     if (ierr) {
       fprintf(stderr, "Could not determine link map id\n");
       const char *const error = dlerror();
