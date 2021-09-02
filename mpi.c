@@ -69,8 +69,7 @@ init_mpitrampoline() {
             MPITRAMPOLINE_VERSION_MAJOR, MPITRAMPOLINE_VERSION_MINOR,
             MPITRAMPOLINE_VERSION_PATCH);
     fprintf(stderr, "[MPItrampoline] Requiring MPI ABI version %d.%d.%d\n",
-            mpiabi_loaded_version_major, mpiabi_loaded_version_minor,
-            mpiabi_loaded_version_patch);
+            MPIABI_VERSION_MAJOR, MPIABI_VERSION_MINOR, MPIABI_VERSION_PATCH);
   }
 
   const char *const libname = getenv("MPITRAMPOLINE_LIB");
@@ -185,6 +184,13 @@ init_mpitrampoline() {
 
   mpitrampoline_initialize_fortran90_();
   mpitrampoline_initialize_fortran08_();
+
+  if (verbose) {
+    char library_version[MPI_MAX_LIBRARY_VERSION_STRING];
+    int resultlen;
+    MPI_Get_library_version(library_version, &resultlen);
+    fprintf(stderr, "[MPItrampoline] MPI library version:\n%s\n", library_version);
+  }
 
   if (verbose)
     fprintf(stderr, "[MPItrampoline] Initialization complete.\n");
