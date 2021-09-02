@@ -1,6 +1,6 @@
 #define _GNU_SOURCE
+#define MPITRAMPOLINE_CONST
 
-#define MPITRAMPOLINE_EXTERN_CONST(const)
 #include "mpi.h"
 
 #include <dlfcn.h>
@@ -12,8 +12,8 @@
 #include <string.h>
 #include <unistd.h>
 
-void mpitrampoline_mpi_init_();
-void mpitrampoline_mpi_f08_init_();
+void mpitrampoline_mpi_init_f_();
+void mpitrampoline_mpi_init_f08_();
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -22,49 +22,23 @@ const int mpitrampoline_version_major = MPITRAMPOLINE_VERSION_MAJOR;
 const int mpitrampoline_version_minor = MPITRAMPOLINE_VERSION_MINOR;
 const int mpitrampoline_version_patch = MPITRAMPOLINE_VERSION_PATCH;
 
-const int mpiabi_version_required_major = MPIABI_VERSION_REQUIRED_MAJOR;
-const int mpiabi_version_required_minor = MPIABI_VERSION_REQUIRED_MINOR;
-const int mpiabi_version_required_patch = MPIABI_VERSION_REQUIRED_PATCH;
+const int mpiabi_version_major = MPIABI_VERSION_MAJOR;
+const int mpiabi_version_minor = MPIABI_VERSION_MINOR;
+const int mpiabi_version_patch = MPIABI_VERSION_PATCH;
 
-int MPIWRAPPER_VERSION_MAJOR = -1;
-int MPIWRAPPER_VERSION_MINOR = -1;
-int MPIWRAPPER_VERSION_PATCH = -1;
+int mpiwrapper_version_major = -1;
+int mpiwrapper_version_minor = -1;
+int mpiwrapper_version_patch = -1;
 
-int MPIABI_VERSION_MAJOR = -1;
-int MPIABI_VERSION_MINOR = -1;
-int MPIABI_VERSION_PATCH = -1;
+int mpiabi_loaded_version_major = -1;
+int mpiabi_loaded_version_minor = -1;
+int mpiabi_loaded_version_patch = -1;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#define MT(TYPE) MPI_##TYPE
-#define CONSTANT(TYPE, NAME) TYPE MPI_##NAME;
-#include "mpi-constants.inc"
-#undef CONSTANT
-#undef MT
+#include "mpi_definitions.h"
 
-#define MT(TYPE) MPI_##TYPE
-#define MP(TYPE) MPI_##TYPE
-#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
-  RTYPE(*MPItrampoline_##NAME) PTYPES = NULL;                                  \
-  extern inline RTYPE MPI_##NAME PTYPES;
-#include "mpi-functions.inc"
-#undef FUNCTION
-#undef MT
-#undef MP
-
-#define MT(TYPE) MPI_##TYPE
-#define CONSTANT(TYPE, NAME) MPI_Fint mpi_##NAME##_;
-#include "mpi-constants-f.inc"
-#undef CONSTANT
-#undef MT
-
-#define MT(TYPE) MPI_##TYPE
-#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
-  RTYPE(*mpitrampoline_##NAME##_) PTYPES = NULL;                               \
-  RTYPE mpi_##NAME##_ PTYPES { return mpitrampoline_##NAME##_ PNAMES; }
-#include "mpi-functions-f.inc"
-#undef FUNCTION
-#undef MT
+extern inline int MPI_Pcontrol(int level, ...);
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -93,8 +67,8 @@ init_mpitrampoline() {
             MPITRAMPOLINE_VERSION_MAJOR, MPITRAMPOLINE_VERSION_MINOR,
             MPITRAMPOLINE_VERSION_PATCH);
     fprintf(stderr, "[MPItrampoline] Requiring MPI ABI version %d.%d.%d\n",
-            MPIABI_VERSION_REQUIRED_MAJOR, MPIABI_VERSION_REQUIRED_MINOR,
-            MPIABI_VERSION_REQUIRED_PATCH);
+            mpiabi_loaded_version_major, mpiabi_loaded_version_minor,
+            mpiabi_loaded_version_patch);
   }
 
   const char *const libname = getenv("MPITRAMPOLINE_LIB");
@@ -161,26 +135,30 @@ init_mpitrampoline() {
     exit(1);
   }
 
-  MPIWRAPPER_VERSION_MAJOR =
+  mpiwrapper_version_major =
       *(int const *)dlsym1(handle, "mpiwrapper_version_major");
-  MPIWRAPPER_VERSION_MINOR =
+  mpiwrapper_version_minor =
       *(int const *)dlsym1(handle, "mpiwrapper_version_minor");
-  MPIWRAPPER_VERSION_PATCH =
+  mpiwrapper_version_patch =
       *(int const *)dlsym1(handle, "mpiwrapper_version_patch");
   if (verbose)
     fprintf(stderr, "[MPItrampoline] Loaded MPIwrapper %d.%d.%d\n",
-            MPIWRAPPER_VERSION_MAJOR, MPIWRAPPER_VERSION_MINOR,
-            MPIWRAPPER_VERSION_PATCH);
+            mpiwrapper_version_major, mpiwrapper_version_minor,
+            mpiwrapper_version_patch);
 
-  MPIABI_VERSION_MAJOR = *(int const *)dlsym1(handle, "MPIABI_VERSION_MAJOR");
-  MPIABI_VERSION_MINOR = *(int const *)dlsym1(handle, "MPIABI_VERSION_MINOR");
-  MPIABI_VERSION_PATCH = *(int const *)dlsym1(handle, "MPIABI_VERSION_PATCH");
+  mpiabi_loaded_version_major =
+      *(int const *)dlsym1(handle, "mpiabi_version_major");
+  mpiabi_loaded_version_minor =
+      *(int const *)dlsym1(handle, "mpiabi_version_minor");
+  mpiabi_loaded_version_patch =
+      *(int const *)dlsym1(handle, "mpiabi_version_patch");
   if (verbose)
     fprintf(stderr, "[MPItrampoline] Found MPI ABI version %d.%d.%d\n",
-            MPIABI_VERSION_MAJOR, MPIABI_VERSION_MINOR, MPIABI_VERSION_PATCH);
+            mpiabi_loaded_version_major, mpiabi_loaded_version_minor,
+            mpiabi_loaded_version_patch);
 
-  if (MPIABI_VERSION_MAJOR != MPIABI_VERSION_REQUIRED_MAJOR ||
-      MPIABI_VERSION_MINOR < MPIABI_VERSION_REQUIRED_MINOR) {
+  if (mpiabi_loaded_version_major != mpiabi_loaded_version_major ||
+      mpiabi_loaded_version_minor < mpiabi_loaded_version_minor) {
     fprintf(
         stderr,
         "MPI ABI version mismatch:\n"
@@ -188,53 +166,23 @@ init_mpitrampoline() {
         "but the loaded MPIwrapper only provides MPI ABI version %d.%d.%d.\n"
         "This is MPItrampoline version %d.%d.%d.\n"
         "You loaded MPIwrapper version %d.%d.%d from file \"%s\".\n",
-        MPIABI_VERSION_REQUIRED_MAJOR, MPIABI_VERSION_REQUIRED_MINOR,
-        MPIABI_VERSION_REQUIRED_PATCH, MPIABI_VERSION_MAJOR,
-        MPIABI_VERSION_MINOR, MPIABI_VERSION_PATCH, MPITRAMPOLINE_VERSION_MAJOR,
-        MPITRAMPOLINE_VERSION_MINOR, MPITRAMPOLINE_VERSION_PATCH,
-        MPIWRAPPER_VERSION_MAJOR, MPIWRAPPER_VERSION_MINOR,
-        MPIWRAPPER_VERSION_PATCH, libname);
+        mpiabi_version_major, mpiabi_version_minor, mpiabi_version_patch,
+        mpiabi_loaded_version_major, mpiabi_loaded_version_minor,
+        mpiabi_loaded_version_patch, mpitrampoline_version_major,
+        mpitrampoline_version_minor, mpitrampoline_version_patch,
+        mpiwrapper_version_major, mpiwrapper_version_minor,
+        mpiwrapper_version_patch, libname);
     exit(1);
   }
 
-  // Read C constants
-#define MT(TYPE) MPI_##TYPE
-#define CONSTANT(TYPE, NAME)                                                   \
-  MPI_##NAME = *(TYPE const *)dlsym1(handle, "WPI_" #NAME);
-#include "mpi-constants.inc"
-#undef CONSTANT
-#undef MT
-
-  // Read C function pointers
-#define MT(TYPE) MPI_##TYPE
-#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
-  MPItrampoline_##NAME = dlsym1(handle, "WPI_" #NAME);
-#include "mpi-functions.inc"
-#undef FUNCTION
-#undef MT
-
   void (*const mpiwrapper_export_fortran_constants)() =
       dlsym1(handle, "mpiwrapper_export_fortran_constants_");
-  mpiwrapper_export_fortran_constants();
+  (*mpiwrapper_export_fortran_constants)();
 
-  // Read Fortran constants
-#define MT(TYPE) MPI_##TYPE
-#define CONSTANT(TYPE, NAME)                                                   \
-  mpi_##NAME##_ = *(MPI_Fint const *)dlsym1(handle, "wpi_" #NAME "_");
-#include "mpi-constants-f.inc"
-#undef CONSTANT
-#undef MT
+#include "mpi_initializations.h"
 
-  // Read Fortran function pointers
-#define MT(TYPE) MPI_##TYPE
-#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
-  mpitrampoline_##NAME##_ = dlsym1(handle, "wpi_" #NAME "_");
-#include "mpi-functions-f.inc"
-#undef FUNCTION
-#undef MT
-
-  mpitrampoline_mpi_init_();
-  mpitrampoline_mpi_f08_init_();
+  mpitrampoline_mpi_init_f_();
+  mpitrampoline_mpi_init_f08_();
 
   if (verbose)
     fprintf(stderr, "[MPItrampoline] Initialization complete.\n");

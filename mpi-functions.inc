@@ -1027,119 +1027,133 @@ FUNCTION(int, Comm_join, (int fd, MT(CommPtr) intercomm),
 FUNCTION(int, Win_create,
          (void *base, MT(Aint) size, int disp_unit, MT(Info) info,
           MT(Comm) comm, MT(WinPtr) win),
-         (base, size, disp_unit, info, comm, win))
+         (base, (MP(Aint))size, disp_unit, (MP(Info))info, (MP(Comm))comm,
+          (MP(WinPtr))win))
 FUNCTION(int, Win_allocate,
          (MT(Aint) size, int disp_unit, MT(Info) info, MT(Comm) comm,
           void *baseptr, MT(WinPtr) win),
-         (size, disp_unit, info, comm, baseptr, win))
+         ((MP(Aint))size, disp_unit, (MP(Info))info, (MP(Comm))comm, baseptr,
+          (MP(WinPtr))win))
 FUNCTION(int, Win_allocate_shared,
          (MT(Aint) size, int disp_unit, MT(Info) info, MT(Comm) comm,
           void *baseptr, MT(WinPtr) win),
-         (size, disp_unit, info, comm, baseptr, win))
+         ((MP(Aint))size, disp_unit, (MP(Info))info, (MP(Comm))comm, baseptr,
+          (MP(WinPtr))win))
 FUNCTION(int, Win_shared_query,
          (MT(Win) win, int rank, MT(Aint) * size, int *disp_unit,
           void *baseptr),
-         (win, rank, size, disp_unit, baseptr))
+         ((MP(Win))win, rank, (MP(Aint) *)size, disp_unit, baseptr))
 FUNCTION(int, Win_create_dynamic,
-         (MT(Info) info, MT(Comm) comm, MT(WinPtr) win), (info, comm, win))
+         (MT(Info) info, MT(Comm) comm, MT(WinPtr) win),
+         ((MP(Info))info, (MP(Comm))comm, (MP(WinPtr))win))
 FUNCTION(int, Win_attach, (MT(Win) win, void *base, MT(Aint) size),
-         (win, base, size))
-FUNCTION(int, Win_detach, (MT(Win) win, const void *base), (win, base))
-FUNCTION(int, Win_free, (MT(WinPtr) win), (win))
-FUNCTION(int, Win_get_group, (MT(Win) win, MT(GroupPtr) group), (win, group))
-FUNCTION(int, Win_set_info, (MT(Win) win, MT(Info) info), (win, info))
+         ((MP(Win))win, base, (MP(Aint))size))
+FUNCTION(int, Win_detach, (MT(Win) win, const void *base), ((MP(Win))win, base))
+FUNCTION(int, Win_free, (MT(WinPtr) win), ((MP(WinPtr))win))
+FUNCTION(int, Win_get_group, (MT(Win) win, MT(GroupPtr) group),
+         ((MP(Win))win, (MP(GroupPtr))group))
+FUNCTION(int, Win_set_info, (MT(Win) win, MT(Info) info),
+         ((MP(Win))win, (MP(Info))info))
 FUNCTION(int, Win_get_info, (MT(Win) win, MT(InfoPtr) info_used),
-         (win, info_used))
+         ((MP(Win))win, (MP(InfoPtr))info_used))
 
 // 11.3 Communication Calls
 FUNCTION(int, Put,
          (const void *origin_addr, int origin_count,
           MT(Datatype) origin_datatype, int target_rank, MT(Aint) target_disp,
           int target_count, MT(Datatype) target_datatype, MT(Win) win),
-         (origin_addr, origin_count, origin_datatype, target_rank, target_disp,
-          target_count, target_datatype, win))
+         (origin_addr, origin_count, (MP(Datatype))origin_datatype, target_rank,
+          (MP(Aint))target_disp, target_count, (MP(Datatype))target_datatype,
+          (MP(Win))win))
 FUNCTION(int, Get,
          (void *origin_addr, int origin_count, MT(Datatype) origin_datatype,
           int target_rank, MT(Aint) target_disp, int target_count,
           MT(Datatype) target_datatype, MT(Win) win),
-         (origin_addr, origin_count, origin_datatype, target_rank, target_disp,
-          target_count, target_datatype, win))
+         (origin_addr, origin_count, (MP(Datatype))origin_datatype, target_rank,
+          (MP(Aint))target_disp, target_count, (MP(Datatype))target_datatype,
+          (MP(Win))win))
 FUNCTION(int, Accumulate,
          (const void *origin_addr, int origin_count,
           MT(Datatype) origin_datatype, int target_rank, MT(Aint) target_disp,
           int target_count, MT(Datatype) target_datatype, MT(Op) op,
           MT(Win) win),
-         (origin_addr, origin_count, origin_datatype, target_rank, target_disp,
-          target_count, target_datatype, op, win))
+         (origin_addr, origin_count, (MP(Datatype))origin_datatype, target_rank,
+          (MP(Aint))target_disp, target_count, (MP(Datatype))target_datatype,
+          (MP(Op))op, (MP(Win))win))
 FUNCTION(int, Get_accumulate,
          (const void *origin_addr, int origin_count,
           MT(Datatype) origin_datatype, void *result_addr, int result_count,
           MT(Datatype) result_datatype, int target_rank, MT(Aint) target_disp,
           int target_count, MT(Datatype) target_datatype, MT(Op) op,
           MT(Win) win),
-         (origin_addr, origin_count, origin_datatype, result_addr, result_count,
-          result_datatype, target_rank, target_disp, target_count,
-          target_datatype, op, win))
+         (origin_addr, origin_count, (MP(Datatype))origin_datatype, result_addr,
+          result_count, (MP(Datatype))result_datatype, target_rank,
+          (MP(Aint))target_disp, target_count, (MP(Datatype))target_datatype,
+          (MP(Op))op, (MP(Win))win))
 FUNCTION(int, Fetch_and_op,
          (const void *origin_addr, void *result_addr, MT(Datatype) datatype,
           int target_rank, MT(Aint) target_disp, MT(Op) op, MT(Win) win),
-         (origin_addr, result_addr, datatype, target_rank, target_disp, op,
-          win))
+         (origin_addr, result_addr, (MP(Datatype))datatype, target_rank,
+          (MP(Aint))target_disp, (MP(Op))op, (MP(Win))win))
 FUNCTION(int, Compare_and_swap,
          (const void *origin_addr, const void *compare_addr, void *result_addr,
           MT(Datatype) datatype, int target_rank, MT(Aint) target_disp,
           MT(Win) win),
-         (origin_addr, compare_addr, result_addr, datatype, target_rank,
-          target_disp, win))
+         (origin_addr, compare_addr, result_addr, (MP(Datatype))datatype,
+          target_rank, (MP(Aint))target_disp, (MP(Win))win))
 FUNCTION(int, Rput,
          (const void *origin_addr, int origin_count,
           MT(Datatype) origin_datatype, int target_rank, MT(Aint) target_disp,
           int target_count, MT(Datatype) target_datatype, MT(Win) win,
           MT(RequestPtr) request),
-         (origin_addr, origin_count, origin_datatype, target_rank, target_disp,
-          target_count, target_datatype, win, request))
+         (origin_addr, origin_count, (MP(Datatype))origin_datatype, target_rank,
+          (MP(Aint))target_disp, target_count, (MP(Datatype))target_datatype,
+          (MP(Win))win, (MP(RequestPtr))request))
 FUNCTION(int, Rget,
          (void *origin_addr, int origin_count, MT(Datatype) origin_datatype,
           int target_rank, MT(Aint) target_disp, int target_count,
           MT(Datatype) target_datatype, MT(Win) win, MT(RequestPtr) request),
-         (origin_addr, origin_count, origin_datatype, target_rank, target_disp,
-          target_count, target_datatype, win, request))
+         (origin_addr, origin_count, (MP(Datatype))origin_datatype, target_rank,
+          (MP(Aint))target_disp, target_count, (MP(Datatype))target_datatype,
+          (MP(Win))win, (MP(RequestPtr))request))
 FUNCTION(int, Raccumulate,
          (const void *origin_addr, int origin_count,
           MT(Datatype) origin_datatype, int target_rank, MT(Aint) target_disp,
           int target_count, MT(Datatype) target_datatype, MT(Op) op,
           MT(Win) win, MT(RequestPtr) request),
-         (origin_addr, origin_count, origin_datatype, target_rank, target_disp,
-          target_count, target_datatype, op, win, request))
+         (origin_addr, origin_count, (MP(Datatype))origin_datatype, target_rank,
+          (MP(Aint))target_disp, target_count, (MP(Datatype))target_datatype,
+          (MP(Op))op, (MP(Win))win, (MP(RequestPtr))request))
 FUNCTION(int, Rget_accumulate,
          (const void *origin_addr, int origin_count,
           MT(Datatype) origin_datatype, void *result_addr, int result_count,
           MT(Datatype) result_datatype, int target_rank, MT(Aint) target_disp,
           int target_count, MT(Datatype) target_datatype, MT(Op) op,
           MT(Win) win, MT(RequestPtr) request),
-         (origin_addr, origin_count, origin_datatype, result_addr, result_count,
-          result_datatype, target_rank, target_disp, target_count,
-          target_datatype, op, win, request))
+         (origin_addr, origin_count, (MP(Datatype))origin_datatype, result_addr,
+          result_count, (MP(Datatype))result_datatype, target_rank,
+          (MP(Aint))target_disp, target_count, (MP(Datatype))target_datatype,
+          (MP(Op))op, (MP(Win))win, (MP(RequestPtr))request))
 
 // 11.5 Synchronization Calls
-FUNCTION(int, Win_fence, (int assert, MT(Win) win), (assert, win))
+FUNCTION(int, Win_fence, (int assert, MT(Win) win), (assert, (MP(Win))win))
 FUNCTION(int, Win_start, (MT(Group) group, int assert, MT(Win) win),
-         (group, assert, win))
-FUNCTION(int, Win_complete, (MT(Win) win), (win))
+         ((MP(Group))group, assert, (MP(Win))win))
+FUNCTION(int, Win_complete, (MT(Win) win), ((MP(Win))win))
 FUNCTION(int, Win_post, (MT(Group) group, int assert, MT(Win) win),
          ((MP(Group))group, assert, (MP(Win))win))
-FUNCTION(int, Win_wait, (MT(Win) win), (win))
-FUNCTION(int, Win_test, (MT(Win) win, int *flag), (win, flag))
+FUNCTION(int, Win_wait, (MT(Win) win), ((MP(Win))win))
+FUNCTION(int, Win_test, (MT(Win) win, int *flag), ((MP(Win))win, flag))
 FUNCTION(int, Win_lock, (int lock_type, int rank, int assert, MT(Win) win),
-         (lock_type, rank, assert, win))
-FUNCTION(int, Win_lock_all, (int assert, MT(Win) win), (assert, win))
-FUNCTION(int, Win_unlock, (int rank, MT(Win) win), (rank, win))
-FUNCTION(int, Win_unlock_all, (MT(Win) win), (win))
-FUNCTION(int, Win_flush, (int rank, MT(Win) win), (rank, win))
-FUNCTION(int, Win_flush_all, (MT(Win) win), (win))
-FUNCTION(int, Win_flush_local, (int rank, MT(Win) win), (rank, win))
-FUNCTION(int, Win_flush_local_all, (MT(Win) win), (win))
-FUNCTION(int, Win_sync, (MT(Win) win), (win))
+         (lock_type, rank, assert, (MP(Win))win))
+FUNCTION(int, Win_lock_all, (int assert, MT(Win) win), (assert, (MP(Win))win))
+FUNCTION(int, Win_unlock, (int rank, MT(Win) win), (rank, (MP(Win))win))
+FUNCTION(int, Win_unlock_all, (MT(Win) win), ((MP(Win))win))
+FUNCTION(int, Win_flush, (int rank, MT(Win) win), (rank, (MP(Win))win))
+FUNCTION(int, Win_flush_all, (MT(Win) win), ((MP(Win))win))
+FUNCTION(int, Win_flush_local, (int rank, MT(Win) win), (rank, (MP(Win))win))
+FUNCTION(int, Win_flush_local_all, (MT(Win) win), ((MP(Win))win))
+FUNCTION(int, Win_sync, (MT(Win) win), ((MP(Win))win))
 
 // 12.2 Generalized Requests
 #if 0
@@ -1149,14 +1163,17 @@ FUNCTION(int, Grequest_start,
           MT(Grequest_free_function) * free_fn,
           MT(Grequest_cancel_function) * cancel_fn, void *extra_state,
           MT(RequestPtr) request),
-         (query_fn, free_fn, cancel_fn, extra_state, request))
+         ((MP(Grequest_query_function) *)query_fn,
+          (MP(Grequest_free_function) *)free_fn,
+          (MP(Grequest_cancel_function) *)cancel_fn, extra_state,
+          (MP(RequestPtr))request))
 #endif
-FUNCTION(int, Grequest_complete, (MT(Request) request), (request))
+FUNCTION(int, Grequest_complete, (MT(Request) request), ((MP(Request))request))
 
 // 12.3 Associating Information with Status
 FUNCTION(int, Status_set_elements,
          (MT(StatusPtr) status, MT(Datatype) datatype, int count),
-         ((MP(StatusPtr))status, datatype, count))
+         ((MP(StatusPtr))status, (MP(Datatype))datatype, count))
 FUNCTION(int, Status_set_elements_x,
          (MT(StatusPtr) status, MT(Datatype) datatype, MT(Count) count),
          ((MP(StatusPtr))status, (MP(Datatype))datatype, (MP(Count))count))
@@ -1196,168 +1213,196 @@ FUNCTION(int, File_get_info, (MT(File) fh, MT(InfoPtr) info_used),
 FUNCTION(int, File_set_view,
          (MT(File) fh, MT(Offset) disp, MT(Datatype) etype,
           MT(Datatype) filetype, const char *datarep, MT(Info) info),
-         (fh, disp, etype, filetype, datarep, info))
+         ((MP(File))fh, (MP(Offset))disp, (MP(Datatype))etype,
+          (MP(Datatype))filetype, datarep, (MP(Info))info))
 FUNCTION(int, File_get_view,
          (MT(File) fh, MT(Offset) * disp, MT(DatatypePtr) etype,
           MT(DatatypePtr) filetype, char *datarep),
-         (fh, (MP(Offset) *)disp, etype, filetype, datarep))
+         ((MP(File))fh, (MP(Offset) *)disp, (MP(DatatypePtr))etype,
+          (MP(DatatypePtr))filetype, datarep))
 
 // 13.4 Data Access
 FUNCTION(int, File_read_at,
          (MT(File) fh, MT(Offset) offset, void *buf, int count,
           MT(Datatype) datatype, MT(StatusPtr) status),
-         (fh, offset, buf, count, datatype, (MP(StatusPtr))status))
+         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
 FUNCTION(int, File_read_at_all,
          (MT(File) fh, MT(Offset) offset, void *buf, int count,
           MT(Datatype) datatype, MT(StatusPtr) status),
-         (fh, offset, buf, count, datatype, (MP(StatusPtr))status))
+         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
 FUNCTION(int, File_write_at,
          (MT(File) fh, MT(Offset) offset, const void *buf, int count,
           MT(Datatype) datatype, MT(StatusPtr) status),
-         (fh, offset, buf, count, datatype, (MP(StatusPtr))status))
+         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
 FUNCTION(int, File_write_at_all,
          (MT(File) fh, MT(Offset) offset, const void *buf, int count,
           MT(Datatype) datatype, MT(StatusPtr) status),
-         (fh, offset, buf, count, datatype, (MP(StatusPtr))status))
+         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
 FUNCTION(int, File_iread_at,
          (MT(File) fh, MT(Offset) offset, void *buf, int count,
           MT(Datatype) datatype, MT(RequestPtr) request),
-         (fh, offset, buf, count, datatype, request))
+         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
+          (MP(RequestPtr))request))
 FUNCTION(int, File_iread_at_all,
          (MT(File) fh, MT(Offset) offset, void *buf, int count,
           MT(Datatype) datatype, MT(RequestPtr) request),
-         (fh, offset, buf, count, datatype, request))
+         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
+          (MP(RequestPtr))request))
 FUNCTION(int, File_iwrite_at,
          (MT(File) fh, MT(Offset) offset, const void *buf, int count,
           MT(Datatype) datatype, MT(RequestPtr) request),
-         (fh, offset, buf, count, datatype, request))
+         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
+          (MP(RequestPtr))request))
 FUNCTION(int, File_iwrite_at_all,
          (MT(File) fh, MT(Offset) offset, const void *buf, int count,
           MT(Datatype) datatype, MT(RequestPtr) request),
-         (fh, offset, buf, count, datatype, request))
+         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype,
+          (MP(RequestPtr))request))
 FUNCTION(int, File_read,
          (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
           MT(StatusPtr) status),
-         (fh, buf, count, datatype, (MP(StatusPtr))status))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
 FUNCTION(int, File_read_all,
          (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
           MT(StatusPtr) status),
-         (fh, buf, count, datatype, (MP(StatusPtr))status))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
 FUNCTION(int, File_write,
          (MT(File) fh, const void *buf, int count, MT(Datatype) datatype,
           MT(StatusPtr) status),
-         (fh, buf, count, datatype, (MP(StatusPtr))status))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
 FUNCTION(int, File_write_all,
          (MT(File) fh, const void *buf, int count, MT(Datatype) datatype,
           MT(StatusPtr) status),
-         (fh, buf, count, datatype, (MP(StatusPtr))status))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
 FUNCTION(int, File_iread,
          (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
           MT(RequestPtr) request),
-         (fh, buf, count, datatype, request))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype,
+          (MP(RequestPtr))request))
 FUNCTION(int, File_iread_all,
          (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
           MT(RequestPtr) request),
-         (fh, buf, count, datatype, request))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype,
+          (MP(RequestPtr))request))
 FUNCTION(int, File_iwrite,
          (MT(File) fh, const void *buf, int count, MT(Datatype) datatype,
           MT(RequestPtr) request),
-         (fh, buf, count, datatype, request))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype,
+          (MP(RequestPtr))request))
 FUNCTION(int, File_iwrite_all,
          (MT(File) fh, const void *buf, int count, MT(Datatype) datatype,
           MT(RequestPtr) request),
-         (fh, buf, count, datatype, request))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype,
+          (MP(RequestPtr))request))
 FUNCTION(int, File_seek, (MT(File) fh, MT(Offset) offset, int whence),
-         (fh, offset, whence))
+         ((MP(File))fh, (MP(Offset))offset, whence))
 FUNCTION(int, File_get_position, (MT(File) fh, MT(Offset) * offset),
-         (fh, (MP(Offset) *)offset))
+         ((MP(File))fh, (MP(Offset) *)offset))
 FUNCTION(int, File_get_byte_offset,
          (MT(File) fh, MT(Offset) offset, MT(Offset) * disp),
-         (fh, offset, (MP(Offset) *)disp))
+         ((MP(File))fh, (MP(Offset))offset, (MP(Offset) *)disp))
 FUNCTION(int, File_read_shared,
          (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
           MT(StatusPtr) status),
-         (fh, buf, count, datatype, (MP(StatusPtr))status))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
 FUNCTION(int, File_write_shared,
          (MT(File) fh, const void *buf, int count, MT(Datatype) datatype,
           MT(StatusPtr) status),
-         (fh, buf, count, datatype, (MP(StatusPtr))status))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
 FUNCTION(int, File_iread_shared,
          (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
           MT(RequestPtr) request),
-         (fh, buf, count, datatype, request))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype,
+          (MP(RequestPtr))request))
 FUNCTION(int, File_iwrite_shared,
          (MT(File) fh, const void *buf, int count, MT(Datatype) datatype,
           MT(RequestPtr) request),
-         (fh, buf, count, datatype, request))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype,
+          (MP(RequestPtr))request))
 FUNCTION(int, File_read_ordered,
          (MT(File) fh, void *buf, int count, MT(Datatype) datatype,
           MT(StatusPtr) status),
-         (fh, buf, count, datatype, (MP(StatusPtr))status))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
 FUNCTION(int, File_write_ordered,
          (MT(File) fh, const void *buf, int count, MT(Datatype) datatype,
           MT(StatusPtr) status),
-         (fh, buf, count, datatype, (MP(StatusPtr))status))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype,
+          (MP(StatusPtr))status))
 FUNCTION(int, File_seek_shared, (MT(File) fh, MT(Offset) offset, int whence),
-         (fh, offset, whence))
+         ((MP(File))fh, (MP(Offset))offset, whence))
 FUNCTION(int, File_get_position_shared, (MT(File) fh, MT(Offset) * offset),
-         (fh, (MP(Offset) *)offset))
+         ((MP(File))fh, (MP(Offset) *)offset))
 FUNCTION(int, File_read_at_all_begin,
          (MT(File) fh, MT(Offset) offset, void *buf, int count,
           MT(Datatype) datatype),
-         (fh, offset, buf, count, datatype))
+         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype))
 FUNCTION(int, File_read_at_all_end,
          (MT(File) fh, void *buf, MT(StatusPtr) status),
-         (fh, buf, (MP(StatusPtr))status))
+         ((MP(File))fh, buf, (MP(StatusPtr))status))
 FUNCTION(int, File_write_at_all_begin,
          (MT(File) fh, MT(Offset) offset, const void *buf, int count,
           MT(Datatype) datatype),
-         (fh, offset, buf, count, datatype))
+         ((MP(File))fh, (MP(Offset))offset, buf, count, (MP(Datatype))datatype))
 FUNCTION(int, File_write_at_all_end,
          (MT(File) fh, const void *buf, MT(StatusPtr) status),
-         (fh, buf, (MP(StatusPtr))status))
+         ((MP(File))fh, buf, (MP(StatusPtr))status))
 FUNCTION(int, File_read_all_begin,
          (MT(File) fh, void *buf, int count, MT(Datatype) datatype),
-         (fh, buf, count, datatype))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype))
 FUNCTION(int, File_read_all_end, (MT(File) fh, void *buf, MT(StatusPtr) status),
-         (fh, buf, (MP(StatusPtr))status))
+         ((MP(File))fh, buf, (MP(StatusPtr))status))
 FUNCTION(int, File_write_all_begin,
          (MT(File) fh, const void *buf, int count, MT(Datatype) datatype),
-         (fh, buf, count, datatype))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype))
 FUNCTION(int, File_write_all_end,
          (MT(File) fh, const void *buf, MT(StatusPtr) status),
-         (fh, buf, (MP(StatusPtr))status))
+         ((MP(File))fh, buf, (MP(StatusPtr))status))
 FUNCTION(int, File_read_ordered_begin,
          (MT(File) fh, void *buf, int count, MT(Datatype) datatype),
-         (fh, buf, count, datatype))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype))
 FUNCTION(int, File_read_ordered_end,
          (MT(File) fh, void *buf, MT(StatusPtr) status),
-         (fh, buf, (MP(StatusPtr))status))
+         ((MP(File))fh, buf, (MP(StatusPtr))status))
 FUNCTION(int, File_write_ordered_begin,
          (MT(File) fh, const void *buf, int count, MT(Datatype) datatype),
-         (fh, buf, count, datatype))
+         ((MP(File))fh, buf, count, (MP(Datatype))datatype))
 FUNCTION(int, File_write_ordered_end,
          (MT(File) fh, const void *buf, MT(StatusPtr) status),
-         (fh, buf, (MP(StatusPtr))status))
+         ((MP(File))fh, buf, (MP(StatusPtr))status))
 
 // 13.5 File Interoperability
 FUNCTION(int, File_get_type_extent,
          (MT(File) fh, MT(Datatype) datatype, MT(Aint) * extent),
-         (fh, datatype, extent))
+         ((MP(File))fh, (MP(Datatype))datatype, (MP(Aint) *)extent))
 #if 0
 // TODO: Handle conversions
-FUNCTION(
-    int, Register_datarep,
-    (const char *datarep, MT(Datarep_conversion_function) * read_conversion_fn,
-     MT(Datarep_conversion_function) * write_conversion_fn,
-     MT(Datarep_extent_function) * dtype_file_extent_fn, void *extra_state),
-    (datarep, read_conversion_fn, write_conversion_fn, dtype_file_extent_fn))
+FUNCTION(int, Register_datarep,
+         (const char *datarep,
+          MT(Datarep_conversion_function) * read_conversion_fn,
+          MT(Datarep_conversion_function) * write_conversion_fn,
+          MT(Datarep_extent_function) * dtype_file_extent_fn,
+          void *extra_state),
+         (datarep, (MP(Datarep_conversion_function) *)read_conversion_fn,
+          (MP(Datarep_conversion_function) *)write_conversion_fn,
+          (MP(Datarep_extent_function) *)dtype_file_extent_fn, extra_state))
 #endif
 
 // 13.6 Consistency and Semantics
-FUNCTION(int, File_set_atomicity, (MT(File) fh, int flag), (fh, flag))
-FUNCTION(int, File_get_atomicity, (MT(File) fh, int *flag), (fh, flag))
-FUNCTION(int, File_sync, (MT(File) fh), (fh))
+FUNCTION(int, File_set_atomicity, (MT(File) fh, int flag), ((MP(File))fh, flag))
+FUNCTION(int, File_get_atomicity, (MT(File) fh, int *flag),
+         ((MP(File))fh, flag))
+FUNCTION(int, File_sync, (MT(File) fh), ((MP(File))fh))
 
 // 17.1 Additional Support for Fortran Numeric Intrinsic Types
 

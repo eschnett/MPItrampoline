@@ -1,4 +1,4 @@
-subroutine mpitrampoline_mpi_f08_init()
+subroutine mpitrampoline_mpi_init_f08()
 
   use mpi_f08
 
@@ -19,4 +19,4 @@ subroutine mpitrampoline_mpi_f08_init()
   mpi_comm_self%comm = mpi_comm_self1
   mpi_comm_world%comm = mpi_comm_world1
 
-end subroutine mpitrampoline_mpi_f08_init
+end subroutine mpitrampoline_mpi_init_f08

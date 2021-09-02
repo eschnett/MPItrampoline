@@ -7,7 +7,8 @@
       integer MPI_SUBVERSION
       parameter (MPI_SUBVERSION = 1)
 
-!     MPI_MAX_DATAREP_STRING
+      integer MPI_MAX_DATAREP_STRING
+      parameter (MPI_MAX_DATAREP_STRING = 127)
       integer MPI_MAX_ERROR_STRING
       parameter (MPI_MAX_ERROR_STRING = 1023)
       integer MPI_MAX_INFO_KEY
@@ -31,20 +32,7 @@
       integer MPI_STATUS_SIZE
       parameter (MPI_STATUS_SIZE = 6)
 
-#define MT(TYPE) MPI_##TYPE
-#define CONSTANT(TYPE, NAME) \
-      [n]integer MPI_##NAME \
-      [n]common /MPI_##NAME/ [c]MPI_##NAME
-#include "mpi-constants-f.inc"
-#undef CONSTANT
-#undef MT
-
-#define MT(TYPE) MPI_##TYPE
-#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES) \
-      [n]external MPI_##NAME
-#include "mpi-functions-f.inc"
-#undef FUNCTION
-#undef MT
+      include "mpi_declarations_fortran.h"
 
       double precision MPI_Wtime
       double precision MPI_Wtick

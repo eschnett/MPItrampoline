@@ -1,63 +1,43 @@
 #ifndef MPI_H
 #define MPI_H
 
-#include "mpi-version.h"
+#include "mpi_version.h"
+
+#include "mpiabi.h"
 
 #include <stddef.h>
 #include <stdint.h>
 
-#ifndef MPITRAMPOLINE_EXTERN_CONST
-#define MPITRAMPOLINE_EXTERN_CONST(const) const
+#ifndef MPITRAMPOLINE_CONST
+#define MPITRAMPOLINE_CONST const
 #endif
 
 // Compile-time constants
 
-// Required MPI ABI version (we use SemVer)
-#define MPIABI_VERSION_REQUIRED_MAJOR 1
-#define MPIABI_VERSION_REQUIRED_MINOR 0
-#define MPIABI_VERSION_REQUIRED_PATCH 0
+#define MPI_VERSION MPIABI_MPI_VERSION
+#define MPI_SUBVERSION MPIABI_MPI_SUBVERSION
 
-extern int MPITRAMPOLINE_EXTERN_CONST(const) MPIABI_VERSION_MAJOR;
-extern int MPITRAMPOLINE_EXTERN_CONST(const) MPIABI_VERSION_MINOR;
-extern int MPITRAMPOLINE_EXTERN_CONST(const) MPIABI_VERSION_PATCH;
-
-extern int MPITRAMPOLINE_EXTERN_CONST(const) MPIRAPPER_VERSION_MAJOR;
-extern int MPITRAMPOLINE_EXTERN_CONST(const) MPIRAPPER_VERSION_MINOR;
-extern int MPITRAMPOLINE_EXTERN_CONST(const) MPIRAPPER_VERSION_PATCH;
-
-#define MPI_VERSION 3 // we pretend to support 3.1
-#define MPI_SUBVERSION 1
-
-// TODO: Check whether these limits are compatible with the wrapped MPI
-// #define MPI_MAX_DATAREP_STRING
-#define MPI_MAX_ERROR_STRING 1024           // MPICH's default
-#define MPI_MAX_INFO_KEY 256                // from MPICH
-#define MPI_MAX_INFO_VAL 1024               // from MPICH
-#define MPI_MAX_LIBRARY_VERSION_STRING 8192 // MPICH's default
-#define MPI_MAX_OBJECT_NAME 128             // from MPICH
-#define MPI_MAX_PORT_NAME 256               // from MPICH
-#define MPI_MAX_PROCESSOR_NAME 128          // MPICH's default
+#define MPI_MAX_DATAREP_STRING MPIABI_MAX_DATAREP_STRING
+#define MPI_MAX_ERROR_STRING MPIABI_MAX_ERROR_STRING
+#define MPI_MAX_INFO_KEY MPIABI_MAX_INFO_KEY
+#define MPI_MAX_INFO_VAL MPIABI_MAX_INFO_VAL
+#define MPI_MAX_LIBRARY_VERSION_STRING MPIABI_MAX_LIBRARY_VERSION_STRING
+#define MPI_MAX_OBJECT_NAME MPIABI_MAX_OBJECT_NAME
+#define MPI_MAX_PORT_NAME MPIABI_MAX_PORT_NAME
+#define MPI_MAX_PROCESSOR_NAME MPIABI_MAX_PROCESSOR_NAME
 
 // Simple types
 
-typedef intptr_t MPI_Aint;
-typedef int64_t MPI_Count;
-typedef int MPI_Fint;
-typedef int64_t MPI_Offset;
+typedef MPIABI_Aint MPI_Aint;
+typedef MPIABI_Count MPI_Count;
+typedef MPIABI_Fint MPI_Fint;
+typedef MPIABI_Offset MPI_Offset;
 
 // Handles
 
-// typedef uintptr_t MPI_Comm;
-// typedef uintptr_t MPI_Datatype;
-// typedef uintptr_t MPI_Errhandler;
-// typedef uintptr_t MPI_File;
-// typedef uintptr_t MPI_Group;
-// typedef uintptr_t MPI_Info;
-// typedef uintptr_t MPI_Message;
-// typedef uintptr_t MPI_Op;
-// typedef uintptr_t MPI_Request;
-// typedef uintptr_t MPI_Win;
-
+// Use pointers for MPI handles. This is safer, since we can use
+// different pointer types. We cannot use structs because MPI requires
+// that handles can be compared for equality.
 typedef struct MPItrampoline_Comm *MPI_Comm;
 typedef struct MPItrampoline_Datatype *MPI_Datatype;
 typedef struct MPItrampoline_Errhandler *MPI_Errhandler;
@@ -69,58 +49,10 @@ typedef struct MPItrampoline_Op *MPI_Op;
 typedef struct MPItrampoline_Request *MPI_Request;
 typedef struct MPItrampoline_Win *MPI_Win;
 
-// TODO: Don't define these publicly
-typedef MPI_Comm *MPI_CommPtr;
-typedef MPI_Datatype *MPI_DatatypePtr;
-typedef MPI_Errhandler *MPI_ErrhandlerPtr;
-typedef MPI_File *MPI_FilePtr;
-typedef MPI_Group *MPI_GroupPtr;
-typedef MPI_Info *MPI_InfoPtr;
-typedef MPI_Message *MPI_MessagePtr;
-typedef MPI_Op *MPI_OpPtr;
-typedef MPI_Request *MPI_RequestPtr;
-typedef MPI_Win *MPI_WinPtr;
-
 // MPI_Status
 
-// TODO: Don't define this publicly
-#ifdef __LP64__
-#define MPI_STATUS_SIZE 10
-#else
-#define MPI_STATUS_SIZE 8
-#endif
-
-typedef struct {
-  union {
-    struct {
-      int f0;
-      int f1;
-      int f2;
-      int f3;
-      size_t f4;
-    } padding_OpenMPI; // also IBM Spectrum MPI
-    struct {
-      int f0;
-      int f1;
-      int f2;
-      int f3;
-      int f4;
-    } padding_MPICH; // also Intel MPI
-  } wrapped;
-  int MPI_SOURCE;
-  int MPI_TAG;
-  int MPI_ERROR;
-} MPI_Status;
-
-#if defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
-_Static_assert(MPI_STATUS_SIZE * sizeof(MPI_Fint) == sizeof(MPI_Status), "");
-#elif defined __cplusplus && __cplusplus >= 201103L
-static_assert(MPI_STATUS_SIZE * sizeof(MPI_Fint) == sizeof(MPI_Status), "");
-#endif
-
-// TODO: Don't define these publicly
-typedef MPI_Status *MPI_StatusPtr;
-typedef const MPI_Status *MPI_const_StatusPtr;
+#define MPI_STATUS_SIZE MPIABI_STATUS_SIZE
+typedef MPIABI_Status MPI_Status;
 
 // Callback function types
 
@@ -134,8 +66,6 @@ typedef int MPI_Comm_delete_attr_function(MPI_Comm comm, int comm_keyval,
 typedef void MPI_Comm_errhandler_function(MPI_Comm *, int *, ...);
 typedef MPI_Comm_errhandler_function MPI_Comm_errhandler_fn;
 typedef MPI_Comm_copy_attr_function MPI_Copy_function;
-#if 0
-// TODO: Handle conversions
 typedef int MPI_Datarep_conversion_function(void *userbuf,
                                             MPI_Datatype datatype, int count,
                                             void *filebuf, MPI_Offset position,
@@ -143,16 +73,12 @@ typedef int MPI_Datarep_conversion_function(void *userbuf,
 typedef int MPI_Datarep_extent_function(MPI_Datatype datatype,
                                         MPI_Aint *file_extent,
                                         void *extra_state);
-#endif
 typedef MPI_Comm_delete_attr_function MPI_Delete_function;
 typedef void MPI_File_errhandler_function(MPI_File *, int *, ...);
 typedef MPI_File_errhandler_function MPI_File_errhandler_fn;
 typedef int MPI_Grequest_cancel_function(void *extra_state, int complete);
 typedef int MPI_Grequest_free_function(void *extra_state);
-#if 0
-// TODO: Handle status correctly
 typedef int MPI_Grequest_query_function(void *extra_state, MPI_Status *status);
-#endif
 typedef int MPI_Type_copy_attr_function(MPI_Datatype oldtype, int type_keyval,
                                         void *extra_state,
                                         void *attribute_val_in,
@@ -172,35 +98,26 @@ typedef int MPI_Win_delete_attr_function(MPI_Win win, int win_keyval,
 typedef void MPI_Win_errhandler_function(MPI_Win *, int *, ...);
 typedef MPI_Win_errhandler_function MPI_Win_errhandler_fn;
 
-// Constants
-
-#define MT(TYPE) MPI_##TYPE
-#define CONSTANT(TYPE, NAME)                                                   \
-  extern TYPE MPITRAMPOLINE_EXTERN_CONST(const) MPI_##NAME;
-#include "mpi-constants.inc"
-#undef CONSTANT
-#undef MT
-
-// Functions
+// Constants and Functions
 
 #ifdef __cplusplus
 extern "C" {
 #endif
 
-// TODO: Use inline function wrappers
-#define MT(TYPE) MPI_##TYPE
-#define MP(TYPE) MPI_##TYPE
-#define FUNCTION(RTYPE, NAME, PTYPES, PNAMES)                                  \
-  extern RTYPE(*MPITRAMPOLINE_EXTERN_CONST(const) MPItrampoline_##NAME)        \
-      PTYPES;                                                                  \
-  inline RTYPE MPI_##NAME PTYPES { return MPItrampoline_##NAME PNAMES; }
-#include "mpi-functions.inc"
-#undef FUNCTION
-#undef MT
-#undef MP
+extern int MPITRAMPOLINE_CONST mpiwrapper_version_major;
+extern int MPITRAMPOLINE_CONST mpiwrapper_version_minor;
+extern int MPITRAMPOLINE_CONST mpiwrapper_version_patch;
+
+extern int MPITRAMPOLINE_CONST mpiabi_loaded_version_major;
+extern int MPITRAMPOLINE_CONST mpiabi_loaded_version_minor;
+extern int MPITRAMPOLINE_CONST mpiabi_loaded_version_patch;
+
+#include "mpi_declarations.h"
 
 #ifdef __cplusplus
 }
 #endif
+
+inline int MPI_Pcontrol(int level, ...) { return MPI_SUCCESS; }
 
 #endif // #ifndef MPI_H

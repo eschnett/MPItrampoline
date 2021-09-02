@@ -15,7 +15,7 @@ cmake --build build && cmake --install build
 
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 1.1.1
+  MPItrampoline VERSION 2.0.0
   DESCRIPTION "MPI trampoline"
   LANGUAGES C Fortran
   )
@@ -25,17 +25,65 @@ set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod_files)
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 
-configure_file(mpi-version.h.in mpi-version.h @ONLY)
+configure_file(mpi_version.h.in mpi_version.h @ONLY)
 install(
-  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi-version.h"
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_version.h"
   DESTINATION include
   )
 
 add_custom_command(
-  OUTPUT mpif.h
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fortran-cpp.sh ${CMAKE_CURRENT_SOURCE_DIR}/mpif.h.in mpif.h
-  DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mpif.h.in ${CMAKE_CURRENT_SOURCE_DIR}/mpi-constants-f.inc ${CMAKE_CURRENT_SOURCE_DIR}/mpi-functions-f.inc
-  VERBATIM)
+  OUTPUT mpi_declarations.h
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_declarations.py >mpi_declarations.h
+  DEPENDS
+  ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_declarations.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_functions.py
+  )
+install(
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_declarations.h"
+  DESTINATION include
+  )
+
+add_custom_command(
+  OUTPUT mpi_definitions.h
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_definitions.py >mpi_definitions.h
+  DEPENDS
+  ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_definitions.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_functions.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants_fortran.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_functions_fortran.py
+  )
+
+add_custom_command(
+  OUTPUT mpi_initializations.h
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_initializations.py >mpi_initializations.h
+  DEPENDS
+  ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_initializations.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_functions.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants_fortran.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_functions_fortran.py
+  )
+
+add_custom_command(
+  OUTPUT mpi_declarations_fortran.h
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_declarations_fortran.py >mpi_declarations_fortran.h
+  DEPENDS
+  ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_declarations_fortran.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants_fortran.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_functions_fortran.py
+  )
+install(
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_declarations_fortran.h"
+  DESTINATION include
+  )
+
+# add_custom_command(
+#   OUTPUT mpif.h
+#   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fortran-cpp.sh ${CMAKE_CURRENT_SOURCE_DIR}/mpif.h.in mpif.h
+#   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mpif.h.in ${CMAKE_CURRENT_SOURCE_DIR}/mpi-constants-f.inc ${CMAKE_CURRENT_SOURCE_DIR}/mpi-functions-f.inc
+#   VERBATIM)
 add_custom_command(
   OUTPUT mpi.f90
   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/fortran-cpp.sh ${CMAKE_CURRENT_SOURCE_DIR}/mpi.f90.in mpi.f90
@@ -47,19 +95,16 @@ add_custom_command(
   DEPENDS ${CMAKE_CURRENT_SOURCE_DIR}/mpi.f90.in ${CMAKE_CURRENT_SOURCE_DIR}/mpi-constants-f.inc ${CMAKE_CURRENT_SOURCE_DIR}/mpi-functions-f.inc
   VERBATIM)
 install(
-  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpif.h" "${CMAKE_CURRENT_BINARY_DIR}/mpi.f90"
+  FILES
+  # "${CMAKE_CURRENT_BINARY_DIR}/mpif.h"
+  "${CMAKE_CURRENT_BINARY_DIR}/mpi.f90"
   DESTINATION include
   )
 
-# We always need to use static linking on macOS to avoid confusion
-# between MPItrampoline MPI and the wrapped MPI: Both define e.g.
-# `MPI_Init`, and our (MPItrampoline's) `MPI_Init` must not interpose
-# the `MPI_Init` defined by the wrapped MPI.
-add_library(
-  mpi
-  mpi.h mpi-version.h mpio.h
-  mpi.c
-  mpif.h
+add_library(mpi
+  # mpiabi.h mpiabi_declarations.h
+  mpi.c mpi.h mpi_version.h mpi_declarations.h mpio.h mpi_definitions.h mpi_initializations.h
+  mpif.h mpi_declarations_fortran.h
   mpi.f90 mpi_impl.f90
   mpi_f08.f90 mpi_f08_impl.f90
   mpi-constants.inc mpi-functions.inc mpi-constants-f.inc mpi-functions-f.inc
@@ -68,9 +113,9 @@ target_include_directories(mpi PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
 set_target_properties(mpi PROPERTIES
   VERSION ${PROJECT_VERSION}
-  # SOVERSION 1
-  # TODO: Add mpi-version.h and mpif.h as public headers instead of installing them manually
-  PUBLIC_HEADER "mpi.h;mpio.h;mpi-constants.inc;mpi-functions.inc"
+  # SOVERSION 2.0.0
+  # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
+  PUBLIC_HEADER "mpi.h;mpiabi.h;mpio.h;mpif.h"
   )
 install(TARGETS mpi EXPORT MPItrampolineTargets)
 install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION include)
