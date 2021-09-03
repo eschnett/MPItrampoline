@@ -38,8 +38,6 @@ int mpiabi_loaded_version_major = -1;
 int mpiabi_loaded_version_minor = -1;
 int mpiabi_loaded_version_patch = -1;
 
-extern inline int MPI_Pcontrol(int level, ...);
-
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "mpi_definitions.h"
@@ -48,7 +46,7 @@ extern inline int MPI_Pcontrol(int level, ...);
 
 ////////////////////////////////////////////////////////////////////////////////
 
-static void *dlsym1(void *handle, const char *name) {
+static void *get_symbol(void *handle, const char *name) {
   void *ptr = dlsym(handle, name);
   if (!ptr) {
     fprintf(stderr, "Could not resolve symbol \"%s\"\n", name);
@@ -209,22 +207,22 @@ init_mpitrampoline() {
 #endif
 
   mpiwrapper_version_major =
-      *(int const *)dlsym1(handle, "mpiwrapper_version_major");
+      *(int const *)get_symbol(handle, "mpiwrapper_version_major");
   mpiwrapper_version_minor =
-      *(int const *)dlsym1(handle, "mpiwrapper_version_minor");
+      *(int const *)get_symbol(handle, "mpiwrapper_version_minor");
   mpiwrapper_version_patch =
-      *(int const *)dlsym1(handle, "mpiwrapper_version_patch");
+      *(int const *)get_symbol(handle, "mpiwrapper_version_patch");
   if (verbose)
     fprintf(stderr, "[MPItrampoline] Loaded MPIwrapper %d.%d.%d\n",
             mpiwrapper_version_major, mpiwrapper_version_minor,
             mpiwrapper_version_patch);
 
   mpiabi_loaded_version_major =
-      *(int const *)dlsym1(handle, "mpiabi_version_major");
+      *(int const *)get_symbol(handle, "mpiabi_version_major");
   mpiabi_loaded_version_minor =
-      *(int const *)dlsym1(handle, "mpiabi_version_minor");
+      *(int const *)get_symbol(handle, "mpiabi_version_minor");
   mpiabi_loaded_version_patch =
-      *(int const *)dlsym1(handle, "mpiabi_version_patch");
+      *(int const *)get_symbol(handle, "mpiabi_version_patch");
   if (verbose)
     fprintf(stderr, "[MPItrampoline] Found MPI ABI version %d.%d.%d\n",
             mpiabi_loaded_version_major, mpiabi_loaded_version_minor,
@@ -249,7 +247,7 @@ init_mpitrampoline() {
   }
 
   void (*const mpiwrapper_export_fortran_constants)() =
-      dlsym1(handle, "mpiwrapper_export_fortran_constants_");
+      get_symbol(handle, "mpiwrapper_export_fortran_constants_");
   (*mpiwrapper_export_fortran_constants)();
 
 #include "mpi_initializations.h"
