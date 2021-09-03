@@ -228,8 +228,8 @@ init_mpitrampoline() {
             mpiabi_loaded_version_major, mpiabi_loaded_version_minor,
             mpiabi_loaded_version_patch);
 
-  if (mpiabi_loaded_version_major != mpiabi_loaded_version_major ||
-      mpiabi_loaded_version_minor < mpiabi_loaded_version_minor) {
+  if (mpiabi_loaded_version_major != mpiabi_version_major ||
+      mpiabi_loaded_version_minor < mpiabi_version_minor) {
     fprintf(
         stderr,
         "MPI ABI version mismatch:\n"
