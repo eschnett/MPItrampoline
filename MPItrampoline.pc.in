@@ -5,9 +5,11 @@ libdir=${exec_prefix}/@CMAKE_INSTALL_LIBDIR@
 
 Name: @PROJECT_NAME@
 Description: @PROJECT_DESCRIPTION@
+URL: @CMAKE_PROJECT_HOMEPAGE_URL@
 Version: @PROJECT_VERSION@
 
 Requires:
+Requires.private:
 Cflags: -I${includedir}
 Libs: -L${libdir} -lmpi
 Libs.private: -ldl
