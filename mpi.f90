@@ -2,10 +2,7 @@ module mpi
   implicit none
   save
 
-  logical, parameter :: MPI_ASYNC_PROTECTS_NONBLOCKING = .false.
-  logical, parameter :: MPI_SUBARRAYS_SUPPORTED = .false.
-
-  integer, parameter :: MPI_STATUS_SIZE = 6
+  include "mpiabif.h"
 
   include "mpi_declarations_fortran90.h"
 

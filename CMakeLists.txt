@@ -114,7 +114,7 @@ set_target_properties(mpi PROPERTIES
   VERSION ${PROJECT_VERSION}
   # SOVERSION 2.0.0
   # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
-  PUBLIC_HEADER "mpi.h;mpiabi.h;mpio.h;mpif.h"
+  PUBLIC_HEADER "mpi.h;mpiabi.h;mpio.h;mpif.h;mpiabif.h"
   )
 install(TARGETS mpi EXPORT MPItrampolineTargets)
 install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION include)
