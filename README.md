@@ -61,7 +61,7 @@ cmake -S . -B build -DMPIEXEC_EXECUTABLE=mpiexec -DCMAKE_BUILD_TYPE=RelWithDebIn
 cmake --build build
 cmake --install build
 ```
-but nothing is every simple on an HPC system. It might be necessary to
+but nothing is ever simple on an HPC system. It might be necessary to
 load certain modules, or to specify more cmake MPI configuration
 options.
 
