@@ -35,17 +35,17 @@ MPItrampoline, but this is quick and easy.
 
 ## Successfully Tested
 
-- Debian 11.0 via Docker (i386)
-- Debian 11.0 via Docker (x86-64)
-- macOS laptop (x86-64)
-- macOS via Github Actions (x86-64)
-- Ubuntu 20.04 via Docker (x86-64)
-- Ubuntu 20.04 via Github Actions (x86-64)
-- [Graham](https://docs.computecanada.ca/wiki/Graham), HPC system at [Compute Canada](https://www.computecanada.ca)  (x86-64)
-- [Marconi A3](https://www.hpc.cineca.it/hardware/marconi), HPC system at [Cineca](https://www.hpc.cineca.it) (x86-64)
-- [Niagara](https://docs.computecanada.ca/wiki/Niagara), HPC system at [Compute Canada](https://www.computecanada.ca)  (x86-64)
-- [Summit](https://www.olcf.ornl.gov/summit/), HPC system at [ORNL](https://www.ornl.gov) (IBM POWER 9)
-- Symmetry, in-house HPC system at the [Perimeter Institute](https://perimeterinstitute.ca)  (x86-64)
+- Debian 11.0 via Docker (MPICH; i386)
+- Debian 11.0 via Docker (MPICH; x86-64)
+- macOS laptop (MPICH, OpenMPI; x86-64)
+- macOS via Github Actions (OpenMPI; x86-64)
+- Ubuntu 20.04 via Docker (MPICH; x86-64)
+- Ubuntu 20.04 via Github Actions (MPICH, OpenMPI; x86-64)
+- [Graham](https://docs.computecanada.ca/wiki/Graham), HPC system at [Compute Canada](https://www.computecanada.ca)  (Intel MPI; x86-64)
+- [Marconi A3](https://www.hpc.cineca.it/hardware/marconi), HPC system at [Cineca](https://www.hpc.cineca.it) (Intel MPI; x86-64)
+- [Niagara](https://docs.computecanada.ca/wiki/Niagara), HPC system at [Compute Canada](https://www.computecanada.ca)  (OpenMPI; x86-64)
+- [Summit](https://www.olcf.ornl.gov/summit/), HPC system at [ORNL](https://www.ornl.gov) (Spectrum MPI; IBM POWER 9)
+- Symmetry, in-house HPC system at the [Perimeter Institute](https://perimeterinstitute.ca)  (MPICH, OpenMPI; x86-64)
 
 ## Workflow
 
