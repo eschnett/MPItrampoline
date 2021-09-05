@@ -43,6 +43,7 @@ MPItrampoline, but this is quick and easy.
 - Ubuntu 20.04 via Github Actions (x86-64)
 - [Graham](https://docs.computecanada.ca/wiki/Graham), HPC system at [Compute Canada](https://www.computecanada.ca)  (x86-64)
 - [Marconi A3](https://www.hpc.cineca.it/hardware/marconi), HPC system at [Cineca](https://www.hpc.cineca.it) (x86-64)
+- [Niagara](https://docs.computecanada.ca/wiki/Niagara), HPC system at [Compute Canada](https://www.computecanada.ca)  (x86-64)
 - [Summit](https://www.olcf.ornl.gov/summit/), HPC system at [ORNL](https://www.ornl.gov) (IBM POWER 9)
 - Symmetry, in-house HPC system at the [Perimeter Institute](https://perimeterinstitute.ca)  (x86-64)
 
