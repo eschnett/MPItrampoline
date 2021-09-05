@@ -55,12 +55,16 @@ Install MPIwrapper, wrapping the MPI installation you want to use
 there. You can install MPIwrapper multiple times if you want to wrap
 more than one MPI implementation.
 
-This is usually as simple as
+This is possibly as simple as
 ```sh
-cmake -S . -B build -DCMAKE_CXX_COMPILER=mpicxx -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$HOME/mpiwrapper
+cmake -S . -B build -DMPIEXEC_EXECUTABLE=mpiexec -DCMAKE_BUILD_TYPE=RelWithDebInfo -DCMAKE_INSTALL_PREFIX=$HOME/mpiwrapper
 cmake --build build
 cmake --install build
 ```
+but nothing is every simple on an HPC system. It might be necessary to
+load certain modules, or to specify more cmake MPI configuration
+options.
+
 The MPIwrapper libraries remain on the HPC system, they are installed
 independently of any application.
 
