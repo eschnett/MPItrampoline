@@ -19,14 +19,15 @@
 #define MPIABI_MPI_VERSION 3
 #define MPIABI_MPI_SUBVERSION 1
 
-#define MPIABI_MAX_DATAREP_STRING 128          // from MPICH
-#define MPIABI_MAX_ERROR_STRING 1024           // MPICH's default
-#define MPIABI_MAX_INFO_KEY 256                // from MPICH
-#define MPIABI_MAX_INFO_VAL 1024               // from MPICH
-#define MPIABI_MAX_LIBRARY_VERSION_STRING 8192 // MPICH's default
-#define MPIABI_MAX_OBJECT_NAME 128             // from MPICH
-#define MPIABI_MAX_PORT_NAME 256               // from MPICH
-#define MPIABI_MAX_PROCESSOR_NAME 128          // MPICH's default
+// These limits must be no smaller than any MPI implementations' limit
+#define MPIABI_MAX_DATAREP_STRING 128          // MPICH: 128, OpenMPI: 128
+#define MPIABI_MAX_ERROR_STRING 1024           // MPICH: 1024, OpenMPI: 256
+#define MPIABI_MAX_INFO_KEY 256                // MPICH: 256, OpenMPI: 36
+#define MPIABI_MAX_INFO_VAL 1024               // MPICH: 1024, OpenMPI: 256
+#define MPIABI_MAX_LIBRARY_VERSION_STRING 8192 // MPICH: 8192, OpenMPI: 256
+#define MPIABI_MAX_OBJECT_NAME 128             // MPICH: 128, OpenMPI: 64
+#define MPIABI_MAX_PORT_NAME 1024              // MPICH: 256, OpenMPI: 1024
+#define MPIABI_MAX_PROCESSOR_NAME 256          // MPICH: 128, OpenMPI: 256
 
 // Simple types
 
@@ -109,7 +110,7 @@ static_assert(std::is_pod<MPIABI_Status>::value, "");
 #endif
 
 // Helper types
-// TODO: Don't define these publicly
+// TODO: Don't define this publicly
 typedef int MPIABI_array_int_3[3];
 
 // Callback function types
