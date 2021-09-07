@@ -38,6 +38,37 @@ typedef MPIABI_Offset MPI_Offset;
 // Use pointers for MPI handles. This is safer, since we can use
 // different pointer types. We cannot use structs because MPI requires
 // that handles can be compared for equality.
+struct MPItrampoline_Comm {
+  uint8_t too_large[INTPTR_MAX];
+};
+struct MPItrampoline_Datatype {
+  uint8_t too_large[INTPTR_MAX];
+};
+struct MPItrampoline_Errhandler {
+  uint8_t too_large[INTPTR_MAX];
+};
+struct MPItrampoline_File {
+  uint8_t too_large[INTPTR_MAX];
+};
+struct MPItrampoline_Group {
+  uint8_t too_large[INTPTR_MAX];
+};
+struct MPItrampoline_Info {
+  uint8_t too_large[INTPTR_MAX];
+};
+struct MPItrampoline_Message {
+  uint8_t too_large[INTPTR_MAX];
+};
+struct MPItrampoline_Op {
+  uint8_t too_large[INTPTR_MAX];
+};
+struct MPItrampoline_Request {
+  uint8_t too_large[INTPTR_MAX];
+};
+struct MPItrampoline_Win {
+  uint8_t too_large[INTPTR_MAX];
+};
+
 typedef struct MPItrampoline_Comm *MPI_Comm;
 typedef struct MPItrampoline_Datatype *MPI_Datatype;
 typedef struct MPItrampoline_Errhandler *MPI_Errhandler;
