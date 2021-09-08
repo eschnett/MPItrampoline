@@ -35,12 +35,13 @@ MPItrampoline, but this is quick and easy.
 
 ## Successfully Tested
 
-- Debian 11.0 via Docker (MPICH; i386)
-- Debian 11.0 via Docker (MPICH; x86-64)
+- Debian 11.0 via Docker (MPICH; arm32v5, arm32v7, arm64v8, mips64le, ppc64le, riscv64; C/C++ only)
+- Debian 11.0 via Docker (MPICH; i386, x86-64)
 - macOS laptop (MPICH, OpenMPI; x86-64)
 - macOS via Github Actions (OpenMPI; x86-64)
 - Ubuntu 20.04 via Docker (MPICH; x86-64)
 - Ubuntu 20.04 via Github Actions (MPICH, OpenMPI; x86-64)
+- [Blue Waters](https://bluewaters.ncsa.illinois.edu), HPC system at the [NCSA](http://www.ncsa.illinois.edu)  (Cray MPICH; x86-64)
 - [Graham](https://docs.computecanada.ca/wiki/Graham), HPC system at [Compute Canada](https://www.computecanada.ca)  (Intel MPI; x86-64)
 - [Marconi A3](https://www.hpc.cineca.it/hardware/marconi), HPC system at [Cineca](https://www.hpc.cineca.it) (Intel MPI; x86-64)
 - [Niagara](https://docs.computecanada.ca/wiki/Niagara), HPC system at [Compute Canada](https://www.computecanada.ca)  (OpenMPI; x86-64)
@@ -100,9 +101,7 @@ FUNCTION(int, Send,
 Unfortunately, MPItrampoline does not yet wrap the Fortran API. Your
 help is welcome.
 
-Wrapping Cray MPI, Intel MPI, MPICH, Microsoft-MPI, OpenMPI, and
-Spectrum MPI should be working with MPItrampoline. (Not all have been
-tested.) Certain MPI types, constants, and functions are difficult to
+Certain MPI types, constants, and functions are difficult to
 wrap. Theoretically, there could be MPI libraries where it is not
 possible to implement the current MPI ABI. If you encounter this,
 please let me know -- maybe there is a work-around.
