@@ -1,7 +1,6 @@
 #[[
 rm -rf build $HOME/src/c/MPIstuff/mpitrampoline
-# cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff/mpitrampoline
-cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=ON -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff/mpitrampoline
+cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff/mpitrampoline
 cmake --build build && cmake --install build
 
 
@@ -21,6 +20,8 @@ project(
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
   LANGUAGES C Fortran
   )
+
+# set(CMAKE_C_STANDARD 11)
 
 set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod_files)
 

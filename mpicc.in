@@ -23,4 +23,5 @@ fi
 #     exit 0
 # fi
 
+#TODO: use environment variable `CC` if `MPITRAMPOLINE_CC` is unset?
 exec ${MPITRAMPOLINE_CC:-cc} -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpi -ldl
