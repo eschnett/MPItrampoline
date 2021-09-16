@@ -2,6 +2,7 @@
 #define MPITRAMPOLINE_CONST
 
 #include "mpi.h"
+#include "mpi_defaults.h"
 
 #ifdef __linux__
 #include <link.h>
@@ -46,20 +47,98 @@ extern inline int MPI_Pcontrol(int level, ...);
 
 ////////////////////////////////////////////////////////////////////////////////
 
-static const char *getvar(const char *const varname) {
+static const char *get_default(const char *const varname) {
   const char *var = NULL;
-  var = getenv(varname);
-  if (var)
-    return var;
-  void *const symptr = dlsym(RTLD_DEFAULT, varname);
-  if (symptr)
-    var = *(const char **)symptr;
+  if (strcmp(varname, "MPITRAMPOLINE_DLOPEN_BINDING") == 0)
+    var = MPITRAMPOLINE_DEFAULT_DLOPEN_BINDING;
+  else if (strcmp(varname, "MPITRAMPOLINE_DLOPEN_MODE") == 0)
+    var = MPITRAMPOLINE_DEFAULT_DLOPEN_MODE;
+  else if (strcmp(varname, "MPITRAMPOLINE_LIB") == 0)
+    var = MPITRAMPOLINE_DEFAULT_LIB;
+  else if (strcmp(varname, "MPITRAMPOLINE_PRELOAD") == 0)
+    var = MPITRAMPOLINE_DEFAULT_PRELOAD;
+  else if (strcmp(varname, "MPITRAMPOLINE_VERBOSE") == 0)
+    var = MPITRAMPOLINE_DEFAULT_VERBOSE;
+  if (var && var[0] == '\0')
+    var = NULL;
   return var;
 }
 
 static bool verbose = false;
 
-static void set_verbose() { verbose = getvar("MPITRAMPOLINE_VERBOSE"); }
+static const char *path = NULL;
+
+// This path is correct only if MPItrampoline is built as shared
+// library. If MPItrarmpoline is built as static library, then the
+// path corresponds to the executable. This function also expects that
+// MPItrampoline is installed into a `lib` directory. If not, then the
+// path will point to the wrong directory.
+static void set_path() {
+  Dl_info info;
+  const int iret = dladdr(&mpiwrapper_version_major, &info);
+  if (!iret) {
+    fprintf(stderr, "Cannot determine path name of libmpitrampoline.so\n");
+    exit(1);
+  }
+  char *const buf = strdup(info.dli_fname);
+  // Remove last two components
+  for (int i = 0; i < 2; ++i) {
+    char *const slash = strrchr(buf, '/');
+    if (!slash)
+      break;
+    *slash = '\0';
+  }
+  path = buf;
+  if (verbose)
+    fprintf(stderr,
+            "[MPItrampoline] libmpitrampoline.so is installed in \"%s\"\n",
+            path);
+}
+
+static const char *get_config(const char *const varname) {
+  // Get configuration setting
+  const char *var = NULL;
+  if (!var)
+    // Check environment variable
+    var = getenv(varname);
+  if (!var) {
+    // Check global variable in main application
+    void *const symptr = dlsym(RTLD_DEFAULT, varname);
+    if (symptr)
+      var = *(const char **)symptr;
+  }
+  if (!var)
+    // Check default setting
+    var = get_default(varname);
+  if (!var)
+    return NULL;
+
+  // Expand MPItrampoline's path name if necessary
+  const char *const path_tmpl = "@MPITRAMPOLINE_DIR@";
+  const size_t path_tmpl_len = strlen(path_tmpl);
+  if (strncmp(path_tmpl, var, path_tmpl_len) == 0) {
+    if (!path) {
+      fprintf(stderr, "Cannot expand \"%s\" because path is NULL\n", path_tmpl);
+      exit(1);
+    }
+    char buf[10000];
+    const int len =
+        snprintf(buf, sizeof buf, "%s%s", path, &var[path_tmpl_len]);
+    if (len < 0 || (size_t)len >= sizeof buf) {
+      fprintf(stderr, "Buffer too small\n");
+      exit(1);
+    }
+    // We don't record whether strdup was called. We assume that this
+    // function `get_config` is called only a few times during
+    // startup, and that the memory leak is small enough to not
+    // matter.
+    var = strdup(buf);
+  }
+
+  return var;
+}
+
+static void set_verbose() { verbose = get_config("MPITRAMPOLINE_VERBOSE"); }
 
 enum dlopen_mode_t {
   dlopen_mode_error,
@@ -69,7 +148,7 @@ enum dlopen_mode_t {
 static enum dlopen_mode_t dlopen_mode = dlopen_mode_error;
 
 void set_dlopen_mode() {
-  const char *const dlopen_mode_str = getvar("MPITRAMPOLINE_DLOPEN_MODE");
+  const char *const dlopen_mode_str = get_config("MPITRAMPOLINE_DLOPEN_MODE");
   if (dlopen_mode_str == NULL || strcmp(dlopen_mode_str, "dlmopen") == 0) {
     dlopen_mode = dlopen_mode_dlmopen;
   } else if (strcmp(dlopen_mode_str, "dlopen") == 0) {
@@ -92,7 +171,8 @@ enum dlopen_binding_t {
 static enum dlopen_binding_t dlopen_binding = dlopen_binding_error;
 
 void set_dlopen_binding() {
-  const char *const dlopen_binding_str = getvar("MPITRAMPOLINE_DLOPEN_BINDING");
+  const char *const dlopen_binding_str =
+      get_config("MPITRAMPOLINE_DLOPEN_BINDING");
   if (dlopen_binding_str == NULL || strcmp(dlopen_binding_str, "lazy") == 0) {
     dlopen_binding = dlopen_binding_lazy;
   } else if (strcmp(dlopen_binding_str, "now") == 0) {
@@ -214,7 +294,6 @@ static void *get_symbol(void *handle, const char *name) {
 static void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
 init_mpitrampoline() {
   set_verbose();
-
   if (verbose) {
     fprintf(stderr, "[MPItrampoline] This is MPItrampoline %d.%d.%d\n",
             MPITRAMPOLINE_VERSION_MAJOR, MPITRAMPOLINE_VERSION_MINOR,
@@ -222,6 +301,8 @@ init_mpitrampoline() {
     fprintf(stderr, "[MPItrampoline] Requiring MPI ABI version %d.%d.%d\n",
             MPIABI_VERSION_MAJOR, MPIABI_VERSION_MINOR, MPIABI_VERSION_PATCH);
   }
+
+  set_path();
 
   // On Linux (with glibc), we use `dlmopen` or `RTLD_DEEPBIND` to
   // ensure that the loaded `mpiwrapper.so` looks for its MPI symbols
@@ -245,7 +326,7 @@ init_mpitrampoline() {
   set_dlopen_mode();
   set_dlopen_binding();
 
-  const char *const preload_str = getvar("MPITRAMPOLINE_PRELOAD");
+  const char *const preload_str = get_config("MPITRAMPOLINE_PRELOAD");
   if (preload_str) {
     char *const preload = strdup(preload_str);
     const char *const delim = ":";
@@ -260,7 +341,7 @@ init_mpitrampoline() {
     free(preload);
   }
 
-  const char *const libname = getvar("MPITRAMPOLINE_LIB");
+  const char *const libname = get_config("MPITRAMPOLINE_LIB");
   if (!libname) {
     fprintf(stderr,
             "WARNING: The environment variable MPITRAMPOLINE_LIB is not set.\n"

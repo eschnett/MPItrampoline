@@ -34,6 +34,12 @@ install(
   DESTINATION include
   )
 
+configure_file(mpi_defaults.h.in mpi_defaults.h @ONLY)
+install(
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_defaults.h"
+  DESTINATION include
+  )
+
 add_custom_command(
   OUTPUT mpi_declarations.h
   COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_declarations.py >mpi_declarations.h
