@@ -46,9 +46,16 @@ extern inline int MPI_Pcontrol(int level, ...);
 
 ////////////////////////////////////////////////////////////////////////////////
 
+static const char *getvar(const char *const varname) {
+  void *const symptr = dlsym(RTLD_DEFAULT, varname);
+  if (symptr)
+    return *(const char **)symptr;
+  return getenv(varname);
+}
+
 static bool verbose = false;
 
-static void set_verbose() { verbose = getenv("MPITRAMPOLINE_VERBOSE"); }
+static void set_verbose() { verbose = getvar("MPITRAMPOLINE_VERBOSE"); }
 
 enum dlopen_mode_t {
   dlopen_mode_error,
@@ -58,7 +65,7 @@ enum dlopen_mode_t {
 static enum dlopen_mode_t dlopen_mode = dlopen_mode_error;
 
 void set_dlopen_mode() {
-  const char *const dlopen_mode_str = getenv("MPITRAMPOLINE_DLOPEN_MODE");
+  const char *const dlopen_mode_str = getvar("MPITRAMPOLINE_DLOPEN_MODE");
   if (dlopen_mode_str == NULL || strcmp(dlopen_mode_str, "dlmopen") == 0) {
     dlopen_mode = dlopen_mode_dlmopen;
   } else if (strcmp(dlopen_mode_str, "dlopen") == 0) {
@@ -81,7 +88,7 @@ enum dlopen_binding_t {
 static enum dlopen_binding_t dlopen_binding = dlopen_binding_error;
 
 void set_dlopen_binding() {
-  const char *const dlopen_binding_str = getenv("MPITRAMPOLINE_DLOPEN_BINDING");
+  const char *const dlopen_binding_str = getvar("MPITRAMPOLINE_DLOPEN_BINDING");
   if (dlopen_binding_str == NULL || strcmp(dlopen_binding_str, "lazy") == 0) {
     dlopen_binding = dlopen_binding_lazy;
   } else if (strcmp(dlopen_binding_str, "now") == 0) {
@@ -234,7 +241,7 @@ init_mpitrampoline() {
   set_dlopen_mode();
   set_dlopen_binding();
 
-  const char *const preload_str = getenv("MPITRAMPOLINE_PRELOAD");
+  const char *const preload_str = getvar("MPITRAMPOLINE_PRELOAD");
   if (preload_str) {
     char *const preload = strdup(preload_str);
     const char *const delim = ":";
@@ -249,7 +256,7 @@ init_mpitrampoline() {
     free(preload);
   }
 
-  const char *const libname = getenv("MPITRAMPOLINE_LIB");
+  const char *const libname = getvar("MPITRAMPOLINE_LIB");
   if (!libname) {
     fprintf(stderr,
             "WARNING: The environment variable MPITRAMPOLINE_LIB is not set.\n"
