@@ -47,10 +47,14 @@ extern inline int MPI_Pcontrol(int level, ...);
 ////////////////////////////////////////////////////////////////////////////////
 
 static const char *getvar(const char *const varname) {
+  const char *var = NULL;
+  var = getenv(varname);
+  if (var)
+    return var;
   void *const symptr = dlsym(RTLD_DEFAULT, varname);
   if (symptr)
-    return *(const char **)symptr;
-  return getenv(varname);
+    var = *(const char **)symptr;
+  return var;
 }
 
 static bool verbose = false;
