@@ -66,18 +66,19 @@ static const char *get_default(const char *const varname) {
 
 static bool verbose = false;
 
-static const char *path = NULL;
+static const char *mpitrampoline_dir = NULL;
 
 // This path is correct only if MPItrampoline is built as shared
 // library. If MPItrarmpoline is built as static library, then the
 // path corresponds to the executable. This function also expects that
 // MPItrampoline is installed into a `lib` directory. If not, then the
 // path will point to the wrong directory.
-static void set_path() {
+static void set_mpitrampoline_dir() {
   Dl_info info;
   const int iret = dladdr(&mpiwrapper_version_major, &info);
   if (!iret) {
-    fprintf(stderr, "Cannot determine path name of libmpitrampoline.so\n");
+    fprintf(stderr,
+            "MPItrampoline: Cannot determine path of libmpitrampoline.so\n");
     exit(1);
   }
   char *const buf = strdup(info.dli_fname);
@@ -88,11 +89,73 @@ static void set_path() {
       break;
     *slash = '\0';
   }
-  path = buf;
+  mpitrampoline_dir = buf;
   if (verbose)
     fprintf(stderr,
             "[MPItrampoline] libmpitrampoline.so is installed in \"%s\"\n",
-            path);
+            mpitrampoline_dir);
+}
+
+// Generic string append functions
+static void mem_alloc(char **restrict buf, size_t *restrict buf_len,
+                      size_t *restrict buf_pos) {
+  *buf_len = 1000;
+  *buf = malloc(*buf_len);
+  *buf_pos = 0;
+}
+static void mem_append(char **restrict buf, size_t *restrict buf_len,
+                       size_t *restrict buf_pos, const char *restrict str,
+                       const size_t str_len) {
+  if (*buf_pos + str_len > *buf_len) {
+    *buf_len += *buf_pos + str_len;
+    *buf = realloc(*buf, *buf_len);
+  }
+  memcpy(*buf + *buf_pos, str, str_len);
+  *buf_pos += str_len;
+}
+
+static const char *expand_template(const char *const var,
+                                   const char *const template,
+                                   const char *const value) {
+  if (!strstr(var, template))
+    return var;
+
+  if (!value) {
+    fprintf(
+        stderr,
+        "MPItrampoline: Cannot expand template \"%s\" because value is NULL\n",
+        template);
+    exit(1);
+  }
+  const size_t template_len = strlen(template);
+  const size_t value_len = strlen(value);
+  size_t var_pos = 0;
+  char *buf;
+  size_t buf_len, buf_pos;
+  mem_alloc(&buf, &buf_len, &buf_pos);
+
+  for (;;) {
+    // Find template
+    const char *const tmpl = strstr(&var[var_pos], template);
+    // Copy characters up to template, or all remaining characters
+    const size_t ncopy = tmpl ? tmpl - &var[var_pos] : strlen(&var[var_pos]);
+    mem_append(&buf, &buf_len, &buf_pos, &var[var_pos], ncopy);
+    var_pos += ncopy;
+    // We are done if no template was found
+    if (!tmpl)
+      break;
+    // Copy template
+    mem_append(&buf, &buf_len, &buf_pos, value, value_len);
+    var_pos += template_len;
+  }
+  // Add trailing NUL character
+  mem_append(&buf, &buf_len, &buf_pos, "", 1);
+
+  // We don't record whether strdup was called. We assume that this
+  // function `get_config` is called only a few times during
+  // startup, and that the memory leak is small enough to not
+  // matter.
+  return buf;
 }
 
 static const char *get_config(const char *const varname) {
@@ -113,27 +176,8 @@ static const char *get_config(const char *const varname) {
   if (!var)
     return NULL;
 
-  // Expand MPItrampoline's path name if necessary
-  const char *const path_tmpl = "@MPITRAMPOLINE_DIR@";
-  const size_t path_tmpl_len = strlen(path_tmpl);
-  if (strncmp(path_tmpl, var, path_tmpl_len) == 0) {
-    if (!path) {
-      fprintf(stderr, "Cannot expand \"%s\" because path is NULL\n", path_tmpl);
-      exit(1);
-    }
-    char buf[10000];
-    const int len =
-        snprintf(buf, sizeof buf, "%s%s", path, &var[path_tmpl_len]);
-    if (len < 0 || (size_t)len >= sizeof buf) {
-      fprintf(stderr, "Buffer too small\n");
-      exit(1);
-    }
-    // We don't record whether strdup was called. We assume that this
-    // function `get_config` is called only a few times during
-    // startup, and that the memory leak is small enough to not
-    // matter.
-    var = strdup(buf);
-  }
+  // Expand path to MPItrampoline
+  var = expand_template(var, "@MPITRAMPOLINE_DIR@", mpitrampoline_dir);
 
   return var;
 }
@@ -154,11 +198,11 @@ void set_dlopen_mode() {
   } else if (strcmp(dlopen_mode_str, "dlopen") == 0) {
     dlopen_mode = dlopen_mode_dlopen;
   } else {
-    fprintf(
-        stderr,
-        "The environment variable MPITRAMPOLINE_DLOPEN_MODE is set to \"%s\".\n"
-        "Only the values \"dlmopen\" (default) and \"dlopen\" are allowed.",
-        dlopen_mode_str);
+    fprintf(stderr,
+            "MPItrampoline: The environment variable MPITRAMPOLINE_DLOPEN_MODE "
+            "is set to \"%s\".\n"
+            "Only the values \"dlmopen\" (default) and \"dlopen\" are allowed.",
+            dlopen_mode_str);
     exit(1);
   }
 }
@@ -179,8 +223,8 @@ void set_dlopen_binding() {
     dlopen_binding = dlopen_binding_now;
   } else {
     fprintf(stderr,
-            "The environment variable MPITRAMPOLINE_DLOPEN_BINDING is set to "
-            "\"%s\".\n"
+            "MPItrampoline: The environment variable "
+            "MPITRAMPOLINE_DLOPEN_BINDING is set to \"%s\".\n"
             "Only the values \"lazy\" (default) and \"now\" are allowed.",
             dlopen_binding_str);
     exit(1);
@@ -245,10 +289,11 @@ static void *load_library(const char *const libname) {
 #endif
 
   if (!handle) {
-    fprintf(stderr, "Could not dlopen library \"%s\"\n", libname);
+    fprintf(stderr, "MPItrampoline: Could not dlopen library \"%s\"\n",
+            libname);
     const char *const error = dlerror();
     if (error)
-      fprintf(stderr, "dlerror: %s\n", error);
+      fprintf(stderr, "MPItrampoline: dlerror: %s\n", error);
     exit(1);
   }
 
@@ -256,10 +301,10 @@ static void *load_library(const char *const libname) {
   Lmid_t lmid;
   const int ierr = dlinfo(handle, RTLD_DI_LMID, &lmid);
   if (ierr) {
-    fprintf(stderr, "Could not determine link map id\n");
+    fprintf(stderr, "MPItrampoline: Could not determine link map id\n");
     const char *const error = dlerror();
     if (error)
-      fprintf(stderr, "dlerror: %s\n", error);
+      fprintf(stderr, "MPItrampoline: dlerror: %s\n", error);
     exit(1);
   }
 
@@ -277,10 +322,10 @@ static void *load_library(const char *const libname) {
 static void *get_symbol(void *handle, const char *name) {
   void *ptr = dlsym(handle, name);
   if (!ptr) {
-    fprintf(stderr, "Could not resolve symbol \"%s\"\n", name);
+    fprintf(stderr, "MPItrampoline: Could not resolve symbol \"%s\"\n", name);
     const char *const error = dlerror();
     if (error)
-      fprintf(stderr, "dlerror: %s\n", error);
+      fprintf(stderr, "MPItrampoline: dlerror: %s\n", error);
     exit(1);
   }
   return ptr;
@@ -302,7 +347,7 @@ init_mpitrampoline() {
             MPIABI_VERSION_MAJOR, MPIABI_VERSION_MINOR, MPIABI_VERSION_PATCH);
   }
 
-  set_path();
+  set_mpitrampoline_dir();
 
   // On Linux (with glibc), we use `dlmopen` or `RTLD_DEEPBIND` to
   // ensure that the loaded `mpiwrapper.so` looks for its MPI symbols
@@ -344,7 +389,8 @@ init_mpitrampoline() {
   const char *const libname = get_config("MPITRAMPOLINE_LIB");
   if (!libname) {
     fprintf(stderr,
-            "WARNING: The environment variable MPITRAMPOLINE_LIB is not set.\n"
+            "MPItrampoline: WARNING: The environment variable "
+            "MPITRAMPOLINE_LIB is not set.\n"
             "MPI functions will not be available.\n"
             "Set MPITRAMPOLINE_LIB to point to a wrapped MPI library.\n"
             "See <https://github.com/eschnett/MPItrampoline> for details.\n");
@@ -386,7 +432,7 @@ init_mpitrampoline() {
       mpiabi_loaded_version_minor < mpiabi_version_minor) {
     fprintf(
         stderr,
-        "MPI ABI version mismatch:\n"
+        "MPItrampoline: MPI ABI version mismatch:\n"
         "This version of MPItrampoline requires MPI ABI version %d.%d.%d, "
         "but the loaded MPIwrapper only provides MPI ABI version %d.%d.%d.\n"
         "This is MPItrampoline version %d.%d.%d.\n"
