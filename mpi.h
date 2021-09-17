@@ -35,23 +35,10 @@ typedef MPIABI_Offset MPI_Offset;
 
 // Handles
 
-// Use pointers for MPI handles. This is safer, since we can use
-// different pointer types. We cannot use structs because MPI requires
-// that handles can be compared for equality.
-
-// We need real types so that one can call `typeid` on the handles in C++
-// TODO: Try using empty unions instead
-struct MPItrampoline_Comm {};
-struct MPItrampoline_Datatype {};
-struct MPItrampoline_Errhandler {};
-struct MPItrampoline_File {};
-struct MPItrampoline_Group {};
-struct MPItrampoline_Info {};
-struct MPItrampoline_Message {};
-struct MPItrampoline_Op {};
-struct MPItrampoline_Request {};
-struct MPItrampoline_Win {};
-
+// Use pointers for MPI handles. This is safer since we can use
+// different pointer types for different handle types. We cannot use
+// structs directly because MPI requires that handles can be compared
+// for equality.
 typedef struct MPItrampoline_Comm *MPI_Comm;
 typedef struct MPItrampoline_Datatype *MPI_Datatype;
 typedef struct MPItrampoline_Errhandler *MPI_Errhandler;
