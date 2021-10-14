@@ -376,7 +376,7 @@ init_mpitrampoline() {
     char *const preload = strdup(preload_str);
     const char *const delim = ":";
     for (char *stringp = preload, *libname;
-         libname = strsep(&stringp, delim);) {
+         (libname = strsep(&stringp, delim));) {
       if (*libname != '\0') {
         if (verbose)
           fprintf(stderr, "[MPItrampoline] Preloading library \"%s\"\n",
