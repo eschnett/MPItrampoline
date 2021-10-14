@@ -375,13 +375,14 @@ init_mpitrampoline() {
   if (preload_str) {
     char *const preload = strdup(preload_str);
     const char *const delim = ":";
-    char *saveptr;
-    const char *libname = strtok_r(preload, delim, &saveptr);
-    while (libname) {
-      if (verbose)
-        fprintf(stderr, "[MPItrampoline] Preloading library \"%s\"\n", libname);
-      load_library(libname);
-      libname = strtok_r(NULL, delim, &saveptr);
+    for (char *stringp = preload, *libname;
+         libname = strsep(&stringp, delim);) {
+      if (*libname != '\0') {
+        if (verbose)
+          fprintf(stderr, "[MPItrampoline] Preloading library \"%s\"\n",
+                  libname);
+        load_library(libname);
+      }
     }
     free(preload);
   }
