@@ -193,15 +193,15 @@ static enum dlopen_mode_t dlopen_mode = dlopen_mode_error;
 
 void set_dlopen_mode() {
   const char *const dlopen_mode_str = get_config("MPITRAMPOLINE_DLOPEN_MODE");
-  if (dlopen_mode_str == NULL || strcmp(dlopen_mode_str, "dlmopen") == 0) {
-    dlopen_mode = dlopen_mode_dlmopen;
-  } else if (strcmp(dlopen_mode_str, "dlopen") == 0) {
+  if (dlopen_mode_str == NULL || strcmp(dlopen_mode_str, "dlopen") == 0) {
     dlopen_mode = dlopen_mode_dlopen;
+  } else if (strcmp(dlopen_mode_str, "dlmopen") == 0) {
+    dlopen_mode = dlopen_mode_dlmopen;
   } else {
     fprintf(stderr,
             "MPItrampoline: The environment variable MPITRAMPOLINE_DLOPEN_MODE "
             "is set to \"%s\".\n"
-            "Only the values \"dlmopen\" (default) and \"dlopen\" are allowed.",
+            "Only the values \"dlopen\" (default) and \"dlmopen\" are allowed.",
             dlopen_mode_str);
     exit(1);
   }
