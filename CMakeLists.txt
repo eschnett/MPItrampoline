@@ -121,7 +121,6 @@ set_target_properties(mpi PROPERTIES
   # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
   PUBLIC_HEADER "mpi.h;mpiabi.h;mpio.h"
   )
-install(TARGETS mpi EXPORT MPItrampolineTargets)
 
 add_library(mpifort
   mpifort.c
@@ -130,14 +129,15 @@ add_library(mpifort
   mpi_f08.f90 mpitrampoline_initialize_fortran08.f90
   )
 target_include_directories(mpifort PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-target_link_libraries(mpifort PUBLIC ${CMAKE_DL_LIBS})
+target_link_libraries(mpifort PUBLIC ${CMAKE_DL_LIBS} PRIVATE mpi)
 set_target_properties(mpifort PROPERTIES
   VERSION ${PROJECT_VERSION}
   # SOVERSION 2.0.0
   # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
   PUBLIC_HEADER "mpif.h;mpiabif.h"
   )
-install(TARGETS mpifort EXPORT MPItrampolineTargets)
+
+install(TARGETS mpi mpifort EXPORT MPItrampolineTargets)
 install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION include)
 
 write_basic_package_version_file(

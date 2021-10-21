@@ -337,7 +337,7 @@ static void *get_symbol(void *handle, const char *name) {
 #define CONSTRUCTOR_PRIORITY (1000)
 #endif
 void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
-init_mpitrampoline() {
+mpitrampoline_init() {
   // Ensure that the library is initialized only once
   static bool did_init_mpitrampoline = false;
   if (did_init_mpitrampoline)
