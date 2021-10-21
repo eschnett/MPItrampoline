@@ -15,7 +15,7 @@ cmake --build build && cmake --install build
 
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 2.0.0
+  MPItrampoline VERSION 2.1.0
   DESCRIPTION "MPI trampoline"
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
   LANGUAGES C Fortran
@@ -112,9 +112,6 @@ add_custom_command(
 add_library(mpi
   mpiabi.h
   mpi.c mpi.h mpi_version.h mpi_declarations.h mpio.h mpi_definitions.h mpi_initializations.h
-  mpif.h mpi_declarations_fortran.h
-  mpi.f90 mpi_declarations_fortran90.h mpitrampoline_initialize_fortran90.f90 mpi_initializations_fortran90.h
-  mpi_f08.f90 mpitrampoline_initialize_fortran08.f90
   )
 target_include_directories(mpi PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
@@ -122,9 +119,25 @@ set_target_properties(mpi PROPERTIES
   VERSION ${PROJECT_VERSION}
   # SOVERSION 2.0.0
   # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
-  PUBLIC_HEADER "mpi.h;mpiabi.h;mpio.h;mpif.h;mpiabif.h"
+  PUBLIC_HEADER "mpi.h;mpiabi.h;mpio.h"
   )
 install(TARGETS mpi EXPORT MPItrampolineTargets)
+
+add_library(mpifort
+  mpifort.c
+  mpif.h mpi_declarations_fortran.h
+  mpi.f90 mpi_declarations_fortran90.h mpitrampoline_initialize_fortran90.f90 mpi_initializations_fortran90.h
+  mpi_f08.f90 mpitrampoline_initialize_fortran08.f90
+  )
+target_include_directories(mpifort PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+target_link_libraries(mpifort PUBLIC ${CMAKE_DL_LIBS})
+set_target_properties(mpifort PROPERTIES
+  VERSION ${PROJECT_VERSION}
+  # SOVERSION 2.0.0
+  # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
+  PUBLIC_HEADER "mpif.h;mpiabif.h"
+  )
+install(TARGETS mpifort EXPORT MPItrampolineTargets)
 install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION include)
 
 write_basic_package_version_file(

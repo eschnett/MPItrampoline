@@ -17,8 +17,8 @@
 #include <string.h>
 #include <unistd.h>
 
-void mpitrampoline_initialize_fortran90_();
-void mpitrampoline_initialize_fortran08_();
+/* void mpitrampoline_initialize_fortran90_(); */
+/* void mpitrampoline_initialize_fortran08_(); */
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -336,8 +336,14 @@ static void *get_symbol(void *handle, const char *name) {
 #else
 #define CONSTRUCTOR_PRIORITY (1000)
 #endif
-static void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
+void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
 init_mpitrampoline() {
+  // Ensure that the library is initialized only once
+  static bool did_init_mpitrampoline = false;
+  if (did_init_mpitrampoline)
+    return;
+  did_init_mpitrampoline = true;
+
   set_verbose();
   if (verbose) {
     fprintf(stderr, "[MPItrampoline] This is MPItrampoline %d.%d.%d\n",
@@ -453,8 +459,8 @@ init_mpitrampoline() {
 
 #include "mpi_initializations.h"
 
-  mpitrampoline_initialize_fortran90_();
-  mpitrampoline_initialize_fortran08_();
+  /* mpitrampoline_initialize_fortran90_(); */
+  /* mpitrampoline_initialize_fortran08_(); */
 
   if (verbose) {
     char library_version[MPI_MAX_LIBRARY_VERSION_STRING];
