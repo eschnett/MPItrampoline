@@ -47,6 +47,16 @@ extern inline int MPI_Pcontrol(int level, ...);
 
 ////////////////////////////////////////////////////////////////////////////////
 
+static void abort_with_error() {
+  fprintf(stderr,
+          "MPItrampoline: ERROR: The environment variable "
+          "MPITRAMPOLINE_LIB is not set.\n"
+          "MPI functions are be available.\n"
+          "Set MPITRAMPOLINE_LIB to point to a wrapped MPI library.\n"
+          "See <https://github.com/eschnett/MPItrampoline> for details.\n");
+  exit(1);
+}
+
 static const char *get_default(const char *const varname) {
   const char *var = NULL;
   if (strcmp(varname, "MPITRAMPOLINE_DLOPEN_BINDING") == 0)
@@ -395,6 +405,19 @@ mpitrampoline_init() {
 
   const char *const libname = get_config("MPITRAMPOLINE_LIB");
   if (!libname) {
+    // The environment variable MPITRAMPOLINE_LIB is not set. We
+    // cannot provide an MPI implementation.
+    // 
+    // Don't output a warning. Some configure scripts get confused by
+    // this. Instead, abort with an error if an MPI function is
+    // called. These four functions are the ones that can legally be
+    // called in the beginning. All other MPI functions will lead to
+    // segfaults.
+    MPIABI_Finalized = (void *)abort_with_error;
+    MPIABI_Init = (void *)abort_with_error;
+    MPIABI_Init_thread = (void *)abort_with_error;
+    MPIABI_Initialized = (void *)abort_with_error;
+#if 0
     fprintf(stderr,
             "MPItrampoline: WARNING: The environment variable "
             "MPITRAMPOLINE_LIB is not set.\n"
@@ -405,6 +428,7 @@ mpitrampoline_init() {
     // to let `configure` or similar tools run small executables.
     sleep(1);
     // exit(1);
+#endif
     return;
   }
   if (verbose)
