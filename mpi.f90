@@ -84,4 +84,14 @@ module mpi
      end function mpi_wtick
   end interface
 
+contains
+
+  ! This dummy subroutine calls the dummy function below so that the
+  ! file containing the initializers for the high-level Fortran API
+  ! are run
+  subroutine dummy
+    implicit none
+    call mpitrampoline_fortran_dummy_function
+  end subroutine dummy
+
 end module mpi
