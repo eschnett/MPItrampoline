@@ -7,16 +7,20 @@
 #
 # We choose to behave like OpenMPI in this respect.
 
-if [ "x$1" = "x-showme:compile" ]; then
-    echo '-I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@'
-    exit 0
-elif [ "x$1" = "x-showme:link" ]; then
-    echo '-L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
-    exit 0
-elif [ "x$1" = "x-showme" ]; then
-    echo '-I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
-    exit 0
-fi
+case "$1" in
+    -show*:compile*)
+        echo '-I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@'
+        exit 0
+        ;;
+    -show*:link*)
+        echo '-L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
+        exit 0
+        ;;
+    -show*)
+        echo '-I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
+        exit 0
+        ;;
+esac
 
 # if [ "x$1" = "x-compile-info" -o "x$1" = "x-link-info" ]; then
 #     echo ${MPITRAMPOLINE_CC:-cc} -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpi -ldl
