@@ -181,6 +181,12 @@ functions = [
         ("MPI_Status *", "array_of_statuses"),
     ], "manual"),
 
+    ("int", "MPI_Request_get_status", [
+        ("MPI_Request", "request"),
+        ("int *", "flag"),
+        ("MPI_Status *", "status"),
+    ], None),
+
     # 3.8 Probe and Cancel
 
     ("int", "MPI_Iprobe", [

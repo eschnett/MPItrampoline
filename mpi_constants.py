@@ -15,6 +15,7 @@ constants = [
     ("int", "MPI_UNEQUAL"),
 
     # Predefined constants
+    ("int", "MPI_BSEND_OVERHEAD"),
     ("int", "MPI_KEYVAL_INVALID"),
     ("int", "MPI_UNDEFINED"),
 
