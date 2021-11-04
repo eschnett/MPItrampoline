@@ -274,7 +274,7 @@ static void *load_library(const char *const libname) {
 
   if (verbose)
     fprintf(stderr, "[MPItrampoline] Calling dlopen\n");
-  handle = dlopen(libname, dlopen_flags | RTLD_LOCAL | RTLD_FIRST);
+  handle = dlopen(libname, dlopen_flags | RTLD_LOCAL);
 
 #elif __linux__
 
