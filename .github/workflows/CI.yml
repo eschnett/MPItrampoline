@@ -14,6 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-20.04, macos-11]
+        fortran: [fortran-off, fortran-on]
 
     runs-on: ${{matrix.os}}
 
@@ -24,17 +25,38 @@ jobs:
       run: |
         case $RUNNER_OS in
         Linux)
-            cmake -B ${{github.workspace}}/build \
-                -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-                -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
+            case ${{matrix.fortran}} in
+            fortran-off)
+                cmake -B ${{github.workspace}}/build \
+                    -DENABLE_FORTRAN=off \
+                    -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+                    -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
+                ;;
+            fortran-on)
+                cmake -B ${{github.workspace}}/build \
+                    -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+                    -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
+                ;;
+            esac
             ;;
         macOS)
             # Use GCC-11 from Homebrew
-            cmake -B ${{github.workspace}}/build \
-                -DCMAKE_C_COMPILER=gcc-11 \
-                -DCMAKE_Fortran_COMPILER=gfortran-11 \
-                -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-                -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
+            case ${{matrix.fortran}} in
+            fortran-off)
+                cmake -B ${{github.workspace}}/build \
+                    -DENABLE_FORTRAN=off \
+                    -DCMAKE_C_COMPILER=gcc-11 \
+                    -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+                    -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
+                ;;
+            fortran-on)
+                cmake -B ${{github.workspace}}/build \
+                    -DCMAKE_C_COMPILER=gcc-11 \
+                    -DCMAKE_Fortran_COMPILER=gfortran-11 \
+                    -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+                    -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
+                ;;
+            esac
             ;;
         esac
 
