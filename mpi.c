@@ -17,9 +17,6 @@
 #include <string.h>
 #include <unistd.h>
 
-/* void mpitrampoline_initialize_fortran90_(); */
-/* void mpitrampoline_initialize_fortran08_(); */
-
 ////////////////////////////////////////////////////////////////////////////////
 
 const char *const mpitrampoline_version = MPITRAMPOLINE_VERSION;
@@ -59,7 +56,9 @@ static void abort_with_error() {
 
 static const char *get_default(const char *const varname) {
   const char *var = NULL;
-  if (strcmp(varname, "MPITRAMPOLINE_DLOPEN_BINDING") == 0)
+  if (strcmp(varname, "MPITRAMPOLINE_DELAY_INIT") == 0)
+    var = MPITRAMPOLINE_DEFAULT_DELAY_INIT;
+  else if (strcmp(varname, "MPITRAMPOLINE_DLOPEN_BINDING") == 0)
     var = MPITRAMPOLINE_DEFAULT_DLOPEN_BINDING;
   else if (strcmp(varname, "MPITRAMPOLINE_DLOPEN_MODE") == 0)
     var = MPITRAMPOLINE_DEFAULT_DLOPEN_MODE;
@@ -192,7 +191,10 @@ static const char *get_config(const char *const varname) {
   return var;
 }
 
-static void set_verbose() { verbose = get_config("MPITRAMPOLINE_VERBOSE"); }
+static void set_verbose() {
+  const char *const verbose_str = get_config("MPITRAMPOLINE_VERBOSE");
+  verbose = verbose_str && *verbose_str != '\0';
+}
 
 enum dlopen_mode_t {
   dlopen_mode_error,
@@ -341,13 +343,7 @@ static void *get_symbol(void *handle, const char *name) {
   return ptr;
 }
 
-#ifdef __APPLE__
-#define CONSTRUCTOR_PRIORITY
-#else
-#define CONSTRUCTOR_PRIORITY (1000)
-#endif
-void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
-mpitrampoline_init() {
+void mpitrampoline_init() {
   // Ensure that the library is initialized only once
   static bool did_init_mpitrampoline = false;
   if (did_init_mpitrampoline)
@@ -407,7 +403,7 @@ mpitrampoline_init() {
   if (!libname) {
     // The environment variable MPITRAMPOLINE_LIB is not set. We
     // cannot provide an MPI implementation.
-    // 
+    //
     // Don't output a warning. Some configure scripts get confused by
     // this. Instead, abort with an error if an MPI function is
     // called. These four functions are the ones that can legally be
@@ -483,9 +479,6 @@ mpitrampoline_init() {
 
 #include "mpi_initializations.h"
 
-  /* mpitrampoline_initialize_fortran90_(); */
-  /* mpitrampoline_initialize_fortran08_(); */
-
   if (verbose) {
     char library_version[MPI_MAX_LIBRARY_VERSION_STRING];
     int resultlen;
@@ -496,4 +489,32 @@ mpitrampoline_init() {
 
   if (verbose)
     fprintf(stderr, "[MPItrampoline] Initialization complete.\n");
+}
+
+#ifdef __APPLE__
+#define CONSTRUCTOR_PRIORITY
+#else
+#define CONSTRUCTOR_PRIORITY (1000)
+#endif
+static void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
+mpitrampoline_init_auto() {
+  set_verbose();
+  if (verbose) {
+    fprintf(stderr, "[MPItrampoline] This is MPItrampoline %d.%d.%d\n",
+            MPITRAMPOLINE_VERSION_MAJOR, MPITRAMPOLINE_VERSION_MINOR,
+            MPITRAMPOLINE_VERSION_PATCH);
+    fprintf(stderr, "[MPItrampoline] Requiring MPI ABI version %d.%d.%d\n",
+            MPIABI_VERSION_MAJOR, MPIABI_VERSION_MINOR, MPIABI_VERSION_PATCH);
+  }
+
+  const char *const delay_init_str = get_config("MPITRAMPOLINE_DELAY_INIT");
+  const bool delay_init = delay_init_str && *delay_init_str != '\0';
+  if (delay_init) {
+    if (verbose)
+      fprintf(stderr, "[MPItrampoline] Delaying initialization; waiting for "
+                      "explicit initialization\n");
+    return;
+  }
+
+  mpitrampoline_init();
 }
