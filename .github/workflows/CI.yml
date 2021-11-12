@@ -25,7 +25,7 @@ jobs:
       run: |
         case $RUNNER_OS in
         Linux)
-            case $${{matrix.fortran}} in
+            case ${{matrix.fortran}} in
             fortran-off)
                 cmake -B ${{github.workspace}}/build \
                     -DENABLE_FORTRAN=off \
@@ -41,7 +41,7 @@ jobs:
             ;;
         macOS)
             # Use GCC-11 from Homebrew
-            case $${{matrix.fortran}} in
+            case ${{matrix.fortran}} in
             fortran-off)
                 cmake -B ${{github.workspace}}/build \
                     -DENABLE_FORTRAN=off \
