@@ -15,6 +15,11 @@ if(NOT(CMAKE_C_COMPILER))
 endif()
 enable_language(C)
 
+if(NOT(CMAKE_CXX_COMPILER))
+  message(WARNING "No C++ support")
+endif()
+enable_language(CXX)
+
 if(ENABLE_FORTRAN)
   check_language(Fortran)
   if(NOT(CMAKE_Fortran_COMPILER))
@@ -183,9 +188,10 @@ install(
   DESTINATION lib/pkgconfig
   )
 
-# TODO: Bake in current C/C++/Fortran compilers, not default names
 configure_file(mpicc.in mpicc @ONLY)
-configure_file(mpicxx.in mpicxx @ONLY)
+if(CMAKE_CXX_COMPILER)
+  configure_file(mpicxx.in mpicxx @ONLY)
+endif()
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/mpicc ${CMAKE_CURRENT_BINARY_DIR}/mpicxx
   DESTINATION bin
