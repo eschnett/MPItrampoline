@@ -1,25 +1,6 @@
-#[[
-rm -rf build $HOME/src/c/MPIstuff/mpitrampoline
-cmake -S . -B build -G Ninja -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_Fortran_COMPILER=gfortran-mp-11 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff/mpitrampoline
-cmake --build build && cmake --install build
-
-rm -rf build $HOME/src/c/MPIstuff/mpitrampoline-nofortran
-cmake -S . -B build -G Ninja -DENABLE_FORTRAN=OFF -DCMAKE_C_COMPILER=gcc-mp-11 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff/mpitrampoline-nofortran
-cmake --build build && cmake --install build
-
-
-
-module load cmake
-rm -rf build $HOME/src/c/MPIstuff/mpitrampoline
-cmake -S . -B build -DCMAKE_C_COMPILER=gcc-9 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff/mpitrampoline
-cmake --build build && cmake --install build
-]]
-
-
-
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 2.6.0
+  MPItrampoline VERSION 2.7.0
   DESCRIPTION "MPI trampoline"
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
   LANGUAGES NONE
