@@ -1,31 +1,25 @@
 #!/bin/sh
 
-# MPICH supports "-compile-info" and "-link-info".
+# We choose to behave like OpenMPI in this respect.
 #
 # All OpenMPI versions support "-showme". Modern OpenMPI version also
 # support "-showme:compile" and "-showme:link".
 #
-# We choose to behave like OpenMPI in this respect.
+# MPICH supports "-compile-info" and "-link-info".
 
 case "$1" in
     -show*:compile*)
-        echo '-I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@'
+        echo '@CMAKE_C_COMPILER@ @CMAKE_C_FLAGS@ -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@'
         exit 0
         ;;
     -show*:link*)
-        echo '-L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
+        echo '@CMAKE_C_COMPILER@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
         exit 0
         ;;
     -show*)
-        echo '-I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
+        echo '@CMAKE_C_COMPILER@ @CMAKE_C_FLAGS@ -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
         exit 0
         ;;
 esac
 
-# if [ "x$1" = "x-compile-info" -o "x$1" = "x-link-info" ]; then
-#     echo ${MPITRAMPOLINE_CC:-cc} -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpi -ldl
-#     exit 0
-# fi
-
-#TODO: use environment variable `CC` if `MPITRAMPOLINE_CC` is unset?
-exec ${MPITRAMPOLINE_CC:-cc} -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpi -ldl
+exec ${MPITRAMPOLINE_CC:-@CMAKE_C_COMPILER@} @CMAKE_C_FLAGS@ -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpi -ldl

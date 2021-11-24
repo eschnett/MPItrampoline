@@ -1,30 +1,25 @@
 #!/bin/sh
 
-# MPICH supports "-compile-info" and "-link-info".
+# We choose to behave like OpenMPI in this respect.
 #
 # All OpenMPI versions support "-showme". Modern OpenMPI version also
 # support "-showme:compile" and "-showme:link".
 #
-# We choose to behave like OpenMPI in this respect.
+# MPICH supports "-compile-info" and "-link-info".
 
 case "$1" in
     -show*:compile*)
-        echo '-I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@'
+        echo '@CMAKE_Fortran_COMPILER@ @CMAKE_Fortran_FLAGS@ -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@'
         exit 0
         ;;
     -show*:link*)
-        echo '-L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpifort -lmpi -ldl'
+        echo '@CMAKE_Fortran_COMPILER@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpifort -lmpi -ldl'
         exit 0
         ;;
     -show*)
-        echo '-I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpifort -lmpi -ldl'
+        echo '@CMAKE_Fortran_COMPILER@ @CMAKE_Fortran_FLAGS@ -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpifort -lmpi -ldl'
         exit 0
         ;;
 esac
 
-# if [ "x$1" = "x-compile-info" -o "x$1" = "x-link-info" ]; then
-#     echo ${MPITRAMPOLINE_FC:-gfortran} -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpifort -lmpi -ldl
-#     exit 0
-# fi
-
-exec ${MPITRAMPOLINE_FC:-gfortran} -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpifort -lmpi -ldl
+exec ${MPITRAMPOLINE_FC:-@CMAKE_Fortran_COMPILER@} @CMAKE_Fortran_FLAGS@ -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpifort -lmpi -ldl
