@@ -8,12 +8,38 @@
 # MPICH supports "-compile-info" and "-link-info".
 
 case "$1" in
-    -show*:compile*)
-        echo '@CMAKE_CXX_COMPILER@ @CMAKE_CXX_FLAGS@ -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@'
+    -showme:command)
+        echo '@CMAKE_CXX_COMPILER@ @CMAKE_CXX_FLAGS@'
         exit 0
         ;;
-    -show*:link*)
-        echo '@CMAKE_CXX_COMPILER@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
+    -showme:compile)
+        echo '-I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@'
+        exit 0
+        ;;
+    -showme:link)
+        echo '-L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
+        exit 0
+        ;;
+    -showme:incdirs)
+        echo '@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@'
+        exit 0
+        ;;
+    -showme:libdirs)
+        echo '@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@'
+        exit 0
+        ;;
+    -showme:libs)
+        echo '-lmpi -ldl'
+        exit 0
+        ;;
+    -showme:version)
+        echo '@PROJECT_NAME@ @PROJECT_VERSION@'
+        echo '@PROJECT_DESCRIPTION@'
+        echo '@CMAKE_PROJECT_HOMEPAGE_URL@'
+        exit 0
+        ;;
+    -showme:help)
+        echo "$0"' {-showme:{command|compile|link|incdirs|libdirs|libs|version|help}|-show*} args'
         exit 0
         ;;
     -show*)
