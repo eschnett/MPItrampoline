@@ -169,12 +169,12 @@ install(
   EXPORT MPItrampolineTargets
   FILE MPItrampolineTargets.cmake
   NAMESPACE MPItrampoline::
-  DESTINATION lib/cmake/MPItrampoline
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MPItrampoline
   )
 configure_file(MPItrampolineConfig.cmake.in MPItrampolineConfig.cmake @ONLY)
 install(
   FILES "${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfigVersion.cmake"
-  DESTINATION lib/cmake/MPItrampoline
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MPItrampoline
   )
 
 if(ENABLE_FORTRAN)
@@ -185,7 +185,7 @@ endif()
 configure_file(MPItrampoline.pc.in MPItrampoline.pc @ONLY)
 install(
   FILES ${CMAKE_BINARY_DIR}/MPItrampoline.pc
-  DESTINATION lib/pkgconfig
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
   )
 
 configure_file(mpicc.in mpicc @ONLY)
