@@ -5,6 +5,8 @@ module mpi_f08
   implicit none
   save
 
+  private :: dummy
+
   ! TODO: Make everything private by default
 
   private mpi_status_size
@@ -240,5 +242,13 @@ contains
     
     if (present(ierror)) ierror = ierror1
   end subroutine mpi_abort_impl
+
+  ! This dummy subroutine calls the dummy function below so that the
+  ! file containing the initializers for the high-level Fortran API
+  ! are run
+  subroutine dummy
+    implicit none
+    call mpitrampoline_fortran_dummy_function
+  end subroutine dummy
 
 end module mpi_f08
