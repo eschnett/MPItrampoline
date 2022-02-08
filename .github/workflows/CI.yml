@@ -15,6 +15,7 @@ jobs:
       matrix:
         os: [ubuntu-20.04, macos-11]
         fortran: [fortran-off, fortran-on]
+        shared: [shared-off, shared-on]
 
     runs-on: ${{matrix.os}}
 
@@ -23,40 +24,24 @@ jobs:
 
     - name: Configure
       run: |
+        fortran=$(echo ${{matrix.fortran}} | sed -e 's/fortran-//')
+        shared=$(echo ${{matrix.shared}} | sed -e 's/shared-//')
         case $RUNNER_OS in
         Linux)
-            case ${{matrix.fortran}} in
-            fortran-off)
-                cmake -B ${{github.workspace}}/build \
-                    -DENABLE_FORTRAN=off \
-                    -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-                    -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
-                ;;
-            fortran-on)
-                cmake -B ${{github.workspace}}/build \
-                    -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-                    -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
-                ;;
-            esac
+            cmake -B ${{github.workspace}}/build \
+                -DENABLE_FORTRAN=${fortran} \
+                -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+                -DBUILD_SHARED_LIBS=${shared} \
+                -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
             ;;
         macOS)
             # Use GCC-11 from Homebrew
-            case ${{matrix.fortran}} in
-            fortran-off)
-                cmake -B ${{github.workspace}}/build \
-                    -DENABLE_FORTRAN=off \
-                    -DCMAKE_C_COMPILER=gcc-11 \
-                    -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-                    -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
-                ;;
-            fortran-on)
-                cmake -B ${{github.workspace}}/build \
-                    -DCMAKE_C_COMPILER=gcc-11 \
-                    -DCMAKE_Fortran_COMPILER=gfortran-11 \
-                    -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
-                    -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
-                ;;
-            esac
+            cmake -B ${{github.workspace}}/build \
+                -DENABLE_FORTRAN=${fortran} \
+                -DCMAKE_C_COMPILER=gcc-11 \
+                -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
+                -DBUILD_SHARED_LIBS=${shared} \
+                -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
             ;;
         esac
 
