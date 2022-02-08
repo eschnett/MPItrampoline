@@ -6,6 +6,7 @@ module mpi_f08
   save
 
   private :: dummy
+  external :: mpitrampoline_fortran_dummy_function
 
   ! TODO: Make everything private by default
 
