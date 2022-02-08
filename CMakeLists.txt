@@ -130,7 +130,7 @@ add_library(mpi
 target_include_directories(mpi PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
 set_target_properties(mpi PROPERTIES
-  VERSION ${PROJECT_VERSION}${CMAKE_INSTALL_INCLUDEDIR}
+  VERSION ${PROJECT_VERSION}
   # SOVERSION 2.0.0
   # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
   PUBLIC_HEADER "mpi.h;mpiabi.h;mpio.h"
