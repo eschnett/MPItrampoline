@@ -39,6 +39,7 @@ jobs:
             cmake -B ${{github.workspace}}/build \
                 -DENABLE_FORTRAN=${fortran} \
                 -DCMAKE_C_COMPILER=gcc-11 \
+                -DCMAKE_Fortran_COMPILER=gfortran-11 \
                 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
                 -DBUILD_SHARED_LIBS=${shared} \
                 -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
