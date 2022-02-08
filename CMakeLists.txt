@@ -41,13 +41,13 @@ include(GNUInstallDirs)
 configure_file(mpi_version.h.in mpi_version.h @ONLY)
 install(
   FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_version.h"
-  DESTINATION include
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   )
 
 configure_file(mpi_defaults.h.in mpi_defaults.h @ONLY)
 install(
   FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_defaults.h"
-  DESTINATION include
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   )
 
 add_custom_command(
@@ -60,7 +60,7 @@ add_custom_command(
   )
 install(
   FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_declarations.h"
-  DESTINATION include
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   )
 
 add_custom_command(
@@ -96,7 +96,7 @@ if(ENABLE_FORTRAN)
     )
   install(
     FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_declarations_fortran.h"
-    DESTINATION include
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
 endif()
 
@@ -111,7 +111,7 @@ if(ENABLE_FORTRAN)
     )
   install(
     FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_declarations_fortran90.h"
-    DESTINATION include
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
 endif()
 
@@ -130,7 +130,7 @@ add_library(mpi
 target_include_directories(mpi PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
 target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
 set_target_properties(mpi PROPERTIES
-  VERSION ${PROJECT_VERSION}
+  VERSION ${PROJECT_VERSION}${CMAKE_INSTALL_INCLUDEDIR}
   # SOVERSION 2.0.0
   # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
   PUBLIC_HEADER "mpi.h;mpiabi.h;mpio.h"
@@ -155,7 +155,7 @@ endif()
 
 if(ENABLE_FORTRAN)
   install(TARGETS mpi mpifort EXPORT MPItrampolineTargets)
-  install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION include)
+  install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 else()
   install(TARGETS mpi EXPORT MPItrampolineTargets)
 endif()
@@ -194,7 +194,7 @@ if(CMAKE_CXX_COMPILER)
 endif()
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/mpicc ${CMAKE_CURRENT_BINARY_DIR}/mpicxx
-  DESTINATION bin
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
 if(ENABLE_FORTRAN)
@@ -202,13 +202,13 @@ if(ENABLE_FORTRAN)
   configure_file(mpifort.in mpifort @ONLY)
   install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/mpifc ${CMAKE_CURRENT_BINARY_DIR}/mpifort
-    DESTINATION bin
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
     )
 endif()
 
 install(
   FILES mpiexec
-  DESTINATION bin
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
