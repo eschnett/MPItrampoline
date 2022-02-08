@@ -11,5 +11,5 @@ Version: @PROJECT_VERSION@
 Requires:
 Requires.private:
 Cflags: -I${includedir}
-Libs: -L${libdir} -Wl,-rpath,${libdir} @LIBS@
+Libs: -L${libdir} -Wl,-rpath,${libdir} -lmpi
 Libs.private: -ldl
