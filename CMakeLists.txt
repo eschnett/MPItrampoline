@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 2.8.1
+  MPItrampoline VERSION 2.8.2
   DESCRIPTION "MPI trampoline"
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
   LANGUAGES NONE
@@ -144,7 +144,8 @@ if(ENABLE_FORTRAN)
     mpi_f08.f90 mpitrampoline_initialize_fortran08.f90
     )
   target_include_directories(mpifort PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
-  target_link_libraries(mpifort PUBLIC ${CMAKE_DL_LIBS} PRIVATE mpi)
+  #TODO target_link_libraries(mpifort PUBLIC ${CMAKE_DL_LIBS} PRIVATE mpi)
+  target_link_libraries(mpifort PUBLIC mpi ${CMAKE_DL_LIBS})
   set_target_properties(mpifort PROPERTIES
     VERSION ${PROJECT_VERSION}
     # SOVERSION 2.0.0
