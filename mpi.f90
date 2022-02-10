@@ -2,6 +2,8 @@ module mpi
   implicit none
   save
 
+  private :: dummy
+
   include "mpiabif.h"
 
   include "mpi_declarations_fortran90.h"
