@@ -1,6 +1,7 @@
 #ifndef MPIABI_H
 #define MPIABI_H
 
+#include <assert.h>
 #include <stddef.h>
 #include <stdint.h>
 
@@ -100,10 +101,10 @@ typedef MPIABI_Status *MPIABI_StatusPtr;
 typedef const MPIABI_Status *MPIABI_const_StatusPtr;
 
 #if defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
-_Static_assert(MPIABI_STATUS_SIZE * sizeof(MPIABI_Fint) ==
-                   sizeof(MPIABI_Status),
-               "");
-#elif defined __cplusplus && __cplusplus >= 201103L
+static_assert(MPIABI_STATUS_SIZE * sizeof(MPIABI_Fint) == sizeof(MPIABI_Status),
+              "");
+#endif
+#if defined __cplusplus && __cplusplus >= 201103L
 static_assert(MPIABI_STATUS_SIZE * sizeof(MPIABI_Fint) == sizeof(MPIABI_Status),
               "");
 static_assert(std::is_pod<MPIABI_Status>::value, "");

@@ -17,7 +17,7 @@ case "$1" in
         exit 0
         ;;
     -showme:link)
-        echo '-L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpifort -lmpi -ldl'
+        echo '-L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
         exit 0
         ;;
     -showme:incdirs)
@@ -29,7 +29,7 @@ case "$1" in
         exit 0
         ;;
     -showme:libs)
-        echo '-lmpifort -lmpi -ldl'
+        echo '-lmpi -ldl'
         exit 0
         ;;
     -showme:version)
@@ -43,9 +43,9 @@ case "$1" in
         exit 0
         ;;
     -show*)
-        echo '@CMAKE_Fortran_COMPILER@ @CMAKE_Fortran_FLAGS@ -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpifort -lmpi -ldl'
+        echo '@CMAKE_Fortran_COMPILER@ @CMAKE_Fortran_FLAGS@ -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
         exit 0
         ;;
 esac
 
-exec ${MPITRAMPOLINE_FC:-@CMAKE_Fortran_COMPILER@} @CMAKE_Fortran_FLAGS@ -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpifort -lmpi -ldl
+exec ${MPITRAMPOLINE_FC:-@CMAKE_Fortran_COMPILER@} @CMAKE_Fortran_FLAGS@ -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpi -ldl
