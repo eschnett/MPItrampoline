@@ -41,13 +41,13 @@ include(GNUInstallDirs)
 configure_file(mpi_version.h.in mpi_version.h @ONLY)
 install(
   FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_version.h"
-  DESTINATION include
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   )
 
 configure_file(mpi_defaults.h.in mpi_defaults.h @ONLY)
 install(
   FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_defaults.h"
-  DESTINATION include
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   )
 
 add_custom_command(
@@ -60,7 +60,7 @@ add_custom_command(
   )
 install(
   FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_declarations.h"
-  DESTINATION include
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   )
 
 add_custom_command(
@@ -96,7 +96,7 @@ if(ENABLE_FORTRAN)
     )
   install(
     FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_declarations_fortran.h"
-    DESTINATION include
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
 endif()
 
@@ -111,7 +111,7 @@ if(ENABLE_FORTRAN)
     )
   install(
     FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_declarations_fortran90.h"
-    DESTINATION include
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
 endif()
 
@@ -157,7 +157,7 @@ endif()
 
 install(TARGETS mpi EXPORT MPItrampolineTargets)
 if(ENABLE_FORTRAN)
-  install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION include)
+  install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 endif()
 
 write_basic_package_version_file(
@@ -169,18 +169,18 @@ install(
   EXPORT MPItrampolineTargets
   FILE MPItrampolineTargets.cmake
   NAMESPACE MPItrampoline::
-  DESTINATION lib/cmake/MPItrampoline
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MPItrampoline
   )
 configure_file(MPItrampolineConfig.cmake.in MPItrampolineConfig.cmake @ONLY)
 install(
   FILES "${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfig.cmake" "${CMAKE_CURRENT_BINARY_DIR}/MPItrampolineConfigVersion.cmake"
-  DESTINATION lib/cmake/MPItrampoline
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/cmake/MPItrampoline
   )
 
 configure_file(MPItrampoline.pc.in MPItrampoline.pc @ONLY)
 install(
   FILES ${CMAKE_BINARY_DIR}/MPItrampoline.pc
-  DESTINATION lib/pkgconfig
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
   )
 
 configure_file(mpicc.in mpicc @ONLY)
@@ -189,7 +189,7 @@ if(CMAKE_CXX_COMPILER)
 endif()
 install(
   FILES ${CMAKE_CURRENT_BINARY_DIR}/mpicc ${CMAKE_CURRENT_BINARY_DIR}/mpicxx
-  DESTINATION bin
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
 if(ENABLE_FORTRAN)
@@ -197,13 +197,13 @@ if(ENABLE_FORTRAN)
   configure_file(mpifort.in mpifort @ONLY)
   install(
     FILES ${CMAKE_CURRENT_BINARY_DIR}/mpifc ${CMAKE_CURRENT_BINARY_DIR}/mpifort
-    DESTINATION bin
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
     )
 endif()
 
 install(
   FILES mpiexec
-  DESTINATION bin
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
