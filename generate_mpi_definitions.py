@@ -19,12 +19,12 @@ print()
 print("// C functions")
 for (tp, nm, args, flags) in functions:
     subs = {'mpi_tp': tp,
-            'abi_tp': re.sub(r"MPI_", "MPIABI_", tp),
+            'abi_tp': re.sub(r"MPI(X?)_", r"MPI\1ABI_", tp),
             'mpi_nm': nm,
-            'abi_nm': re.sub(r"MPI_", "MPIABI_", nm)}
+            'abi_nm': re.sub(r"MPI(X?)_", r"MPI\1ABI_", nm)}
     for (i, (atp, anm)) in enumerate(args):
         subs['mpi_atp{0}'.format(i)] = atp
-        subs['abi_atp{0}'.format(i)] = re.sub(r"MPI_", "MPIABI_", atp)
+        subs['abi_atp{0}'.format(i)] = re.sub(r"MPI(X?)_", r"MPI\1ABI_", atp)
         subs['anm{0}'.format(i)] = anm
     tmpl = []
     tmpl.append("$abi_tp (* $abi_nm)(")
@@ -42,7 +42,7 @@ for (tp, nm, args, flags) in functions:
 print()
 print("// Fortran constants")
 for (tp, nm) in constants_fortran:
-    subs = {'mpi_tp': re.sub(r"MPI_\w+", "MPIABI_Fint", tp),
+    subs = {'mpi_tp': re.sub(r"MPI(X?)_\w+", r"MPI\1ABI_Fint", tp),
             'mpi_nm': nm.lower() + "_"}
     print(Template("$mpi_tp $mpi_nm;").
           substitute(subs))
@@ -50,12 +50,12 @@ for (tp, nm) in constants_fortran:
 print()
 print("// Fortran functions")
 for (tp, nm, args) in functions_fortran:
-    subs = {'abi_tp': re.sub(r"MPI_\w+", "MPIABI_Fint", tp),
+    subs = {'abi_tp': re.sub(r"MPI(X?)_\w+", r"MPI\1ABI_Fint", tp),
             'mpi_nm': nm.lower() + "_",
-            'abi_nm': re.sub(r"MPI_", "MPIABI_", nm).lower() + "_"}
+            'abi_nm': re.sub(r"MPI(X?)_", r"MPI\1ABI_", nm).lower() + "_"}
     for (i, (atp, anm)) in enumerate(args):
-        subs['mpi_atp{0}'.format(i)] = re.sub(r"MPI_\w+", "MPIABI_Fint", atp)
-        subs['abi_atp{0}'.format(i)] = re.sub(r"MPI_\w+", "MPIABI_Fint", atp)
+        subs['mpi_atp{0}'.format(i)] = re.sub(r"MPI(X?)_\w+", r"MPI\1ABI_Fint", atp)
+        subs['abi_atp{0}'.format(i)] = re.sub(r"MPI(X?)_\w+", r"MPI\1ABI_Fint", atp)
         subs['anm{0}'.format(i)] = anm
     tmpl = []
     tmpl.append("$abi_tp (* $abi_nm)(")
