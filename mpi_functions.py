@@ -2701,6 +2701,17 @@ functions = [
         ("MPI_Fint *", "f_status"),
     ], None),
 
+    # MPIX
+
+    ("int", "MPIX_Query_cuda_support", [
+    ], "manual"),
+
+    ("int", "MPIX_Query_hip_support", [
+    ], "manual"),
+
+    ("int", "MPIX_Query_ze_support", [
+    ], "manual"),
+
     # TODO
     #
     # ("int", "MPI_Status_f082c"), [

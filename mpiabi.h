@@ -12,7 +12,7 @@
 // MPI ABI version (we use SemVer)
 
 #define MPIABI_VERSION_MAJOR 2
-#define MPIABI_VERSION_MINOR 1
+#define MPIABI_VERSION_MINOR 2
 #define MPIABI_VERSION_PATCH 0
 
 // Compile-time constants
