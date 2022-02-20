@@ -1,0 +1,14 @@
+#!/bin/sh
+
+MPITRAMPOLINE_DEFAULT_MPIEXEC='@MPITRAMPOLINE_DEFAULT_MPIEXEC@'
+if [ -n "${MPITRAMPOLINE_MPIEXEC+x}" ]; then
+    mpiexec="${MPITRAMPOLINE_MPIEXEC}"
+elif [ -n "${MPITRAMPOLINE_DEFAULT_MPIEXEC}" ]; then
+    mpiexec="${MPITRAMPOLINE_DEFAULT_MPIEXEC}"
+else
+    echo "The environment variable MPITRAMPOLINE_MPIEXEC is not set."
+    echo "Running the application directly." 1>&2
+    sleep 1
+    exec "$@"
+fi
+exec "${mpiexec}" "$@"

@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 3.2.0
+  MPItrampoline VERSION 3.3.0
   DESCRIPTION "MPI trampoline"
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
   LANGUAGES NONE
@@ -202,8 +202,9 @@ if(ENABLE_FORTRAN)
     )
 endif()
 
+configure_file(mpiexec.in mpiexec @ONLY)
 install(
-  FILES mpiexec
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/mpiexec
   DESTINATION ${CMAKE_INSTALL_BINDIR}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
