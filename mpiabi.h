@@ -9,6 +9,13 @@
 #include <type_traits>
 #endif
 
+// Work around a bug in GCC 8.1.0
+#if defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
+#ifndef static_assert
+#define static_assert _Static_assert
+#endif
+#endif
+
 // MPI ABI version (we use SemVer)
 
 #define MPIABI_VERSION_MAJOR 2
