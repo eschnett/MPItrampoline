@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 3.4.0
+  MPItrampoline VERSION 3.4.1
   DESCRIPTION "MPI trampoline"
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
   LANGUAGES NONE
@@ -45,10 +45,6 @@ install(
   )
 
 configure_file(mpi_defaults.h.in mpi_defaults.h @ONLY)
-install(
-  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_defaults.h"
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-  )
 
 add_custom_command(
   OUTPUT mpi_declarations.h
