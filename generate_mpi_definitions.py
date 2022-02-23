@@ -100,44 +100,65 @@ for (tp, nm, args) in functions_fortran:
         subs['anm{0}'.format(i)] = anm
     tmpl = []
 
-    # tmpl.append("$abi_tp (* p$abi_nm)(")
-    # for (i, (atp, anm)) in enumerate(args):
-    #     tmpl.append("  $abi_atp{0} $anm{0},".format(i))
-    # tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
-    # tmpl.append(") = NULL;")
-
     tmpl.append("$abi_tp (* $abi_nm)(")
     for (i, (atp, anm)) in enumerate(args):
         tmpl.append("  $abi_atp{0} $anm{0},".format(i))
     tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
     tmpl.append(") = NULL;")
 
-    # tmpl.append("$abi_tp $mpi_nm(")
-    # for (i, (atp, anm)) in enumerate(args):
-    #     tmpl.append("  $mpi_atp{0} $anm{0},".format(i))
-    # tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
-    # tmpl.append(") {")
-    # tmpl.append("  return (* $abi_nm)(")
-    # for (i, (atp, anm)) in enumerate(args):
-    #     tmpl.append("    $anm{0},".format(i))
-    # tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
-    # tmpl.append("  );")
-    # tmpl.append("}")
+    if not support_profiling:
 
-    tmpl.append("$abi_tp p$mpi_nm(")
-    for (i, (atp, anm)) in enumerate(args):
-        tmpl.append("  $mpi_atp{0} $anm{0},".format(i))
-    tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
-    tmpl.append(") {")
-    for (i, (atp, anm)) in enumerate(args):
-        if atp == "const MPI_Status *" or atp == "MPI_Status *":
-            tmpl.append("  if ($anm{0} == mpi_status_ignore_)".format(i))
-            tmpl.append("    $anm{0} = mpiabi_status_ignore_;".format(i))
-    tmpl.append("  return (* $abi_nm)(")
-    for (i, (atp, anm)) in enumerate(args):
-        tmpl.append("    $anm{0},".format(i))
-    tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
-    tmpl.append("  );")
-    tmpl.append("}")
+        tmpl.append("$abi_tp $mpi_nm(")
+        for (i, (atp, anm)) in enumerate(args):
+            tmpl.append("  $mpi_atp{0} $anm{0},".format(i))
+        tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
+        tmpl.append(") {")
+        for (i, (atp, anm)) in enumerate(args):
+            if atp == "const MPI_Status *" or atp == "MPI_Status *":
+                tmpl.append("  if ($anm{0} == mpi_status_ignore_)".format(i))
+                tmpl.append("    $anm{0} = mpiabi_status_ignore_;".format(i))
+        tmpl.append("  return (* $abi_nm)(")
+        for (i, (atp, anm)) in enumerate(args):
+            tmpl.append("    $anm{0},".format(i))
+        tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
+        tmpl.append("  );")
+        tmpl.append("}")
+
+    else:
+
+        if have_weak_symbols:
+            tmpl.append("#pragma weak $mpi_nm = p$mpi_nm")
+        else:
+            tmpl.append("$abi_tp $mpi_nm(")
+            for (i, (atp, anm)) in enumerate(args):
+                tmpl.append("  $mpi_atp{0} $anm{0},".format(i))
+            tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
+            tmpl.append(") {")
+            for (i, (atp, anm)) in enumerate(args):
+                if atp == "const MPI_Status *" or atp == "MPI_Status *":
+                    tmpl.append("  if ($anm{0} == mpi_status_ignore_)".format(i))
+                    tmpl.append("    $anm{0} = mpiabi_status_ignore_;".format(i))
+            tmpl.append("  return (* $abi_nm)(")
+            for (i, (atp, anm)) in enumerate(args):
+                tmpl.append("    $anm{0},".format(i))
+            tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
+            tmpl.append("  );")
+            tmpl.append("}")
+    
+        tmpl.append("$abi_tp p$mpi_nm(")
+        for (i, (atp, anm)) in enumerate(args):
+            tmpl.append("  $mpi_atp{0} $anm{0},".format(i))
+        tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
+        tmpl.append(") {")
+        for (i, (atp, anm)) in enumerate(args):
+            if atp == "const MPI_Status *" or atp == "MPI_Status *":
+                tmpl.append("  if ($anm{0} == mpi_status_ignore_)".format(i))
+                tmpl.append("    $anm{0} = mpiabi_status_ignore_;".format(i))
+        tmpl.append("  return (* $abi_nm)(")
+        for (i, (atp, anm)) in enumerate(args):
+            tmpl.append("    $anm{0},".format(i))
+        tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
+        tmpl.append("  );")
+        tmpl.append("}")
 
     print(Template("\n".join(tmpl)).substitute(subs))
