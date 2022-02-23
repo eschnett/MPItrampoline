@@ -115,7 +115,8 @@ extern int MPITRAMPOLINE_CONST mpiabi_loaded_version_patch;
 
 #include "mpi_declarations.h"
 
-inline int MPI_Pcontrol(int level, ...) { return MPI_SUCCESS; }
+inline int PMPI_Pcontrol(int level, ...) { return MPI_SUCCESS; }
+int MPI_Pcontrol(int level, ...);
 
 #ifdef __cplusplus
 }

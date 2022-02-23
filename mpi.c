@@ -53,7 +53,10 @@ void mpitrampoline_initialize_fortran08_();
 
 #include "mpi_definitions.h"
 
-extern inline int MPI_Pcontrol(int level, ...);
+////////////////////////////////////////////////////////////////////////////////
+
+extern inline int PMPI_Pcontrol(int level, ...);
+int MPI_Pcontrol(int level, ...) { return MPI_SUCCESS; }
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -99,8 +102,7 @@ static void set_mpitrampoline_dir() {
   Dl_info info;
   const int iret = dladdr(&mpiwrapper_version_major, &info);
   if (!iret) {
-    fprintf(stderr,
-            "MPItrampoline: Cannot determine path of libmpitrampoline.so\n");
+    fprintf(stderr, "MPItrampoline: Cannot determine path of mpitrampoline\n");
     exit(1);
   }
   char *const buf = strdup(info.dli_fname);
@@ -113,8 +115,7 @@ static void set_mpitrampoline_dir() {
   }
   mpitrampoline_dir = buf;
   if (verbose)
-    fprintf(stderr,
-            "[MPItrampoline] libmpitrampoline.so is installed in \"%s\"\n",
+    fprintf(stderr, "[MPItrampoline] mpitrampoline is installed in \"%s\"\n",
             mpitrampoline_dir);
 }
 

@@ -3,6 +3,9 @@
 import re
 from string import Template
 
+support_profiling = True
+have_weak_symbols = False
+
 from mpi_constants import constants
 from mpi_functions import functions
 
@@ -26,42 +29,45 @@ for (tp, nm, args, flags) in functions:
         subs['anm{0}'.format(i)] = anm
     tmpl = []
 
-    tmpl.append("extern $abi_tp (* MPITRAMPOLINE_CONST P$abi_nm)(")
-    for (i, (atp, anm)) in enumerate(args):
-        tmpl.append("  $abi_atp{0} $anm{0},".format(i))
-    tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
-    tmpl.append(");")
-
     tmpl.append("extern $abi_tp (* MPITRAMPOLINE_CONST $abi_nm)(")
     for (i, (atp, anm)) in enumerate(args):
         tmpl.append("  $abi_atp{0} $anm{0},".format(i))
     tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
     tmpl.append(");")
 
-    # tmpl.append("inline $mpi_tp P$mpi_nm(")
-    # for (i, (atp, anm)) in enumerate(args):
-    #     tmpl.append("  $mpi_atp{0} $anm{0},".format(i))
-    # tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
-    # tmpl.append(") {")
-    # rcast = "($mpi_tp)".format(i) if re.search(r"MPI(X?)_", tp) else ""
-    # tmpl.append("  return "+rcast+"(*$abi_nm)(")
-    # for (i, (atp, anm)) in enumerate(args):
-    #     acast = "($abi_atp{0})".format(i) if re.search(r"MPI(X?)_", atp) else ""
-    #     tmpl.append("    "+acast+"$anm{0},".format(i))
-    # tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
-    # tmpl.append("  );")
-    # tmpl.append("}")
+    if not support_profiling:
 
-    tmpl.append("$mpi_tp P$mpi_nm(")
-    for (i, (atp, anm)) in enumerate(args):
-        tmpl.append("  $mpi_atp{0} $anm{0},".format(i))
-    tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
-    tmpl.append(");")
+        # We declare the MPI functions inline if we don't have to support the
+        # PMPI interface
+        tmpl.append("inline $mpi_tp P$mpi_nm(")
+        for (i, (atp, anm)) in enumerate(args):
+            tmpl.append("  $mpi_atp{0} $anm{0},".format(i))
+        tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
+        tmpl.append(") {")
+        rcast = "($mpi_tp)".format(i) if re.search(r"MPI(X?)_", tp) else ""
+        tmpl.append("  return "+rcast+"(*$abi_nm)(")
+        for (i, (atp, anm)) in enumerate(args):
+            acast = "($abi_atp{0})".format(i) if re.search(r"MPI(X?)_", atp) else ""
+            tmpl.append("    "+acast+"$anm{0},".format(i))
+        tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
+        tmpl.append("  );")
+        tmpl.append("}")
 
-    tmpl.append("$mpi_tp $mpi_nm(")
-    for (i, (atp, anm)) in enumerate(args):
-        tmpl.append("  $mpi_atp{0} $anm{0},".format(i))
-    tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
-    tmpl.append(");")
+    else:
+
+        if have_weak_symbols:
+            tmpl.append("#pragma weak $mpi_nm = P$mpi_nm")
+        else:
+            tmpl.append("$mpi_tp $mpi_nm(")
+            for (i, (atp, anm)) in enumerate(args):
+                tmpl.append("  $mpi_atp{0} $anm{0},".format(i))
+            tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
+            tmpl.append(");")
+
+        tmpl.append("$mpi_tp P$mpi_nm(")
+        for (i, (atp, anm)) in enumerate(args):
+            tmpl.append("  $mpi_atp{0} $anm{0},".format(i))
+        tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
+        tmpl.append(");")
 
     print(Template("\n".join(tmpl)).substitute(subs))
