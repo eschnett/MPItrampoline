@@ -24,7 +24,7 @@ functions = [
     ], None),
 
     ("int", "MPI_Get_count", [
-        ("MPI_Status *", "status"),
+        ("const MPI_Status *", "status"),
         ("MPI_Datatype", "datatype"),
         ("int *", "count"),
     ], None),
