@@ -147,6 +147,7 @@ constants = [
     ("int", "MPI_SEEK_END"),
     ("int", "MPI_SEEK_SET"),
 
+    # Thread support
     ("int", "MPI_THREAD_SINGLE"),
     ("int", "MPI_THREAD_FUNNELED"),
     ("int", "MPI_THREAD_SERIALIZED"),
@@ -156,6 +157,14 @@ constants = [
     ("int", "MPI_TYPECLASS_COMPLEX"),
     ("int", "MPI_TYPECLASS_INTEGER"),
     ("int", "MPI_TYPECLASS_REAL"),
+
+    # Windows
+    ("int", "MPI_WIN_FLAVOR_ALLOCATE"),
+    ("int", "MPI_WIN_FLAVOR_CREATE"),
+    ("int", "MPI_WIN_FLAVOR_DYNAMIC"),
+    ("int", "MPI_WIN_FLAVOR_SHARED"),
+    ("int", "MPI_WIN_SEPARATE"),
+    ("int", "MPI_WIN_UNIFIED"),
 
     ("char **", "MPI_ARGV_NULL"),
 

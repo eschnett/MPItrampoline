@@ -117,7 +117,12 @@ constants_fortran = [
     ("MPI_Fint", "MPI_THREAD_SERIALIZED"),
     ("MPI_Fint", "MPI_THREAD_MULTIPLE"),
 
-    # ("void *", "MPI_BOTTOM"),
+    ("MPI_Fint", "MPI_WIN_FLAVOR_ALLOCATE"),
+    ("MPI_Fint", "MPI_WIN_FLAVOR_CREATE"),
+    ("MPI_Fint", "MPI_WIN_FLAVOR_DYNAMIC"),
+    ("MPI_Fint", "MPI_WIN_FLAVOR_SHARED"),
+    ("MPI_Fint", "MPI_WIN_SEPARATE"),
+    ("MPI_Fint", "MPI_WIN_UNIFIED"),
 
     # ("void *", "MPI_IN_PLACE"),
 
