@@ -170,6 +170,7 @@ constants = [
 
     ("char ***", "MPI_ARGVS_NULL"),
 
+    ("int *", "MPI_ERRCODES_IGNORE"),
     ("int *", "MPI_UNWEIGHTED"),
     ("int *", "MPI_WEIGHTS_EMPTY"),
 
@@ -186,7 +187,10 @@ constants = [
 
     ("MPI_Comm_delete_attr_function *", "MPI_COMM_NULL_DELETE_FN"),
 
+    ("MPI_Copy_function *", "MPI_DUP_FN"),
     ("MPI_Copy_function *", "MPI_NULL_COPY_FN"),
+
+    ("MPI_Datarep_conversion_function *", "MPI_CONVERSION_FN_NULL"),
 
     # ("MPI_Datatype", "MPI_2COMPLEX"),
     # ("MPI_Datatype", "MPI_2DOUBLE"),
