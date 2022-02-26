@@ -38,6 +38,7 @@ constants_fortran = [
 
     ("MPI_Fint", "MPI_DISTRIBUTE_BLOCK"),
     ("MPI_Fint", "MPI_DISTRIBUTE_CYCLIC"),
+    ("MPI_Fint", "MPI_DISTRIBUTE_DFLT_DARG"),
     ("MPI_Fint", "MPI_DISTRIBUTE_NONE"),
 
     ("MPI_Fint", "MPI_ERR_ACCESS"),
@@ -124,7 +125,27 @@ constants_fortran = [
     ("MPI_Fint", "MPI_WIN_SEPARATE"),
     ("MPI_Fint", "MPI_WIN_UNIFIED"),
 
+    # ("char **", "MPI_ARGV_NULL"),
+    # MPICH: character(len=1), dimension(1), target :: MPI_ARGV_NULL
+    # OpenMPI: character MPI_ARGV_NULL(1)
+
+    # ("char ***", "MPI_ARGVS_NULL"),
+    # MPICH: character(len=1), dimension(1,1), target :: MPI_ARGVS_NULL
+    # OpenMPI: character MPI_ARGVS_NULL(1, 1)
+
+    # ("int *", "MPI_ERRCODES_IGNORE"),
+    # ("int *", "MPI_UNWEIGHTED"),
+    # ("int *", "MPI_WEIGHTS_EMPTY"),
+    # MPICH:  integer, dimension(1), target :: MPI_UNWEIGHTED
+    # OpenMPI: integer MPI_UNWEIGHTED(1)
+
+    # ("void *", "MPI_BOTTOM"),
+    # MPICH:  integer(c_int), bind(C, name="MPIR_F08_MPI_BOTTOM"), target :: MPI_BOTTOM
+    # OpenMPI: integer MPI_BOTTOM
+
     # ("void *", "MPI_IN_PLACE"),
+    # MPICH:  integer(c_int), bind(C, name="MPIR_F08_MPI_IN_PLACE"), target :: MPI_IN_PLACE
+    # OpenMPI: integer MPI_IN_PLACE
 
     ("MPI_Comm", "MPI_COMM_NULL"),
     ("MPI_Comm", "MPI_COMM_SELF"),
