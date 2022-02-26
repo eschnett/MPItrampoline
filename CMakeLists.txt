@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 3.6.0
+  MPItrampoline VERSION 3.7.0
   DESCRIPTION "MPI trampoline"
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
   LANGUAGES NONE

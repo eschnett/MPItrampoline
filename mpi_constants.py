@@ -58,6 +58,7 @@ constants = [
     # File operation constants
     ("int", "MPI_DISTRIBUTE_BLOCK"),
     ("int", "MPI_DISTRIBUTE_CYCLIC"),
+    ("int", "MPI_DISTRIBUTE_DFLT_DARG"),
     ("int", "MPI_DISTRIBUTE_NONE"),
 
     ("int", "MPI_ERR_ACCESS"),
