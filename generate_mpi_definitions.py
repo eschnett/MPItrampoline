@@ -50,12 +50,12 @@ for (tp, nm) in constants_fortran:
 print()
 print("// Fortran functions")
 for (tp, nm, args) in functions_fortran:
-    subs = {'abi_tp': re.sub(r"MPI(X?)_\w+", r"MPI\1ABI_Fint", tp),
+    subs = {'abi_tp': re.sub(r"MPI(X?)_\w+", r"MPIABI_Fint", tp),
             'mpi_nm': nm.lower() + "_",
             'abi_nm': re.sub(r"MPI(X?)_", r"MPI\1ABI_", nm).lower() + "_"}
     for (i, (atp, anm)) in enumerate(args):
-        subs['mpi_atp{0}'.format(i)] = re.sub(r"MPI(X?)_\w+", r"MPI\1ABI_Fint", atp)
-        subs['abi_atp{0}'.format(i)] = re.sub(r"MPI(X?)_\w+", r"MPI\1ABI_Fint", atp)
+        subs['mpi_atp{0}'.format(i)] = re.sub(r"MPI(X?)_\w+", r"MPIABI_Fint", atp)
+        subs['abi_atp{0}'.format(i)] = re.sub(r"MPI(X?)_\w+", r"MPIABI_Fint", atp)
         subs['anm{0}'.format(i)] = anm
     tmpl = []
     tmpl.append("$abi_tp (* $abi_nm)(")

@@ -19,8 +19,10 @@ print("!     Fortran constants")
 for (tp, nm) in constants_fortran:
     subs = {'mpi_nm': nm}
     tmpl = []
+
     tmpl.append("      integer $mpi_nm")
     tmpl.append("      common /$mpi_nm/ $mpi_nm")
+
     print("\n".join(map(lambda line: wrap(Template(line).substitute(subs)), tmpl)))
 
 print()
@@ -28,5 +30,14 @@ print("!     Fortran functions")
 for (tp, nm, args) in functions_fortran:
     subs = {'mpi_nm': nm}
     tmpl = []
+
     tmpl.append("      external $mpi_nm")
+    if tp != "void":
+        if tp == "double":
+            tmpl.append("      double precision $mpi_nm")
+        elif tp == "MPI_Aint":
+            tmpl.append("      integer(MPI_ADDRESS_KIND) $mpi_nm")
+        else:
+            assert False
+
     print("\n".join(map(lambda line: wrap(Template(line).substitute(subs)), tmpl)))

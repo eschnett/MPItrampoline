@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 3.7.0
+  MPItrampoline VERSION 3.8.0
   DESCRIPTION "MPI trampoline"
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
   LANGUAGES NONE
@@ -43,6 +43,21 @@ install(
   FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_version.h"
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
   )
+
+if(ENABLE_FORTRAN)
+  include(CheckTypeSize)
+  check_type_size(ptrdiff_t MPITRAMPOLINE_SIZEOF_CPTRDIFF_T LANGUAGE C)
+  if(${MPITRAMPOLINE_SIZEOF_CPTRDIFF_T} STREQUAL "" OR
+      ${MPITRAMPOLINE_SIZEOF_CPTRDIFF_T} STREQUAL "0")
+    message(FATAL_ERROR "Cannot determine sizeof(ptrdiff_t).")
+  endif()
+
+  configure_file(mpif_version.h.in mpif_version.h @ONLY)
+  install(
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/mpif_version.h"
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+endif()
 
 configure_file(mpi_defaults.h.in mpi_defaults.h @ONLY)
 
