@@ -2,6 +2,9 @@
 !     declarations. The string size constants need to be one less than
 !     in C since Fortran does not store a trailing NUL character.
 
+!     TODO: Move this file to MPIwrapper, changing the prefix to
+!     `MPIABI_`.
+
       include "mpif_version.h"
 
       integer MPIABI_VERSION_MAJOR
