@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-# import os
+import os
 import re
 from string import Template
 import sys
 
-sys.path.append("../mpiabi")
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "mpiabi"))
 
 from mpi_constants import constants
 from mpi_functions import functions
@@ -14,8 +14,6 @@ from mpi_functions_fortran import functions_fortran
 
 support_profiling = True
 have_weak_symbols = False
-
-# os.makedirs("src", exist_ok=True)
 
 with open("src/mpi_defn_constants_c.h", "w") as file:
     file.write("// Define C MPI constants")

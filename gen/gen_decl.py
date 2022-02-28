@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 
-# import os
+import os
 import re
 from string import Template
 import sys
 
-sys.path.append("../mpiabi")
+sys.path.append(os.path.join(os.path.dirname(__file__), "..", "mpiabi"))
 
 from mpi_constants import constants
 from mpi_functions import functions
@@ -22,8 +22,6 @@ def wrap(line):
         line = "     &" + line[72:]
     lines.append(line)
     return "\n".join(lines)
-
-# os.makedirs("include", exist_ok=True)
 
 with open("include/mpi_decl_constants_c.h", "w") as file:
     file.write("// Declare C MPI constants\n")
