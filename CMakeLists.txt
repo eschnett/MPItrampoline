@@ -27,6 +27,7 @@ if(ENABLE_FORTRAN)
   endif()
   message(STATUS "Enabling Fortran support")
   enable_language(Fortran)
+  add_compile_definitions(ENABLE_FORTRAN)
 else()
   message(STATUS "Disabling Fortran support")
 endif()
@@ -138,7 +139,6 @@ if(ENABLE_FORTRAN)
   add_library(mpi
     mpiabi.h
     mpi.c mpi.h mpi_version.h mpi_declarations.h mpio.h mpi_definitions.h mpi_initializations.h
-    mpifort.c
     mpif.h mpi_declarations_fortran.h
     mpi.f90 mpi_declarations_fortran90.h mpitrampoline_initialize_fortran90.f90 mpi_initializations_fortran90.h
     mpi_f08.f90 mpitrampoline_initialize_fortran08.f90

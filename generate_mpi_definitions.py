@@ -63,15 +63,21 @@ for (tp, nm, args) in functions_fortran:
         tmpl.append("  $abi_atp{0} $anm{0},".format(i))
     tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
     tmpl.append(") = NULL;")
+
     tmpl.append("$abi_tp $mpi_nm(")
     for (i, (atp, anm)) in enumerate(args):
         tmpl.append("  $mpi_atp{0} $anm{0},".format(i))
     tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
     tmpl.append(") {")
+    for (i, (atp, anm)) in enumerate(args):
+        if atp == "const MPI_Status *" or atp == "MPI_Status *":
+            tmpl.append("  if ($anm{0} == mpi_status_ignore_)".format(i))
+            tmpl.append("    $anm{0} = mpiabi_status_ignore_;".format(i))
     tmpl.append("  return (* $abi_nm)(")
     for (i, (atp, anm)) in enumerate(args):
         tmpl.append("    $anm{0},".format(i))
     tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
     tmpl.append("  );")
     tmpl.append("}")
+
     print(Template("\n".join(tmpl)).substitute(subs))

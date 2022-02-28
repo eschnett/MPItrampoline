@@ -12,15 +12,15 @@ MPITRAMPOLINE_FCFLAGS=${MPITRAMPOLINE_FCFLAGS:-@CMAKE_Fortran_FLAGS@}
 
 case "$1" in
     -showme:command)
-        echo "$MPITRAMPOLINE_FC $MPITRAMPOLINE_FCFLAGS"
+        echo "$MPITRAMPOLINE_FC"
         exit 0
         ;;
     -showme:compile)
-        echo '-I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@'
+        echo '$MPITRAMPOLINE_FCFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@'
         exit 0
         ;;
     -showme:link)
-        echo '-L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
+        echo '$MPITRAMPOLINE_FCFLAGS -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
         exit 0
         ;;
     -showme:incdirs)
