@@ -59,7 +59,7 @@
       common /MPI_BOTTOM/ MPI_BOTTOM
 
       integer MPI_IN_PLACE
-      common /MPI_IN_PLACE/
+      common /MPI_IN_PLACE/ MPI_IN_PLACE
 
       integer MPI_STATUS_IGNORE(MPI_STATUS_SIZE)
       common /MPI_STATUS_IGNORE/ MPI_STATUS_IGNORE
