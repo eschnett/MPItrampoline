@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os
+# import os
 import re
 from string import Template
 import sys
@@ -23,6 +23,8 @@ def wrap(line):
     lines.append(line)
     return "\n".join(lines)
 
+# os.makedirs("include", exist_ok=True)
+
 with open("include/mpi_decl_constants_c.h", "w") as file:
     file.write("// Declare C MPI constants\n")
     file.write("\n")
@@ -43,16 +45,16 @@ with open("include/mpi_decl_functions_c.h", "w") as file:
             subs['mpi_atp{0}'.format(i)] = atp
             subs['abi_atp{0}'.format(i)] = re.sub(r"MPI(X?)_", r"MPI\1ABI_", atp)
             subs['anm{0}'.format(i)] = anm
+
         tmpl = []
-    
         tmpl.append("extern $abi_tp (* MPITRAMPOLINE_CONST $abi_nm)(")
         for (i, (atp, anm)) in enumerate(args):
             tmpl.append("  $abi_atp{0} $anm{0},".format(i))
         tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
         tmpl.append(");")
-    
+
         if not support_profiling:
-    
+
             # We declare the MPI functions inline if we don't have to support the
             # PMPI interface
             tmpl.append("inline $mpi_tp P$mpi_nm(")
@@ -68,9 +70,9 @@ with open("include/mpi_decl_functions_c.h", "w") as file:
             tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
             tmpl.append("  );")
             tmpl.append("}")
-    
+
         else:
-    
+
             if have_weak_symbols:
                 tmpl.append("#pragma weak $mpi_nm = P$mpi_nm")
             else:
@@ -79,13 +81,13 @@ with open("include/mpi_decl_functions_c.h", "w") as file:
                     tmpl.append("  $mpi_atp{0} $anm{0},".format(i))
                 tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
                 tmpl.append(");")
-    
+
             tmpl.append("$mpi_tp P$mpi_nm(")
             for (i, (atp, anm)) in enumerate(args):
                 tmpl.append("  $mpi_atp{0} $anm{0},".format(i))
             tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
             tmpl.append(");")
-    
+
         file.write(Template("\n".join(tmpl)).substitute(subs))
         file.write("\n")
 
@@ -95,20 +97,20 @@ with open("include/mpi_decl_constants_fortran.h", "w") as file:
     for (tp, nm) in constants_fortran:
         subs = {'mpi_nm': nm}
         tmpl = []
-    
+
         tmpl.append("      integer $mpi_nm")
         tmpl.append("      common /$mpi_nm/ $mpi_nm")
-    
+
         file.write("\n".join(map(lambda line: wrap(Template(line).substitute(subs)), tmpl)))
         file.write("\n")
-    
+
 with open("include/mpi_decl_functions_fortran.h", "w") as file:
     file.write("!     Declare Fortran MPI functions\n")
     file.write("\n")
     for (tp, nm, args) in functions_fortran:
         subs = {'mpi_nm': nm}
         tmpl = []
-    
+
         tmpl.append("      external $mpi_nm")
         if tp != "void":
             if tp == "double":
@@ -117,6 +119,6 @@ with open("include/mpi_decl_functions_fortran.h", "w") as file:
                 tmpl.append("      integer(MPI_ADDRESS_KIND) $mpi_nm")
             else:
                 assert False
-    
+
         file.write("\n".join(map(lambda line: wrap(Template(line).substitute(subs)), tmpl)))
         file.write("\n")

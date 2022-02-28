@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import os
+# import os
 import re
 from string import Template
 import sys
@@ -15,7 +15,7 @@ from mpi_functions_fortran import functions_fortran
 support_profiling = True
 have_weak_symbols = False
 
-os.makedirs("src", exist_ok=True)
+# os.makedirs("src", exist_ok=True)
 
 with open("src/mpi_init_constants_c.h", "w") as file:
     file.write("// Initialize C MPI constants")
@@ -39,7 +39,7 @@ with open("src/mpi_init_functions_c.h", "w") as file:
             subs['abi_atp{0}'.format(i)] = re.sub(r"MPI(X?)_", r"MPI\1ABI_", atp)
             subs['anm{0}'.format(i)] = anm
         file.write(Template("$abi_nm = get_symbol(handle, \"$abi_nm\");\n").substitute(subs))
-    
+
 with open("src/mpi_init_constants_fortran.h", "w") as file:
     file.write("// Initialize Fortran MPI constants\n")
     file.write("\n")
@@ -48,7 +48,7 @@ with open("src/mpi_init_constants_fortran.h", "w") as file:
                 'mpi_nm': nm.lower() + "_",
                 'abi_nm': re.sub(r"MPI(X?)_", r"MPI\1ABI_", nm).lower() + "_"}
         file.write(Template("$mpi_nm = *($abi_tp const*)get_symbol(handle, \"$abi_nm\");\n").substitute(subs))
-    
+
 with open("src/mpi_init_functions_fortran.h", "w") as file:
     file.write("// Initialize Fortran MPI functions\n")
     file.write("\n")
