@@ -38,13 +38,13 @@ int mpiabi_loaded_version_patch = -1;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#ifdef ENABLE_FORTRAN
 #define MPI_FORTRAN_STATUS_SIZE 6
 MPIABI_Fint mpi_status_ignore_[MPI_FORTRAN_STATUS_SIZE];
 MPIABI_Fint mpi_statuses_ignore_[MPI_FORTRAN_STATUS_SIZE];
 MPIABI_Fint *mpiabi_status_ignore_;
 MPIABI_Fint *mpiabi_statuses_ignore_;
 
+#ifdef ENABLE_FORTRAN
 void mpitrampoline_initialize_fortran90_();
 void mpitrampoline_initialize_fortran08_();
 #endif
@@ -492,12 +492,12 @@ void mpitrampoline_init() {
 
 #include "mpi_initializations.h"
 
-#ifdef ENABLE_FORTRAN
   mpiabi_status_ignore_ =
       (MPIABI_Fint *)get_symbol(handle, "mpiabi_status_ignore_");
   mpiabi_statuses_ignore_ =
       (MPIABI_Fint *)get_symbol(handle, "mpiabi_statuses_ignore_");
 
+#ifdef ENABLE_FORTRAN
   // Set up high-level Fortran constants
   mpitrampoline_initialize_fortran90_();
   mpitrampoline_initialize_fortran08_();
