@@ -1,6 +1,42 @@
       include "mpiabif.h"
 
-      include "mpi_declarations_fortran.h"
+      integer MPI_VERSION
+      parameter (MPI_VERSION = MPIABI_MPI_VERSION)
+      integer MPI_SUBVERSION
+      parameter (MPI_SUBVERSION = MPIABI_MPI_SUBVERSION)
+
+      integer MPI_MAX_DATAREP_STRING
+      parameter (MPI_MAX_DATAREP_STRING = MPIABI_MAX_DATAREP_STRING)
+      integer MPI_MAX_ERROR_STRING
+      parameter (MPI_MAX_ERROR_STRING = MPIABI_MAX_ERROR_STRING)
+      integer MPI_MAX_INFO_KEY
+      parameter (MPI_MAX_INFO_KEY = MPIABI_MAX_INFO_KEY)
+      integer MPI_MAX_INFO_VAL
+      parameter (MPI_MAX_INFO_VAL = MPIABI_MAX_INFO_VAL)
+      integer MPI_MAX_LIBRARY_VERSION_STRING
+      parameter (MPI_MAX_LIBRARY_VERSION_STRING =                       &
+     &     MPIABI_MAX_LIBRARY_VERSION_STRING)
+      integer MPI_MAX_OBJECT_NAME
+      parameter (MPI_MAX_OBJECT_NAME = MPIABI_MAX_OBJECT_NAME)
+      integer MPI_MAX_PORT_NAME
+      parameter (MPI_MAX_PORT_NAME = MPIABI_MAX_PORT_NAME)
+      integer MPI_MAX_PROCESSOR_NAME
+      parameter (MPI_MAX_PROCESSOR_NAME = MPIABI_MAX_PROCESSOR_NAME)
+
+      logical MPI_ASYNC_PROTECTS_NONBLOCKING
+      parameter (MPI_ASYNC_PROTECTS_NONBLOCKING = .false.)
+      logical MPI_SUBARRAYS_SUPPORTED
+      parameter (MPI_SUBARRAYS_SUPPORTED = .false.)
+
+      integer MPI_ADDRESS_KIND
+      parameter (MPI_ADDRESS_KIND = MPITRAMPOLINE_SIZEOF_CPTRDIFF_T)
+      integer MPI_COUNT_KIND
+      parameter (MPI_COUNT_KIND = 8)
+      integer MPI_OFFSET_KIND
+      parameter (MPI_OFFSET_KIND = 8)
+
+      integer MPI_STATUS_SIZE
+      parameter (MPI_STATUS_SIZE = MPIABI_STATUS_SIZE)
 
 !     Option 1 to handle sentinel values:
 !
@@ -43,3 +79,6 @@
 !     integer MPI_STATUSES_IGNORE(:)
 !     pointer MPI_STATUSES_IGNORE
 !     common /MPI_STATUSES_IGNORE/ MPI_STATUSES_IGNORE
+
+      include "mpi_decl_constants_fortran.h"
+      include "mpi_decl_functions_fortran.h"

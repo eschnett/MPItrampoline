@@ -13,3 +13,7 @@ Requires.private:
 Cflags: -I${includedir}
 Libs: -L${libdir} -Wl,-rpath,${libdir} -lmpi
 Libs.private: -ldl
+
+cxxflags=-I${includedir}
+fflags=-fallow-argument-mismatch -I${includedir}
+fcflags=-I${includedir}

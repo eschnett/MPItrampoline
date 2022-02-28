@@ -113,7 +113,8 @@ extern int MPITRAMPOLINE_CONST mpiabi_loaded_version_major;
 extern int MPITRAMPOLINE_CONST mpiabi_loaded_version_minor;
 extern int MPITRAMPOLINE_CONST mpiabi_loaded_version_patch;
 
-#include "mpi_declarations.h"
+#include "mpi_decl_constants_c.h"
+#include "mpi_decl_functions_c.h"
 
 inline int PMPI_Pcontrol(int level, ...) { return MPI_SUCCESS; }
 int MPI_Pcontrol(int level, ...);
