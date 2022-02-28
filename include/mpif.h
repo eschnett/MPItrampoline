@@ -34,6 +34,8 @@
       parameter (MPI_ADDRESS_KIND = MPITRAMPOLINE_SIZEOF_CPTRDIFF_T)
       integer MPI_COUNT_KIND
       parameter (MPI_COUNT_KIND = 8)
+      integer MPI_INTEGER_KIND
+      parameter (MPI_INTEGER_KIND = 4)
       integer MPI_OFFSET_KIND
       parameter (MPI_OFFSET_KIND = 8)
 
@@ -102,4 +104,3 @@
 
       include "mpi_decl_constants_fortran.h"
       include "mpi_decl_functions_fortran.h"
-
