@@ -55,9 +55,9 @@ if(ENABLE_FORTRAN)
     message(FATAL_ERROR "Cannot determine sizeof(ptrdiff_t).")
   endif()
 
-  configure_file(mpiabi/mpiabif.h.in mpiabi/mpiabif.h @ONLY)
+  configure_file(mpiabi/mpiabif.h.in include/mpiabif.h @ONLY)
   install(
-    FILES "${CMAKE_CURRENT_BINARY_DIR}/mpiabi/mpiabif.h"
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/include/mpiabif.h"
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
 
@@ -153,7 +153,7 @@ if(ENABLE_FORTRAN)
     include/mpif.h
     include/mpi.f90
     include/mpi_f08.f90
-    mpiabi/mpiabif.h
+    include/mpiabif.h
     # configured header files
     include/mpif_version.h
     # generated header files
@@ -162,7 +162,7 @@ if(ENABLE_FORTRAN)
     )
   target_include_directories(
     mpi
-    PRIVATE include mpiabi ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/mpiabi ${CMAKE_CURRENT_BINARY_DIR}/src)
+    PRIVATE include mpiabi ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/src)
   target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
   set_target_properties(mpi PROPERTIES
     VERSION ${PROJECT_VERSION}
