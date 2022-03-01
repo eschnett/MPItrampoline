@@ -12,11 +12,11 @@ subroutine mpitrampoline_init_mpi_f08()
 
   implicit none
 
-  mpi_int%datatype = mpi_int1
-  mpi_integer%datatype = mpi_integer1
+  mpi_int%mpi_val = mpi_int1
+  mpi_integer%mpi_val = mpi_integer1
   
-  mpi_comm_null%comm = mpi_comm_null1
-  mpi_comm_self%comm = mpi_comm_self1
-  mpi_comm_world%comm = mpi_comm_world1
+  mpi_comm_null%mpi_val = mpi_comm_null1
+  mpi_comm_self%mpi_val = mpi_comm_self1
+  mpi_comm_world%mpi_val = mpi_comm_world1
 
 end subroutine mpitrampoline_init_mpi_f08

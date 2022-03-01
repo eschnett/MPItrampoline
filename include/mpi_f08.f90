@@ -12,20 +12,20 @@ module mpi_f08
   logical, parameter :: mpi_async_protects_nonblocking = .false.
   logical, parameter :: mpi_subarrays_supported = .false.
 
-  type :: mpi_comm
-     integer :: comm
+  type, bind(C) :: mpi_comm
+     integer :: mpi_val
   end type mpi_comm
 
-  type :: mpi_datatype
-     integer :: datatype
+  type, bind(C) :: mpi_datatype
+     integer :: mpi_val
   end type mpi_datatype
 
-  type :: mpi_status
-     integer :: status(mpi_status_size)
+  type, bind(C) :: mpi_status
+     integer :: mpi_val(mpi_status_size)
      integer :: mpi_source
      integer :: mpi_tag
      integer :: mpi_error
-     integer :: padding
+     ! integer :: padding
   end type mpi_status
 
   type(mpi_comm) :: mpi_comm_null
@@ -93,22 +93,22 @@ contains
 
   logical function mpi_comm_eq(comm1, comm2)
     type(mpi_comm), intent(in) :: comm1, comm2
-    mpi_comm_eq = comm1%comm .eq. comm2%comm
+    mpi_comm_eq = comm1%mpi_val .eq. comm2%mpi_val
   end function mpi_comm_eq
 
   logical function mpi_comm_ne(comm1, comm2)
     type(mpi_comm), intent(in) :: comm1, comm2
-    mpi_comm_ne = comm1%comm .ne. comm2%comm
+    mpi_comm_ne = comm1%mpi_val .ne. comm2%mpi_val
   end function mpi_comm_ne
 
   logical function mpi_datatype_eq(datatype1, datatype2)
     type(mpi_datatype), intent(in) :: datatype1, datatype2
-    mpi_datatype_eq = datatype1%datatype .eq. datatype2%datatype
+    mpi_datatype_eq = datatype1%mpi_val .eq. datatype2%mpi_val
   end function mpi_datatype_eq
 
   logical function mpi_datatype_ne(datatype1, datatype2)
     type(mpi_datatype), intent(in) :: datatype1, datatype2
-    mpi_datatype_ne = datatype1%datatype .ne. datatype2%datatype
+    mpi_datatype_ne = datatype1%mpi_val .ne. datatype2%mpi_val
   end function mpi_datatype_ne
 
   subroutine mpi_send_impl(buf, count, datatype, dest, tag, comm, ierror)
@@ -124,7 +124,7 @@ contains
     
     integer ierror1
     
-    call mpi_send(buf, count, datatype%datatype, dest, tag, comm%comm, ierror1)
+    call mpi_send(buf, count, datatype%mpi_val, dest, tag, comm%mpi_val, ierror1)
     
     if (present(ierror)) ierror = ierror1
   end subroutine mpi_send_impl
@@ -141,15 +141,13 @@ contains
     type(mpi_status), intent(out) :: status
     integer, optional, intent(out) :: ierror
     
-    integer status1(mpi_status_size)
     integer ierror1
     
-    call mpi_recv(buf, count, datatype%datatype, dest, tag, comm%comm, status1, ierror1)
+    call mpi_recv(buf, count, datatype%mpi_val, dest, tag, comm%mpi_val, status%mpi_val, ierror1)
     
-    status%status = status1(1:mpi_status_size)
-    status%mpi_source = status1(mpi_source)
-    status%mpi_tag = status1(mpi_tag)
-    status%mpi_error = status1(mpi_error)
+    status%mpi_source = status%mpi_val(mpi_source)
+    status%mpi_tag = status%mpi_val(mpi_tag)
+    status%mpi_error = status%mpi_val(mpi_error)
     
     if (present(ierror)) ierror = ierror1
   end subroutine mpi_recv_impl
@@ -162,15 +160,15 @@ contains
     integer, intent(out) :: count
     integer, optional, intent(out) :: ierror
     
-    integer status1(mpi_status_size)
     integer ierror1
+    type(mpi_status) status1
     
-    status1(1:mpi_status_size) = status%status
-    status1(mpi_source) = status%mpi_source
-    status1(mpi_tag) = status%mpi_tag
-    status1(mpi_error) = status%mpi_error
+    status1 = status
+    status1%mpi_val(mpi_source) = status1%mpi_source
+    status1%mpi_val(mpi_tag) = status1%mpi_tag
+    status1%mpi_val(mpi_error) = status1%mpi_error
     
-    call mpi_get_count(status1, datatype%datatype, count, ierror1)
+    call mpi_get_count(status1%mpi_val, datatype%mpi_val, count, ierror1)
     
     if (present(ierror)) ierror = ierror1
   end subroutine mpi_get_count_impl
@@ -184,7 +182,7 @@ contains
     
     integer ierror1
     
-    call mpi_comm_size(comm%comm, size, ierror1)
+    call mpi_comm_size(comm%mpi_val, size, ierror1)
     
     if (present(ierror)) ierror = ierror1
   end subroutine mpi_comm_size_impl
@@ -198,7 +196,7 @@ contains
     
     integer ierror1
     
-    call mpi_comm_rank(comm%comm, rank, ierror1)
+    call mpi_comm_rank(comm%mpi_val, rank, ierror1)
     
     if (present(ierror)) ierror = ierror1
   end subroutine mpi_comm_rank_impl
@@ -236,7 +234,7 @@ contains
     
     integer ierror1
     
-    call mpi_abort(comm%comm, errorcode, ierror1)
+    call mpi_abort(comm%mpi_val, errorcode, ierror1)
     
     if (present(ierror)) ierror = ierror1
   end subroutine mpi_abort_impl
