@@ -1,3 +1,5 @@
+      include "mpif_version.h"
+
       include "mpiabif.h"
 
 !     Constants
@@ -31,13 +33,13 @@
       parameter (MPI_SUBARRAYS_SUPPORTED = .false.)
 
       integer MPI_ADDRESS_KIND
-      parameter (MPI_ADDRESS_KIND = MPITRAMPOLINE_SIZEOF_CPTRDIFF_T)
+      parameter (MPI_ADDRESS_KIND = MPIABI_ADDRESS_KIND)
       integer MPI_COUNT_KIND
-      parameter (MPI_COUNT_KIND = 8)
+      parameter (MPI_COUNT_KIND = MPIABI_COUNT_KIND)
       integer MPI_INTEGER_KIND
-      parameter (MPI_INTEGER_KIND = 4)
+      parameter (MPI_INTEGER_KIND = MPIABI_INTEGER_KIND)
       integer MPI_OFFSET_KIND
-      parameter (MPI_OFFSET_KIND = 8)
+      parameter (MPI_OFFSET_KIND = MPIABI_OFFSET_KIND)
 
       integer MPI_STATUS_SIZE
       parameter (MPI_STATUS_SIZE = MPIABI_STATUS_SIZE)
