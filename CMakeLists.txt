@@ -55,6 +55,12 @@ if(ENABLE_FORTRAN)
     message(FATAL_ERROR "Cannot determine sizeof(ptrdiff_t).")
   endif()
 
+  configure_file(mpiabi/mpiabif.h.in include/mpiabif.h @ONLY)
+  install(
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/include/mpiabif.h"
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+
   configure_file(include/mpif_version.h.in include/mpif_version.h @ONLY)
   install(
     FILES "${CMAKE_CURRENT_BINARY_DIR}/include/mpif_version.h"
@@ -147,20 +153,22 @@ if(ENABLE_FORTRAN)
     include/mpif.h
     include/mpi.f90
     include/mpi_f08.f90
-    mpiabi/mpiabif.h
+    include/mpiabif.h
     # configured header files
     include/mpif_version.h
     # generated header files
     include/mpi_decl_constants_fortran.h
     include/mpi_decl_functions_fortran.h
     )
-  target_include_directories(mpi PRIVATE include mpiabi ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/src)
+  target_include_directories(
+    mpi
+    PRIVATE include mpiabi ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/src)
   target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
   set_target_properties(mpi PROPERTIES
     VERSION ${PROJECT_VERSION}
     # SOVERSION 2.0.0
     # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
-    PUBLIC_HEADER "include/mpi.h;include/mpio.h;mpiabi/mpiabi.h;include/mpif.h;mpiabi/mpiabif.h"
+    PUBLIC_HEADER "include/mpi.h;include/mpio.h;mpiabi/mpiabi.h;include/mpif.h"
     )
 else()
   add_library(mpi
@@ -194,7 +202,6 @@ endif()
 
 install(TARGETS mpi EXPORT MPItrampolineTargets)
 if(ENABLE_FORTRAN)
-  #TODO   install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
   install(
     FILES
     ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi.mod

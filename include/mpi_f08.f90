@@ -27,8 +27,6 @@ module mpi_f08
      integer :: mpi_error
   end type mpi_status
 
-  logical :: initialized = .false. ! TODO
-
   type(mpi_comm) :: mpi_comm_null
   type(mpi_comm) :: mpi_comm_self
   type(mpi_comm) :: mpi_comm_world
@@ -154,7 +152,7 @@ contains
   end subroutine mpi_recv_impl
   
   subroutine mpi_get_count_impl(status, datatype, count, ierror)
-    use mpi, only: mpi_status_size, mpi_source, mpi_tag, mpi_error, mpi_get_count
+    use mpi, only: mpi_source, mpi_tag, mpi_error, mpi_get_count
     implicit none
     type(mpi_status), intent(in) :: status
     type(mpi_datatype), intent(in) :: datatype
@@ -162,14 +160,14 @@ contains
     integer, optional, intent(out) :: ierror
     
     integer ierror1
-    type(mpi_status) status1
+    integer status1(mpi_status_size)
     
-    status1 = status
-    status1%mpi_val(mpi_source) = status1%mpi_source
-    status1%mpi_val(mpi_tag) = status1%mpi_tag
-    status1%mpi_val(mpi_error) = status1%mpi_error
+    status1 = status%mpi_val
+    status1(mpi_source) = status%mpi_source
+    status1(mpi_tag) = status%mpi_tag
+    status1(mpi_error) = status%mpi_error
     
-    call mpi_get_count(status1%mpi_val, datatype%mpi_val, count, ierror1)
+    call mpi_get_count(status1, datatype%mpi_val, count, ierror1)
     
     if (present(ierror)) ierror = ierror1
   end subroutine mpi_get_count_impl
@@ -209,13 +207,6 @@ contains
     
     integer ierror1
     
-    ! TODO
-    if (.not. initialized) then
-       ! print '("error")'
-       do while (.true.)
-       end do
-    end if
-
     call mpi_init(ierror1)
     
     if (present(ierror)) ierror = ierror1

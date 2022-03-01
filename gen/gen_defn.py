@@ -122,9 +122,15 @@ with open("src/mpi_defn_functions_fortran.h", "w") as file:
             tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
             tmpl.append(") {")
             for (i, (atp, anm)) in enumerate(args):
-                if atp == "const MPI_Status *" or atp == "MPI_Status *":
-                    tmpl.append("  if ($anm{0} == mpi_status_ignore_)".format(i))
-                    tmpl.append("    $anm{0} = mpiabi_status_ignore_;".format(i))
+                if "MPI_Status" in atp:
+                    if anm == "status":
+                        tmpl.append("  if ($anm{0} == mpi_status_ignore_)".format(i))
+                        tmpl.append("    $anm{0} = mpiabi_status_ignore_;".format(i))
+                    elif anm == "array_of_statuses":
+                        tmpl.append("  if ($anm{0} == mpi_statuses_ignore_)".format(i))
+                        tmpl.append("    $anm{0} = mpiabi_statuses_ignore_;".format(i))
+                    else:
+                        assert False
             tmpl.append("  return (* $abi_nm)(")
             for (i, (atp, anm)) in enumerate(args):
                 tmpl.append("    $anm{0},".format(i))
@@ -143,9 +149,15 @@ with open("src/mpi_defn_functions_fortran.h", "w") as file:
                 tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
                 tmpl.append(") {")
                 for (i, (atp, anm)) in enumerate(args):
-                    if atp == "const MPI_Status *" or atp == "MPI_Status *":
-                        tmpl.append("  if ($anm{0} == mpi_status_ignore_)".format(i))
-                        tmpl.append("    $anm{0} = mpiabi_status_ignore_;".format(i))
+                    if "MPI_Status" in atp:
+                        if anm == "status":
+                            tmpl.append("  if ($anm{0} == mpi_status_ignore_)".format(i))
+                            tmpl.append("    $anm{0} = mpiabi_status_ignore_;".format(i))
+                        elif anm == "array_of_statuses":
+                            tmpl.append("  if ($anm{0} == mpi_statuses_ignore_)".format(i))
+                            tmpl.append("    $anm{0} = mpiabi_statuses_ignore_;".format(i))
+                        else:
+                            assert False
                 tmpl.append("  return (* $abi_nm)(")
                 for (i, (atp, anm)) in enumerate(args):
                     tmpl.append("    $anm{0},".format(i))
@@ -159,9 +171,15 @@ with open("src/mpi_defn_functions_fortran.h", "w") as file:
             tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
             tmpl.append(") {")
             for (i, (atp, anm)) in enumerate(args):
-                if atp == "const MPI_Status *" or atp == "MPI_Status *":
-                    tmpl.append("  if ($anm{0} == mpi_status_ignore_)".format(i))
-                    tmpl.append("    $anm{0} = mpiabi_status_ignore_;".format(i))
+                if "MPI_Status" in atp:
+                    if anm == "status":
+                        tmpl.append("  if ($anm{0} == mpi_status_ignore_)".format(i))
+                        tmpl.append("    $anm{0} = mpiabi_status_ignore_;".format(i))
+                    elif anm == "array_of_statuses":
+                        tmpl.append("  if ($anm{0} == mpi_statuses_ignore_)".format(i))
+                        tmpl.append("    $anm{0} = mpiabi_statuses_ignore_;".format(i))
+                    else:
+                        assert False
             tmpl.append("  return (* $abi_nm)(")
             for (i, (atp, anm)) in enumerate(args):
                 tmpl.append("    $anm{0},".format(i))
