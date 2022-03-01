@@ -280,6 +280,11 @@ constants = [
 
     ("MPI_File", "MPI_FILE_NULL"),
 
+    ("MPI_Fint *", "MPI_F_STATUS_IGNORE"),
+    ("MPI_Fint *", "MPI_F_STATUSES_IGNORE"),
+    # ("MPI_F08_status *", "MPI_F08_STATUS_IGNORE"),
+    # ("MPI_F08_status *", "MPI_F08_STATUSES_IGNORE"),
+
     ("MPI_Group", "MPI_GROUP_EMPTY"),
     ("MPI_Group", "MPI_GROUP_NULL"),
 
