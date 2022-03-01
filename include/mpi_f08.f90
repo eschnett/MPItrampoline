@@ -27,8 +27,6 @@ module mpi_f08
      integer :: mpi_error
   end type mpi_status
 
-  logical :: initialized = .false. ! TODO
-
   type(mpi_comm) :: mpi_comm_null
   type(mpi_comm) :: mpi_comm_self
   type(mpi_comm) :: mpi_comm_world
@@ -209,13 +207,6 @@ contains
     
     integer ierror1
     
-    ! TODO
-    if (.not. initialized) then
-       ! print '("error")'
-       do while (.true.)
-       end do
-    end if
-
     call mpi_init(ierror1)
     
     if (present(ierror)) ierror = ierror1
