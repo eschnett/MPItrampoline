@@ -92,6 +92,8 @@
 !     check whether the array is contiguous. This might make a copy, and
 !     thus the sentinel doesn't actually work.
 
+!     TODO: try this with "CONTIGUOUS" attribute
+
 !     integer MPI_STATUS_IGNORE(:)
 !     pointer MPI_STATUS_IGNORE
 !     common /MPI_STATUS_IGNORE/ MPI_STATUS_IGNORE

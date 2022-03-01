@@ -4,6 +4,11 @@ constants_fortran = [
     ("MPI_Fint", "MPI_PROC_NULL"),
     ("MPI_Fint", "MPI_ROOT"),
 
+    ("int", "MPI_CART"),
+    ("int", "MPI_DIST_GRAPH"),
+    ("int", "MPI_GRAPH"),
+
+    # Results of compare operations
     ("MPI_Fint", "MPI_CONGRUENT"),
     ("MPI_Fint", "MPI_IDENT"),
     ("MPI_Fint", "MPI_SIMILAR"),
@@ -13,6 +18,8 @@ constants_fortran = [
     ("MPI_Fint", "MPI_SOURCE"),
     ("MPI_Fint", "MPI_TAG"),
 
+    # Predefined constants
+    ("int", "MPI_BSEND_OVERHEAD"),
     ("MPI_Fint", "MPI_KEYVAL_INVALID"),
     ("MPI_Fint", "MPI_UNDEFINED"),
 
@@ -36,6 +43,9 @@ constants_fortran = [
     ("MPI_Fint", "MPI_COMBINER_SUBARRAY"),
     ("MPI_Fint", "MPI_COMBINER_VECTOR"),
 
+    ("int", "MPI_COMM_TYPE_SHARED"),
+
+    # File operation constants
     ("MPI_Fint", "MPI_DISTRIBUTE_BLOCK"),
     ("MPI_Fint", "MPI_DISTRIBUTE_CYCLIC"),
     ("MPI_Fint", "MPI_DISTRIBUTE_DFLT_DARG"),
@@ -100,6 +110,9 @@ constants_fortran = [
     ("MPI_Fint", "MPI_ERR_WIN"),
     ("MPI_Fint", "MPI_SUCCESS"),
 
+    ("int", "MPI_LOCK_EXCLUSIVE"),
+    ("int", "MPI_LOCK_SHARED"),
+
     ("MPI_Fint", "MPI_MODE_APPEND"),
     ("MPI_Fint", "MPI_MODE_CREATE"),
     ("MPI_Fint", "MPI_MODE_DELETE_ON_CLOSE"),
@@ -115,14 +128,27 @@ constants_fortran = [
     ("MPI_Fint", "MPI_MODE_UNIQUE_OPEN"),
     ("MPI_Fint", "MPI_MODE_WRONLY"),
 
+    # File operation constants
     ("MPI_Fint", "MPI_ORDER_C"),
     ("MPI_Fint", "MPI_ORDER_FORTRAN"),
 
+    # File operation constants
+    ("int", "MPI_SEEK_CUR"),
+    ("int", "MPI_SEEK_END"),
+    ("int", "MPI_SEEK_SET"),
+
+    # Thread support
     ("MPI_Fint", "MPI_THREAD_SINGLE"),
     ("MPI_Fint", "MPI_THREAD_FUNNELED"),
     ("MPI_Fint", "MPI_THREAD_SERIALIZED"),
     ("MPI_Fint", "MPI_THREAD_MULTIPLE"),
 
+    # File operation constants
+    ("int", "MPI_TYPECLASS_COMPLEX"),
+    ("int", "MPI_TYPECLASS_INTEGER"),
+    ("int", "MPI_TYPECLASS_REAL"),
+
+    # Windows
     ("MPI_Fint", "MPI_WIN_FLAVOR_ALLOCATE"),
     ("MPI_Fint", "MPI_WIN_FLAVOR_CREATE"),
     ("MPI_Fint", "MPI_WIN_FLAVOR_DYNAMIC"),
