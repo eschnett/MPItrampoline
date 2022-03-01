@@ -202,7 +202,6 @@ endif()
 
 install(TARGETS mpi EXPORT MPItrampolineTargets)
 if(ENABLE_FORTRAN)
-  #TODO   install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
   install(
     FILES
     ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi.mod
