@@ -77,14 +77,14 @@ module mpi
        integer, intent(out) :: ierror
      end subroutine mpi_send
 
-     subroutine mpi_recv(buf, count, datatype, dest, tag, comm, status, ierror)
+     subroutine mpi_recv(buf, count, datatype, source, tag, comm, status, ierror)
        import mpi_status_size
        implicit none
        !gcc$ attributes no_arg_check :: buf
        integer :: buf(*)
        integer, intent(in) :: count
        integer, intent(in) :: datatype
-       integer, intent(in) :: dest
+       integer, intent(in) :: source
        integer, intent(in) :: tag
        integer, intent(in) :: comm
        integer, intent(out) :: status(mpi_status_size)

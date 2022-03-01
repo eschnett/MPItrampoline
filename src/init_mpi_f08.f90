@@ -12,6 +12,8 @@ subroutine mpitrampoline_init_mpi_f08()
 
   implicit none
 
+  initialized = .true.          ! TODO
+
   mpi_int%mpi_val = mpi_int1
   mpi_integer%mpi_val = mpi_integer1
   

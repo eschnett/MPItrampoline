@@ -25,8 +25,9 @@ module mpi_f08
      integer :: mpi_source
      integer :: mpi_tag
      integer :: mpi_error
-     ! integer :: padding
   end type mpi_status
+
+  logical :: initialized = .false. ! TODO
 
   type(mpi_comm) :: mpi_comm_null
   type(mpi_comm) :: mpi_comm_self
@@ -129,13 +130,13 @@ contains
     if (present(ierror)) ierror = ierror1
   end subroutine mpi_send_impl
   
-  subroutine mpi_recv_impl(buf, count, datatype, dest, tag, comm, status, ierror)
-    use mpi, only: mpi_status_size, mpi_source, mpi_tag, mpi_error, mpi_recv
+  subroutine mpi_recv_impl(buf, count, datatype, source, tag, comm, status, ierror)
+    use mpi, only: mpi_source, mpi_tag, mpi_error, mpi_recv
     !gcc$ attributes no_arg_check :: buf
     type(*) :: buf
     integer, intent(in) :: count
     type(mpi_datatype), intent(in) :: datatype
-    integer, intent(in) :: dest
+    integer, intent(in) :: source
     integer, intent(in) :: tag
     type(mpi_comm), intent(in) :: comm
     type(mpi_status), intent(out) :: status
@@ -143,7 +144,7 @@ contains
     
     integer ierror1
     
-    call mpi_recv(buf, count, datatype%mpi_val, dest, tag, comm%mpi_val, status%mpi_val, ierror1)
+    call mpi_recv(buf, count, datatype%mpi_val, source, tag, comm%mpi_val, status%mpi_val, ierror1)
     
     status%mpi_source = status%mpi_val(mpi_source)
     status%mpi_tag = status%mpi_val(mpi_tag)
@@ -208,6 +209,13 @@ contains
     
     integer ierror1
     
+    ! TODO
+    if (.not. initialized) then
+       ! print '("error")'
+       do while (.true.)
+       end do
+    end if
+
     call mpi_init(ierror1)
     
     if (present(ierror)) ierror = ierror1
