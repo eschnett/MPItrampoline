@@ -2,11 +2,65 @@ module mpi
   implicit none
   save
 
-  private :: dummy
-
   include "mpiabif.h"
 
-  include "mpi_declarations_fortran90.h"
+  integer MPI_VERSION
+  parameter (MPI_VERSION = MPIABI_MPI_VERSION)
+  integer MPI_SUBVERSION
+  parameter (MPI_SUBVERSION = MPIABI_MPI_SUBVERSION)
+
+  integer MPI_MAX_DATAREP_STRING
+  parameter (MPI_MAX_DATAREP_STRING = MPIABI_MAX_DATAREP_STRING)
+  integer MPI_MAX_ERROR_STRING
+  parameter (MPI_MAX_ERROR_STRING = MPIABI_MAX_ERROR_STRING)
+  integer MPI_MAX_INFO_KEY
+  parameter (MPI_MAX_INFO_KEY = MPIABI_MAX_INFO_KEY)
+  integer MPI_MAX_INFO_VAL
+  parameter (MPI_MAX_INFO_VAL = MPIABI_MAX_INFO_VAL)
+  integer MPI_MAX_LIBRARY_VERSION_STRING
+  parameter (MPI_MAX_LIBRARY_VERSION_STRING = MPIABI_MAX_LIBRARY_VERSION_STRING)
+  integer MPI_MAX_OBJECT_NAME
+  parameter (MPI_MAX_OBJECT_NAME = MPIABI_MAX_OBJECT_NAME)
+  integer MPI_MAX_PORT_NAME
+  parameter (MPI_MAX_PORT_NAME = MPIABI_MAX_PORT_NAME)
+  integer MPI_MAX_PROCESSOR_NAME
+  parameter (MPI_MAX_PROCESSOR_NAME = MPIABI_MAX_PROCESSOR_NAME)
+
+  logical MPI_ASYNC_PROTECTS_NONBLOCKING
+  parameter (MPI_ASYNC_PROTECTS_NONBLOCKING = .false.)
+  logical MPI_SUBARRAYS_SUPPORTED
+  parameter (MPI_SUBARRAYS_SUPPORTED = .false.)
+
+  integer MPI_ADDRESS_KIND
+  parameter (MPI_ADDRESS_KIND = MPITRAMPOLINE_SIZEOF_CPTRDIFF_T)
+  integer MPI_COUNT_KIND
+  parameter (MPI_COUNT_KIND = 8)
+  integer MPI_OFFSET_KIND
+  parameter (MPI_OFFSET_KIND = 8)
+
+  integer MPI_STATUS_SIZE
+  parameter (MPI_STATUS_SIZE = MPIABI_STATUS_SIZE)
+
+  character(1) MPI_ARGV_NULL(1)
+  common /MPI_ARGV_NULL/ MPI_ARGV_NULL
+  character(1) MPI_ARGVS_NULL(1, 1)
+  common /MPI_ARGVS_NULL/ MPI_ARGVS_NULL
+
+  integer MPI_BOTTOM
+  common /MPI_BOTTOM/ MPI_BOTTOM
+
+  integer MPI_IN_PLACE
+  common /MPI_IN_PLACE/ MPI_IN_PLACE
+
+  integer MPI_STATUS_IGNORE(MPI_STATUS_SIZE)
+  common /MPI_STATUS_IGNORE/ MPI_STATUS_IGNORE
+  integer MPI_STATUSES_IGNORE(MPI_STATUS_SIZE, 1)
+  common /MPI_STATUSES_IGNORE/ MPI_STATUSES_IGNORE
+
+  integer MPI_UNWEIGHTED(1)
+  common /MPI_UNWEIGHTED/ MPI_UNWEIGHTED
+
+  include "mpi_decl_constants_fortran.h"
 
   ! TOOD: Define types for handles, as in `mpi_f08`
 
@@ -85,15 +139,5 @@ module mpi
        implicit none
      end function mpi_wtick
   end interface
-
-contains
-
-  ! This dummy subroutine calls the dummy function below so that the
-  ! file containing the initializers for the high-level Fortran API
-  ! are run
-  subroutine dummy
-    implicit none
-    call mpitrampoline_fortran_dummy_function
-  end subroutine dummy
 
 end module mpi

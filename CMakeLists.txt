@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 3.7.0
+  MPItrampoline VERSION 3.8.0
   DESCRIPTION "MPI trampoline"
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
   LANGUAGES NONE
@@ -27,133 +27,180 @@ if(ENABLE_FORTRAN)
   endif()
   message(STATUS "Enabling Fortran support")
   enable_language(Fortran)
+  add_compile_definitions(ENABLE_FORTRAN)
 else()
   message(STATUS "Disabling Fortran support")
 endif()
 
 if(ENABLE_FORTRAN)
-  set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/mod_files)
+  set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
 endif()
 
 include(CMakePackageConfigHelpers)
 include(GNUInstallDirs)
 
-configure_file(mpi_version.h.in mpi_version.h @ONLY)
+
+
+configure_file(include/mpi_version.h.in include/mpi_version.h @ONLY)
 install(
-  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_version.h"
+  FILES "${CMAKE_CURRENT_BINARY_DIR}/include/mpi_version.h"
   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-  )
-
-configure_file(mpi_defaults.h.in mpi_defaults.h @ONLY)
-
-add_custom_command(
-  OUTPUT mpi_declarations.h
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_declarations.py >mpi_declarations.h
-  DEPENDS
-  ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_declarations.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_functions.py
-  )
-install(
-  FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_declarations.h"
-  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-  )
-
-add_custom_command(
-  OUTPUT mpi_definitions.h
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_definitions.py >mpi_definitions.h
-  DEPENDS
-  ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_definitions.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_functions.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants_fortran.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_functions_fortran.py
-  )
-
-add_custom_command(
-  OUTPUT mpi_initializations.h
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_initializations.py >mpi_initializations.h
-  DEPENDS
-  ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_initializations.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_functions.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants_fortran.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_functions_fortran.py
   )
 
 if(ENABLE_FORTRAN)
-  add_custom_command(
-    OUTPUT mpi_declarations_fortran.h
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_declarations_fortran.py >mpi_declarations_fortran.h
-    DEPENDS
-    ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_declarations_fortran.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants_fortran.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/mpi_functions_fortran.py
-    )
+  include(CheckTypeSize)
+  check_type_size(ptrdiff_t MPITRAMPOLINE_SIZEOF_CPTRDIFF_T LANGUAGE C)
+  if(${MPITRAMPOLINE_SIZEOF_CPTRDIFF_T} STREQUAL "" OR
+      ${MPITRAMPOLINE_SIZEOF_CPTRDIFF_T} STREQUAL "0")
+    message(FATAL_ERROR "Cannot determine sizeof(ptrdiff_t).")
+  endif()
+
+  configure_file(include/mpif_version.h.in include/mpif_version.h @ONLY)
   install(
-    FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_declarations_fortran.h"
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/include/mpif_version.h"
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
 endif()
 
-if(ENABLE_FORTRAN)
-  add_custom_command(
-    OUTPUT mpi_declarations_fortran90.h
-    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_declarations_fortran90.py >mpi_declarations_fortran90.h
-    DEPENDS
-    ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_declarations_fortran90.py
-    ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants_fortran.py
-    # ${CMAKE_CURRENT_SOURCE_DIR}/mpi_functions_fortran.py
-    )
-  install(
-    FILES "${CMAKE_CURRENT_BINARY_DIR}/mpi_declarations_fortran90.h"
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    )
-endif()
+configure_file(src/mpi_defaults.h.in src/mpi_defaults.h @ONLY)
 
 add_custom_command(
-  OUTPUT mpi_initializations_fortran90.h
-  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_initializations_fortran90.py >mpi_initializations_fortran90.h
+  OUTPUT
+  include/mpi_decl_constants_c.h
+  include/mpi_decl_functions_c.h
+  include/mpi_decl_constants_fortran.h
+  include/mpi_decl_functions_fortran.h
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gen/gen_decl.py
   DEPENDS
-  ${CMAKE_CURRENT_SOURCE_DIR}/generate_mpi_initializations_fortran90.py
-  ${CMAKE_CURRENT_SOURCE_DIR}/mpi_constants_fortran.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/gen/gen_decl.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpiabi/mpi_constants.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpiabi/mpi_functions.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpiabi/mpi_constants_fortran.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpiabi/mpi_functions_fortran.py
+  )
+install(
+  FILES
+  "${CMAKE_CURRENT_BINARY_DIR}/include/mpi_decl_constants_c.h"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/mpi_decl_functions_c.h"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/mpi_decl_constants_fortran.h"
+  "${CMAKE_CURRENT_BINARY_DIR}/include/mpi_decl_functions_fortran.h"
+  DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  )
+
+add_custom_command(
+  OUTPUT
+  src/mpi_defn_constants_c.h
+  src/mpi_defn_functions_c.h
+  src/mpi_defn_constants_fortran.h
+  src/mpi_defn_functions_fortran.h
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gen/gen_defn.py
+  DEPENDS
+  ${CMAKE_CURRENT_SOURCE_DIR}/gen/gen_defn.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpiabi/mpi_constants.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpiabi/mpi_functions.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpiabi/mpi_constants_fortran.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpiabi/mpi_functions_fortran.py
+  )
+
+add_custom_command(
+  OUTPUT
+  src/mpi_init_constants_c.h
+  src/mpi_init_functions_c.h
+  src/mpi_init_constants_fortran.h
+  src/mpi_init_functions_fortran.h
+  COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/gen/gen_init.py
+  DEPENDS
+  ${CMAKE_CURRENT_SOURCE_DIR}/gen/gen_init.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpiabi/mpi_constants.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpiabi/mpi_functions.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpiabi/mpi_constants_fortran.py
+  ${CMAKE_CURRENT_SOURCE_DIR}/mpiabi/mpi_functions_fortran.py
   )
 
 if(ENABLE_FORTRAN)
   add_library(mpi
-    mpiabi.h
-    mpi.c mpi.h mpi_version.h mpi_declarations.h mpio.h mpi_definitions.h mpi_initializations.h
-    mpifort.c
-    mpif.h mpi_declarations_fortran.h
-    mpi.f90 mpi_declarations_fortran90.h mpitrampoline_initialize_fortran90.f90 mpi_initializations_fortran90.h
-    mpi_f08.f90 mpitrampoline_initialize_fortran08.f90
+    # *** C ***
+    # source file
+    src/mpi.c
+    # header files
+    include/mpi.h
+    include/mpio.h
+    mpiabi/mpiabi.h
+    # configured header files
+    include/mpi_version.h
+    # generated header files
+    include/mpi_decl_constants_c.h
+    include/mpi_decl_functions_c.h
+    # generated source files
+    src/mpi_defn_constants_c.h
+    src/mpi_defn_functions_c.h
+    src/mpi_defn_constants_fortran.h
+    src/mpi_defn_functions_fortran.h
+    src/mpi_init_constants_c.h
+    src/mpi_init_functions_c.h
+    src/mpi_init_constants_fortran.h
+    src/mpi_init_functions_fortran.h
+    # *** Fortran ***
+    # source file
+    src/init_mpi_f08.f90
+    # header files
+    include/mpif.h
+    include/mpi.f90
+    include/mpi_f08.f90
+    mpiabi/mpiabif.h
+    # configured header files
+    include/mpif_version.h
+    # generated header files
+    include/mpi_decl_constants_fortran.h
+    include/mpi_decl_functions_fortran.h
     )
-  target_include_directories(mpi PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+  target_include_directories(mpi PRIVATE include mpiabi ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/src)
   target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
   set_target_properties(mpi PROPERTIES
     VERSION ${PROJECT_VERSION}
     # SOVERSION 2.0.0
     # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
-    PUBLIC_HEADER "mpi.h;mpiabi.h;mpio.h;mpif.h;mpiabif.h"
+    PUBLIC_HEADER "include/mpi.h;include/mpio.h;mpiabi/mpiabi.h;include/mpif.h;mpiabi/mpiabif.h"
     )
 else()
   add_library(mpi
-    mpiabi.h
-    mpi.c mpi.h mpi_version.h mpi_declarations.h mpio.h mpi_definitions.h mpi_initializations.h
+    # *** C ***
+    # source file
+    src/mpi.c
+    # header files
+    include/mpi.h
+    include/mpio.h
+    mpiabi/mpiabi.h
+    # configured header files
+    include/mpi_version.h
+    # generated header files
+    include/mpi_decl_constants_c.h
+    include/mpi_decl_functions_c.h
+    # generated source files
+    src/mpi_defn_constants_c.h
+    src/mpi_defn_functions_c.h
+    src/mpi_init_constants_c.h
+    src/mpi_init_functions_c.h
     )
-  target_include_directories(mpi PRIVATE ${CMAKE_CURRENT_BINARY_DIR})
+  target_include_directories(mpi PRIVATE include mpiabi ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/src)
   target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
   set_target_properties(mpi PROPERTIES
     VERSION ${PROJECT_VERSION}
     # SOVERSION 2.0.0
     # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
-    PUBLIC_HEADER "mpi.h;mpiabi.h;mpio.h"
+    PUBLIC_HEADER "include/mpi.h;include/mpio.h;mpiabi/mpiabi.h"
     )
 endif()
 
 install(TARGETS mpi EXPORT MPItrampolineTargets)
 if(ENABLE_FORTRAN)
-  install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY}/ DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  #TODO   install(DIRECTORY ${CMAKE_Fortran_MODULE_DIRECTORY} DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+  install(
+    FILES
+    ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi.mod
+    ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08.mod
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
 endif()
 
 write_basic_package_version_file(
@@ -179,28 +226,33 @@ install(
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
   )
 
-configure_file(mpicc.in mpicc @ONLY)
-if(CMAKE_CXX_COMPILER)
-  configure_file(mpicxx.in mpicxx @ONLY)
-endif()
+configure_file(bin/mpicc.in bin/mpicc @ONLY)
 install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/mpicc ${CMAKE_CURRENT_BINARY_DIR}/mpicxx
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/bin/mpicc
   DESTINATION ${CMAKE_INSTALL_BINDIR}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )
-if(ENABLE_FORTRAN)
-  configure_file(mpifc.in mpifc @ONLY)
-  configure_file(mpifort.in mpifort @ONLY)
+if(CMAKE_CXX_COMPILER)
+  configure_file(bin/mpicxx.in bin/mpicxx @ONLY)
   install(
-    FILES ${CMAKE_CURRENT_BINARY_DIR}/mpifc ${CMAKE_CURRENT_BINARY_DIR}/mpifort
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/bin/mpicxx
+    DESTINATION ${CMAKE_INSTALL_BINDIR}
+    PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+    )
+endif()
+if(ENABLE_FORTRAN)
+  configure_file(bin/mpifc.in bin/mpifc @ONLY)
+  configure_file(bin/mpifort.in bin/mpifort @ONLY)
+  install(
+    FILES ${CMAKE_CURRENT_BINARY_DIR}/bin/mpifc ${CMAKE_CURRENT_BINARY_DIR}/bin/mpifort
     DESTINATION ${CMAKE_INSTALL_BINDIR}
     PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
     )
 endif()
 
-configure_file(mpiexec.in mpiexec @ONLY)
+configure_file(bin/mpiexec.in bin/mpiexec @ONLY)
 install(
-  FILES ${CMAKE_CURRENT_BINARY_DIR}/mpiexec
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/bin/mpiexec
   DESTINATION ${CMAKE_INSTALL_BINDIR}
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
   )

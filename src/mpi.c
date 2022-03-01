@@ -38,9 +38,25 @@ int mpiabi_loaded_version_patch = -1;
 
 ////////////////////////////////////////////////////////////////////////////////
 
-#include "mpi_definitions.h"
+#include "mpi_defn_constants_c.h"
+#include "mpi_defn_functions_c.h"
 
-extern inline int MPI_Pcontrol(int level, ...);
+extern inline int PMPI_Pcontrol(int level, ...);
+int MPI_Pcontrol(int level, ...) { return MPI_SUCCESS; }
+
+#ifdef ENABLE_FORTRAN
+
+#define MPI_FORTRAN_STATUS_SIZE 6
+MPIABI_Fint mpi_status_ignore_[MPI_FORTRAN_STATUS_SIZE];
+MPIABI_Fint mpi_statuses_ignore_[MPI_FORTRAN_STATUS_SIZE];
+MPIABI_Fint *mpiabi_status_ignore_;
+MPIABI_Fint *mpiabi_statuses_ignore_;
+
+#include "mpi_defn_constants_fortran.h"
+#include "mpi_defn_functions_fortran.h"
+
+void mpitrampoline_init_mpi_f08_();
+#endif
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -86,8 +102,7 @@ static void set_mpitrampoline_dir() {
   Dl_info info;
   const int iret = dladdr(&mpiwrapper_version_major, &info);
   if (!iret) {
-    fprintf(stderr,
-            "MPItrampoline: Cannot determine path of libmpitrampoline.so\n");
+    fprintf(stderr, "MPItrampoline: Cannot determine path of mpitrampoline\n");
     exit(1);
   }
   char *const buf = strdup(info.dli_fname);
@@ -100,8 +115,7 @@ static void set_mpitrampoline_dir() {
   }
   mpitrampoline_dir = buf;
   if (verbose)
-    fprintf(stderr,
-            "[MPItrampoline] libmpitrampoline.so is installed in \"%s\"\n",
+    fprintf(stderr, "[MPItrampoline] mpitrampoline is installed in \"%s\"\n",
             mpitrampoline_dir);
 }
 
@@ -477,7 +491,23 @@ void mpitrampoline_init() {
       get_symbol(handle, "mpiwrapper_export_fortran_constants_");
   (*mpiwrapper_export_fortran_constants)();
 
-#include "mpi_initializations.h"
+#include "mpi_init_constants_c.h"
+#include "mpi_init_functions_c.h"
+
+#ifdef ENABLE_FORTRAN
+
+#include "mpi_init_constants_fortran.h"
+#include "mpi_init_functions_fortran.h"
+
+  mpiabi_status_ignore_ =
+      (MPIABI_Fint *)get_symbol(handle, "mpiabi_status_ignore_");
+  mpiabi_statuses_ignore_ =
+      (MPIABI_Fint *)get_symbol(handle, "mpiabi_statuses_ignore_");
+
+  // Set up high-level Fortran constants
+  mpitrampoline_init_mpi_f08_();
+
+#endif
 
   if (verbose) {
     char library_version[MPI_MAX_LIBRARY_VERSION_STRING];

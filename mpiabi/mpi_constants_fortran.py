@@ -4,6 +4,11 @@ constants_fortran = [
     ("MPI_Fint", "MPI_PROC_NULL"),
     ("MPI_Fint", "MPI_ROOT"),
 
+    ("int", "MPI_CART"),
+    ("int", "MPI_DIST_GRAPH"),
+    ("int", "MPI_GRAPH"),
+
+    # Results of compare operations
     ("MPI_Fint", "MPI_CONGRUENT"),
     ("MPI_Fint", "MPI_IDENT"),
     ("MPI_Fint", "MPI_SIMILAR"),
@@ -13,6 +18,8 @@ constants_fortran = [
     ("MPI_Fint", "MPI_SOURCE"),
     ("MPI_Fint", "MPI_TAG"),
 
+    # Predefined constants
+    ("int", "MPI_BSEND_OVERHEAD"),
     ("MPI_Fint", "MPI_KEYVAL_INVALID"),
     ("MPI_Fint", "MPI_UNDEFINED"),
 
@@ -36,6 +43,9 @@ constants_fortran = [
     ("MPI_Fint", "MPI_COMBINER_SUBARRAY"),
     ("MPI_Fint", "MPI_COMBINER_VECTOR"),
 
+    ("int", "MPI_COMM_TYPE_SHARED"),
+
+    # File operation constants
     ("MPI_Fint", "MPI_DISTRIBUTE_BLOCK"),
     ("MPI_Fint", "MPI_DISTRIBUTE_CYCLIC"),
     ("MPI_Fint", "MPI_DISTRIBUTE_DFLT_DARG"),
@@ -100,24 +110,45 @@ constants_fortran = [
     ("MPI_Fint", "MPI_ERR_WIN"),
     ("MPI_Fint", "MPI_SUCCESS"),
 
+    ("int", "MPI_LOCK_EXCLUSIVE"),
+    ("int", "MPI_LOCK_SHARED"),
+
     ("MPI_Fint", "MPI_MODE_APPEND"),
     ("MPI_Fint", "MPI_MODE_CREATE"),
     ("MPI_Fint", "MPI_MODE_DELETE_ON_CLOSE"),
     ("MPI_Fint", "MPI_MODE_EXCL"),
+    ("MPI_Fint", "MPI_MODE_NOCHECK"),
+    ("MPI_Fint", "MPI_MODE_NOPRECEDE"),
+    ("MPI_Fint", "MPI_MODE_NOPUT"),
+    ("MPI_Fint", "MPI_MODE_NOSTORE"),
+    ("MPI_Fint", "MPI_MODE_NOSUCCEED"),
     ("MPI_Fint", "MPI_MODE_RDONLY"),
     ("MPI_Fint", "MPI_MODE_RDWR"),
     ("MPI_Fint", "MPI_MODE_SEQUENTIAL"),
     ("MPI_Fint", "MPI_MODE_UNIQUE_OPEN"),
     ("MPI_Fint", "MPI_MODE_WRONLY"),
 
+    # File operation constants
     ("MPI_Fint", "MPI_ORDER_C"),
     ("MPI_Fint", "MPI_ORDER_FORTRAN"),
 
+    # File operation constants
+    ("int", "MPI_SEEK_CUR"),
+    ("int", "MPI_SEEK_END"),
+    ("int", "MPI_SEEK_SET"),
+
+    # Thread support
     ("MPI_Fint", "MPI_THREAD_SINGLE"),
     ("MPI_Fint", "MPI_THREAD_FUNNELED"),
     ("MPI_Fint", "MPI_THREAD_SERIALIZED"),
     ("MPI_Fint", "MPI_THREAD_MULTIPLE"),
 
+    # File operation constants
+    ("int", "MPI_TYPECLASS_COMPLEX"),
+    ("int", "MPI_TYPECLASS_INTEGER"),
+    ("int", "MPI_TYPECLASS_REAL"),
+
+    # Windows
     ("MPI_Fint", "MPI_WIN_FLAVOR_ALLOCATE"),
     ("MPI_Fint", "MPI_WIN_FLAVOR_CREATE"),
     ("MPI_Fint", "MPI_WIN_FLAVOR_DYNAMIC"),
@@ -151,9 +182,22 @@ constants_fortran = [
     ("MPI_Comm", "MPI_COMM_SELF"),
     ("MPI_Comm", "MPI_COMM_WORLD"),
 
+    # ("MPI_Comm_copy_attr_function *", "MPI_COMM_DUP_FN"),
+    # ("MPI_Comm_copy_attr_function *", "MPI_COMM_NULL_COPY_FN"),
+
+    # ("MPI_Comm_delete_attr_function *", "MPI_COMM_NULL_DELETE_FN"),
+
+    # ("MPI_Copy_function *", "MPI_DUP_FN"),
+    # ("MPI_Copy_function *", "MPI_NULL_COPY_FN"),
+
+    # ("MPI_Datarep_conversion_function *", "MPI_CONVERSION_FN_NULL"),
+
     # ("MPI_Datatype", "MPI_2COMPLEX"),
+    # ("MPI_Datatype", "MPI_2DOUBLE"),
     # ("MPI_Datatype", "MPI_2DOUBLE_COMPLEX"),
     ("MPI_Datatype", "MPI_2DOUBLE_PRECISION"),
+    # ("MPI_Datatype", "MPI_2FLOAT"),
+    ("MPI_Datatype", "MPI_2INT"),
     ("MPI_Datatype", "MPI_2INTEGER"),
     ("MPI_Datatype", "MPI_2REAL"),
     ("MPI_Datatype", "MPI_AINT"),
@@ -175,7 +219,7 @@ constants_fortran = [
     ("MPI_Datatype", "MPI_C_DOUBLE_COMPLEX"),
     ("MPI_Datatype", "MPI_C_FLOAT_COMPLEX"),
     ("MPI_Datatype", "MPI_C_LONG_DOUBLE_COMPLEX"),
-    ("MPI_Datatype", "MPI_Datatype_NULL"),
+    ("MPI_Datatype", "MPI_DATATYPE_NULL"),
     ("MPI_Datatype", "MPI_DOUBLE"),
     ("MPI_Datatype", "MPI_DOUBLE_COMPLEX"),
     ("MPI_Datatype", "MPI_DOUBLE_INT"),
@@ -226,4 +270,58 @@ constants_fortran = [
     ("MPI_Datatype", "MPI_UNSIGNED_LONG_LONG"),
     ("MPI_Datatype", "MPI_UNSIGNED_SHORT"),
     ("MPI_Datatype", "MPI_WCHAR"),
+
+    # ("MPI_Delete_function *", "MPI_NULL_DELETE_FN"),
+
+    ("MPI_Errhandler", "MPI_ERRHANDLER_NULL"),
+    ("MPI_Errhandler", "MPI_ERRORS_ARE_FATAL"),
+    ("MPI_Errhandler", "MPI_ERRORS_RETURN"),
+
+    ("MPI_File", "MPI_FILE_NULL"),
+
+    ("MPI_Group", "MPI_GROUP_EMPTY"),
+    ("MPI_Group", "MPI_GROUP_NULL"),
+
+    ("MPI_Info", "MPI_INFO_ENV"),
+    ("MPI_Info", "MPI_INFO_NULL"),
+
+    ("MPI_Message", "MPI_MESSAGE_NO_PROC"),
+    ("MPI_Message", "MPI_MESSAGE_NULL"),
+
+    # File operation constants
+    ("MPI_Offset", "MPI_DISPLACEMENT_CURRENT"),
+
+    ("MPI_Op", "MPI_BAND"),
+    ("MPI_Op", "MPI_BOR"),
+    ("MPI_Op", "MPI_BXOR"),
+    ("MPI_Op", "MPI_LAND"),
+    ("MPI_Op", "MPI_LOR"),
+    ("MPI_Op", "MPI_LXOR"),
+    ("MPI_Op", "MPI_MAX"),
+    ("MPI_Op", "MPI_MAXLOC"),
+    ("MPI_Op", "MPI_MIN"),
+    ("MPI_Op", "MPI_MINLOC"),
+    ("MPI_Op", "MPI_NO_OP"),
+    ("MPI_Op", "MPI_OP_NULL"),
+    ("MPI_Op", "MPI_PROD"),
+    ("MPI_Op", "MPI_REPLACE"),
+    ("MPI_Op", "MPI_SUM"),
+
+    ("MPI_Request", "MPI_REQUEST_NULL"),
+
+    # These constants are declared manually
+    # ("MPI_Status *", "MPI_STATUS_IGNORE"),
+    # ("MPI_Status *", "MPI_STATUSES_IGNORE"),
+
+    # ("MPI_Type_copy_attr_function *", "MPI_TYPE_DUP_FN"),
+    # ("MPI_Type_copy_attr_function *", "MPI_TYPE_NULL_COPY_FN"),
+
+    # ("MPI_Type_delete_attr_function *", "MPI_TYPE_NULL_DELETE_FN"),
+
+    ("MPI_Win", "MPI_WIN_NULL"),
+
+    # ("MPI_Win_copy_attr_function *", "MPI_WIN_DUP_FN"),
+    # ("MPI_Win_copy_attr_function *", "MPI_WIN_NULL_COPY_FN"),
+
+    # ("MPI_Win_delete_attr_function *", "MPI_WIN_NULL_DELETE_FN"),
 ]

@@ -2128,16 +2128,14 @@ functions = [
 
     # 12.2 Generalized Requests
 
-    #if 0
     # TODO: Handle status correctly
-    ("int", "MPI_Grequest_start", [
-        ("MPI_Grequest_query_function *", "query_fn"),
-        ("MPI_Grequest_free_function *", "free_fn"),
-        ("MPI_Grequest_cancel_function *", "cancel_fn"),
-        ("void *", "extra_state"),
-        ("MPI_Request *", "request"),
-    ], None),
-    #endif
+    # ("int", "MPI_Grequest_start", [
+    #     ("MPI_Grequest_query_function *", "query_fn"),
+    #     ("MPI_Grequest_free_function *", "free_fn"),
+    #     ("MPI_Grequest_cancel_function *", "cancel_fn"),
+    #     ("void *", "extra_state"),
+    #     ("MPI_Request *", "request"),
+    # ], None),
 
     ("int", "MPI_Grequest_complete", [
         ("MPI_Request", "request"),
@@ -2554,16 +2552,14 @@ functions = [
         ("MPI_Aint *", "extent"),
     ], None),
 
-    #if 0
     # TODO: Handle conversions
-    ("int", "MPI_Register_datarep", [
-        ("const char *", "datarep"),
-        ("MPI_Datarep_conversion_function *", "read_conversion_fn"),
-        ("MPI_Datarep_conversion_function *", "write_conversion_fn"),
-        ("MPI_Datarep_extent_function *", "dtype_file_extent_fn"),
-        ("void *", "extra_state"),
-    ], None),
-    #endif
+    # ("int", "MPI_Register_datarep", [
+    #     ("const char *", "datarep"),
+    #     ("MPI_Datarep_conversion_function *", "read_conversion_fn"),
+    #     ("MPI_Datarep_conversion_function *", "write_conversion_fn"),
+    #     ("MPI_Datarep_extent_function *", "dtype_file_extent_fn"),
+    #     ("void *", "extra_state"),
+    # ], None),
 
     # 13.6 Consistency and Semantics
 
