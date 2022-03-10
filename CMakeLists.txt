@@ -28,17 +28,20 @@ if(ENABLE_FORTRAN)
   message(STATUS "Enabling Fortran support")
   enable_language(Fortran)
   include(CheckFortranCompilerFlag)
+  set(extra_fortran_options "")
   check_fortran_compiler_flag(-fallow-argument-mismatch Fortran_flag_allow_argument_mismatch)
   if(Fortran_flag_allow_argument_mismatch)
     # These flags are exported (e.g. to MPItrampoline.pc and mpifc)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fallow-argument-mismatch")
+    list(APPEND extra_fortran_options "-fallow-argument-mismatch")
     # These flags are used to build MPItrampoline itself
-    add_compile_options($<$<COMPILE_LANGUAGE:Fortran>:-fallow-argument-mismatch>)
+    # add_compile_options($<$<COMPILE_LANGUAGE:Fortran>:-fallow-argument-mismatch>)
   endif()
   check_fortran_compiler_flag(-fcray-pointer Fortran_flag_cray_pointer)
   if(Fortran_flag_allow_argument_mismatch)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fcray-pointer")
-    add_compile_options($<$<COMPILE_LANGUAGE:Fortran>:-fcray-pointer>)
+    list(APPEND extra_fortran_options "-fcray-pointer")
+    # add_compile_options($<$<COMPILE_LANGUAGE:Fortran>:-fcray-pointer>)
   endif()
   add_compile_definitions(ENABLE_FORTRAN)
 else()
@@ -192,10 +195,10 @@ if(ENABLE_FORTRAN)
     # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
     PUBLIC_HEADER "include/mpi.h;include/mpio.h;mpiabi/mpiabi.h;include/mpif.h"
     )
-  # set_source_files_properties(
-  #   src/init_mpi_f08.f90 include/mpi.f90 include/mpi_f08.f90
-  #   PROPERTIES COMPILE_OPTIONS "-fallow-argument-mismatch;-fcray-pointer"
-  #   )
+  set_source_files_properties(
+    src/init_mpi_f08.f90 include/mpi.f90 include/mpi_f08.f90
+    PROPERTIES COMPILE_OPTIONS "${extra_fortran_options}"
+    )
 else()
   add_library(mpitrampoline
     # *** C ***
