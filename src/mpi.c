@@ -50,29 +50,29 @@ int MPI_Pcontrol(int level, ...) { return MPI_SUCCESS; }
 
 // extern char mpi_argv_null_[1];
 // extern char mpi_argvs_null_[1][1];
-char **mpitrampoline_argv_null_ptr_;
-char ***mpitrampoline_argvs_null_ptr_;
+char **mpiabi_argv_null_ptr_;
+char ***mpiabi_argvs_null_ptr_;
 
 // extern MPI_Fint mpi_bottom_ptr_;
-MPI_Fint *mpitrampoline_bottom_ptr_;
+MPI_Fint *mpiabi_bottom_ptr_;
 
 // extern MPI_Fint mpi_errcodes_ignore_ptr_;
-MPI_Fint *mpitrampoline_errcodes_ignore_ptr_;
+MPI_Fint *mpiabi_errcodes_ignore_ptr_;
 
 // extern MPIABI_Fint mpi_in_place_ptr_;
-MPI_Fint *mpitrampoline_in_place_ptr_;
+MPI_Fint *mpiabi_in_place_ptr_;
 
 // #define MPI_FORTRAN_STATUS_SIZE 6
 // extern MPIABI_Fint mpi_status_ignore_[MPI_FORTRAN_STATUS_SIZE];
 // extern MPIABI_Fint mpi_statuses_ignore_[MPI_FORTRAN_STATUS_SIZE];
-MPI_Fint *mpitrampoline_status_ignore_ptr_;
-MPI_Fint *mpitrampoline_statuses_ignore_ptr_;
+MPI_Fint *mpiabi_status_ignore_ptr_;
+MPI_Fint *mpiabi_statuses_ignore_ptr_;
 
 // extern MPI_Fint mpi_unweighted_ptr_;
-MPI_Fint *mpitrampoline_unweighted_ptr_;
+MPI_Fint *mpiabi_unweighted_ptr_;
 
 // extern MPI_Fint mpi_weights_empty_ptr_;
-MPI_Fint *mpitrampoline_weights_empty_ptr_;
+MPI_Fint *mpiabi_weights_empty_ptr_;
 
 #include "mpi_defn_constants_fortran.h"
 #include "mpi_defn_functions_fortran.h"
@@ -518,23 +518,20 @@ void mpitrampoline_init() {
 
 #ifdef ENABLE_FORTRAN
 
-  mpitrampoline_argv_null_ptr_ =
-      *(char ***)get_symbol(handle, "mpiabi_argv_null_");
-  mpitrampoline_argvs_null_ptr_ =
-      *(char ****)get_symbol(handle, "mpiabi_argvs_null_");
-  mpitrampoline_bottom_ptr_ =
-      *(MPIABI_Fint **)get_symbol(handle, "mpiabi_bottom_");
-  mpitrampoline_errcodes_ignore_ptr_ =
+  mpiabi_argv_null_ptr_ = *(char ***)get_symbol(handle, "mpiabi_argv_null_");
+  mpiabi_argvs_null_ptr_ = *(char ****)get_symbol(handle, "mpiabi_argvs_null_");
+  mpiabi_bottom_ptr_ = *(MPIABI_Fint **)get_symbol(handle, "mpiabi_bottom_");
+  mpiabi_errcodes_ignore_ptr_ =
       *(MPIABI_Fint **)get_symbol(handle, "mpiabi_errcodes_ignore_");
-  mpitrampoline_in_place_ptr_ =
+  mpiabi_in_place_ptr_ =
       *(MPIABI_Fint **)get_symbol(handle, "mpiabi_in_place_");
-  mpitrampoline_status_ignore_ptr_ =
+  mpiabi_status_ignore_ptr_ =
       *(MPIABI_Fint **)get_symbol(handle, "mpiabi_status_ignore_");
-  mpitrampoline_statuses_ignore_ptr_ =
+  mpiabi_statuses_ignore_ptr_ =
       *(MPIABI_Fint **)get_symbol(handle, "mpiabi_statuses_ignore_");
-  mpitrampoline_unweighted_ptr_ =
+  mpiabi_unweighted_ptr_ =
       *(MPIABI_Fint **)get_symbol(handle, "mpiabi_unweighted_");
-  mpitrampoline_weights_empty_ptr_ =
+  mpiabi_weights_empty_ptr_ =
       *(MPIABI_Fint **)get_symbol(handle, "mpiabi_weights_empty_");
 
 #include "mpi_init_constants_fortran.h"

@@ -95,11 +95,11 @@ with open("include/mpi_decl_constants_fortran.h", "w") as file:
     file.write("\n")
     for (tp, nm) in constants_fortran:
         subs = {'mpi_nm': nm,
-                'mpt_nm': re.sub(r"MPI(X?)_", r"MPI\1trampoline_", nm)}
+                'abi_nm': re.sub(r"MPI(X?)_", r"MPI\1ABI_", nm)}
         tmpl = []
 
         tmpl.append("      integer $mpi_nm")
-        tmpl.append("      common /$mpt_nm/ $mpi_nm")
+        tmpl.append("      common /$abi_nm/ $mpi_nm")
 
         file.write("\n".join(map(lambda line: wrap(Template(line).substitute(subs)), tmpl)))
         file.write("\n")

@@ -94,8 +94,8 @@ with open("src/mpi_defn_constants_fortran.h", "w") as file:
     file.write("\n")
     for (tp, nm) in constants_fortran:
         subs = {'mpi_tp': re.sub(r"MPI(X?)_\w+", r"MPI\1ABI_Fint", tp),
-                'mpt_nm': re.sub(r"MPI(X?)_", r"MPI\1trampoline_", nm).lower() + "_"}
-        file.write(Template("$mpi_tp $mpt_nm;\n").substitute(subs))
+                'abi_nm': re.sub(r"MPI(X?)_", r"MPI\1ABI_", nm).lower() + "_"}
+        file.write(Template("$mpi_tp $abi_nm;\n").substitute(subs))
 
 with open("src/mpi_defn_functions_fortran.h", "w") as file:
     file.write("// Define Fortran MPI functions\n")
