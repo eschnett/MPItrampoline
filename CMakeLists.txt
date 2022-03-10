@@ -32,13 +32,13 @@ if(ENABLE_FORTRAN)
   if(Fortran_flag_allow_argument_mismatch)
     # These flags are exported (e.g. to MPItrampoline.pc and mpifc)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fallow-argument-mismatch")
-    # # These flags are used to build MPItrampoline itself
-    # add_compile_options($<$<COMPILE_LANGUAGE:Fortran>:-fallow-argument-mismatch>)
+    # These flags are used to build MPItrampoline itself
+    add_compile_options($<$<COMPILE_LANGUAGE:Fortran>:-fallow-argument-mismatch>)
   endif()
   check_fortran_compiler_flag(-fcray-pointer Fortran_flag_cray_pointer)
   if(Fortran_flag_allow_argument_mismatch)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fcray-pointer")
-    # add_compile_options($<$<COMPILE_LANGUAGE:Fortran>:-fcray-pointer>)
+    add_compile_options($<$<COMPILE_LANGUAGE:Fortran>:-fcray-pointer>)
   endif()
   add_compile_definitions(ENABLE_FORTRAN)
 else()
@@ -173,14 +173,14 @@ if(ENABLE_FORTRAN)
     include/mpi_decl_constants_fortran.h
     include/mpi_decl_functions_fortran.h
     )
-  target_compile_options(
-    mpitrampoline
-    PUBLIC
-    $<$<COMPILE_LANGUAGE:Fortran>:
-      $<IF:${Fortran_flag_allow_argument_mismatch},-fallow-argument-mismatch,>
-      $<IF:${Fortran_flag_cray_pointer},-fcray-pointer,>
-      >
-    )
+  # target_compile_options(
+  #   mpitrampoline
+  #   PUBLIC
+  #   $<$<COMPILE_LANGUAGE:Fortran>:
+  #     $<IF:${Fortran_flag_allow_argument_mismatch},-fallow-argument-mismatch,>
+  #     $<IF:${Fortran_flag_cray_pointer},-fcray-pointer,>
+  #     >
+  #   )
   target_include_directories(
     mpitrampoline
     PRIVATE include mpiabi ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/src
