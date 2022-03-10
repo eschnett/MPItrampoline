@@ -177,8 +177,8 @@ if(ENABLE_FORTRAN)
     mpitrampoline
     PUBLIC
     $<$<COMPILE_LANGUAGE:Fortran>:
-      $<${Fortran_flag_allow_argument_mismatch}:-fallow-argument-mismatch>
-      $<${Fortran_flag_cray_pointer}:-fcray-pointer>
+      $<IF:${Fortran_flag_allow_argument_mismatch},-fallow-argument-mismatch,>
+      $<IF:${Fortran_flag_cray_pointer},-fcray-pointer,>
       >
     )
   target_include_directories(
