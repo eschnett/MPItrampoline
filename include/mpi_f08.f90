@@ -56,29 +56,29 @@ module mpi_f08
   parameter (MPI_STATUS_SIZE = MPIABI_STATUS_SIZE)
 
   character(1) MPI_ARGV_NULL(1)
-  common /MPI_ARGV_NULL/ MPI_ARGV_NULL
+  common /MPItrampoline_ARGV_NULL/ MPI_ARGV_NULL
   character(1) MPI_ARGVS_NULL(1, 1)
-  common /MPI_ARGVS_NULL/ MPI_ARGVS_NULL
+  common /MPItrampoline_ARGVS_NULL/ MPI_ARGVS_NULL
 
   integer, public :: MPI_BOTTOM
-  common /MPI_BOTTOM/ MPI_BOTTOM
+  common /MPItrampoline_BOTTOM/ MPI_BOTTOM
 
   integer, public :: MPI_ERRCODES_IGNORE(1)
-  common /MPI_ERRCODES_IGNORE/ MPI_ERRCODES_IGNORE
+  common /MPItrampoline_ERRCODES_IGNORE/ MPI_ERRCODES_IGNORE
 
   integer, public :: MPI_IN_PLACE
-  common /MPI_IN_PLACE/ MPI_IN_PLACE
+  common /MPItrampoline_IN_PLACE/ MPI_IN_PLACE
 
   integer, public :: MPI_STATUS_IGNORE(MPI_STATUS_SIZE)
-  common /MPI_STATUS_IGNORE/ MPI_STATUS_IGNORE
+  common /MPItrampoline_STATUS_IGNORE/ MPI_STATUS_IGNORE
   integer, public :: MPI_STATUSES_IGNORE(MPI_STATUS_SIZE, 1)
-  common /MPI_STATUSES_IGNORE/ MPI_STATUSES_IGNORE
+  common /MPItrampoline_STATUSES_IGNORE/ MPI_STATUSES_IGNORE
 
   integer, public :: MPI_UNWEIGHTED(1)
-  common /MPI_UNWEIGHTED/ MPI_UNWEIGHTED
+  common /MPItrampoline_UNWEIGHTED/ MPI_UNWEIGHTED
 
   integer, public :: MPI_WEIGHTS_EMPTY(1)
-  common /MPI_WEIGHTS_EMPTY/ MPI_WEIGHTS_EMPTY
+  common /MPItrampoline_WEIGHTS_EMPTY/ MPI_WEIGHTS_EMPTY
 
   !
 

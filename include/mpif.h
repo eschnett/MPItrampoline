@@ -52,29 +52,29 @@
 !     MPItrampoline.
 
 !     character(1) MPI_ARGV_NULL(1)
-!     common /MPI_ARGV_NULL/ MPI_ARGV_NULL
+!     common /MPItrampoline_ARGV_NULL/ MPI_ARGV_NULL
 !     character(1) MPI_ARGVS_NULL(1, 1)
-!     common /MPI_ARGVS_NULL/ MPI_ARGVS_NULL
+!     common /MPItrampoline_ARGVS_NULL/ MPI_ARGVS_NULL
 !
 !     integer MPI_BOTTOM
-!     common /MPI_BOTTOM/ MPI_BOTTOM
+!     common /MPItrampoline_BOTTOM/ MPI_BOTTOM
 !
 !     integer MPI_ERRCODES_IGNORE(1)
-!     common /MPI_ERRCODES_IGNORE/ MPI_ERRCODES_IGNORE
+!     common /MPItrampoline_ERRCODES_IGNORE/ MPI_ERRCODES_IGNORE
 !
 !     integer MPI_IN_PLACE
-!     common /MPI_IN_PLACE/ MPI_IN_PLACE
+!     common /MPItrampoline_IN_PLACE/ MPI_IN_PLACE
 !
 !     integer MPI_STATUS_IGNORE(MPI_STATUS_SIZE)
-!     common /MPI_STATUS_IGNORE/ MPI_STATUS_IGNORE
+!     common /MPItrampoline_STATUS_IGNORE/ MPI_STATUS_IGNORE
 !     integer MPI_STATUSES_IGNORE(MPI_STATUS_SIZE, 1)
-!     common /MPI_STATUSES_IGNORE/ MPI_STATUSES_IGNORE
+!     common /MPItrampoline_STATUSES_IGNORE/ MPI_STATUSES_IGNORE
 !
 !     integer MPI_UNWEIGHTED(1)
-!     common /MPI_UNWEIGHTED/ MPI_UNWEIGHTED
+!     common /MPItrampoline_UNWEIGHTED/ MPI_UNWEIGHTED
 !
 !     integer MPI_WEIGHTS_EMPTY(1)
-!     common /MPI_WEIGHTS_EMPTY/ MPI_WEIGHTS_EMPTY
+!     common /MPItrampoline_WEIGHTS_EMPTY/ MPI_WEIGHTS_EMPTY
 
 !     Option 2 to handle sentinel values:
 
@@ -85,47 +85,47 @@
       character(1) MPI_ARGV_NULL(1)
       integer(MPI_ADDRESS_KIND) MPI_ARGV_NULL_PTR
       pointer (MPI_ARGV_NULL_PTR, MPI_ARGV_NULL)
-      common /MPI_ARGV_NULL_PTR/ MPI_ARGV_NULL_PTR
+      common /MPItrampoline_ARGV_NULL_PTR/ MPI_ARGV_NULL_PTR
 
       character(1) MPI_ARGVS_NULL(1, 1)
       integer(MPI_ADDRESS_KIND) MPI_ARGVS_NULL_PTR
       pointer (MPI_ARGVS_NULL_PTR, MPI_ARGVS_NULL)
-      common /MPI_ARGVS_NULL_PTR/ MPI_ARGVS_NULL_PTR
+      common /MPItrampoline_ARGVS_NULL_PTR/ MPI_ARGVS_NULL_PTR
  
       integer MPI_BOTTOM
       integer(MPI_ADDRESS_KIND) MPI_BOTTOM_PTR
       pointer (MPI_BOTTOM_PTR, MPI_BOTTOM)
-      common /MPI_BOTTOM_PTR/ MPI_BOTTOM_PTR
+      common /MPItrampoline_BOTTOM_PTR/ MPI_BOTTOM_PTR
  
       integer MPI_ERRCODES_IGNORE(1)
       integer(MPI_ADDRESS_KIND) MPI_ERRCODES_IGNORE_PTR
       pointer (MPI_ERRCODES_IGNORE_PTR, MPI_ERRCODES_IGNORE)
-      common /MPI_ERRCODES_IGNORE_PTR/ MPI_ERRCODES_IGNORE_PTR
+      common /MPItrampoline_ERRCODES_IGNORE_PTR/ MPI_ERRCODES_IGNORE_PTR
  
       integer MPI_IN_PLACE
       integer(MPI_ADDRESS_KIND) MPI_IN_PLACE_PTR
       pointer (MPI_IN_PLACE_PTR, MPI_IN_PLACE)
-      common /MPI_IN_PLACE_PTR/ MPI_IN_PLACE_PTR
+      common /MPItrampoline_IN_PLACE_PTR/ MPI_IN_PLACE_PTR
 
       integer MPI_STATUS_IGNORE(MPI_STATUS_SIZE)
       integer(MPI_ADDRESS_KIND) MPI_STATUS_IGNORE_PTR
       pointer (MPI_STATUS_IGNORE_PTR, MPI_STATUS_IGNORE)
-      common /MPI_STATUS_IGNORE_PTR/ MPI_STATUS_IGNORE_PTR
+      common /MPItrampoline_STATUS_IGNORE_PTR/ MPI_STATUS_IGNORE_PTR
  
       integer MPI_STATUSES_IGNORE(MPI_STATUS_SIZE, 1)
       integer(MPI_ADDRESS_KIND) MPI_STATUSES_IGNORE_PTR
       pointer (MPI_STATUSES_IGNORE_PTR, MPI_STATUSES_IGNORE)
-      common /MPI_STATUSES_IGNORE_PTR/ MPI_STATUSES_IGNORE_PTR
+      common /MPItrampoline_STATUSES_IGNORE_PTR/ MPI_STATUSES_IGNORE_PTR
 
       integer MPI_UNWEIGHTED(1)
       integer(MPI_ADDRESS_KIND) MPI_UNWEIGHTED_PTR
       pointer (MPI_UNWEIGHTED_PTR, MPI_UNWEIGHTED)
-      common /MPI_UNWEIGHTED_PTR/ MPI_UNWEIGHTED_PTR
+      common /MPItrampoline_UNWEIGHTED_PTR/ MPI_UNWEIGHTED_PTR
  
       integer MPI_WEIGHTS_EMPTY(1)
       integer(MPI_ADDRESS_KIND) MPI_WEIGHTS_EMPTY_PTR
       pointer (MPI_WEIGHTS_EMPTY_PTR, MPI_WEIGHTS_EMPTY)
-      common /MPI_WEIGHTS_EMPTY_PTR/ MPI_WEIGHTS_EMPTY_PTR
+      common /MPItrampoline_WEIGHTS_EMPTY_PTR/ MPI_WEIGHTS_EMPTY_PTR
 
 !     Option 3 to handle sentinel values:
 !
@@ -138,11 +138,11 @@
 
 !     integer MPI_STATUS_IGNORE(:)
 !     pointer MPI_STATUS_IGNORE
-!     common /MPI_STATUS_IGNORE/ MPI_STATUS_IGNORE
+!     common /MPItrampoline_STATUS_IGNORE/ MPI_STATUS_IGNORE
 !
 !     integer MPI_STATUSES_IGNORE(:)
 !     pointer MPI_STATUSES_IGNORE
-!     common /MPI_STATUSES_IGNORE/ MPI_STATUSES_IGNORE
+!     common /MPItrampoline_STATUSES_IGNORE/ MPI_STATUSES_IGNORE
 
 !     Most constants and functions
 
