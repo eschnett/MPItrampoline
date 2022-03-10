@@ -29,18 +29,13 @@ if(ENABLE_FORTRAN)
   enable_language(Fortran)
   include(CheckFortranCompilerFlag)
   check_fortran_compiler_flag(-fallow-argument-mismatch Fortran_flag_allow_argument_mismatch)
-  message(STATUS "1 CMAKE_Fortran_FLAGS=${CMAKE_Fortran_FLAGS}")
   if(Fortran_flag_allow_argument_mismatch)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fallow-argument-mismatch")
   endif()
-  message(STATUS "2 CMAKE_Fortran_FLAGS=${CMAKE_Fortran_FLAGS}")
   check_fortran_compiler_flag(-fcray-pointer Fortran_flag_cray_pointer)
   if(Fortran_flag_cray_pointer)
-    message(STATUS "2a CMAKE_Fortran_FLAGS=${CMAKE_Fortran_FLAGS}")
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fcray-pointer")
-    message(STATUS "2b CMAKE_Fortran_FLAGS=${CMAKE_Fortran_FLAGS}")
   endif()
-  message(STATUS "3 CMAKE_Fortran_FLAGS=${CMAKE_Fortran_FLAGS}")
   add_compile_definitions(ENABLE_FORTRAN)
 else()
   message(STATUS "Disabling Fortran support")
@@ -185,9 +180,6 @@ if(ENABLE_FORTRAN)
     # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
     PUBLIC_HEADER "include/mpi.h;include/mpio.h;mpiabi/mpiabi.h;include/mpif.h"
     )
-  #TODO
-  message(STATUS "CMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER}")
-  message(STATUS "CMAKE_Fortran_FLAGS=${CMAKE_Fortran_FLAGS}")
 else()
   add_library(mpitrampoline
     # *** C ***

@@ -26,11 +26,6 @@ jobs:
       run: |
         fortran=$(echo ${{matrix.fortran}} | sed -e 's/fortran-//')
         shared=$(echo ${{matrix.shared}} | sed -e 's/shared-//')
-        which cmake
-        cmake --version
-        echo 'ENV BEGIN'
-        env | sort
-        echo 'ENV END'
         case $RUNNER_OS in
         Linux)
             cmake -B ${{github.workspace}}/build \
@@ -44,6 +39,7 @@ jobs:
             cmake -B ${{github.workspace}}/build \
                 -DENABLE_FORTRAN=${fortran} \
                 -DCMAKE_C_COMPILER=gcc-11 \
+                -DCMAKE_CXX_COMPILER=g++-11 \
                 -DCMAKE_Fortran_COMPILER=gfortran-11 \
                 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
                 -DBUILD_SHARED_LIBS=${shared} \
