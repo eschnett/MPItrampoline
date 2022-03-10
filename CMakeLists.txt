@@ -27,6 +27,7 @@ if(ENABLE_FORTRAN)
   endif()
   message(STATUS "Enabling Fortran support")
   enable_language(Fortran)
+  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fallow-argument-mismatch -fcray-pointer")
   add_compile_definitions(ENABLE_FORTRAN)
 else()
   message(STATUS "Disabling Fortran support")
@@ -124,7 +125,7 @@ add_custom_command(
   )
 
 if(ENABLE_FORTRAN)
-  add_library(mpi
+  add_library(mpitrampoline
     # *** C ***
     # source file
     src/mpi.c
@@ -161,17 +162,22 @@ if(ENABLE_FORTRAN)
     include/mpi_decl_functions_fortran.h
     )
   target_include_directories(
-    mpi
-    PRIVATE include mpiabi ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/src)
-  target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
-  set_target_properties(mpi PROPERTIES
+    mpitrampoline
+    PRIVATE include mpiabi ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/src
+    )
+  target_link_libraries(mpitrampoline PUBLIC ${CMAKE_DL_LIBS})
+  set_target_properties(mpitrampoline PROPERTIES
     VERSION ${PROJECT_VERSION}
     # SOVERSION 2.0.0
     # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
     PUBLIC_HEADER "include/mpi.h;include/mpio.h;mpiabi/mpiabi.h;include/mpif.h"
     )
+  set_source_files_properties(
+    src/init_mpi_f08.f90 include/mpi.f90 include/mpi_f08.f90
+    PROPERTIES COMPILE_OPTIONS "-fallow-argument-mismatch;-fcray-pointer"
+    )
 else()
-  add_library(mpi
+  add_library(mpitrampoline
     # *** C ***
     # source file
     src/mpi.c
@@ -190,9 +196,12 @@ else()
     src/mpi_init_constants_c.h
     src/mpi_init_functions_c.h
     )
-  target_include_directories(mpi PRIVATE include mpiabi ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/src)
-  target_link_libraries(mpi PUBLIC ${CMAKE_DL_LIBS})
-  set_target_properties(mpi PROPERTIES
+  target_include_directories(
+    mpitrampoline
+    PRIVATE include mpiabi ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/src
+    )
+  target_link_libraries(mpitrampoline PUBLIC ${CMAKE_DL_LIBS})
+  set_target_properties(mpitrampoline PROPERTIES
     VERSION ${PROJECT_VERSION}
     # SOVERSION 2.0.0
     # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
@@ -200,7 +209,7 @@ else()
     )
 endif()
 
-install(TARGETS mpi EXPORT MPItrampolineTargets)
+install(TARGETS mpitrampoline EXPORT MPItrampolineTargets)
 if(ENABLE_FORTRAN)
   install(
     FILES

@@ -14,6 +14,7 @@ from mpi_functions_fortran import functions_fortran
 
 support_profiling = True
 have_weak_symbols = False
+replace_sentinels = False
 
 with open("src/mpi_init_constants_c.h", "w") as file:
     file.write("// Initialize C MPI constants")

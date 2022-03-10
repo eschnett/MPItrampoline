@@ -5,7 +5,7 @@
       integer MPIABI_VERSION_MAJOR
       parameter (MPIABI_VERSION_MAJOR = 2)
       integer MPIABI_VERSION_MINOR
-      parameter (MPIABI_VERSION_MINOR = 6)
+      parameter (MPIABI_VERSION_MINOR = 7)
       integer MPIABI_VERSION_PATCH
       parameter (MPIABI_VERSION_PATCH = 0)
 

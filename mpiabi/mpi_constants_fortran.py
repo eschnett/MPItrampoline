@@ -156,27 +156,20 @@ constants_fortran = [
     ("MPI_Fint", "MPI_WIN_SEPARATE"),
     ("MPI_Fint", "MPI_WIN_UNIFIED"),
 
+    # (Declared manually)
     # ("char **", "MPI_ARGV_NULL"),
-    # MPICH: character(len=1), dimension(1), target :: MPI_ARGV_NULL
-    # OpenMPI: character MPI_ARGV_NULL(1)
-
     # ("char ***", "MPI_ARGVS_NULL"),
-    # MPICH: character(len=1), dimension(1,1), target :: MPI_ARGVS_NULL
-    # OpenMPI: character MPI_ARGVS_NULL(1, 1)
 
+    # (Declared manually)
     # ("int *", "MPI_ERRCODES_IGNORE"),
     # ("int *", "MPI_UNWEIGHTED"),
     # ("int *", "MPI_WEIGHTS_EMPTY"),
-    # MPICH:  integer, dimension(1), target :: MPI_UNWEIGHTED
-    # OpenMPI: integer MPI_UNWEIGHTED(1)
 
+    # (Declared manually)
     # ("void *", "MPI_BOTTOM"),
-    # MPICH:  integer(c_int), bind(C, name="MPIR_F08_MPI_BOTTOM"), target :: MPI_BOTTOM
-    # OpenMPI: integer MPI_BOTTOM
 
+    # (Declared manually)
     # ("void *", "MPI_IN_PLACE"),
-    # MPICH:  integer(c_int), bind(C, name="MPIR_F08_MPI_IN_PLACE"), target :: MPI_IN_PLACE
-    # OpenMPI: integer MPI_IN_PLACE
 
     ("MPI_Comm", "MPI_COMM_NULL"),
     ("MPI_Comm", "MPI_COMM_SELF"),
@@ -309,7 +302,7 @@ constants_fortran = [
 
     ("MPI_Request", "MPI_REQUEST_NULL"),
 
-    # These constants are declared manually
+    # (Declared manually)
     # ("MPI_Status *", "MPI_STATUS_IGNORE"),
     # ("MPI_Status *", "MPI_STATUSES_IGNORE"),
 
