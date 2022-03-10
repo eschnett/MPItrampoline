@@ -26,6 +26,8 @@ jobs:
       run: |
         fortran=$(echo ${{matrix.fortran}} | sed -e 's/fortran-//')
         shared=$(echo ${{matrix.shared}} | sed -e 's/shared-//')
+        which cmake
+        cmake --version
         case $RUNNER_OS in
         Linux)
             cmake -B ${{github.workspace}}/build \
