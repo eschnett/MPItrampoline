@@ -180,10 +180,10 @@ if(ENABLE_FORTRAN)
     # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
     PUBLIC_HEADER "include/mpi.h;include/mpio.h;mpiabi/mpiabi.h;include/mpif.h"
     )
-  set_source_files_properties(
-    src/init_mpi_f08.f90 include/mpi.f90 include/mpi_f08.f90
-    PROPERTIES COMPILE_OPTIONS "-fallow-argument-mismatch;-fcray-pointer"
-    )
+  #TODO set_source_files_properties(
+  #TODO   src/init_mpi_f08.f90 include/mpi.f90 include/mpi_f08.f90
+  #TODO   PROPERTIES COMPILE_OPTIONS "-fallow-argument-mismatch;-fcray-pointer"
+  #TODO   )
 else()
   add_library(mpitrampoline
     # *** C ***

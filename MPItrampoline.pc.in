@@ -15,5 +15,5 @@ Libs: -L${libdir} -Wl,-rpath,${libdir} -lmpitrampoline
 Libs.private: -ldl
 
 cxxflags=-I${includedir}
-fflags=-fallow-argument-mismatch -fcray-pointer -I${includedir}
-fcflags=-I${includedir}
+fflags=@CMAKE_Fortran_FLAGS@ -I${includedir}
+fcflags=@CMAKE_Fortran_FLAGS@ -I${includedir}
