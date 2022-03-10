@@ -30,7 +30,7 @@ jobs:
         cmake --version
         echo 'ENV BEGIN'
         env | sort
-        echo 'ENV END
+        echo 'ENV END'
         case $RUNNER_OS in
         Linux)
             cmake -B ${{github.workspace}}/build \
