@@ -4,9 +4,9 @@ constants_fortran = [
     ("MPI_Fint", "MPI_PROC_NULL"),
     ("MPI_Fint", "MPI_ROOT"),
 
-    ("int", "MPI_CART"),
-    ("int", "MPI_DIST_GRAPH"),
-    ("int", "MPI_GRAPH"),
+    ("MPI_Fint", "MPI_CART"),
+    ("MPI_Fint", "MPI_DIST_GRAPH"),
+    ("MPI_Fint", "MPI_GRAPH"),
 
     # Results of compare operations
     ("MPI_Fint", "MPI_CONGRUENT"),
@@ -19,7 +19,7 @@ constants_fortran = [
     ("MPI_Fint", "MPI_TAG"),
 
     # Predefined constants
-    ("int", "MPI_BSEND_OVERHEAD"),
+    ("MPI_Fint", "MPI_BSEND_OVERHEAD"),
     ("MPI_Fint", "MPI_KEYVAL_INVALID"),
     ("MPI_Fint", "MPI_UNDEFINED"),
 
@@ -43,7 +43,7 @@ constants_fortran = [
     ("MPI_Fint", "MPI_COMBINER_SUBARRAY"),
     ("MPI_Fint", "MPI_COMBINER_VECTOR"),
 
-    ("int", "MPI_COMM_TYPE_SHARED"),
+    ("MPI_Fint", "MPI_COMM_TYPE_SHARED"),
 
     # File operation constants
     ("MPI_Fint", "MPI_DISTRIBUTE_BLOCK"),
@@ -110,8 +110,8 @@ constants_fortran = [
     ("MPI_Fint", "MPI_ERR_WIN"),
     ("MPI_Fint", "MPI_SUCCESS"),
 
-    ("int", "MPI_LOCK_EXCLUSIVE"),
-    ("int", "MPI_LOCK_SHARED"),
+    ("MPI_Fint", "MPI_LOCK_EXCLUSIVE"),
+    ("MPI_Fint", "MPI_LOCK_SHARED"),
 
     ("MPI_Fint", "MPI_MODE_APPEND"),
     ("MPI_Fint", "MPI_MODE_CREATE"),
@@ -133,9 +133,9 @@ constants_fortran = [
     ("MPI_Fint", "MPI_ORDER_FORTRAN"),
 
     # File operation constants
-    ("int", "MPI_SEEK_CUR"),
-    ("int", "MPI_SEEK_END"),
-    ("int", "MPI_SEEK_SET"),
+    ("MPI_Fint", "MPI_SEEK_CUR"),
+    ("MPI_Fint", "MPI_SEEK_END"),
+    ("MPI_Fint", "MPI_SEEK_SET"),
 
     # Thread support
     ("MPI_Fint", "MPI_THREAD_SINGLE"),
@@ -144,9 +144,9 @@ constants_fortran = [
     ("MPI_Fint", "MPI_THREAD_MULTIPLE"),
 
     # File operation constants
-    ("int", "MPI_TYPECLASS_COMPLEX"),
-    ("int", "MPI_TYPECLASS_INTEGER"),
-    ("int", "MPI_TYPECLASS_REAL"),
+    ("MPI_Fint", "MPI_TYPECLASS_COMPLEX"),
+    ("MPI_Fint", "MPI_TYPECLASS_INTEGER"),
+    ("MPI_Fint", "MPI_TYPECLASS_REAL"),
 
     # Windows
     ("MPI_Fint", "MPI_WIN_FLAVOR_ALLOCATE"),
