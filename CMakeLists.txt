@@ -181,6 +181,9 @@ if(ENABLE_FORTRAN)
     # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
     PUBLIC_HEADER "include/mpi.h;include/mpio.h;mpiabi/mpiabi.h;include/mpif.h"
     )
+  #TODO
+  message(STATUS "CMAKE_Fortran_COMPILER=${CMAKE_Fortran_COMPILER}")
+  message(STATUS "CMAKE_Fortran_FLAGS=${CMAKE_Fortran_FLAGS}")
 else()
   add_library(mpitrampoline
     # *** C ***
