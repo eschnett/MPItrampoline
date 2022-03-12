@@ -95,7 +95,8 @@ with open("src/mpi_defn_constants_fortran.h", "w") as file:
     for (tp, nm) in constants_fortran:
         subs = {'mpi_tp': re.sub(r"MPI(X?)_\w+", r"MPI\1ABI_Fint", tp),
                 'abi_nm': re.sub(r"MPI(X?)_", r"MPI\1ABI_", nm).lower() + "_"}
-        file.write(Template("$mpi_tp $abi_nm = (int)0xdeadbeef;\n").substitute(subs))
+        # Fortran common blocks with `-march=skylake-avx512` are aligned to 64 bytes
+        file.write(Template("$mpi_tp $abi_nm __attribute__((__aligned__(64))) = (int)0xdeadbeef;\n").substitute(subs))
 
 with open("src/mpi_defn_functions_fortran.h", "w") as file:
     file.write("// Define Fortran MPI functions\n")
