@@ -20,7 +20,7 @@ case "$1" in
         exit 0
         ;;
     -showme:link)
-        echo '-L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
+        echo '-L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpitrampoline -ldl'
         exit 0
         ;;
     -showme:incdirs)
@@ -32,7 +32,7 @@ case "$1" in
         exit 0
         ;;
     -showme:libs)
-        echo '-lmpi -ldl'
+        echo '-lmpitrampoline -ldl'
         exit 0
         ;;
     -showme:version)
@@ -46,9 +46,9 @@ case "$1" in
         exit 0
         ;;
     -show*)
-        echo "$MPITRAMPOLINE_CC $MPITRAMPOLINE_CFLAGS "'-I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpi -ldl'
+        echo "$MPITRAMPOLINE_CC $MPITRAMPOLINE_CFLAGS "'-I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpitrampoline -ldl'
         exit 0
         ;;
 esac
 
-exec $MPITRAMPOLINE_CC $MPITRAMPOLINE_CFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpi -ldl
+exec $MPITRAMPOLINE_CC $MPITRAMPOLINE_CFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpitrampoline -ldl

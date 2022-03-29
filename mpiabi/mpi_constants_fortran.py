@@ -4,9 +4,9 @@ constants_fortran = [
     ("MPI_Fint", "MPI_PROC_NULL"),
     ("MPI_Fint", "MPI_ROOT"),
 
-    ("int", "MPI_CART"),
-    ("int", "MPI_DIST_GRAPH"),
-    ("int", "MPI_GRAPH"),
+    ("MPI_Fint", "MPI_CART"),
+    ("MPI_Fint", "MPI_DIST_GRAPH"),
+    ("MPI_Fint", "MPI_GRAPH"),
 
     # Results of compare operations
     ("MPI_Fint", "MPI_CONGRUENT"),
@@ -19,7 +19,7 @@ constants_fortran = [
     ("MPI_Fint", "MPI_TAG"),
 
     # Predefined constants
-    ("int", "MPI_BSEND_OVERHEAD"),
+    ("MPI_Fint", "MPI_BSEND_OVERHEAD"),
     ("MPI_Fint", "MPI_KEYVAL_INVALID"),
     ("MPI_Fint", "MPI_UNDEFINED"),
 
@@ -43,7 +43,7 @@ constants_fortran = [
     ("MPI_Fint", "MPI_COMBINER_SUBARRAY"),
     ("MPI_Fint", "MPI_COMBINER_VECTOR"),
 
-    ("int", "MPI_COMM_TYPE_SHARED"),
+    ("MPI_Fint", "MPI_COMM_TYPE_SHARED"),
 
     # File operation constants
     ("MPI_Fint", "MPI_DISTRIBUTE_BLOCK"),
@@ -110,8 +110,8 @@ constants_fortran = [
     ("MPI_Fint", "MPI_ERR_WIN"),
     ("MPI_Fint", "MPI_SUCCESS"),
 
-    ("int", "MPI_LOCK_EXCLUSIVE"),
-    ("int", "MPI_LOCK_SHARED"),
+    ("MPI_Fint", "MPI_LOCK_EXCLUSIVE"),
+    ("MPI_Fint", "MPI_LOCK_SHARED"),
 
     ("MPI_Fint", "MPI_MODE_APPEND"),
     ("MPI_Fint", "MPI_MODE_CREATE"),
@@ -133,9 +133,9 @@ constants_fortran = [
     ("MPI_Fint", "MPI_ORDER_FORTRAN"),
 
     # File operation constants
-    ("int", "MPI_SEEK_CUR"),
-    ("int", "MPI_SEEK_END"),
-    ("int", "MPI_SEEK_SET"),
+    ("MPI_Fint", "MPI_SEEK_CUR"),
+    ("MPI_Fint", "MPI_SEEK_END"),
+    ("MPI_Fint", "MPI_SEEK_SET"),
 
     # Thread support
     ("MPI_Fint", "MPI_THREAD_SINGLE"),
@@ -144,9 +144,9 @@ constants_fortran = [
     ("MPI_Fint", "MPI_THREAD_MULTIPLE"),
 
     # File operation constants
-    ("int", "MPI_TYPECLASS_COMPLEX"),
-    ("int", "MPI_TYPECLASS_INTEGER"),
-    ("int", "MPI_TYPECLASS_REAL"),
+    ("MPI_Fint", "MPI_TYPECLASS_COMPLEX"),
+    ("MPI_Fint", "MPI_TYPECLASS_INTEGER"),
+    ("MPI_Fint", "MPI_TYPECLASS_REAL"),
 
     # Windows
     ("MPI_Fint", "MPI_WIN_FLAVOR_ALLOCATE"),
@@ -156,27 +156,20 @@ constants_fortran = [
     ("MPI_Fint", "MPI_WIN_SEPARATE"),
     ("MPI_Fint", "MPI_WIN_UNIFIED"),
 
+    # (Declared manually)
     # ("char **", "MPI_ARGV_NULL"),
-    # MPICH: character(len=1), dimension(1), target :: MPI_ARGV_NULL
-    # OpenMPI: character MPI_ARGV_NULL(1)
-
     # ("char ***", "MPI_ARGVS_NULL"),
-    # MPICH: character(len=1), dimension(1,1), target :: MPI_ARGVS_NULL
-    # OpenMPI: character MPI_ARGVS_NULL(1, 1)
 
+    # (Declared manually)
     # ("int *", "MPI_ERRCODES_IGNORE"),
     # ("int *", "MPI_UNWEIGHTED"),
     # ("int *", "MPI_WEIGHTS_EMPTY"),
-    # MPICH:  integer, dimension(1), target :: MPI_UNWEIGHTED
-    # OpenMPI: integer MPI_UNWEIGHTED(1)
 
+    # (Declared manually)
     # ("void *", "MPI_BOTTOM"),
-    # MPICH:  integer(c_int), bind(C, name="MPIR_F08_MPI_BOTTOM"), target :: MPI_BOTTOM
-    # OpenMPI: integer MPI_BOTTOM
 
+    # (Declared manually)
     # ("void *", "MPI_IN_PLACE"),
-    # MPICH:  integer(c_int), bind(C, name="MPIR_F08_MPI_IN_PLACE"), target :: MPI_IN_PLACE
-    # OpenMPI: integer MPI_IN_PLACE
 
     ("MPI_Comm", "MPI_COMM_NULL"),
     ("MPI_Comm", "MPI_COMM_SELF"),
@@ -309,7 +302,7 @@ constants_fortran = [
 
     ("MPI_Request", "MPI_REQUEST_NULL"),
 
-    # These constants are declared manually
+    # (Declared manually)
     # ("MPI_Status *", "MPI_STATUS_IGNORE"),
     # ("MPI_Status *", "MPI_STATUSES_IGNORE"),
 

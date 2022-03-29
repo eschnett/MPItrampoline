@@ -11,9 +11,9 @@ Version: @PROJECT_VERSION@
 Requires:
 Requires.private:
 Cflags: -I${includedir}
-Libs: -L${libdir} -Wl,-rpath,${libdir} -lmpi
+Libs: -L${libdir} -Wl,-rpath,${libdir} -lmpitrampoline
 Libs.private: -ldl
 
 cxxflags=-I${includedir}
-fflags=-fallow-argument-mismatch -I${includedir}
-fcflags=-I${includedir}
+fflags=@CMAKE_Fortran_FLAGS@ -I${includedir}
+fcflags=@CMAKE_Fortran_FLAGS@ -I${includedir}

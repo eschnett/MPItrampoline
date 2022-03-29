@@ -14,6 +14,7 @@ from mpi_functions_fortran import functions_fortran
 
 support_profiling = True
 have_weak_symbols = False
+replace_sentinels = False
 
 with open("src/mpi_init_constants_c.h", "w") as file:
     file.write("// Initialize C MPI constants")
@@ -43,9 +44,8 @@ with open("src/mpi_init_constants_fortran.h", "w") as file:
     file.write("\n")
     for (tp, nm) in constants_fortran:
         subs = {'abi_tp': re.sub(r"MPI(X?)_\w+", r"MPI\1ABI_Fint", tp),
-                'mpi_nm': nm.lower() + "_",
                 'abi_nm': re.sub(r"MPI(X?)_", r"MPI\1ABI_", nm).lower() + "_"}
-        file.write(Template("$mpi_nm = *($abi_tp const*)get_symbol(handle, \"$abi_nm\");\n").substitute(subs))
+        file.write(Template("$abi_nm = *($abi_tp const*)get_symbol(handle, \"$abi_nm\");\n").substitute(subs))
 
 with open("src/mpi_init_functions_fortran.h", "w") as file:
     file.write("// Initialize Fortran MPI functions\n")
