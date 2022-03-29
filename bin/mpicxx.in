@@ -51,4 +51,29 @@ case "$1" in
         ;;
 esac
 
-exec $MPITRAMPOLINE_CXX $MPITRAMPOLINE_CXXFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpitrampoline -ldl
+# Are we linking?
+linking=true
+for arg in "$@"; do
+    if [ "$arg" = "-E" -o "$arg" = "-c" -o "$arg" = "-S" ]; then
+        linking=false
+        break
+    fi
+done
+
+# Can we use rpath? (The Darwin linker has an '-r' argument that
+# merges object files together. It does not work with '-rpath'.)
+add_rpath=true
+for arg in "$@"; do
+    if [ "$arg" = "-r" -o "$arg" = "-Wl,-r" ]; then
+        add_rpath=false
+        break
+    fi
+done
+
+if !$linking; then
+    exec $MPITRAMPOLINE_CXX $MPITRAMPOLINE_CXXFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ "$@"
+elif !$add_rpath; then
+    exec $MPITRAMPOLINE_CXX $MPITRAMPOLINE_CXXFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpitrampoline -ldl
+else
+    exec $MPITRAMPOLINE_CXX $MPITRAMPOLINE_CXXFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ "$@" -lmpitrampoline -ldl
+fi
