@@ -24,29 +24,29 @@ case "$1" in
         exit 0
         ;;
     -showme:incdirs)
-        echo '@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@'
+        echo "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@"
         exit 0
         ;;
     -showme:libdirs)
-        echo '@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@'
+        echo "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@"
         exit 0
         ;;
     -showme:libs)
-        echo '-lmpitrampoline -ldl'
+        echo "-lmpitrampoline -ldl"
         exit 0
         ;;
     -showme:version)
-        echo '@PROJECT_NAME@ @PROJECT_VERSION@'
-        echo '@PROJECT_DESCRIPTION@'
-        echo '@CMAKE_PROJECT_HOMEPAGE_URL@'
+        echo "@PROJECT_NAME@ @PROJECT_VERSION@"
+        echo "@PROJECT_DESCRIPTION@"
+        echo "@CMAKE_PROJECT_HOMEPAGE_URL@"
         exit 0
         ;;
     -showme:help)
-        echo "$0"' {-showme:{command|compile|link|incdirs|libdirs|libs|version|help}|-show*} args'
+        echo "$0 {-showme:{command|compile|link|incdirs|libdirs|libs|version|help}|-show*} args"
         exit 0
         ;;
     -show*)
-        echo "$MPITRAMPOLINE_FC $MPITRAMPOLINE_FCFLAGS "'-I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpitrampoline -ldl'
+        echo "$MPITRAMPOLINE_FC $MPITRAMPOLINE_FCFLAGS -I@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_INCLUDEDIR@ @LINK_FLAGS@ -L@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -Wl,-rpath,@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_LIBDIR@ -lmpitrampoline -ldl"
         exit 0
         ;;
 esac
