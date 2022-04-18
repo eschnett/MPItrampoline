@@ -54,7 +54,7 @@ esac
 # Are we linking?
 linking=true
 for arg in "$@"; do
-    if [ "$arg" = "-E" -o "$arg" = "-c" -o "$arg" = "-S" ]; then
+    if [ "$arg" = "-E" ] || [ "$arg" = "-c" ] || [ "$arg" = "-S" ]; then
         linking=false
         break
     fi
@@ -64,7 +64,7 @@ done
 # merges object files together. It does not work with '-rpath'.)
 add_rpath=true
 for arg in "$@"; do
-    if [ "$arg" = "-r" -o "$arg" = "-Wl,-r" ]; then
+    if [ "$arg" = "-r" ] || [ "$arg" = "-Wl,-r" ]; then
         add_rpath=false
         break
     fi

@@ -15,7 +15,7 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - name: shellcheck
-      run: shellcheck bin/*
+      run: shellcheck --exclude SC2086 bin/*
   build:
     strategy:
       matrix:
