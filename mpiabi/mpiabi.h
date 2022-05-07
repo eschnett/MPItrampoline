@@ -19,7 +19,7 @@
 // MPI ABI version (we use SemVer)
 
 #define MPIABI_VERSION_MAJOR 2
-#define MPIABI_VERSION_MINOR 7
+#define MPIABI_VERSION_MINOR 8
 #define MPIABI_VERSION_PATCH 0
 
 // Compile-time constants
@@ -40,9 +40,16 @@
 // Simple types
 
 typedef intptr_t MPIABI_Aint;
-typedef int64_t MPIABI_Count;
+typedef intptr_t MPIABI_Count;
 typedef int MPIABI_Fint;
-typedef int64_t MPIABI_Offset;
+typedef intptr_t MPIABI_Offset;
+
+#if defined __STDC_VERSION__ && __STDC_VERSION__ >= 201112L
+static_assert(sizeof(intptr_t) == sizeof(ptrdiff_t), "");
+#endif
+#if defined __cplusplus && __cplusplus >= 201103L
+static_assert(sizeof(intptr_t) == sizeof(ptrdiff_t), "");
+#endif
 
 // Handles
 
