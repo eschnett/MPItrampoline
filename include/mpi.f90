@@ -103,7 +103,7 @@ module mpi
   interface
      subroutine mpi_send(buf, count, datatype, dest, tag, comm, ierror)
        implicit none
-       !dir$ ignore_tkr (tkr) buf
+       !dir$ ignore_tkr(tkr) buf
        !gcc$ attributes no_arg_check :: buf
        integer, intent(in) :: buf(*)
        integer, intent(in) :: count
@@ -117,7 +117,7 @@ module mpi
      subroutine mpi_recv(buf, count, datatype, source, tag, comm, status, ierror)
        import mpi_status_size
        implicit none
-       !dir$ ignore_tkr (tkr) buf
+       !dir$ ignore_tkr(tkr) buf
        !gcc$ attributes no_arg_check :: buf
        integer :: buf(*)
        integer, intent(in) :: count

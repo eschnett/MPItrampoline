@@ -373,7 +373,7 @@ contains
 
   subroutine mpi_send_impl(buf, count, datatype, dest, tag, comm, ierror)
     use mpi, only: mpi_send
-    !dir$ ignore_tkr (tkr) buf
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer, intent(in) :: buf
     integer, intent(in) :: count
@@ -392,7 +392,7 @@ contains
   
   subroutine mpi_recv_impl(buf, count, datatype, source, tag, comm, status, ierror)
     use mpi, only: mpi_source, mpi_tag, mpi_error, mpi_recv
-    !dir$ ignore_tkr (tkr) buf
+    !dir$ ignore_tkr(tkr) buf
     !gcc$ attributes no_arg_check :: buf
     integer :: buf
     integer, intent(in) :: count
