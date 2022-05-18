@@ -86,7 +86,7 @@ static void abort_with_error() {
   fprintf(stderr,
           "MPItrampoline: ERROR: The environment variable "
           "MPITRAMPOLINE_LIB is not set.\n"
-          "MPI functions are be available.\n"
+          "MPI functions are not available.\n"
           "Set MPITRAMPOLINE_LIB to point to a wrapped MPI library.\n"
           "See <https://github.com/eschnett/MPItrampoline> for details.\n");
   exit(1);
