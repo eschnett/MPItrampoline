@@ -48,30 +48,20 @@ int MPI_Pcontrol(int level, ...) { return MPI_SUCCESS; }
 
 // Sentinel values
 
-// extern char mpi_argv_null_[1];
-// extern char mpi_argvs_null_[1][1];
 char **mpiabi_argv_null_ptr_;
 char ***mpiabi_argvs_null_ptr_;
 
-// extern MPI_Fint mpi_bottom_ptr_;
 MPI_Fint *mpiabi_bottom_ptr_;
 
-// extern MPI_Fint mpi_errcodes_ignore_ptr_;
 MPI_Fint *mpiabi_errcodes_ignore_ptr_;
 
-// extern MPIABI_Fint mpi_in_place_ptr_;
 MPI_Fint *mpiabi_in_place_ptr_;
 
-// #define MPI_FORTRAN_STATUS_SIZE 6
-// extern MPIABI_Fint mpi_status_ignore_[MPI_FORTRAN_STATUS_SIZE];
-// extern MPIABI_Fint mpi_statuses_ignore_[MPI_FORTRAN_STATUS_SIZE];
 MPI_Fint *mpiabi_status_ignore_ptr_;
 MPI_Fint *mpiabi_statuses_ignore_ptr_;
 
-// extern MPI_Fint mpi_unweighted_ptr_;
 MPI_Fint *mpiabi_unweighted_ptr_;
 
-// extern MPI_Fint mpi_weights_empty_ptr_;
 MPI_Fint *mpiabi_weights_empty_ptr_;
 
 #include "mpi_defn_constants_fortran.h"
