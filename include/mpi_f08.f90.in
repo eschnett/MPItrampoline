@@ -375,7 +375,7 @@ contains
     use mpi, only: mpi_send
     !dir$ ignore_tkr(tkr) buf
     @GCC_ATTRIBUTES_NO_ARG_CHECK@ !gcc$ attributes no_arg_check :: buf
-    integer, intent(in) :: buf
+    integer, intent(in) :: buf(*)
     integer, intent(in) :: count
     type(mpi_datatype), intent(in) :: datatype
     integer, intent(in) :: dest
@@ -394,7 +394,7 @@ contains
     use mpi, only: mpi_source, mpi_tag, mpi_error, mpi_recv
     !dir$ ignore_tkr(tkr) buf
     @GCC_ATTRIBUTES_NO_ARG_CHECK@ !gcc$ attributes no_arg_check :: buf
-    integer :: buf
+    integer :: buf(*)
     integer, intent(in) :: count
     type(mpi_datatype), intent(in) :: datatype
     integer, intent(in) :: source
