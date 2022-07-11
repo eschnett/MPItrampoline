@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 4.0.2
+  MPItrampoline VERSION 4.1.0
   DESCRIPTION "MPI trampoline"
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
   LANGUAGES NONE
@@ -35,6 +35,21 @@ if(ENABLE_FORTRAN)
   check_fortran_compiler_flag(-fcray-pointer Fortran_flag_cray_pointer)
   if(Fortran_flag_cray_pointer)
     set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fcray-pointer")
+  endif()
+  check_fortran_source_compiles(
+    "
+    end
+    subroutine attr(buf)
+      integer buf
+      !gcc$ attributes no_arg_check :: buf
+    end
+    "
+    Fortran_attribute_gcc_attributes_no_arg_check
+    SRC_EXT f90)
+  if(Fortran_attribute_gcc_attributes_no_arg_check)
+    set(GCC_ATTRIBUTES_NO_ARG_CHECK "") # enabled
+  else()
+    set(GCC_ATTRIBUTES_NO_ARG_CHECK "! ") # disabled
   endif()
   add_compile_definitions(ENABLE_FORTRAN)
 else()
@@ -73,6 +88,18 @@ if(ENABLE_FORTRAN)
   configure_file(include/mpif_version.h.in include/mpif_version.h @ONLY)
   install(
     FILES "${CMAKE_CURRENT_BINARY_DIR}/include/mpif_version.h"
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+
+  configure_file(include/mpi.f90.in include/mpi.f90 @ONLY)
+  install(
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/include/mpi.f90"
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    )
+
+  configure_file(include/mpi_f08.f90.in include/mpi_f08.f90 @ONLY)
+  install(
+    FILES "${CMAKE_CURRENT_BINARY_DIR}/include/mpi_f08.f90"
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
 endif()
