@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 4.1.0
+  MPItrampoline VERSION 4.1.1
   DESCRIPTION "MPI trampoline"
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
   LANGUAGES NONE
@@ -13,6 +13,7 @@ check_language(C)
 if(NOT(CMAKE_C_COMPILER))
   message(FATAL_ERROR "No C support")
 endif()
+set(CMAKE_C_STANDARD 99)
 enable_language(C)
 
 if(NOT(CMAKE_CXX_COMPILER))
