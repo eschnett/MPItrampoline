@@ -41,7 +41,7 @@ int mpiabi_loaded_version_patch = -1;
 #include "mpi_defn_constants_c.h"
 #include "mpi_defn_functions_c.h"
 
-extern inline int PMPI_Pcontrol(int level, ...);
+int PMPI_Pcontrol(int level, ...) { return MPI_SUCCESS; }
 int MPI_Pcontrol(int level, ...) { return MPI_SUCCESS; }
 
 #ifdef ENABLE_FORTRAN
