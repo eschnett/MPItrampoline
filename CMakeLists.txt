@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 4.1.2
+  MPItrampoline VERSION 4.2.0
   DESCRIPTION "MPI trampoline"
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
   LANGUAGES NONE
@@ -269,8 +269,19 @@ install(
   )
 
 configure_file(MPItrampoline.pc.in MPItrampoline.pc @ONLY)
+configure_file(mpi-c.pc.in mpi-c.pc @ONLY)
+configure_file(mpi-cxx.pc.in mpi-cxx.pc @ONLY)
+configure_file(mpi-fort.pc.in mpi-fort.pc @ONLY)
 install(
-  FILES ${CMAKE_BINARY_DIR}/MPItrampoline.pc
+  FILES
+  ${CMAKE_BINARY_DIR}/MPItrampoline.pc
+  ${CMAKE_BINARY_DIR}/mpi-c.pc
+  ${CMAKE_BINARY_DIR}/mpi-cxx.pc
+  ${CMAKE_BINARY_DIR}/mpi-fort.pc
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+  )
+install(
+  FILES ${CMAKE_BINARY_DIR}/mpi-c.pc
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
   )
 

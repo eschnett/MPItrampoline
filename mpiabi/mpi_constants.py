@@ -149,10 +149,10 @@ constants = [
     ("int", "MPI_SEEK_SET"),
 
     # Thread support
-    ("int", "MPI_THREAD_SINGLE"),
     ("int", "MPI_THREAD_FUNNELED"),
-    ("int", "MPI_THREAD_SERIALIZED"),
     ("int", "MPI_THREAD_MULTIPLE"),
+    ("int", "MPI_THREAD_SERIALIZED"),
+    ("int", "MPI_THREAD_SINGLE"),
 
     # File operation constants
     ("int", "MPI_TYPECLASS_COMPLEX"),
