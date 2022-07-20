@@ -70,6 +70,7 @@ else()
 endif()
 
 if(ENABLE_FORTRAN)
+  include_directories(${CMAKE_BINARY_DIR}/include)
   set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
 endif()
 
