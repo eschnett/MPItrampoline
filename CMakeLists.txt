@@ -1,10 +1,21 @@
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 4.2.0
+  MPItrampoline VERSION 4.3.0
   DESCRIPTION "MPI trampoline"
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
   LANGUAGES NONE
   )
+
+# SOVERSION is the ABI version of MPItrampoline. (That's different
+# from the MPI_ABI version.)
+#
+# SOVERSION is handled differently under Linux and macOS. We are using
+# a single-digit SOVERSION to avoid confusion between VERSION (which
+# consists of 3 numbers) and SOVERSION.
+#
+# Different SOVERSIONs are incompatible; there is no need to have a
+# major/minor version number.
+set(SOVERSION 1)
 
 option(ENABLE_FORTRAN "Build Fortran MPI bindings" ON)
 
@@ -204,7 +215,7 @@ if(ENABLE_FORTRAN)
   target_link_libraries(mpitrampoline PUBLIC ${CMAKE_DL_LIBS})
   set_target_properties(mpitrampoline PROPERTIES
     VERSION ${PROJECT_VERSION}
-    # SOVERSION 2.0.0
+    SOVERSION ${SOVERSION}
     # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
     PUBLIC_HEADER "include/mpi.h;include/mpio.h;mpiabi/mpiabi.h;include/mpif.h"
     )
@@ -235,7 +246,7 @@ else()
   target_link_libraries(mpitrampoline PUBLIC ${CMAKE_DL_LIBS})
   set_target_properties(mpitrampoline PROPERTIES
     VERSION ${PROJECT_VERSION}
-    # SOVERSION 2.0.0
+    SOVERSION ${SOVERSION}
     # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
     PUBLIC_HEADER "include/mpi.h;include/mpio.h;mpiabi/mpiabi.h"
     )
