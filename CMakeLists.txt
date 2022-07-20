@@ -59,10 +59,15 @@ if(ENABLE_FORTRAN)
     "
     Fortran_attribute_gcc_attributes_no_arg_check
     SRC_EXT f90)
+  # if(Fortran_attribute_gcc_attributes_no_arg_check)
+  #   set(GCC_ATTRIBUTES_NO_ARG_CHECK "") # enabled
+  # else()
+  #   set(GCC_ATTRIBUTES_NO_ARG_CHECK "! ") # disabled
+  # endif()
   if(Fortran_attribute_gcc_attributes_no_arg_check)
-    set(GCC_ATTRIBUTES_NO_ARG_CHECK "") # enabled
+    add_compile_definitions(GCC_ATTRIBUTES_NO_ARG_CHECK=) # enabled
   else()
-    set(GCC_ATTRIBUTES_NO_ARG_CHECK "! ") # disabled
+    add_compile_definitions(GCC_ATTRIBUTES_NO_ARG_CHECK=!) # disabled
   endif()
   add_compile_definitions(ENABLE_FORTRAN)
 else()
@@ -104,17 +109,17 @@ if(ENABLE_FORTRAN)
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
     )
 
-  configure_file(include/mpi.f90.in include/mpi.f90 @ONLY)
-  install(
-    FILES "${CMAKE_CURRENT_BINARY_DIR}/include/mpi.f90"
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    )
-
-  configure_file(include/mpi_f08.f90.in include/mpi_f08.f90 @ONLY)
-  install(
-    FILES "${CMAKE_CURRENT_BINARY_DIR}/include/mpi_f08.f90"
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
-    )
+  # configure_file(include/mpi.f90.in include/mpi.f90 @ONLY)
+  # install(
+  #   FILES "${CMAKE_CURRENT_BINARY_DIR}/include/mpi.f90"
+  #   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  #   )
+  # 
+  # configure_file(include/mpi_f08.f90.in include/mpi_f08.f90 @ONLY)
+  # install(
+  #   FILES "${CMAKE_CURRENT_BINARY_DIR}/include/mpi_f08.f90"
+  #   DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+  #   )
 endif()
 
 configure_file(src/mpi_defaults.h.in src/mpi_defaults.h @ONLY)
@@ -200,8 +205,8 @@ if(ENABLE_FORTRAN)
     src/init_mpi_f08.f90
     # header files
     include/mpif.h
-    include/mpi.f90
-    include/mpi_f08.f90
+    include/mpi.F90
+    include/mpi_f08.F90
     include/mpiabif.h
     # configured header files
     include/mpif_version.h
@@ -209,7 +214,6 @@ if(ENABLE_FORTRAN)
     include/mpi_decl_constants_fortran.h
     include/mpi_decl_functions_fortran.h
     )
-  set_source_files_properties(src/init_mpi_f08.f90 OBJECT_DEPENDS include/mpi_f08.f90)
   target_include_directories(
     mpitrampoline
     PRIVATE include mpiabi ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/src
