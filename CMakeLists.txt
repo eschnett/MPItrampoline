@@ -15,7 +15,7 @@ project(
 #
 # Different SOVERSIONs are incompatible; there is no need to have a
 # major/minor version number.
-set(SOVERSION 1)
+set(SOVERSION 5)
 
 option(ENABLE_FORTRAN "Build Fortran MPI bindings" ON)
 
