@@ -70,7 +70,6 @@ else()
 endif()
 
 if(ENABLE_FORTRAN)
-  include_directories(${CMAKE_BINARY_DIR}/include)
   set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
 endif()
 
@@ -210,6 +209,7 @@ if(ENABLE_FORTRAN)
     include/mpi_decl_constants_fortran.h
     include/mpi_decl_functions_fortran.h
     )
+  set_source_files_properties(src/init_mpi_f08.f90 OBJECT_DEPENDS include/mpi_f08.f90)
   target_include_directories(
     mpitrampoline
     PRIVATE include mpiabi ${CMAKE_CURRENT_BINARY_DIR}/include ${CMAKE_CURRENT_BINARY_DIR}/src
