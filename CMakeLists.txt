@@ -27,6 +27,7 @@ endif()
 set(CMAKE_C_STANDARD 99)
 enable_language(C)
 
+check_language(CXX)
 if(NOT(CMAKE_CXX_COMPILER))
   message(WARNING "No C++ support")
 endif()
