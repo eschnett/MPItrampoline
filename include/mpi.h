@@ -1,5 +1,5 @@
-#ifndef MPI_H
-#define MPI_H
+#ifndef MPITRAMPOLINE_MPI_H
+#define MPITRAMPOLINE_MPI_H
 
 #include "mpi_version.h"
 
@@ -123,4 +123,4 @@ int MPI_Pcontrol(int level, ...);
 }
 #endif
 
-#endif // #ifndef MPI_H
+#endif // #ifndef MPITRAMPOLINE_MPI_H

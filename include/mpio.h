@@ -1,4 +1,4 @@
-#ifndef MPIO_H
-#define MPIO_H
+#ifndef MPITRAMPOLINE_MPIO_H
+#define MPITRAMPOLINE_MPIO_H
 #include "mpi.h"
-#endif // #ifndef MPIO_H
+#endif // #ifndef MPITRAMPOLINE_MPIO_H
