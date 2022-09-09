@@ -22,7 +22,7 @@ with open("src/mpi_defn_constants_c.h", "w") as file:
     for (tp, nm) in constants:
         subs = {'mpi_tp': tp,
                 'mpi_nm': nm}
-        file.write(Template("$mpi_tp $mpi_nm = (int)0xdeadbeef;\n").substitute(subs))
+        file.write(Template("$mpi_tp $mpi_nm = ($mpi_tp)0xdeadbeef;\n").substitute(subs))
 
 with open("src/mpi_defn_functions_c.h", "w") as file:
     file.write("// Define C MPI functions\n")
