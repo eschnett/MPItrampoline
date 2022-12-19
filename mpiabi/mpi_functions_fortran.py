@@ -398,6 +398,16 @@ functions_fortran = [
         ("MPI_Fint *", "ierror"),
     ]),
 
+    # removed
+    ("void", "MPI_Type_hvector", [
+        ("const MPI_Fint *", "count"),
+        ("const MPI_Fint *", "blocklength"),
+        ("const MPI_Aint *", "stride"),
+        ("const MPI_Datatype *", "oldtype"),
+        ("MPI_Datatype *", "newtype"),
+        ("MPI_Fint *", "ierror"),
+    ]),
+
     ("void", "MPI_Type_indexed", [
         ("const MPI_Fint *", "count"),
         ("const int *", "array_of_blocklengths"),
@@ -408,6 +418,16 @@ functions_fortran = [
     ]),
 
     ("void", "MPI_Type_create_hindexed", [
+        ("const MPI_Fint *", "count"),
+        ("const int *", "array_of_blocklengths"),
+        ("const MPI_Aint *", "array_of_displacements"),
+        ("const MPI_Datatype *", "oldtype"),
+        ("MPI_Datatype *", "newtype"),
+        ("MPI_Fint *", "ierror"),
+    ]),
+
+    # removed
+    ("void", "MPI_Type_hindexed", [
         ("const MPI_Fint *", "count"),
         ("const int *", "array_of_blocklengths"),
         ("const MPI_Aint *", "array_of_displacements"),
@@ -436,8 +456,17 @@ functions_fortran = [
 
     ("void", "MPI_Type_create_struct", [
         ("const MPI_Fint *", "count"),
-        ("const int *", "array_of_blocklengths"),
+        ("const MPI_Fint *", "array_of_blocklengths"),
         ("const MPI_Aint *", "array_of_displacements"),
+        ("const MPI_Datatype *", "array_of_types"),
+        ("MPI_Datatype *", "newtype"),
+    ]),
+
+    # removed
+    ("void", "MPI_Type_struct", [
+        ("const MPI_Fint *", "count"),
+        ("const MPI_Fint *", "array_of_blocklengths"),
+        ("const MPI_Fint *", "array_of_displacements"),
         ("const MPI_Datatype *", "array_of_types"),
         ("MPI_Datatype *", "newtype"),
     ]),
@@ -473,6 +502,13 @@ functions_fortran = [
         ("MPI_Fint *", "ierror"),
     ]),
 
+    # removed
+    ("void", "MPI_address", [
+        ("const void *", "location"),
+        ("MPI_Fint *", "address"),
+        ("MPI_Fint *", "ierror"),
+    ]),
+
     ("MPI_Aint", "MPI_Aint_add", [
         ("const MPI_Aint *", "base"),
         ("const MPI_Aint *", "disp"),
@@ -499,6 +535,27 @@ functions_fortran = [
         ("const MPI_Datatype *", "datatype"),
         ("MPI_Aint *", "lb"),
         ("MPI_Aint *", "extent"),
+        ("MPI_Fint *", "ierror"),
+    ]),
+
+    # removed
+    ("void", "MPI_Type_extent", [
+        ("const MPI_Datatype *", "datatype"),
+        ("MPI_Aint *", "extent"),
+        ("MPI_Fint *", "ierror"),
+    ]),
+
+    # removed
+    ("void", "MPI_Type_lb", [
+        ("const MPI_Datatype *", "datatype"),
+        ("MPI_Aint *", "displacement"),
+        ("MPI_Fint *", "ierror"),
+    ]),
+
+    # removed
+    ("void", "MPI_Type_ub", [
+        ("const MPI_Datatype *", "datatype"),
+        ("MPI_Aint *", "displacement"),
         ("MPI_Fint *", "ierror"),
     ]),
 
@@ -1305,12 +1362,35 @@ functions_fortran = [
         ("MPI_Fint *", "ierror"),
     ]),
 
+    # removed
+    ("void", "MPI_Keyval_create", [
+        ("MPI_Comm_copy_attr_function *", "comm_copy_attr_fn"),
+        ("MPI_Comm_delete_attr_function *", "comm_delete_attr_fn"),
+        ("int *", "comm_keyval"),
+        ("void *", "extra_state"),
+        ("MPI_Fint *", "ierror"),
+    ]),
+
     ("void", "MPI_Comm_free_keyval", [
         ("int *", "comm_keyval"),
         ("MPI_Fint *", "ierror"),
     ]),
 
+    # removed
+    ("void", "MPI_Keyval_free", [
+        ("int *", "comm_keyval"),
+        ("MPI_Fint *", "ierror"),
+    ]),
+
     ("void", "MPI_Comm_set_attr", [
+        ("const MPI_Comm *", "comm"),
+        ("const MPI_Fint *", "comm_keyval"),
+        ("void *", "attribute_val"),
+        ("MPI_Fint *", "ierror"),
+    ]),
+
+    # removed
+    ("void", "MPI_Attr_put", [
         ("const MPI_Comm *", "comm"),
         ("const MPI_Fint *", "comm_keyval"),
         ("void *", "attribute_val"),
@@ -1325,7 +1405,23 @@ functions_fortran = [
         ("MPI_Fint *", "ierror"),
     ]),
 
+    # removed
+    ("void", "MPI_Attr_get", [
+        ("const MPI_Comm *", "comm"),
+        ("const MPI_Fint *", "comm_keyval"),
+        ("void *", "attribute_val"),
+        ("int *", "flag"),
+        ("MPI_Fint *", "ierror"),
+    ]),
+
     ("void", "MPI_Comm_delete_attr", [
+        ("const MPI_Comm *", "comm"),
+        ("const MPI_Fint *", "comm_keyval"),
+        ("MPI_Fint *", "ierror"),
+    ]),
+
+    # removed
+    ("void", "MPI_Attr_delete", [
         ("const MPI_Comm *", "comm"),
         ("const MPI_Fint *", "comm_keyval"),
         ("MPI_Fint *", "ierror"),
@@ -1784,13 +1880,34 @@ functions_fortran = [
         ("MPI_Fint *", "ierror"),
     ]),
 
+    # removed
+    ("void", "MPI_Errhandler_create", [
+        ("MPI_Comm_errhandler_function *", "comm_errhandler_fn"),
+        ("MPI_Errhandler *", "errhandler"),
+        ("MPI_Fint *", "ierror"),
+    ]),
+
     ("void", "MPI_Comm_set_errhandler", [
         ("const MPI_Comm *", "comm"),
         ("const MPI_Errhandler *", "errhandler"),
         ("MPI_Fint *", "ierror"),
     ]),
 
+    # removed
+    ("void", "MPI_Errhandler_set", [
+        ("const MPI_Comm *", "comm"),
+        ("const MPI_Errhandler *", "errhandler"),
+        ("MPI_Fint *", "ierror"),
+    ]),
+
     ("void", "MPI_Comm_get_errhandler", [
+        ("const MPI_Comm *", "comm"),
+        ("MPI_Errhandler *", "errhandler"),
+        ("MPI_Fint *", "ierror"),
+    ]),
+
+    # removed
+    ("void", "MPI_Errhandler_get", [
         ("const MPI_Comm *", "comm"),
         ("MPI_Errhandler *", "errhandler"),
         ("MPI_Fint *", "ierror"),

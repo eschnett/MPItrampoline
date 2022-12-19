@@ -19,7 +19,7 @@
 // MPI ABI version (we use SemVer)
 
 #define MPIABI_VERSION_MAJOR 2
-#define MPIABI_VERSION_MINOR 7
+#define MPIABI_VERSION_MINOR 8
 #define MPIABI_VERSION_PATCH 0
 
 // Compile-time constants
@@ -128,8 +128,14 @@ typedef void MPIABI_Comm_delete_attr_function();
 typedef void MPIABI_Comm_errhandler_function();
 typedef MPIABI_Comm_errhandler_function MPIABI_Comm_errhandler_fn;
 typedef MPIABI_Comm_copy_attr_function MPIABI_Copy_function;
-typedef void MPIABI_Datarep_conversion_function();
-typedef void MPIABI_Datarep_extent_function();
+typedef int MPIABI_Datarep_conversion_function(void *userbuf,
+                                               MPIABI_Datatype datatype,
+                                               int count, void *filebuf,
+                                               MPIABI_Offset position,
+                                               void *extra_state);
+typedef int MPIABI_Datarep_extent_function(MPIABI_Datatype datatype,
+                                           MPIABI_Aint *extent,
+                                           void *extra_state);
 typedef void MPIABI_Delete_function();
 typedef void MPIABI_File_errhandler_function();
 typedef void MPIABI_File_errhandler_fn();

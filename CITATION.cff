@@ -3,7 +3,7 @@ message: "If you use this software, please cite it as below."
 authors:
   - family-names: Schnetter
     given-names: Erik
-    orcid: 0000-0002-4518-9017
+    orcid: https://orcid.org/0000-0002-4518-9017
 title: MPItrampoline
 version: v5.0.2
 doi: 10.5281/zenodo.6174408

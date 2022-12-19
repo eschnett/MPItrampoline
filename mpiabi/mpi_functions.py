@@ -360,6 +360,15 @@ functions = [
         ("MPI_Datatype *", "newtype"),
     ], None),
 
+    # # removed
+    # ("int", "MPI_Type_hvector", [
+    #     ("int", "count"),
+    #     ("int", "blocklength"),
+    #     ("MPI_Aint", "stride"),
+    #     ("MPI_Datatype", "oldtype"),
+    #     ("MPI_Datatype *", "newtype"),
+    # ], None),
+    
     ("int", "MPI_Type_indexed", [
         ("int", "count"),
         ("const int *", "array_of_blocklengths"),
@@ -375,6 +384,15 @@ functions = [
         ("MPI_Datatype", "oldtype"),
         ("MPI_Datatype *", "newtype"),
     ], None),
+
+    # # removed
+    # ("int", "MPI_Type_hindexed", [
+    #     ("int", "count"),
+    #     ("const int *", "array_of_blocklengths"),
+    #     ("const MPI_Aint *", "array_of_displacements"),
+    #     ("MPI_Datatype", "oldtype"),
+    #     ("MPI_Datatype *", "newtype"),
+    # ], None),
 
     ("int", "MPI_Type_create_indexed_block", [
         ("int", "count"),
@@ -393,6 +411,15 @@ functions = [
     ], None),
 
     ("int", "MPI_Type_create_struct", [
+        ("int", "count"),
+        ("const int *", "array_of_blocklengths"),
+        ("const MPI_Aint *", "array_of_displacements"),
+        ("const MPI_Datatype *", "array_of_types"),
+        ("MPI_Datatype *", "newtype"),
+    ], "manual"),
+
+    # removed
+    ("int", "MPI_Type_struct", [
         ("int", "count"),
         ("const int *", "array_of_blocklengths"),
         ("const MPI_Aint *", "array_of_displacements"),
@@ -428,6 +455,12 @@ functions = [
         ("MPI_Aint *", "address"),
     ], None),
 
+    # # removed
+    # ("int", "MPI_address", [
+    #     ("const void *", "location"),
+    #     ("MPI_Aint *", "address"),
+    # ], None),
+
     ("MPI_Aint", "MPI_Aint_add", [
         ("MPI_Aint", "base"),
         ("MPI_Aint", "disp"),
@@ -453,6 +486,24 @@ functions = [
         ("MPI_Aint *", "lb"),
         ("MPI_Aint *", "extent"),
     ], None),
+
+    # # removed
+    # ("int", "MPI_Type_extent", [
+    #     ("MPI_Datatype", "datatype"),
+    #     ("MPI_Aint *", "extent"),
+    # ], None),
+
+    # # removed
+    # ("int", "MPI_Type_lb", [
+    #     ("MPI_Datatype", "datatype"),
+    #     ("MPI_Aint *", "displacement"),
+    # ], None),
+
+    # # removed
+    # ("int", "MPI_Type_ub", [
+    #     ("MPI_Datatype", "datatype"),
+    #     ("MPI_Aint *", "displacement"),
+    # ], None),
 
     ("int", "MPI_Type_get_extent_x", [
         ("MPI_Datatype", "datatype"),
@@ -1175,15 +1226,35 @@ functions = [
         ("void *", "extra_state"),
     ], None),
 
+    # # removed
+    # ("int", "MPI_Keyval_create", [
+    #     ("MPI_Comm_copy_attr_function *", "comm_copy_attr_fn"),
+    #     ("MPI_Comm_delete_attr_function *", "comm_delete_attr_fn"),
+    #     ("int *", "comm_keyval"),
+    #     ("void *", "extra_state"),
+    # ], None),
+
     ("int", "MPI_Comm_free_keyval", [
         ("int *", "comm_keyval"),
     ], None),
+
+    # # removed
+    # ("int", "MPI_Keyval_free", [
+    #     ("int *", "comm_keyval"),
+    # ], None),
 
     ("int", "MPI_Comm_set_attr", [
         ("MPI_Comm", "comm"),
         ("int", "comm_keyval"),
         ("void *", "attribute_val"),
     ], None),
+
+    # # removed
+    # ("int", "MPI_Attr_put", [
+    #     ("MPI_Comm", "comm"),
+    #     ("int", "comm_keyval"),
+    #     ("void *", "attribute_val"),
+    # ], None),
 
     ("int", "MPI_Comm_get_attr", [
         ("MPI_Comm", "comm"),
@@ -1192,10 +1263,24 @@ functions = [
         ("int *", "flag"),
     ], None),
 
+    # # removed
+    # ("int", "MPI_Attr_get", [
+    #     ("MPI_Comm", "comm"),
+    #     ("int", "comm_keyval"),
+    #     ("void *", "attribute_val"),
+    #     ("int *", "flag"),
+    # ], None),
+
     ("int", "MPI_Comm_delete_attr", [
         ("MPI_Comm", "comm"),
         ("int", "comm_keyval"),
     ], None),
+
+    # # removed
+    # ("int", "MPI_Attr_delete", [
+    #     ("MPI_Comm", "comm"),
+    #     ("int", "comm_keyval"),
+    # ], None),
 
     ("int", "MPI_Win_create_keyval", [
         ("MPI_Win_copy_attr_function *", "win_copy_attr_fn"),
@@ -1601,15 +1686,34 @@ functions = [
         ("MPI_Errhandler *", "errhandler"),
     ], None),
 
+    # # remove
+    # ("int", "MPI_Errhandler_create", [
+    #     ("MPI_Comm_errhandler_function *", "comm_errhandler_fn"),
+    #     ("MPI_Errhandler *", "errhandler"),
+    # ], None),
+
     ("int", "MPI_Comm_set_errhandler", [
         ("MPI_Comm", "comm"),
         ("MPI_Errhandler", "errhandler"),
     ], None),
 
+
+    # # removed
+    # ("int", "MPI_errhandler_set", [
+    #     ("MPI_Comm", "comm"),
+    #     ("MPI_Errhandler", "errhandler"),
+    # ], None),
+
     ("int", "MPI_Comm_get_errhandler", [
         ("MPI_Comm", "comm"),
         ("MPI_Errhandler *", "errhandler"),
     ], None),
+
+    # # removed
+    # ("int", "MPI_Errhandler_get", [
+    #     ("MPI_Comm", "comm"),
+    #     ("MPI_Errhandler *", "errhandler"),
+    # ], None),
 
     ("int", "MPI_Win_create_errhandler", [
         ("MPI_Win_errhandler_function *", "win_errhandler_fn"),
@@ -2552,14 +2656,13 @@ functions = [
         ("MPI_Aint *", "extent"),
     ], None),
 
-    # TODO: Handle conversions
-    # ("int", "MPI_Register_datarep", [
-    #     ("const char *", "datarep"),
-    #     ("MPI_Datarep_conversion_function *", "read_conversion_fn"),
-    #     ("MPI_Datarep_conversion_function *", "write_conversion_fn"),
-    #     ("MPI_Datarep_extent_function *", "dtype_file_extent_fn"),
-    #     ("void *", "extra_state"),
-    # ], None),
+    ("int", "MPI_Register_datarep", [
+        ("const char *", "datarep"),
+        ("MPI_Datarep_conversion_function *", "read_conversion_fn"),
+        ("MPI_Datarep_conversion_function *", "write_conversion_fn"),
+        ("MPI_Datarep_extent_function *", "dtype_file_extent_fn"),
+        ("void *", "extra_state"),
+    ], "manual"),
 
     # 13.6 Consistency and Semantics
 
