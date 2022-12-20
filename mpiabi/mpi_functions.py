@@ -2232,14 +2232,13 @@ functions = [
 
     # 12.2 Generalized Requests
 
-    # TODO: Handle status correctly
-    # ("int", "MPI_Grequest_start", [
-    #     ("MPI_Grequest_query_function *", "query_fn"),
-    #     ("MPI_Grequest_free_function *", "free_fn"),
-    #     ("MPI_Grequest_cancel_function *", "cancel_fn"),
-    #     ("void *", "extra_state"),
-    #     ("MPI_Request *", "request"),
-    # ], None),
+    ("int", "MPI_Grequest_start", [
+        ("MPI_Grequest_query_function *", "query_fn"),
+        ("MPI_Grequest_free_function *", "free_fn"),
+        ("MPI_Grequest_cancel_function *", "cancel_fn"),
+        ("void *", "extra_state"),
+        ("MPI_Request *", "request"),
+    ], "manual"),
 
     ("int", "MPI_Grequest_complete", [
         ("MPI_Request", "request"),

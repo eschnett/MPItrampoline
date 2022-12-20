@@ -139,9 +139,10 @@ typedef int MPIABI_Datarep_extent_function(MPIABI_Datatype datatype,
 typedef void MPIABI_Delete_function();
 typedef void MPIABI_File_errhandler_function();
 typedef void MPIABI_File_errhandler_fn();
-typedef void MPIABI_Grequest_cancel_function();
-typedef void MPIABI_Grequest_free_function();
-typedef void MPIABI_Grequest_query_function();
+typedef int MPIABI_Grequest_cancel_function(void *extra_state, int complete);
+typedef int MPIABI_Grequest_free_function(void *extra_state);
+typedef int MPIABI_Grequest_query_function(void *extra_state,
+                                           MPIABI_Status *status);
 typedef void MPIABI_Type_copy_attr_function();
 typedef void MPIABI_Type_delete_attr_function();
 typedef void MPIABI_User_function();
