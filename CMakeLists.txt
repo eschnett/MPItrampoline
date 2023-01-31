@@ -1,6 +1,6 @@
 cmake_minimum_required(VERSION 3.12...3.20)
 project(
-  MPItrampoline VERSION 5.2.0
+  MPItrampoline VERSION 5.2.1
   DESCRIPTION "MPI trampoline"
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
   LANGUAGES NONE
@@ -54,16 +54,26 @@ if(ENABLE_FORTRAN)
     end
     subroutine attr(buf)
       integer buf
+      !dir$ ignore_tkr(tkr) buf
+    end
+    "
+    Fortran_attribute_dir_ignore_tkr
+    SRC_EXT f90)
+  if(Fortran_attribute_dir_ignore_tkr)
+    add_compile_definitions(DIR_IGNORE_TKR=) # enabled
+  else()
+    add_compile_definitions(DIR_IGNORE_TKR=!) # disabled
+  endif()
+  check_fortran_source_compiles(
+    "
+    end
+    subroutine attr(buf)
+      integer buf
       !gcc$ attributes no_arg_check :: buf
     end
     "
     Fortran_attribute_gcc_attributes_no_arg_check
     SRC_EXT f90)
-  # if(Fortran_attribute_gcc_attributes_no_arg_check)
-  #   set(GCC_ATTRIBUTES_NO_ARG_CHECK "") # enabled
-  # else()
-  #   set(GCC_ATTRIBUTES_NO_ARG_CHECK "! ") # disabled
-  # endif()
   if(Fortran_attribute_gcc_attributes_no_arg_check)
     add_compile_definitions(GCC_ATTRIBUTES_NO_ARG_CHECK=) # enabled
   else()
