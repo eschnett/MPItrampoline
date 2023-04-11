@@ -680,6 +680,7 @@ functions_fortran = [
         ("const MPI_Aint *", "outsize"),
         ("MPI_Aint *", "position"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "datarep_len"),
     ]),
 
     ("void", "MPI_Unpack_external", [
@@ -691,6 +692,7 @@ functions_fortran = [
         ("const MPI_Fint *", "outcount"),
         ("const MPI_Datatype *", "datatype"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "datarep_len"),
     ]),
 
     ("void", "MPI_Pack_external_size", [
@@ -699,6 +701,7 @@ functions_fortran = [
         ("const MPI_Datatype *", "datatype"),
         ("MPI_Aint *", "size"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "datarep_len"),
     ]),
 
     # 5.3 Barrier Synchronization
@@ -1501,6 +1504,7 @@ functions_fortran = [
         ("const MPI_Comm *", "comm"),
         ("const char *", "comm_name"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "comm_name_len"),
     ]),
 
     ("void", "MPI_Comm_get_name", [
@@ -1508,12 +1512,14 @@ functions_fortran = [
         ("char *", "comm_name"),
         ("int *", "resultlen"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "comm_name_len"),
     ]),
 
     ("void", "MPI_Type_set_name", [
         ("const MPI_Datatype *", "type"),
         ("const char *", "type_name"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "type_name_len"),
     ]),
 
     ("void", "MPI_Type_get_name", [
@@ -1521,12 +1527,14 @@ functions_fortran = [
         ("char *", "type_name"),
         ("int *", "resultlen"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "type_name_len"),
     ]),
 
     ("void", "MPI_Win_set_name", [
         ("const MPI_Win *", "win"),
         ("const char *", "win_name"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "win_name_len"),
     ]),
 
     ("void", "MPI_Win_get_name", [
@@ -1534,6 +1542,7 @@ functions_fortran = [
         ("char *", "win_name"),
         ("int *", "resultlen"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "win_name_len"),
     ]),
 
     # 7.5 Topology Constructors
@@ -1850,12 +1859,15 @@ functions_fortran = [
     ("void", "MPI_Get_library_version",[
         ("char *", "version"),
         ("int *", "resultlen"),
+        ("MPI_Fint *", "ierror"),
+        ("const size_t *", "version_len"),
     ]),
 
     ("void", "MPI_Get_processor_name", [
         ("char *", "name"),
         ("int *", "resultlen"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "name_len"),
     ]),
 
     # 8.2 Memory Allocation
@@ -1959,6 +1971,7 @@ functions_fortran = [
         ("char *", "string"),
         ("int *", "resultlen"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "string_len"),
     ]),
 
     # 8.4 Error Codes and Classes
@@ -1986,6 +1999,7 @@ functions_fortran = [
         ("const MPI_Fint *", "errorcode"),
         ("const char *", "string"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "string_len"),
     ]),
 
     ("void", "MPI_Comm_call_errhandler", [
@@ -2017,8 +2031,8 @@ functions_fortran = [
     # 8.7 Startup
 
     ("void", "MPI_Init", [
-        ("int *", "argc"),
-        ("char ***", "argv"),
+        # ("int *", "argc"),
+        # ("char ***", "argv"),
         ("MPI_Fint *", "ierror"),
     ]),
 
@@ -2052,12 +2066,15 @@ functions_fortran = [
         ("const char *", "key"),
         ("const char *", "value"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "key_len"),
+        ("const size_t *", "value_len"),
     ]),
 
     ("void", "MPI_Info_delete", [
         ("const MPI_Info *", "info"),
         ("const char *", "key"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "key_len"),
     ]),
 
     ("void", "MPI_Info_get", [
@@ -2067,6 +2084,8 @@ functions_fortran = [
         ("char *", "value"),
         ("int *", "flag"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "key_len"),
+        ("const size_t *", "value_len"),
     ]),
 
     ("void", "MPI_Info_get_valuelen", [
@@ -2075,6 +2094,7 @@ functions_fortran = [
         ("int *", "valuelen"),
         ("int *", "flag"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "key_len"),
     ]),
 
     ("void", "MPI_Info_get_nkeys", [
@@ -2088,6 +2108,7 @@ functions_fortran = [
         ("const MPI_Fint *", "n"),
         ("char *", "key"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "key_len"),
     ]),
 
     ("void", "MPI_Info_dup", [
@@ -2113,6 +2134,8 @@ functions_fortran = [
         ("MPI_Comm *", "intercomm"),
         ("int *", "array_off_errcodes"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "command_len"),
+        ("const size_t *", "argv_len"),
     ]),
 
     ("void", "MPI_Comm_get_parent", [
@@ -2130,6 +2153,9 @@ functions_fortran = [
         ("const MPI_Comm *", "comm"),
         ("MPI_Comm *", "intercomm"),
         ("int *", "array_of_errcodes"),
+        ("MPI_Fint *", "ierror"),
+        ("const size_t *", "arrray_of_commands_len"),
+        ("const size_t *", "arrray_of_argv_len"),
     ]),
 
     # 10.4 Establishing Communication
@@ -2138,11 +2164,13 @@ functions_fortran = [
         ("const MPI_Info *", "info"),
         ("char *", "port_name"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "port_name_len"),
     ]),
 
     ("void", "MPI_Close_port", [
         ("const char *", "port_name"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "port_name_len"),
     ]),
 
     ("void", "MPI_Comm_accept", [
@@ -2152,6 +2180,7 @@ functions_fortran = [
         ("const MPI_Comm *", "comm"),
         ("MPI_Comm *", "newcomm"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "port_name_len"),
     ]),
 
     ("void", "MPI_Comm_connect", [
@@ -2161,6 +2190,7 @@ functions_fortran = [
         ("const MPI_Comm *", "comm"),
         ("MPI_Comm *", "newcomm"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "port_name_len"),
     ]),
 
     ("void", "MPI_Publish_name", [
@@ -2168,6 +2198,8 @@ functions_fortran = [
         ("const MPI_Info *", "info"),
         ("const char *", "port_name"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "service_name_len"),
+        ("const size_t *", "port_name_len"),
     ]),
 
     ("void", "MPI_Unpublish_name", [
@@ -2175,6 +2207,8 @@ functions_fortran = [
         ("const MPI_Info *", "info"),
         ("const char *", "port_name"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "service_name_len"),
+        ("const size_t *", "port_name_len"),
     ]),
 
     ("void", "MPI_Lookup_name", [
@@ -2182,6 +2216,8 @@ functions_fortran = [
         ("const MPI_Info *", "info"),
         ("char *", "port_name"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "service_name_len"),
+        ("const size_t *", "port_name_len"),
     ]),
 
     # 10.5 Other Functionality
@@ -2547,8 +2583,8 @@ functions_fortran = [
     # 12.4 MPI and Threads
 
     ("void", "MPI_Init_thread", [
-        ("int *", "argc"),
-        ("char * * *", "argv"),
+        # ("int *", "argc"),
+        # ("char ***", "argv"),
         ("const MPI_Fint *", "required"),
         ("int *", "provided"),
         ("MPI_Fint *", "ierror"),
@@ -2573,6 +2609,7 @@ functions_fortran = [
         ("const MPI_Info *", "info"),
         ("MPI_File *", "fh"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "filename_len"),
     ]),
 
     ("void", "MPI_File_close", [
@@ -2584,6 +2621,7 @@ functions_fortran = [
         ("const char *", "filename"),
         ("const MPI_Info *", "info"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "filename_len"),
     ]),
 
     ("void", "MPI_File_set_size", [
@@ -2638,6 +2676,7 @@ functions_fortran = [
         ("const char *", "datarep"),
         ("const MPI_Info *", "info"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "datarep_len"),
     ]),
 
     ("void", "MPI_File_get_view", [
@@ -2647,6 +2686,7 @@ functions_fortran = [
         ("MPI_Datatype *", "filetype"),
         ("char *", "datarep"),
         ("MPI_Fint *", "ierror"),
+        ("const size_t *", "datarep_len"),
     ]),
 
     # 13.4 Data Access
