@@ -1,6 +1,26 @@
 #define _GNU_SOURCE
 #define MPITRAMPOLINE_CONST
 
+// Wrap functions that can be called before MPItrampoline is initialized
+#define MPI_Finalized MPItrampoline_Finalized
+#define MPI_Get_library_version MPItrampoline_Get_library_version
+#define MPI_Get_version MPItrampoline_Get_version
+#define MPI_Initialized MPItrampoline_Initialized
+#define PMPI_Finalized PMPItrampoline_Finalized
+#define PMPI_Get_library_version PMPItrampoline_Get_library_version
+#define PMPI_Get_version PMPItrampoline_Get_version
+#define PMPI_Initialized PMPItrampoline_Initialized
+#ifdef ENABLE_FORTRAN
+#define mpi_finalized_ mpitrampoline_finalized_
+#define mpi_get_library_version_ mpitrampoline_get_library_version_
+#define mpi_get_version_ mpitrampoline_get_version_
+#define mpi_initialized_ mpitrampoline_initialized_
+#define pmpi_finalized_ pmpitrampoline_finalized_
+#define pmpi_get_library_version_ pmpitrampoline_get_library_version_
+#define pmpi_get_version_ pmpitrampoline_get_version_
+#define pmpi_initialized_ pmpitrampoline_initialized_
+#endif
+
 #include "mpi.h"
 #include "mpi_defaults.h"
 
@@ -36,13 +56,175 @@ int mpiabi_loaded_version_major = -1;
 int mpiabi_loaded_version_minor = -1;
 int mpiabi_loaded_version_patch = -1;
 
+static bool did_init_mpitrampoline = false;
+
 ////////////////////////////////////////////////////////////////////////////////
 
 #include "mpi_defn_constants_c.h"
 #include "mpi_defn_functions_c.h"
 
-int PMPI_Pcontrol(int level, ...) { return MPI_SUCCESS; }
+// Wrap functions that can be called before MPItrampoline is initialized
+#undef MPI_Finalized
+#undef MPI_Get_library_version
+#undef MPI_Get_version
+#undef MPI_Initialized
+#undef PMPI_Finalized
+#undef PMPI_Get_library_version
+#undef PMPI_Get_version
+#undef PMPI_Initialized
+#ifdef ENABLE_FORTRAN
+#undef mpi_finalized_
+#undef mpi_get_library_version_
+#undef mpi_get_version_
+#undef mpi_initialized_
+#undef pmpi_finalized_
+#undef pmpi_get_library_version_
+#undef pmpi_get_version_
+#undef pmpi_initialized_
+#endif
+
+int MPI_Finalized(int *flag) {
+  if (did_init_mpitrampoline)
+    return MPItrampoline_Finalized(flag);
+  *flag = 0;
+  return MPI_SUCCESS;
+}
+int PMPI_Finalized(int *flag) {
+  if (did_init_mpitrampoline)
+    return PMPItrampoline_Finalized(flag);
+  return MPI_Finalized(flag);
+}
+
+int MPI_Get_library_version(char *version, int *resultlen) {
+  if (did_init_mpitrampoline)
+    return MPItrampoline_Get_library_version(version, resultlen);
+  *resultlen =
+      snprintf(version, MPI_MAX_LIBRARY_VERSION_STRING,
+               "MPItrampoline %d.%d.%d, requiring MPI ABI %d.%d.%d, waiting "
+               "for manual initialization",
+               MPITRAMPOLINE_VERSION_MAJOR, MPITRAMPOLINE_VERSION_MINOR,
+               MPITRAMPOLINE_VERSION_PATCH, MPIABI_VERSION_MAJOR,
+               MPIABI_VERSION_MINOR, MPIABI_VERSION_PATCH);
+  return MPI_SUCCESS;
+}
+int PMPI_Get_library_version(char *version, int *resultlen) {
+  if (did_init_mpitrampoline)
+    return PMPItrampoline_Get_library_version(version, resultlen);
+  return MPI_Get_library_version(version, resultlen);
+}
+
+int MPI_Get_version(int *version, int *subversion) {
+  if (did_init_mpitrampoline)
+    return MPItrampoline_Get_version(version, subversion);
+  *version = MPI_VERSION;
+  *subversion = MPI_SUBVERSION;
+  return MPI_SUCCESS;
+}
+int PMPI_Get_version(int *version, int *subversion) {
+  if (did_init_mpitrampoline)
+    return PMPItrampoline_Get_version(version, subversion);
+  return MPI_Get_version(version, subversion);
+}
+
+int MPI_Initialized(int *flag) {
+  if (did_init_mpitrampoline)
+    return MPItrampoline_Initialized(flag);
+  *flag = 0;
+  return MPI_SUCCESS;
+}
+int PMPI_Initialized(int *flag) {
+  if (did_init_mpitrampoline)
+    return PMPItrampoline_Initialized(flag);
+  return MPI_Initialized(flag);
+}
+
+#ifdef ENABLE_FORTRAN
+
+void mpitrampoline_finalized_(int *flag, MPIABI_Fint *ierror);
+void mpi_finalized_(int *restrict flag, MPIABI_Fint *restrict ierror) {
+  if (did_init_mpitrampoline)
+    return mpitrampoline_finalized_(flag, ierror);
+  *flag = 0;
+  *ierror = MPI_SUCCESS;
+}
+void pmpi_finalized_(int *flag, MPIABI_Fint *ierror) {
+  mpi_finalized_(flag, ierror);
+}
+
+void mpitrampoline_get_library_version_(char *version, int *resultlen,
+                                        MPIABI_Fint *ierror,
+                                        size_t version_len);
+void mpi_get_library_version_(char *restrict version, int *restrict resultlen,
+                              MPIABI_Fint *restrict ierror,
+                              size_t version_len) {
+  if (did_init_mpitrampoline)
+    return mpitrampoline_get_library_version_(version, resultlen, ierror,
+                                              version_len);
+  *resultlen =
+      snprintf(version, version_len,
+               "MPItrampoline %d.%d.%d, requiring MPI ABI %d.%d.%d, waiting "
+               "for manual initialization",
+               MPITRAMPOLINE_VERSION_MAJOR, MPITRAMPOLINE_VERSION_MINOR,
+               MPITRAMPOLINE_VERSION_PATCH, MPIABI_VERSION_MAJOR,
+               MPIABI_VERSION_MINOR, MPIABI_VERSION_PATCH);
+  if (*resultlen >= version_len)
+    *resultlen = version_len - 1;
+  memset(version + *resultlen, ' ', version_len - *resultlen);
+  *ierror = MPI_SUCCESS;
+}
+void pmpi_get_library_version_(char *version, int *resultlen,
+                               MPIABI_Fint *ierror, size_t version_len) {
+  mpi_get_library_version_(version, resultlen, ierror, version_len);
+}
+
+void mpitrampoline_get_version_(int *version, int *subversion,
+                                MPIABI_Fint *ierror);
+void mpi_get_version_(int *restrict version, int *restrict subversion,
+                      MPIABI_Fint *restrict ierror) {
+  if (did_init_mpitrampoline)
+    return mpitrampoline_get_version_(version, subversion, ierror);
+  *version = MPI_VERSION;
+  *subversion = MPI_SUBVERSION;
+  *ierror = MPI_SUCCESS;
+}
+void pmpi_get_version_(int *version, int *subversion, MPIABI_Fint *ierror) {
+  mpi_get_version_(version, subversion, ierror);
+}
+
+void mpitrampoline_initialized_(int *flag, MPIABI_Fint *ierror);
+void mpi_initialized_(int *restrict flag, MPIABI_Fint *restrict ierror) {
+  if (did_init_mpitrampoline)
+    return mpitrampoline_initialized_(flag, ierror);
+  *flag = 0;
+  *ierror = MPI_SUCCESS;
+}
+void pmpi_initialized_(int *flag, MPIABI_Fint *ierror) {
+  mpi_initialized_(flag, ierror);
+}
+
+#endif
+
+#define MPI_Finalized MPItrampoline_Finalized
+#define MPI_Get_library_version MPItrampoline_Get_library_version
+#define MPI_Get_version MPItrampoline_Get_version
+#define MPI_Initialized MPItrampoline_Initialized
+#define PMPI_Finalized PMPItrampoline_Finalized
+#define PMPI_Get_library_version PMPItrampoline_Get_library_version
+#define PMPI_Get_version PMPItrampoline_Get_version
+#define PMPI_Initialized PMPItrampoline_Initialized
+#ifdef ENABLE_FORTRAN
+#define mpi_finalized_ mpitrampoline_finalized_
+#define mpi_get_library_version_ mpitrampoline_get_library_version_
+#define mpi_get_version_ mpitrampoline_get_version_
+#define mpi_initialized_ mpitrampoline_initialized_
+#define pmpi_finalized_ pmpitrampoline_finalized_
+#define pmpi_get_library_version_ pmpitrampoline_get_library_version_
+#define pmpi_get_version_ pmpitrampoline_get_version_
+#define pmpi_initialized_ pmpitrampoline_initialized_
+#endif
+
 int MPI_Pcontrol(int level, ...) { return MPI_SUCCESS; }
+int PMPI_Pcontrol(int level, ...) { return MPI_SUCCESS; }
 
 #ifdef ENABLE_FORTRAN
 
@@ -371,7 +553,6 @@ static void *get_symbol(void *handle, const char *name) {
 
 void mpitrampoline_init() {
   // Ensure that the library is initialized only once
-  static bool did_init_mpitrampoline = false;
   if (did_init_mpitrampoline)
     return;
   did_init_mpitrampoline = true;
