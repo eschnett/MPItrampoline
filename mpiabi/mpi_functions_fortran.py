@@ -158,6 +158,7 @@ functions_fortran = [
         ("MPI_Request *", "array_of_requests"),
         ("int *", "index"),
         ("MPI_Status *", "status"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     ("void", "MPI_Testany", [
@@ -166,12 +167,14 @@ functions_fortran = [
         ("int *", "index"),
         ("int *", "flag"),
         ("MPI_Status *", "status"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     ("void", "MPI_Waitall", [
         ("const MPI_Fint *", "count"),
         ("MPI_Request *", "array_of_requests"),
         ("MPI_Status *", "array_of_statuses"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     ("void", "MPI_Testall", [
@@ -179,6 +182,7 @@ functions_fortran = [
         ("MPI_Request *", "array_of_requests"),
         ("int *", "flag"),
         ("MPI_Status *", "array_of_statuses"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     ("void", "MPI_Waitsome", [
@@ -187,6 +191,7 @@ functions_fortran = [
         ("int *", "outcount"),
         ("int *", "array_of_indices"),
         ("MPI_Status *", "array_of_statuses"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     ("void", "MPI_Testsome", [
@@ -195,6 +200,7 @@ functions_fortran = [
         ("int *", "outcount"),
         ("int *", "array_of_indices"),
         ("MPI_Status *", "array_of_statuses"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     ("void", "MPI_Request_get_status", [
@@ -336,6 +342,7 @@ functions_fortran = [
     ("void", "MPI_Startall", [
         ("const MPI_Fint *", "count"),
         ("MPI_Request *", "array_of_requests"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     # 3.10 Send-Receive
@@ -460,6 +467,7 @@ functions_fortran = [
         ("const MPI_Aint *", "array_of_displacements"),
         ("const MPI_Datatype *", "array_of_types"),
         ("MPI_Datatype *", "newtype"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     # removed
@@ -469,6 +477,7 @@ functions_fortran = [
         ("const MPI_Fint *", "array_of_displacements"),
         ("const MPI_Datatype *", "array_of_types"),
         ("MPI_Datatype *", "newtype"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     ("void", "MPI_Type_create_subarray", [
@@ -512,11 +521,13 @@ functions_fortran = [
     ("MPI_Aint", "MPI_Aint_add", [
         ("const MPI_Aint *", "base"),
         ("const MPI_Aint *", "disp"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     ("MPI_Aint", "MPI_Aint_diff", [
         ("const MPI_Aint *", "addr1"),
         ("const MPI_Aint *", "addr2"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     ("void", "MPI_Type_size", [
@@ -635,6 +646,7 @@ functions_fortran = [
         ("int *", "array_of_integers"),
         ("MPI_Aint *", "array_of_addresses"),
         ("MPI_Datatype *", "array_of_datatypes"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     # 4.2 Pack and Unpack
@@ -837,6 +849,7 @@ functions_fortran = [
         ("const int *", "rdispls"),
         ("const MPI_Datatype *", "recvtypes"),
         ("const MPI_Comm *", "comm"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     # 5.9 Global Reduction Operations
@@ -856,10 +869,12 @@ functions_fortran = [
         ("MPI_User_function *", "user_fn"),
         ("const MPI_Fint *", "commute"),
         ("MPI_Op *", "op"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     ("void", "MPI_Op_free", [
         ("MPI_Op *", "op"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     ("void", "MPI_Allreduce", [
@@ -1065,6 +1080,7 @@ functions_fortran = [
         ("const MPI_Datatype *", "recvtypes"),
         ("const MPI_Comm *", "comm"),
         ("MPI_Request *", "request"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     ("void", "MPI_Ireduce", [
@@ -1780,6 +1796,7 @@ functions_fortran = [
         ("const MPI_Aint *", "rdispls"),
         ("const MPI_Datatype *", "recvtypes"),
         ("const MPI_Comm *", "comm"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     # 7.7 Nonblocking Neighborhood Communication on Process Topologies
@@ -1846,6 +1863,7 @@ functions_fortran = [
         ("const MPI_Datatype *", "recvtypes"),
         ("const MPI_Comm *", "comm"),
         ("MPI_Request *", "request"),
+        ("MPI_Fint *", "ierror"),
     ]),
 
     # 8.1 Implementation Information
