@@ -11,22 +11,22 @@ env:
 
 jobs:
   shellcheck:
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
     - name: shellcheck
       run: shellcheck --exclude SC2086 bin/*
   build:
     strategy:
       matrix:
-        os: [ubuntu-20.04, macos-11]
+        os: [ubuntu-22.04, macos-12]
         fortran: [fortran-off, fortran-on]
         shared: [shared-off, shared-on]
 
     runs-on: ${{matrix.os}}
 
     steps:
-    - uses: actions/checkout@v3
+    - uses: actions/checkout@v4
 
     - name: Configure
       run: |
@@ -41,12 +41,12 @@ jobs:
                 -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
             ;;
         macOS)
-            # Use GCC-11 from Homebrew
+            # Use GCC-12 from Homebrew
             cmake -B ${{github.workspace}}/build \
                 -DENABLE_FORTRAN=${fortran} \
-                -DCMAKE_C_COMPILER=gcc-11 \
-                -DCMAKE_CXX_COMPILER=g++-11 \
-                -DCMAKE_Fortran_COMPILER=gfortran-11 \
+                -DCMAKE_C_COMPILER=gcc-12 \
+                -DCMAKE_CXX_COMPILER=g++-12 \
+                -DCMAKE_Fortran_COMPILER=gfortran-12 \
                 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
                 -DBUILD_SHARED_LIBS=${shared} \
                 -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
