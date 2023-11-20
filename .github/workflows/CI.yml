@@ -21,13 +21,6 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
-    - name: Restore dependencies
-      id: cache-restore
-      uses: actions/cache/restore@v3
-      with:
-        path: /usr/local
-        key: ${{runner.os}}-${{matrix.mpi}}-dependencies
-
     - name: Install ${{matrix.mpi}}
       run: |
         case "${{matrix.mpi}}" in
@@ -36,16 +29,32 @@ jobs:
                 sudo apt-get install libmpich-dev
                 ;;
             OpenMPI)
+                ;;
+        esac
+
+    - name: Restore dependencies
+      id: cache
+      uses: actions/cache/restore@v3
+      with:
+        path: /usr/local
+        key: ${{runner.os}}-${{matrix.mpi}}-dependencies
+
+    - name: Build ${{matrix.mpi}}
+      if: steps.cache.outputs.cache-hit != 'true'
+      run: |
+        case "${{matrix.mpi}}" in
+            MPICH)
+                ;;
+            OpenMPI)
                 ./.github/workflows/install-openmpi.sh
                 ;;
         esac
 
     - name: Save dependencies
-      id: cache-save
       uses: actions/cache/save@v3
       with:
         path: /usr/local
-        key: ${{steps.cache-restore.outputs.cache-primary-key}}
+        key: ${{steps.cache.cache-primary-key}}
 
     - name: Configure
       run: |
