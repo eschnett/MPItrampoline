@@ -22,7 +22,7 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Restore dependencies
-      id: cache-restore-${{matrix.mpi}}
+      id: cache-restore
       uses: actions/cache/restore@v3
       with:
         path: /usr/local
@@ -41,11 +41,11 @@ jobs:
         esac
 
     - name: Save dependencies
-      id: cache-save-${{matrix.mpi}}
+      id: cache-save
       uses: actions/cache/save@v3
       with:
         path: /usr/local
-        key: ${{steps.cache-restore-${{matrix.mpi}}.outputs.cache-primary-key}}
+        key: ${{steps.cache-restore.outputs.cache-primary-key}}
 
     - name: Configure
       run: |
