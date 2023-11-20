@@ -7,4 +7,4 @@ tar xjf openmpi-5.0.0.tar.bz2
 cd openmpi-5.0.0
 ./configure
 make -j$(nproc)
-make install
+sudo make install

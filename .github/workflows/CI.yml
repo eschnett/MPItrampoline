@@ -21,6 +21,13 @@ jobs:
     steps:
     - uses: actions/checkout@v4
 
+    - name: Restore dependencies
+      id: cache-restore-${{matrix.mpi}}
+      uses: actions/cache/restore@v3
+      with:
+        path: /usr/local
+        key: ${{runner.os}}-${{matrix.mpi}}-dependencies
+
     - name: Install ${{matrix.mpi}}
       run: |
         case "${{matrix.mpi}}" in
@@ -32,6 +39,13 @@ jobs:
                 ./.github/workflows/install-openmpi.sh
                 ;;
         esac
+
+    - name: Save dependencies
+      id: cache-save-${{matrix.mpi}}
+      uses: actions/cache/save@v3
+      with:
+        path: /usr/local
+        key: ${{steps.cache-restore-${{matrix.mpi}}.outputs.cache-primary-key}}
 
     - name: Configure
       run: |
