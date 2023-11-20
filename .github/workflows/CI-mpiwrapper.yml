@@ -1,0 +1,54 @@
+name: CI-mpiwrapper
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+env:
+  BUILD_TYPE: Debug
+
+jobs:
+  shellcheck:
+    runs-on: ubuntu-22.04
+    steps:
+    - uses: actions/checkout@v4
+    - name: shellcheck
+      run: shellcheck --exclude SC2086 bin/*
+  build:
+    strategy:
+      matrix:
+        os: [ubuntu-22.04]
+        mpi: [MPICH, OpenMPI]
+
+    runs-on: ${{matrix.os}}
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Install ${{matrix.mpi}}
+      run: |
+        case "${{matrix.mpi}}" in
+            MPICH) packages=libmpich-dev;;
+            OpenMPI) packages=libopenmpi-dev;;
+        esac
+        sudo apt-get update
+        sudo apt-get install $packages
+
+    - name: Configure
+      run: |
+        cmake \
+            -B ${{github.workspace}}/build \
+            -DCMAKE_C_COMPILER=mpicc \
+            -DCMAKE_INSTALL_PREFIX=$HOME/mpiwrapper-${{matrix.mpi}}
+
+    - name: Build
+      run: cmake --build ${{github.workspace}}/build --verbose
+
+    # - name: Test
+    #   working-directory: ${{github.workspace}}/build
+    #   run: ctest -C ${{env.BUILD_TYPE}}
+
+    - name: Install
+      run: cmake --install ${{github.workspace}}/build
