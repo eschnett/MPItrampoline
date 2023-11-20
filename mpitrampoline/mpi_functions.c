@@ -257,8 +257,7 @@ extern inline int MPI_Pack_external_c(const char datarep[], const void *inbuf,
                                       MPI_Count *position);
 extern inline int MPI_Pack_external_size(const char datarep[],
                                          MPI_Count incount,
-                                         MPI_Datatype datatype,
-                                         MPI_Count *size);
+                                         MPI_Datatype datatype, MPI_Aint *size);
 extern inline int MPI_Pack_external_size_c(const char datarep[],
                                            MPI_Count incount,
                                            MPI_Datatype datatype,
@@ -290,7 +289,7 @@ MPI_Type_create_hindexed(int count, const int array_of_blocklengths[],
                          MPI_Datatype oldtype, MPI_Datatype *newtype);
 extern inline int
 MPI_Type_create_hindexed_block(int count, int blocklength,
-                               const int array_of_displacements[],
+                               const MPI_Aint array_of_displacements[],
                                MPI_Datatype oldtype, MPI_Datatype *newtype);
 extern inline int
 MPI_Type_create_hindexed_block_c(MPI_Count count, MPI_Count blocklength,
@@ -1833,5 +1832,7 @@ extern inline int MPI_Type_size_x(MPI_Datatype datatype, MPI_Count *size);
 extern inline int MPIX_Query_cuda_support();
 
 extern inline int MPIX_Query_hip_support();
+
+extern inline int MPIX_Query_rocm_support();
 
 extern inline int MPIX_Query_ze_support();

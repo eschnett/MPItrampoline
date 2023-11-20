@@ -559,7 +559,7 @@ inline int MPI_Pack_external_size(const char datarep[], MPI_Count incount,
 }
 
 inline int MPI_Pack_external_size_c(const char datarep[], MPI_Count incount,
-                                    MPI_Datatype datatype, MPI_Count *size) {
+                                    MPI_Datatype datatype, MPI_Aint *size) {
   return MPIABI_Pack_external_size_c(datarep, incount, datatype, size);
 }
 
@@ -614,10 +614,10 @@ inline int MPI_Type_create_hindexed(int count,
                                      array_of_displacements, oldtype, newtype);
 }
 
-inline int MPI_Type_create_hindexed_block(int count, int blocklength,
-                                          const int array_of_displacements[],
-                                          MPI_Datatype oldtype,
-                                          MPI_Datatype *newtype) {
+inline int
+MPI_Type_create_hindexed_block(int count, int blocklength,
+                               const MPI_Aint array_of_displacements[],
+                               MPI_Datatype oldtype, MPI_Datatype *newtype) {
   return MPIABI_Type_create_hindexed_block(
       count, blocklength, array_of_displacements, oldtype, newtype);
 }
@@ -3837,6 +3837,8 @@ inline int MPI_Type_size_x(MPI_Datatype datatype, MPI_Count *size) {
 inline int MPIX_Query_cuda_support() { return MPIXABI_Query_cuda_support(); }
 
 inline int MPIX_Query_hip_support() { return MPIXABI_Query_hip_support(); }
+
+inline int MPIX_Query_rocm_support() { return MPIXABI_Query_rocm_support(); }
 
 inline int MPIX_Query_ze_support() { return MPIXABI_Query_ze_support(); }
 

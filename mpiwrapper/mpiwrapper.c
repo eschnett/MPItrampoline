@@ -1,6 +1,9 @@
 #include "mpiabi.h"
 
 #include <mpi.h>
+#ifdef HAVE_MPI_EXT_H
+#include <mpi-ext.h>
+#endif
 
 #include <assert.h>
 #include <stdbool.h>
@@ -404,6 +407,25 @@ static MPIABI_Datatype mpi2abi_datatype(MPI_Datatype datatype) {
   if (datatype == MPI_UB)
     return MPIABI_UB;
   return (MPIABI_Datatype)(uintptr_t)datatype;
+}
+
+static MPI_Info abi2mpi_info(MPIABI_Info info) {
+  switch ((uintptr_t)info) {
+  case (uintptr_t)MPIABI_INFO_ENV:
+    return MPI_INFO_ENV;
+  case (uintptr_t)MPIABI_INFO_NULL:
+    return MPI_INFO_NULL;
+  default:
+    return (MPI_Info)(uintptr_t)info;
+  }
+}
+
+static MPIABI_Info mpi2abi_info(MPI_Info info) {
+  if (info == MPI_INFO_ENV)
+    return MPIABI_INFO_ENV;
+  if (info == MPI_INFO_NULL)
+    return MPIABI_INFO_NULL;
+  return (MPIABI_Info)(uintptr_t)info;
 }
 
 static MPI_Message abi2mpi_message(MPIABI_Message message) {
@@ -1095,8 +1117,7 @@ int MPIABI_Request_free(MPIABI_Request *request) {
 int MPIABI_Request_get_status(MPIABI_Request request, int *flag,
                               MPIABI_Status *status) {
   MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
-  int ierr =
-      MPI_Request_get_status(abi2mpi_requeest(request), flag, mpi_status);
+  int ierr = MPI_Request_get_status(abi2mpi_request(request), flag, mpi_status);
   mpi2abi_statusptr(mpi_status);
   return mpi2abi_errorcode(ierr);
 }
@@ -1525,218 +1546,763 @@ int MPIABI_Waitsome(int incount, MPIABI_Request array_of_requests[],
 
 // A.3.2 Partitioned Communication C Bindings
 
-int MPIABI_Parrived(MPIABI_Request request, int partition, int *flag);
-int MPIABI_Pready(int partition, MPIABI_Request request);
+int MPIABI_Parrived(MPIABI_Request request, int partition, int *flag) {
+  int ierr = MPI_Parrived(abi2mpi_request(request), partition, flag);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Pready(int partition, MPIABI_Request request) {
+  int ierr = MPI_Pready(partition, abi2mpi_request(request));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Pready_list(int length, const int array_of_partitions[],
-                       MPIABI_Request request);
+                       MPIABI_Request request) {
+  int ierr =
+      MPI_Pready_list(length, array_of_partitions, abi2mpi_request(request));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Pready_range(int partition_low, int partition_high,
-                        MPIABI_Request request);
+                        MPIABI_Request request) {
+  int ierr =
+      MPI_Pready_range(partition_low, partition_high, abi2mpi_request(request));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Precv_init(void *buf, int partitions, MPIABI_Count count,
                       MPIABI_Datatype datatype, int source, int tag,
                       MPIABI_Comm comm, MPIABI_Info info,
-                      MPIABI_Request *request);
+                      MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr =
+      MPI_Precv_init(buf, partitions, count, abi2mpi_datatype(datatype),
+                     abi2mpi_source(source), abi2mpi_tag(tag),
+                     abi2mpi_comm(comm), abi2mpi_info(info), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Psend_init(const void *buf, int partitions, MPIABI_Count count,
                       MPIABI_Datatype datatype, int dest, int tag,
                       MPIABI_Comm comm, MPIABI_Info info,
-                      MPIABI_Request *request);
+                      MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr =
+      MPI_Psend_init(buf, partitions, count, abi2mpi_datatype(datatype), dest,
+                     tag, abi2mpi_comm(comm), abi2mpi_info(info), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
 
 // A.3.3 Datatypes C Bindings
 
-MPIABI_Aint MPIABI_Aint_add(MPIABI_Aint base, MPIABI_Aint disp);
-MPIABI_Aint MPIABI_Aint_diff(MPIABI_Aint addr1, MPIABI_Aint addr2);
-int MPIABI_Get_address(const void *location, MPIABI_Aint *address);
+MPIABI_Aint MPIABI_Aint_add(MPIABI_Aint base, MPIABI_Aint disp) {
+  return MPI_Aint_add(base, disp);
+}
+
+MPIABI_Aint MPIABI_Aint_diff(MPIABI_Aint addr1, MPIABI_Aint addr2) {
+  return MPI_Aint_diff(addr1, addr2);
+}
+
+int MPIABI_Get_address(const void *location, MPIABI_Aint *address) {
+  MPI_Aint mpi_address;
+  int ierr = MPI_Get_address(location, &mpi_address);
+  *address = mpi_address;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Get_elements(const MPIABI_Status *status, MPIABI_Datatype datatype,
-                        int *count);
+                        int *count) {
+  const MPI_Status mpi_status = abi2mpi_status(*status);
+  int ierr = MPI_Get_elements(&mpi_status, abi2mpi_datatype(datatype), count);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Get_elements_c(const MPIABI_Status *status, MPIABI_Datatype datatype,
-                          MPIABI_Count *count);
+                          MPIABI_Count *count) {
+  const MPI_Status mpi_status = abi2mpi_status(*status);
+  MPI_Count mpi_count;
+  int ierr =
+      MPI_Get_elements_c(&mpi_status, abi2mpi_datatype(datatype), &mpi_count);
+  *count = mpi_count;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Pack(const void *inbuf, int incount, MPIABI_Datatype datatype,
-                void *outbuf, int outsize, int *position, MPIABI_Comm comm);
+                void *outbuf, int outsize, int *position, MPIABI_Comm comm) {
+  int ierr = MPI_Pack(inbuf, incount, abi2mpi_datatype(datatype), outbuf,
+                      outsize, position, abi2mpi_comm(comm));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Pack_c(const void *inbuf, MPIABI_Count incount,
                   MPIABI_Datatype datatype, void *outbuf, MPIABI_Count outsize,
-                  MPIABI_Count *position, MPIABI_Comm comm);
+                  MPIABI_Count *position, MPIABI_Comm comm) {
+  MPI_Count mpi_position = *position;
+  int ierr = MPI_Pack_c(inbuf, incount, abi2mpi_datatype(datatype), outbuf,
+                        outsize, &mpi_position, abi2mpi_comm(comm));
+  *position = mpi_position;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Pack_external(const char datarep[], const void *inbuf, int incount,
                          MPIABI_Datatype datatype, void *outbuf,
-                         MPIABI_Aint outsize, MPIABI_Aint *position);
+                         MPIABI_Aint outsize, MPIABI_Aint *position) {
+  MPI_Aint mpi_position = *position;
+  int ierr =
+      MPI_Pack_external(datarep, inbuf, incount, abi2mpi_datatype(datatype),
+                        outbuf, outsize, &mpi_position);
+  *position = mpi_position;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Pack_external_c(const char datarep[], const void *inbuf,
                            MPIABI_Count incount, MPIABI_Datatype datatype,
                            void *outbuf, MPIABI_Count outsize,
-                           MPIABI_Count *position);
+                           MPIABI_Count *position) {
+  MPI_Count mpi_position = *position;
+  int ierr =
+      MPI_Pack_external_c(datarep, inbuf, incount, abi2mpi_datatype(datatype),
+                          outbuf, outsize, &mpi_position);
+  *position = mpi_position;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Pack_external_size(const char datarep[], MPIABI_Count incount,
-                              MPIABI_Datatype datatype, MPIABI_Count *size);
+                              MPIABI_Datatype datatype, MPIABI_Aint *size) {
+  MPI_Aint mpi_size;
+  int ierr = MPI_Pack_external_size(datarep, incount,
+                                    abi2mpi_datatype(datatype), &mpi_size);
+  *size = mpi_size;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Pack_external_size_c(const char datarep[], MPIABI_Count incount,
-                                MPIABI_Datatype datatype, MPIABI_Count *size);
+                                MPIABI_Datatype datatype, MPIABI_Count *size) {
+  MPI_Count mpi_size;
+  int ierr = MPI_Pack_external_size_c(datarep, incount,
+                                      abi2mpi_datatype(datatype), &mpi_size);
+  *size = mpi_size;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Pack_size_c(MPIABI_Count incount, MPIABI_Datatype datatype,
-                       MPIABI_Comm comm, MPIABI_Count *size);
-int MPIABI_Type_commit(MPIABI_Datatype *datatype);
+                       MPIABI_Comm comm, MPIABI_Count *size) {
+
+  MPI_Count mpi_size;
+  int ierr = MPI_Pack_size_c(incount, abi2mpi_datatype(datatype),
+                             abi2mpi_comm(comm), &mpi_size);
+  *size = mpi_size;
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Type_commit(MPIABI_Datatype *datatype) {
+  MPI_Datatype mpi_datatype = abi2mpi_datatype(*datatype);
+  int ierr = MPI_Type_commit(&mpi_datatype);
+  *datatype = mpi2abi_datatype(mpi_datatype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_contiguous(int count, MPIABI_Datatype oldtype,
-                           MPIABI_Datatype *newtype);
+                           MPIABI_Datatype *newtype) {
+  MPI_Datatype mpi_newtype;
+  int ierr =
+      MPI_Type_contiguous(count, abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_contiguous_c(MPIABI_Count count, MPIABI_Datatype oldtype,
-                             MPIABI_Datatype *newtype);
+                             MPIABI_Datatype *newtype) {
+  MPI_Datatype mpi_newtype;
+  int ierr =
+      MPI_Type_contiguous_c(count, abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_darray(int size, int rank, int ndims,
                               const int array_of_gsizes[],
                               const int array_of_distribs[],
                               const int array_of_dargs[],
                               const int array_of_psizes[], int order,
                               MPIABI_Datatype oldtype,
-                              MPIABI_Datatype *newtype);
+                              MPIABI_Datatype *newtype) {
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_darray(
+      size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs,
+      array_of_psizes, order, abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_darray_c(int size, int rank, int ndims,
                                 const MPIABI_Count array_of_gsizes[],
                                 const int array_of_distribs[],
                                 const int array_of_dargs[],
                                 const int array_of_psizes[], int order,
                                 MPIABI_Datatype oldtype,
-                                MPIABI_Datatype *newtype);
+                                MPIABI_Datatype *newtype) {
+  MPI_Count mpi_array_of_gsizes[ndims];
+  for (int n = 0; n < ndims; ++n)
+    mpi_array_of_gsizes[n] = array_of_gsizes[n];
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_darray_c(
+      size, rank, ndims, mpi_array_of_gsizes, array_of_distribs, array_of_dargs,
+      array_of_psizes, order, abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_hindexed(int count, const int array_of_blocklengths[],
                                 const MPIABI_Aint array_of_displacements[],
                                 MPIABI_Datatype oldtype,
-                                MPIABI_Datatype *newtype);
-int MPIABI_Type_create_hindexed_block(int count, int blocklength,
-                                      const int array_of_displacements[],
-                                      MPIABI_Datatype oldtype,
-                                      MPIABI_Datatype *newtype);
+                                MPIABI_Datatype *newtype) {
+  MPI_Aint mpi_array_of_displacements[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_displacements[n] = array_of_displacements[n];
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_hindexed(count, array_of_blocklengths,
+                                      mpi_array_of_displacements,
+                                      abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Type_create_hindexed_block(
+    int count, int blocklength, const MPIABI_Aint array_of_displacements[],
+    MPIABI_Datatype oldtype, MPIABI_Datatype *newtype) {
+  MPI_Aint mpi_array_of_displacements[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_displacements[n] = array_of_displacements[n];
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_hindexed_block(
+      count, blocklength, mpi_array_of_displacements, abi2mpi_datatype(oldtype),
+      &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_hindexed_block_c(
     MPIABI_Count count, MPIABI_Count blocklength,
     const MPIABI_Count array_of_displacements[], MPIABI_Datatype oldtype,
-    MPIABI_Datatype *newtype);
+    MPIABI_Datatype *newtype) {
+  MPI_Count mpi_array_of_displacements[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_displacements[n] = array_of_displacements[n];
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_hindexed_block_c(
+      count, blocklength, mpi_array_of_displacements, abi2mpi_datatype(oldtype),
+      &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_hindexed_c(MPIABI_Count count,
                                   const MPIABI_Count array_of_blocklengths[],
                                   const MPIABI_Count array_of_displacements[],
                                   MPIABI_Datatype oldtype,
-                                  MPIABI_Datatype *newtype);
+                                  MPIABI_Datatype *newtype) {
+  MPI_Count mpi_array_of_blocklengths[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_blocklengths[n] = array_of_blocklengths[n];
+  MPI_Count mpi_array_of_displacements[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_displacements[n] = array_of_displacements[n];
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_hindexed_c(
+      count, mpi_array_of_blocklengths, mpi_array_of_displacements,
+      abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_hvector(int count, int blocklength, MPIABI_Aint stride,
                                MPIABI_Datatype oldtype,
-                               MPIABI_Datatype *newtype);
+                               MPIABI_Datatype *newtype) {
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_hvector(count, blocklength, stride,
+                                     abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_hvector_c(MPIABI_Count count, MPIABI_Count blocklength,
                                  MPIABI_Count stride, MPIABI_Datatype oldtype,
-                                 MPIABI_Datatype *newtype);
+                                 MPIABI_Datatype *newtype) {
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_hvector_c(count, blocklength, stride,
+                                       abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_indexed_block(int count, int blocklength,
                                      const int array_of_displacements[],
                                      MPIABI_Datatype oldtype,
-                                     MPIABI_Datatype *newtype);
+                                     MPIABI_Datatype *newtype) {
+  MPI_Datatype mpi_newtype;
+  int ierr =
+      MPI_Type_create_indexed_block(count, blocklength, array_of_displacements,
+                                    abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_indexed_block_c(
     MPIABI_Count count, MPIABI_Count blocklength,
     const MPIABI_Count array_of_displacements[], MPIABI_Datatype oldtype,
-    MPIABI_Datatype *newtype);
+    MPIABI_Datatype *newtype) {
+  MPI_Count mpi_array_of_displacements[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_displacements[n] = array_of_displacements[n];
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_indexed_block_c(
+      count, blocklength, mpi_array_of_displacements, abi2mpi_datatype(oldtype),
+      &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_resized(MPIABI_Datatype oldtype, MPIABI_Aint lb,
-                               MPIABI_Aint extent, MPIABI_Datatype *newtype);
+                               MPIABI_Aint extent, MPIABI_Datatype *newtype) {
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_resized(abi2mpi_datatype(oldtype), lb, extent,
+                                     &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_resized_c(MPIABI_Datatype oldtype, MPIABI_Count lb,
-                                 MPIABI_Count extent, MPIABI_Datatype *newtype);
+                                 MPIABI_Count extent,
+                                 MPIABI_Datatype *newtype) {
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_resized_c(abi2mpi_datatype(oldtype), lb, extent,
+                                       &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_struct(int count, const int array_of_blocklengths[],
                               const MPIABI_Aint array_of_displacements[],
                               const MPIABI_Datatype array_of_types[],
-                              MPIABI_Datatype *newtype);
+                              MPIABI_Datatype *newtype) {
+  MPI_Aint mpi_array_of_displacements[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_displacements[n] = array_of_displacements[n];
+  MPI_Datatype mpi_array_of_types[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_types[n] = abi2mpi_datatype(array_of_types[n]);
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_struct(count, array_of_blocklengths,
+                                    mpi_array_of_displacements,
+                                    mpi_array_of_types, &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_struct_c(MPIABI_Count count,
                                 const MPIABI_Count array_of_blocklengths[],
                                 const MPIABI_Count array_of_displacements[],
                                 const MPIABI_Datatype array_of_types[],
-                                MPIABI_Datatype *newtype);
+                                MPIABI_Datatype *newtype) {
+  MPI_Count mpi_array_of_blocklengths[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_blocklengths[n] = array_of_blocklengths[n];
+  MPI_Count mpi_array_of_displacements[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_displacements[n] = array_of_displacements[n];
+  MPI_Datatype mpi_array_of_types[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_types[n] = abi2mpi_datatype(array_of_types[n]);
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_struct_c(count, mpi_array_of_blocklengths,
+                                      mpi_array_of_displacements,
+                                      mpi_array_of_types, &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_subarray(int ndims, const int array_of_sizes[],
                                 const int array_of_subsizes[],
                                 const int array_of_starts[], int order,
                                 MPIABI_Datatype oldtype,
-                                MPIABI_Datatype *newtype);
+                                MPIABI_Datatype *newtype) {
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_subarray(ndims, array_of_sizes, array_of_subsizes,
+                                      array_of_starts, order,
+                                      abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_create_subarray_c(int ndims,
                                   const MPIABI_Count array_of_sizes[],
                                   const MPIABI_Count array_of_subsizes[],
                                   const MPIABI_Count array_of_starts[],
                                   int order, MPIABI_Datatype oldtype,
-                                  MPIABI_Datatype *newtype);
-int MPIABI_Type_dup(MPIABI_Datatype oldtype, MPIABI_Datatype *newtype);
-int MPIABI_Type_free(MPIABI_Datatype *datatype);
+                                  MPIABI_Datatype *newtype) {
+  MPI_Count mpi_array_of_sizes[ndims];
+  for (int n = 0; n < ndims; ++n)
+    mpi_array_of_sizes[n] = array_of_sizes[n];
+  MPI_Count mpi_array_of_subsizes[ndims];
+  for (int n = 0; n < ndims; ++n)
+    mpi_array_of_subsizes[n] = array_of_subsizes[n];
+  MPI_Count mpi_array_of_starts[ndims];
+  for (int n = 0; n < ndims; ++n)
+    mpi_array_of_starts[n] = array_of_starts[n];
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_create_subarray_c(
+      ndims, mpi_array_of_sizes, mpi_array_of_subsizes, mpi_array_of_starts,
+      order, abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Type_dup(MPIABI_Datatype oldtype, MPIABI_Datatype *newtype) {
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_dup(abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Type_free(MPIABI_Datatype *datatype) {
+  MPI_Datatype mpi_datatype = abi2mpi_datatype(*datatype);
+  int ierr = MPI_Type_free(&mpi_datatype);
+  *datatype = mpi2abi_datatype(mpi_datatype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_get_contents(MPIABI_Datatype datatype, int max_integers,
                              int max_addresses, int max_datatypes,
                              int array_of_integers[],
                              MPIABI_Aint array_of_addresses[],
-                             MPIABI_Datatype array_of_datatypes[]);
+                             MPIABI_Datatype array_of_datatypes[]) {
+  int ierr = MPI_Type_get_contents(
+      abi2mpi_datatype(datatype), max_integers, max_addresses, max_datatypes,
+      array_of_integers, (MPI_Aint *)array_of_addresses,
+      (MPI_Datatype *)array_of_datatypes);
+  for (int n = max_addresses - 1; n >= 0; --n)
+    array_of_addresses[n] = ((MPI_Aint *)array_of_addresses)[n];
+  for (int n = max_datatypes - 1; n >= 0; --n)
+    array_of_datatypes[n] =
+        mpi2abi_datatype(((MPI_Datatype *)array_of_datatypes)[n]);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_get_contents_c(
     MPIABI_Datatype datatype, MPIABI_Count max_integers,
     MPIABI_Count max_addresses, MPIABI_Count max_large_counts,
     MPIABI_Count max_datatypes, int array_of_integers[],
     MPIABI_Aint array_of_addresses[], MPIABI_Count array_of_large_counts[],
-    MPIABI_Datatype array_of_datatypes[]);
+    MPIABI_Datatype array_of_datatypes[]) {
+  int ierr = MPI_Type_get_contents_c(
+      abi2mpi_datatype(datatype), max_integers, max_addresses, max_large_counts,
+      max_datatypes, array_of_integers, (MPI_Aint *)array_of_addresses,
+      (MPI_Count *)array_of_large_counts, (MPI_Datatype *)array_of_datatypes);
+  for (int n = max_addresses - 1; n >= 0; --n)
+    array_of_addresses[n] = ((MPI_Aint *)array_of_addresses)[n];
+  for (int n = max_large_counts - 1; n >= 0; --n)
+    array_of_large_counts[n] = ((MPI_Count *)array_of_large_counts)[n];
+  for (int n = max_datatypes - 1; n >= 0; --n)
+    array_of_datatypes[n] =
+        mpi2abi_datatype(((MPI_Datatype *)array_of_datatypes)[n]);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_get_envelope(MPIABI_Datatype datatype, int *num_integers,
                              int *num_addresses, int *num_datatypes,
-                             int *combiner);
+                             int *combiner) {
+  int ierr = MPI_Type_get_envelope(abi2mpi_datatype(datatype), num_integers,
+                                   num_addresses, num_datatypes, combiner);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_get_envelope_c(MPIABI_Datatype datatype,
                                MPIABI_Count *num_integers,
                                MPIABI_Count *num_addresses,
                                MPIABI_Count *num_large_counts,
-                               MPIABI_Count *num_datatypes, int *combiner);
+                               MPIABI_Count *num_datatypes, int *combiner) {
+  MPI_Count mpi_num_integers;
+  MPI_Count mpi_num_addresses;
+  MPI_Count mpi_num_large_counts;
+  MPI_Count mpi_num_datatypes;
+  int ierr = MPI_Type_get_envelope_c(
+      abi2mpi_datatype(datatype), &mpi_num_integers, &mpi_num_addresses,
+      &mpi_num_large_counts, &mpi_num_datatypes, combiner);
+  *num_integers = mpi_num_integers;
+  *num_addresses = mpi_num_addresses;
+  *num_large_counts = mpi_num_large_counts;
+  *num_datatypes = mpi_num_datatypes;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_get_extent(MPIABI_Datatype datatype, MPIABI_Aint *lb,
-                           MPIABI_Aint *extent);
+                           MPIABI_Aint *extent) {
+  MPI_Aint mpi_lb;
+  MPI_Aint mpi_extent;
+  int ierr =
+      MPI_Type_get_extent(abi2mpi_datatype(datatype), &mpi_lb, &mpi_extent);
+  *lb = mpi_lb;
+  *extent = mpi_extent;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_get_extent_c(MPIABI_Datatype datatype, MPIABI_Count *lb,
-                             MPIABI_Count *extent);
+                             MPIABI_Count *extent) {
+  MPI_Count mpi_lb;
+  MPI_Count mpi_extent;
+  int ierr =
+      MPI_Type_get_extent_c(abi2mpi_datatype(datatype), &mpi_lb, &mpi_extent);
+  *lb = mpi_lb;
+  *extent = mpi_extent;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_get_true_extent(MPIABI_Datatype datatype, MPIABI_Aint *true_lb,
-                                MPIABI_Aint *true_extent);
+                                MPIABI_Aint *true_extent) {
+  MPI_Aint mpi_true_lb;
+  MPI_Aint mpi_true_extent;
+  int ierr = MPI_Type_get_true_extent(abi2mpi_datatype(datatype), &mpi_true_lb,
+                                      &mpi_true_extent);
+  *true_lb = mpi_true_lb;
+  *true_extent = mpi_true_extent;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_get_true_extent_c(MPIABI_Datatype datatype,
                                   MPIABI_Count *true_lb,
-                                  MPIABI_Count *true_extent);
+                                  MPIABI_Count *true_extent) {
+
+  MPI_Count mpi_true_lb;
+  MPI_Count mpi_true_extent;
+  int ierr = MPI_Type_get_true_extent_c(abi2mpi_datatype(datatype),
+                                        &mpi_true_lb, &mpi_true_extent);
+  *true_lb = mpi_true_lb;
+  *true_extent = mpi_true_extent;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_indexed(int count, const int array_of_blocklengths[],
                         const int array_of_displacements[],
-                        MPIABI_Datatype oldtype, MPIABI_Datatype *newtype);
+                        MPIABI_Datatype oldtype, MPIABI_Datatype *newtype) {
+  MPI_Datatype mpi_newtype;
+  int ierr =
+      MPI_Type_indexed(count, array_of_blocklengths, array_of_displacements,
+                       abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_indexed_c(MPIABI_Count count,
                           const MPIABI_Count array_of_blocklengths[],
                           const MPIABI_Count array_of_displacements[],
-                          MPIABI_Datatype oldtype, MPIABI_Datatype *newtype);
-int MPIABI_Type_size(MPIABI_Datatype datatype, int *size);
-int MPIABI_Type_size_c(MPIABI_Datatype datatype, MPIABI_Count *size);
+                          MPIABI_Datatype oldtype, MPIABI_Datatype *newtype) {
+  MPI_Count mpi_array_of_blocklengths[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_blocklengths[n] = array_of_blocklengths[n];
+  MPI_Count mpi_array_of_displacements[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_displacements[n] = array_of_displacements[n];
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_indexed_c(count, mpi_array_of_blocklengths,
+                                mpi_array_of_displacements,
+                                abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Type_size(MPIABI_Datatype datatype, int *size) {
+  int ierr = MPI_Type_size(abi2mpi_datatype(datatype), size);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Type_size_c(MPIABI_Datatype datatype, MPIABI_Count *size) {
+  MPI_Count mpi_size;
+  int ierr = MPI_Type_size_c(abi2mpi_datatype(datatype), &mpi_size);
+  *size = mpi_size;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_vector(int count, int blocklength, int stride,
-                       MPIABI_Datatype oldtype, MPIABI_Datatype *newtype);
+                       MPIABI_Datatype oldtype, MPIABI_Datatype *newtype) {
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_vector(count, blocklength, stride,
+                             abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_vector_c(MPIABI_Count count, MPIABI_Count blocklength,
                          MPIABI_Count stride, MPIABI_Datatype oldtype,
-                         MPIABI_Datatype *newtype);
+                         MPIABI_Datatype *newtype) {
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_vector_c(count, blocklength, stride,
+                               abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Unpack(const void *inbuf, int insize, int *position, void *outbuf,
-                  int outcount, MPIABI_Datatype datatype, MPIABI_Comm comm);
+                  int outcount, MPIABI_Datatype datatype, MPIABI_Comm comm) {
+  int ierr = MPI_Unpack(inbuf, insize, position, outbuf, outcount,
+                        abi2mpi_datatype(datatype), abi2mpi_comm(comm));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Unpack_c(const void *inbuf, MPIABI_Count insize,
                     MPIABI_Count *position, void *outbuf, MPIABI_Count outcount,
-                    MPIABI_Datatype datatype, MPIABI_Comm comm);
+                    MPIABI_Datatype datatype, MPIABI_Comm comm) {
+  MPI_Count mpi_position;
+  int ierr = MPI_Unpack_c(inbuf, insize, &mpi_position, outbuf, outcount,
+                          abi2mpi_datatype(datatype), abi2mpi_comm(comm));
+  *position = mpi_position;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Unpack_external(const char datarep[], const void *inbuf,
                            MPIABI_Aint insize, MPIABI_Aint *position,
                            void *outbuf, int outcount,
-                           MPIABI_Datatype datatype);
+                           MPIABI_Datatype datatype) {
+  MPI_Aint mpi_position = *position;
+  int ierr = MPI_Unpack_external(datarep, inbuf, insize, &mpi_position, outbuf,
+                                 outcount, abi2mpi_datatype(datatype));
+  *position = mpi_position;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Unpack_external_c(const char datarep[], const void *inbuf,
                              MPIABI_Count insize, MPIABI_Count *position,
                              void *outbuf, MPIABI_Count outcount,
-                             MPIABI_Datatype datatype);
+                             MPIABI_Datatype datatype) {
+  MPI_Count mpi_position = *position;
+  int ierr =
+      MPI_Unpack_external_c(datarep, inbuf, insize, &mpi_position, outbuf,
+                            outcount, abi2mpi_datatype(datatype));
+  *position = mpi_position;
+  return mpi2abi_errorcode(ierr);
+}
+
 // A.3.4 Collective Communication C Bindings
 
 int MPIABI_Allgather(const void *sendbuf, int sendcount,
                      MPIABI_Datatype sendtype, void *recvbuf, int recvcount,
-                     MPIABI_Datatype recvtype, MPIABI_Comm comm);
+                     MPIABI_Datatype recvtype, MPIABI_Comm comm) {
+  int ierr =
+      MPI_Allgather(sendbuf, sendcount, abi2mpi_datatype(sendtype), recvbuf,
+                    recvcount, abi2mpi_datatype(recvtype), abi2mpi_comm(comm));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Allgather_c(const void *sendbuf, MPIABI_Count sendcount,
                        MPIABI_Datatype sendtype, void *recvbuf,
                        MPIABI_Count recvcount, MPIABI_Datatype recvtype,
-                       MPIABI_Comm comm);
+                       MPIABI_Comm comm) {
+  int ierr = MPI_Allgather_c(sendbuf, sendcount, abi2mpi_datatype(sendtype),
+                             recvbuf, recvcount, abi2mpi_datatype(recvtype),
+                             abi2mpi_comm(comm));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Allgather_init(const void *sendbuf, int sendcount,
                           MPIABI_Datatype sendtype, void *recvbuf,
                           int recvcount, MPIABI_Datatype recvtype,
                           MPIABI_Comm comm, MPIABI_Info info,
-                          MPIABI_Request *request);
+                          MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr =
+      MPI_Allgather_init(sendbuf, sendcount, abi2mpi_datatype(sendtype),
+                         recvbuf, recvcount, abi2mpi_datatype(recvtype),
+                         abi2mpi_comm(comm), abi2mpi_info(info), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Allgather_init_c(const void *sendbuf, MPIABI_Count sendcount,
                             MPIABI_Datatype sendtype, void *recvbuf,
                             MPIABI_Count recvcount, MPIABI_Datatype recvtype,
                             MPIABI_Comm comm, MPIABI_Info info,
-                            MPIABI_Request *request);
+                            MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_Allgather_init_c(
+      sendbuf, sendcount, abi2mpi_datatype(sendtype), recvbuf, recvcount,
+      abi2mpi_datatype(recvtype), abi2mpi_comm(comm), abi2mpi_info(info),
+      &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Allgatherv(const void *sendbuf, int sendcount,
                       MPIABI_Datatype sendtype, void *recvbuf,
                       const int recvcounts[], const int displs[],
-                      MPIABI_Datatype recvtype, MPIABI_Comm comm);
+                      MPIABI_Datatype recvtype, MPIABI_Comm comm) {
+  int ierr = MPI_Allgatherv(sendbuf, sendcount, abi2mpi_datatype(sendtype),
+                            recvbuf, recvcounts, displs,
+                            abi2mpi_datatype(recvtype), abi2mpi_comm(comm));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Allgatherv_c(const void *sendbuf, MPIABI_Count sendcount,
                         MPIABI_Datatype sendtype, void *recvbuf,
                         const MPIABI_Count recvcounts[],
                         const MPIABI_Aint displs[], MPIABI_Datatype recvtype,
-                        MPIABI_Comm comm);
+                        MPIABI_Comm comm) {
+  int size;
+  int ierr = MPIABI_Comm_size(comm, &size);
+  if (ierr)
+    return ierr;
+  MPI_Count mpi_recvcounts[size];
+  for (int n = 0; n < size; ++n)
+    mpi_recvcounts[n] = recvcounts[n];
+  MPI_Aint mpi_displs[size];
+  for (int n = 0; n < size; ++n)
+    mpi_displs[n] = displs[n];
+  ierr = MPI_Allgatherv_c(sendbuf, sendcount, abi2mpi_datatype(sendtype),
+                          recvbuf, mpi_recvcounts, mpi_displs,
+                          abi2mpi_datatype(recvtype), abi2mpi_comm(comm));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Allgatherv_init(const void *sendbuf, int sendcount,
                            MPIABI_Datatype sendtype, void *recvbuf,
                            const int recvcounts[], const int displs[],
                            MPIABI_Datatype recvtype, MPIABI_Comm comm,
-                           MPIABI_Info info, MPIABI_Request *request);
+                           MPIABI_Info info, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_Allgatherv_init(sendbuf, sendcount, abi2mpi_datatype(sendtype),
+                                 recvbuf, recvcounts, displs,
+                                 abi2mpi_datatype(recvtype), abi2mpi_comm(comm),
+                                 abi2mpi_info(info), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Allgatherv_init_c(const void *sendbuf, MPIABI_Count sendcount,
                              MPIABI_Datatype sendtype, void *recvbuf,
                              const MPIABI_Count recvcounts[],
                              const MPIABI_Aint displs[],
                              MPIABI_Datatype recvtype, MPIABI_Comm comm,
-                             MPIABI_Info info, MPIABI_Request *request);
+                             MPIABI_Info info, MPIABI_Request *request) {
+  int size;
+  int ierr = MPIABI_Comm_size(comm, &size);
+  if (ierr)
+    return ierr;
+  MPI_Count mpi_recvcounts[size];
+  for (int n = 0; n < size; ++n)
+    mpi_recvcounts[n] = recvcounts[n];
+  MPI_Aint mpi_displs[size];
+  for (int n = 0; n < size; ++n)
+    mpi_displs[n] = displs[n];
+  MPI_Request mpi_request;
+  ierr = MPI_Allgatherv_init_c(sendbuf, sendcount, abi2mpi_datatype(sendtype),
+                               recvbuf, mpi_recvcounts, mpi_displs,
+                               abi2mpi_datatype(recvtype), abi2mpi_comm(comm),
+                               abi2mpi_info(info), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Allreduce(const void *sendbuf, void *recvbuf, int count,
                      MPIABI_Datatype datatype, MPIABI_Op op, MPIABI_Comm comm);
 int MPIABI_Allreduce_c(const void *sendbuf, void *recvbuf, MPIABI_Count count,
@@ -3033,8 +3599,10 @@ int MPIABI_Type_size_x(MPIABI_Datatype datatype, MPIABI_Count *size);
 
 // MPIX
 
-int MPIXABI_Query_cuda_support();
+int MPIXABI_Query_cuda_support() { return MPIX_Query_cuda_support(); }
 
-int MPIXABI_Query_hip_support();
+int MPIXABI_Query_hip_support() { return MPIX_Query_hip_support(); }
 
-int MPIXABI_Query_ze_support();
+int MPIXABI_Query_rocm_support() { return MPIX_Query_rocm_support(); }
+
+int MPIXABI_Query_ze_support() { return MPIX_Query_ze_support(); }

@@ -244,7 +244,7 @@ int MPIABI_Pack_external_c(const char datarep[], const void *inbuf,
                            void *outbuf, MPIABI_Count outsize,
                            MPIABI_Count *position);
 int MPIABI_Pack_external_size(const char datarep[], MPIABI_Count incount,
-                              MPIABI_Datatype datatype, MPIABI_Count *size);
+                              MPIABI_Datatype datatype, MPIABI_Aint *size);
 int MPIABI_Pack_external_size_c(const char datarep[], MPIABI_Count incount,
                                 MPIABI_Datatype datatype, MPIABI_Count *size);
 int MPIABI_Pack_size_c(MPIABI_Count incount, MPIABI_Datatype datatype,
@@ -272,10 +272,9 @@ int MPIABI_Type_create_hindexed(int count, const int array_of_blocklengths[],
                                 const MPIABI_Aint array_of_displacements[],
                                 MPIABI_Datatype oldtype,
                                 MPIABI_Datatype *newtype);
-int MPIABI_Type_create_hindexed_block(int count, int blocklength,
-                                      const int array_of_displacements[],
-                                      MPIABI_Datatype oldtype,
-                                      MPIABI_Datatype *newtype);
+int MPIABI_Type_create_hindexed_block(
+    int count, int blocklength, const MPIABI_Aint array_of_displacements[],
+    MPIABI_Datatype oldtype, MPIABI_Datatype *newtype);
 int MPIABI_Type_create_hindexed_block_c(
     MPIABI_Count count, MPIABI_Count blocklength,
     const MPIABI_Count array_of_displacements[], MPIABI_Datatype oldtype,
@@ -1718,6 +1717,8 @@ int MPIABI_Type_size_x(MPIABI_Datatype datatype, MPIABI_Count *size);
 int MPIXABI_Query_cuda_support();
 
 int MPIXABI_Query_hip_support();
+
+int MPIXABI_Query_rocm_support();
 
 int MPIXABI_Query_ze_support();
 
