@@ -1,4 +1,4 @@
-name: CI-mpitrampoline
+name: CI
 
 on:
   push:
