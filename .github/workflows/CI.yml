@@ -26,7 +26,7 @@ jobs:
         case "${{matrix.mpi}}" in
             MPICH)
                 sudo apt-get update
-                sudo apt-get install $packages
+                sudo apt-get install libmpich-dev
                 ;;
             OpenMPI)
                 ./.github/workflows/install-openmpi.sh
