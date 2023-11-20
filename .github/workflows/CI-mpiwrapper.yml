@@ -24,11 +24,14 @@ jobs:
     - name: Install ${{matrix.mpi}}
       run: |
         case "${{matrix.mpi}}" in
-            MPICH) packages=libmpich-dev;;
-            OpenMPI) packages=libopenmpi-dev;;
+            MPICH)
+                sudo apt-get update
+                sudo apt-get install $packages
+                ;;
+            OpenMPI)
+                ./install-openmpi.sh
+                ;;
         esac
-        sudo apt-get update
-        sudo apt-get install $packages
 
     - name: Configure
       run: |
