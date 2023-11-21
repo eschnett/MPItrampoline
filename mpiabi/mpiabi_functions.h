@@ -379,6 +379,7 @@ int MPIABI_Unpack_external_c(const char datarep[], const void *inbuf,
                              MPIABI_Count insize, MPIABI_Count *position,
                              void *outbuf, MPIABI_Count outcount,
                              MPIABI_Datatype datatype);
+
 // A.3.4 Collective Communication C Bindings
 
 int MPIABI_Allgather(const void *sendbuf, int sendcount,

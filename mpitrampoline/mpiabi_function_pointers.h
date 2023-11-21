@@ -453,6 +453,7 @@ extern int (*MPIABI_Unpack_external_c_ptr)(const char datarep[],
                                            MPIABI_Count *position, void *outbuf,
                                            MPIABI_Count outcount,
                                            MPIABI_Datatype datatype);
+
 // A.3.4 Collective Communication C Bindings
 
 extern int (*MPIABI_Allgather_ptr)(const void *sendbuf, int sendcount,
@@ -1991,11 +1992,8 @@ extern int (*MPIABI_Type_size_x_ptr)(MPIABI_Datatype datatype,
 // MPIX
 
 extern int (*MPIXABI_Query_cuda_support_ptr)(void);
-
 extern int (*MPIXABI_Query_hip_support_ptr)(void);
-
 extern int (*MPIXABI_Query_rocm_support_ptr)(void);
-
 extern int (*MPIXABI_Query_ze_support_ptr)(void);
 
 #endif // #ifndef MPIABI_FUNCTIONS_H

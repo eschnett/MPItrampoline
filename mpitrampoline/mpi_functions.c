@@ -401,6 +401,7 @@ extern inline int MPI_Unpack_external_c(const char datarep[], const void *inbuf,
                                         MPI_Count insize, MPI_Count *position,
                                         void *outbuf, MPI_Count outcount,
                                         MPI_Datatype datatype);
+
 // A.3.4 Collective Communication C Bindings
 
 extern inline int MPI_Allgather(const void *sendbuf, int sendcount,
@@ -1827,9 +1828,6 @@ extern inline int MPI_Type_size_x(MPI_Datatype datatype, MPI_Count *size);
 // MPIX
 
 extern inline int MPIX_Query_cuda_support(void);
-
 extern inline int MPIX_Query_hip_support(void);
-
 extern inline int MPIX_Query_rocm_support(void);
-
 extern inline int MPIX_Query_ze_support(void);

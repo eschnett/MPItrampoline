@@ -63,8 +63,6 @@ static void *load_library(const char *const libname) {
 
 static void *get_symbol(void *handle, const char *name) {
   void *ptr = dlsym(handle, name);
-#warning "TODO"
-  fprintf(stderr, "MPItrampoline: Symbol \"%s\" resolved to %p\n", name, ptr);
   if (!ptr) {
     fprintf(stderr, "MPItrampoline: Could not resolve symbol \"%s\"\n", name);
     const char *const error = dlerror();
@@ -73,6 +71,16 @@ static void *get_symbol(void *handle, const char *name) {
     exit(1);
   }
   return ptr;
+}
+
+// We define the common symbols here in this file to ensure that this
+// file is linked into the executable, so that
+// `mpitrampoline_init_auto` is actually run
+
+#include "mpiabi_function_pointers.c"
+
+void set_mpiabi_function_pointers(void *const handle) {
+#include "set_mpiabi_function_pointers.c"
 }
 
 static void mpitrampoline_init(void) {
@@ -128,7 +136,7 @@ static void mpitrampoline_init(void) {
     exit(1);
   }
 
-  MPIABI_Init_ptr = (int (*)(int *, char ***))get_symbol(handle, "MPIABI_Init");
+  set_mpiabi_function_pointers(void *const handle);
 }
 
 #ifdef __APPLE__
@@ -146,9 +154,3 @@ mpitrampoline_init_auto(void) {
 
   mpitrampoline_init();
 }
-
-// We define the common symbols here in this file to ensure that this
-// file is linked into the executable, so that
-// `mpitrampoline_init_auto` is actually run
-
-#include "mpiabi_function_pointers.c"

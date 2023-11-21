@@ -11,22 +11,22 @@ int main(int argc, char **argv) {
 
   MPI_Init(&argc, &argv);
 
-  // int size, rank;
-  // MPI_Comm_size(MPI_COMM_WORLD, &size);
-  // MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-  //
-  // if (rank == 0)
-  //   printf("Hello, World!\n");
-  //
-  // for (int n=0; n<size; ++n) {
-  //   if (rank == n)
-  //     printf("  process %d/%d\n", rank, size);
-  //   MPI_Barrier(MPI_COMM_WORLD);
-  // }
-  //
-  // if (rank == 0)
-  //   printf("Done.\n");
-  // MPI_Finalize();
+  int size, rank;
+  MPI_Comm_size(MPI_COMM_WORLD, &size);
+  MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+  if (rank == 0)
+    printf("Hello, World!\n");
+
+  for (int n = 0; n < size; ++n) {
+    if (rank == n)
+      printf("  process %d/%d\n", rank, size);
+    MPI_Barrier(MPI_COMM_WORLD);
+  }
+
+  if (rank == 0)
+    printf("Done.\n");
+  MPI_Finalize();
 
   return 0;
 }
