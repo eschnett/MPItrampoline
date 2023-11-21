@@ -28,7 +28,7 @@ static bool did_init_mpitrampoline = false;
 
 static void *load_library(const char *const libname) {
   void *handle;
-  handle = dlopen(libname, dlopen_flags | RTLD_LOCAL | RTLD_DEEPBIND);
+  handle = dlopen(libname, RTLD_LOCAL | RTLD_DEEPBIND);
   if (!handle) {
     fprintf(stderr, "MPItrampoline: Could not dlopen library \"%s\"\n",
             libname);
