@@ -47,12 +47,12 @@ check_include_files("mpi.h;mpi-ext.h" HAVE_MPI_EXT_H)
 
 list(APPEND CMAKE_EXTRA_INCLUDE_FILES mpi.h)
 
-# check_type_size(uintptr_t SIZEOF_UINTPTR_T)
+check_type_size(ptrdiff_t SIZEOF_PTRDIFF_T)
 
-# check_type_size(MPI_Aint SIZEOF_MPI_AINT)
-# check_type_size(MPI_Count SIZEOF_MPI_COUNT)
-# check_type_size(MPI_Fint SIZEOF_MPI_FINT)
-# check_type_size(MPI_Offset SIZEOF_MPI_OFFSET)
+check_type_size(MPI_Aint SIZEOF_MPI_AINT)
+check_type_size(MPI_Count SIZEOF_MPI_COUNT)
+check_type_size(MPI_Fint SIZEOF_MPI_FINT)
+check_type_size(MPI_Offset SIZEOF_MPI_OFFSET)
 # check_type_size(MPI_Status SIZEOF_MPI_STATUS)
 # check_type_size(MPI_F08_status SIZEOF_MPI_F08_STATUS)
 
