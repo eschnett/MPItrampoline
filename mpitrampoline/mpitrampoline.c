@@ -136,7 +136,7 @@ static void mpitrampoline_init(void) {
     exit(1);
   }
 
-  set_mpiabi_function_pointers(void *const handle);
+  set_mpiabi_function_pointers(handle);
 }
 
 #ifdef __APPLE__
