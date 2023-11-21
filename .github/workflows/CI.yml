@@ -14,7 +14,9 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04]
-        mpi: [MPICH, OpenMPI]
+        # OpenMPI is too far away from MPI 4
+        # mpi: [MPICH, OpenMPI]
+        mpi: [MPICH]
 
     runs-on: ${{matrix.os}}
 
