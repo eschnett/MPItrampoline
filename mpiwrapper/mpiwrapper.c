@@ -3052,30 +3052,126 @@ int MPIABI_Ialltoall(const void *sendbuf, int sendcount,
 int MPIABI_Ialltoall_c(const void *sendbuf, MPIABI_Count sendcount,
                        MPIABI_Datatype sendtype, void *recvbuf,
                        MPIABI_Count recvcount, MPIABI_Datatype recvtype,
-                       MPIABI_Comm comm, MPIABI_Request *request);
+                       MPIABI_Comm comm, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_Ialltoall_c(sendbuf, sendcount, abi2mpi_datatype(sendtype),
+                             recvbuf, recvcount, abi2mpi_datatype(recvtype),
+                             abi2mpi_comm(comm), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Ialltoallv(const void *sendbuf, const int sendcounts[],
                       const int sdispls[], MPIABI_Datatype sendtype,
                       void *recvbuf, const int recvcounts[],
                       const int rdispls[], MPIABI_Datatype recvtype,
-                      MPIABI_Comm comm, MPIABI_Request *request);
+                      MPIABI_Comm comm, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr =
+      MPI_Ialltoallv(sendbuf, sendcounts, sdispls, abi2mpi_datatype(sendtype),
+                     recvbuf, recvcounts, rdispls, abi2mpi_datatype(recvtype),
+                     abi2mpi_comm(comm), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Ialltoallv_c(const void *sendbuf, const MPIABI_Count sendcounts[],
                         const MPIABI_Aint sdispls[], MPIABI_Datatype sendtype,
                         void *recvbuf, const MPIABI_Count recvcounts[],
                         const MPIABI_Aint rdispls[], MPIABI_Datatype recvtype,
-                        MPIABI_Comm comm, MPIABI_Request *request);
+                        MPIABI_Comm comm, MPIABI_Request *request) {
+  int size;
+  int ierr = MPI_Comm_size(abi2mpi_comm(comm), &size);
+  if (ierr)
+    return ierr;
+  MPI_Count mpi_sendcounts[size];
+  for (int n = 0; n < size; ++n)
+    mpi_sendcounts[n] = sendcounts[n];
+  MPI_Aint mpi_sdispls[size];
+  for (int n = 0; n < size; ++n)
+    mpi_sdispls[n] = sdispls[n];
+  MPI_Count mpi_recvcounts[size];
+  for (int n = 0; n < size; ++n)
+    mpi_recvcounts[n] = recvcounts[n];
+  MPI_Aint mpi_rdispls[size];
+  for (int n = 0; n < size; ++n)
+    mpi_rdispls[n] = rdispls[n];
+  MPI_Request mpi_request;
+  ierr = MPI_Ialltoallv_c(sendbuf, mpi_sendcounts, mpi_sdispls,
+                          abi2mpi_datatype(sendtype), recvbuf, mpi_recvcounts,
+                          mpi_rdispls, abi2mpi_datatype(recvtype),
+                          abi2mpi_comm(comm), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Ialltoallw(const void *sendbuf, const int sendcounts[],
                       const int sdispls[], const MPIABI_Datatype sendtypes[],
                       void *recvbuf, const int recvcounts[],
                       const int rdispls[], const MPIABI_Datatype recvtypes[],
-                      MPIABI_Comm comm, MPIABI_Request *request);
+                      MPIABI_Comm comm, MPIABI_Request *request) {
+  int size;
+  int ierr = MPI_Comm_size(abi2mpi_comm(comm), &size);
+  if (ierr)
+    return ierr;
+  MPI_Datatype mpi_sendtypes[size];
+  for (int n = 0; n < size; ++n)
+    mpi_sendtypes[n] = abi2mpi_datatype(sendtypes[n]);
+  MPI_Datatype mpi_recvtypes[size];
+  for (int n = 0; n < size; ++n)
+    mpi_recvtypes[n] = abi2mpi_datatype(recvtypes[n]);
+  MPI_Request mpi_request;
+  ierr = MPI_Ialltoallw(sendbuf, sendcounts, sdispls, mpi_sendtypes, recvbuf,
+                        recvcounts, rdispls, mpi_recvtypes, abi2mpi_comm(comm),
+                        &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Ialltoallw_c(const void *sendbuf, const MPIABI_Count sendcounts[],
                         const MPIABI_Aint sdispls[],
                         const MPIABI_Datatype sendtypes[], void *recvbuf,
                         const MPIABI_Count recvcounts[],
                         const MPIABI_Aint rdispls[],
                         const MPIABI_Datatype recvtypes[], MPIABI_Comm comm,
-                        MPIABI_Request *request);
-int MPIABI_Ibarrier(MPIABI_Comm comm, MPIABI_Request *request);
+                        MPIABI_Request *request) {
+  int size;
+  int ierr = MPI_Comm_size(abi2mpi_comm(comm), &size);
+  if (ierr)
+    return ierr;
+  MPI_Count mpi_sendcounts[size];
+  for (int n = 0; n < size; ++n)
+    mpi_sendcounts[n] = sendcounts[n];
+  MPI_Aint mpi_sdispls[size];
+  for (int n = 0; n < size; ++n)
+    mpi_sdispls[n] = sdispls[n];
+  MPI_Datatype mpi_sendtypes[size];
+  for (int n = 0; n < size; ++n)
+    mpi_sendtypes[n] = abi2mpi_datatype(sendtypes[n]);
+  MPI_Count mpi_recvcounts[size];
+  for (int n = 0; n < size; ++n)
+    mpi_recvcounts[n] = recvcounts[n];
+  MPI_Aint mpi_rdispls[size];
+  for (int n = 0; n < size; ++n)
+    mpi_rdispls[n] = rdispls[n];
+  MPI_Datatype mpi_recvtypes[size];
+  for (int n = 0; n < size; ++n)
+    mpi_recvtypes[n] = abi2mpi_datatype(recvtypes[n]);
+  MPI_Request mpi_request;
+  ierr = MPI_Ialltoallw_c(sendbuf, mpi_sendcounts, mpi_sdispls, mpi_sendtypes,
+                          recvbuf, mpi_recvcounts, mpi_rdispls, mpi_recvtypes,
+                          abi2mpi_comm(comm), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Ibarrier(MPIABI_Comm comm, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_Ibarrier(abi2mpi_comm(comm), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Ibcast(void *buffer, int count, MPIABI_Datatype datatype, int root,
                   MPIABI_Comm comm, MPIABI_Request *request);
 int MPIABI_Ibcast_c(void *buffer, MPIABI_Count count, MPIABI_Datatype datatype,
