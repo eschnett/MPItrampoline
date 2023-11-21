@@ -3173,9 +3173,23 @@ int MPIABI_Ibarrier(MPIABI_Comm comm, MPIABI_Request *request) {
 }
 
 int MPIABI_Ibcast(void *buffer, int count, MPIABI_Datatype datatype, int root,
-                  MPIABI_Comm comm, MPIABI_Request *request);
+                  MPIABI_Comm comm, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_Ibcast(buffer, count, abi2mpi_datatype(datatype), root,
+                        abi2mpi_comm(comm), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Ibcast_c(void *buffer, MPIABI_Count count, MPIABI_Datatype datatype,
-                    int root, MPIABI_Comm comm, MPIABI_Request *request);
+                    int root, MPIABI_Comm comm, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_Ibcast_c(buffer, count, abi2mpi_datatype(datatype), root,
+                          abi2mpi_comm(comm), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Iexscan(const void *sendbuf, void *recvbuf, int count,
                    MPIABI_Datatype datatype, MPIABI_Op op, MPIABI_Comm comm,
                    MPIABI_Request *request);

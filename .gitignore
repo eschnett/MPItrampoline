@@ -1,1 +1,3 @@
-build/
+BUILD.sh
+build
+build-*
