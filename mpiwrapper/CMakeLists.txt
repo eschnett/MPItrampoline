@@ -25,6 +25,44 @@ endif()
 set(CMAKE_C_STANDARD 99)
 enable_language(C)
 
+# include(CheckCSourceCompiles)
+include(CheckFunctionExists)
+include(CheckIncludeFile)
+include(CheckSymbolExists)
+include(CheckTypeSize)
+
+check_include_file(mpi.h HAVE_MPI_H)
+check_include_file(mpi-ext.h HAVE_MPI_EXT_H)
+
+check_symbol_exists(MPI_INTEGER1 mpi.h HAVE_MPI_INTEGER1)
+check_symbol_exists(MPI_INTEGER2 mpi.h HAVE_MPI_INTEGER2)
+check_symbol_exists(MPI_INTEGER4 mpi.h HAVE_MPI_INTEGER4)
+check_symbol_exists(MPI_INTEGER8 mpi.h HAVE_MPI_INTEGER8)
+check_symbol_exists(MPI_INTEGER16 mpi.h HAVE_MPI_INTEGER16)
+
+check_symbol_exists(MPI_REAL1 mpi.h HAVE_MPI_REAL1)
+check_symbol_exists(MPI_REAL2 mpi.h HAVE_MPI_REAL2)
+check_symbol_exists(MPI_REAL4 mpi.h HAVE_MPI_REAL4)
+check_symbol_exists(MPI_REAL8 mpi.h HAVE_MPI_REAL8)
+check_symbol_exists(MPI_REAL16 mpi.h HAVE_MPI_REAL16)
+
+check_symbol_exists(MPI_COMPLEX2 mpi.h HAVE_MPI_COMPLEX2)
+check_symbol_exists(MPI_COMPLEX4 mpi.h HAVE_MPI_COMPLEX4)
+check_symbol_exists(MPI_COMPLEX8 mpi.h HAVE_MPI_COMPLEX8)
+check_symbol_exists(MPI_COMPLEX16 mpi.h HAVE_MPI_COMPLEX16)
+check_symbol_exists(MPI_COMPLEX32 mpi.h HAVE_MPI_COMPLEX32)
+
+check_symbol_exists(MPI_LOGICAL1 mpi.h HAVE_MPI_LOGICAL1)
+check_symbol_exists(MPI_LOGICAL2 mpi.h HAVE_MPI_LOGICAL2)
+check_symbol_exists(MPI_LOGICAL4 mpi.h HAVE_MPI_LOGICAL4)
+check_symbol_exists(MPI_LOGICAL8 mpi.h HAVE_MPI_LOGICAL8)
+check_symbol_exists(MPI_LOGICAL16 mpi.h HAVE_MPI_LOGICAL16)
+
+check_function_exists(MPIX_Query_cuda_support HAVE_MPIX_QUERY_CUDA_SUPPORT)
+check_function_exists(MPIX_Query_hip_support HAVE_MPIX_QUERY_HIP_SUPPORT)
+check_function_exists(MPIX_Query_rocm_support HAVE_MPIX_QUERY_ROCM_SUPPORT)
+check_function_exists(MPIX_Query_ze_support HAVE_MPIX_QUERY_ZE_SUPPORT)
+
 configure_file(mpiwrapper.h.in mpiwrapper.h @ONLY)
 
 add_library(mpiwrapper
@@ -33,6 +71,7 @@ add_library(mpiwrapper
 )
 target_include_directories(
   mpiwrapper
+  PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
   PUBLIC include ../mpiabi
 )
 set_target_properties(mpiwrapper PROPERTIES
