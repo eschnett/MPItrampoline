@@ -1057,7 +1057,7 @@ int (*MPIABI_Ineighbor_alltoallw_c_ptr)(
     MPIABI_Request *request);
 int (*MPIABI_Neighbor_allgather_ptr)(const void *sendbuf, int sendcount,
                                      MPIABI_Datatype sendtype, void *recvbuf,
-                                     MPIABI_Datatype recvtype,
+                                     int recvcount, MPIABI_Datatype recvtype,
                                      MPIABI_Comm comm);
 int (*MPIABI_Neighbor_allgather_c_ptr)(const void *sendbuf,
                                        MPIABI_Count sendcount,

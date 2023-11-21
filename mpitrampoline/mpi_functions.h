@@ -2186,9 +2186,10 @@ inline int MPI_Ineighbor_alltoallw_c(
 
 inline int MPI_Neighbor_allgather(const void *sendbuf, int sendcount,
                                   MPI_Datatype sendtype, void *recvbuf,
-                                  MPI_Datatype recvtype, MPI_Comm comm) {
+                                  int recvcount, MPI_Datatype recvtype,
+                                  MPI_Comm comm) {
   return (*MPIABI_Neighbor_allgather_ptr)(sendbuf, sendcount, sendtype, recvbuf,
-                                          recvtype, comm);
+                                          recvcount, recvtype, comm);
 }
 
 inline int MPI_Neighbor_allgather_c(const void *sendbuf, MPI_Count sendcount,

@@ -1041,7 +1041,8 @@ extern inline int MPI_Ineighbor_alltoallw_c(
     MPI_Request *request);
 extern inline int MPI_Neighbor_allgather(const void *sendbuf, int sendcount,
                                          MPI_Datatype sendtype, void *recvbuf,
-                                         MPI_Datatype recvtype, MPI_Comm comm);
+                                         int recvcount, MPI_Datatype recvtype,
+                                         MPI_Comm comm);
 extern inline int MPI_Neighbor_allgather_c(
     const void *sendbuf, MPI_Count sendcount, MPI_Datatype sendtype,
     void *recvbuf, MPI_Count recvcount, MPI_Datatype recvtype, MPI_Comm comm);

@@ -104,7 +104,7 @@ add_library(mpiwrapper
   mpiwrapper.h
   mpiwrapper.c
 )
-target_compile_options(mpiwrapper PRIVATE -Wall -Wextra -Wpedantic -fdiagnostics-show-option)
+target_compile_options(mpiwrapper PRIVATE -Wall -Wextra -fdiagnostics-show-option)
 target_include_directories(
   mpiwrapper
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}

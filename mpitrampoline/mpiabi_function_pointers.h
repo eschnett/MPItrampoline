@@ -1134,7 +1134,7 @@ extern int (*MPIABI_Ineighbor_alltoallw_c_ptr)(
     MPIABI_Request *request);
 extern int (*MPIABI_Neighbor_allgather_ptr)(const void *sendbuf, int sendcount,
                                             MPIABI_Datatype sendtype,
-                                            void *recvbuf,
+                                            void *recvbuf, int recvcount,
                                             MPIABI_Datatype recvtype,
                                             MPIABI_Comm comm);
 extern int (*MPIABI_Neighbor_allgather_c_ptr)(
