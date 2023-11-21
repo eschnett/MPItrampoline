@@ -1454,7 +1454,6 @@ extern inline int MPI_File_iread_shared_c(MPI_File fh, void *buf,
                                           MPI_Request *request);
 extern inline int MPI_File_iwrite(MPI_File fh, const void *buf, int count,
                                   MPI_Datatype datatype, MPI_Request *request);
-;
 extern inline int MPI_File_iwrite_all(MPI_File fh, const void *buf, int count,
                                       MPI_Datatype datatype,
                                       MPI_Request *request);
@@ -1473,7 +1472,6 @@ extern inline int MPI_File_iwrite_at_all_c(MPI_File fh, MPI_Offset offset,
                                            const void *buf, MPI_Count count,
                                            MPI_Datatype datatype,
                                            MPI_Request *request);
-;
 extern inline int MPI_File_iwrite_at_c(MPI_File fh, MPI_Offset offset,
                                        const void *buf, MPI_Count count,
                                        MPI_Datatype datatype,
@@ -1490,7 +1488,6 @@ extern inline int MPI_File_iwrite_shared_c(MPI_File fh, const void *buf,
                                            MPI_Request *request);
 extern inline int MPI_File_open(MPI_Comm comm, const char *filename, int amode,
                                 MPI_Info info, MPI_File *fh);
-;
 extern inline int MPI_File_preallocate(MPI_File fh, MPI_Offset size);
 extern inline int MPI_File_read(MPI_File fh, void *buf, int count,
                                 MPI_Datatype datatype, MPI_Status *status);
@@ -1501,7 +1498,6 @@ extern inline int MPI_File_read_all_begin(MPI_File fh, void *buf, int count,
 extern inline int MPI_File_read_all_begin_c(MPI_File fh, void *buf,
                                             MPI_Count count,
                                             MPI_Datatype datatype);
-;
 extern inline int MPI_File_read_all_c(MPI_File fh, void *buf, MPI_Count count,
                                       MPI_Datatype datatype,
                                       MPI_Status *status);

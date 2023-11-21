@@ -1429,7 +1429,6 @@ int (*MPIABI_File_iread_shared_c)(MPIABI_File fh, void *buf, MPIABI_Count count,
                                   MPIABI_Request *request);
 int (*MPIABI_File_iwrite)(MPIABI_File fh, const void *buf, int count,
                           MPIABI_Datatype datatype, MPIABI_Request *request);
-;
 int (*MPIABI_File_iwrite_all)(MPIABI_File fh, const void *buf, int count,
                               MPIABI_Datatype datatype,
                               MPIABI_Request *request);
@@ -1447,7 +1446,6 @@ int (*MPIABI_File_iwrite_at_all_c)(MPIABI_File fh, MPIABI_Offset offset,
                                    const void *buf, MPIABI_Count count,
                                    MPIABI_Datatype datatype,
                                    MPIABI_Request *request);
-;
 int (*MPIABI_File_iwrite_at_c)(MPIABI_File fh, MPIABI_Offset offset,
                                const void *buf, MPIABI_Count count,
                                MPIABI_Datatype datatype,
@@ -1462,7 +1460,6 @@ int (*MPIABI_File_iwrite_shared_c)(MPIABI_File fh, const void *buf,
                                    MPIABI_Request *request);
 int (*MPIABI_File_open)(MPIABI_Comm comm, const char *filename, int amode,
                         MPIABI_Info info, MPIABI_File *fh);
-;
 int (*MPIABI_File_preallocate)(MPIABI_File fh, MPIABI_Offset size);
 int (*MPIABI_File_read)(MPIABI_File fh, void *buf, int count,
                         MPIABI_Datatype datatype, MPIABI_Status *status);
@@ -1473,7 +1470,6 @@ int (*MPIABI_File_read_all_begin)(MPIABI_File fh, void *buf, int count,
 int (*MPIABI_File_read_all_begin_c)(MPIABI_File fh, void *buf,
                                     MPIABI_Count count,
                                     MPIABI_Datatype datatype);
-;
 int (*MPIABI_File_read_all_c)(MPIABI_File fh, void *buf, MPIABI_Count count,
                               MPIABI_Datatype datatype, MPIABI_Status *status);
 int (*MPIABI_File_read_all_end)(MPIABI_File fh, void *buf,
