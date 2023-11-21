@@ -30,6 +30,7 @@ configure_file(mpitrampoline.h.in mpitrampoline.h @ONLY)
 add_library(mpitrampoline
   mpi.h
   mpitrampoline.h
+  mpitrampoline.c
   mpi_constants.h
   mpi_functions.c
   mpi_functions.h

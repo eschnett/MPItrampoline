@@ -4277,13 +4277,44 @@ int MPIABI_Comm_idup_with_info(MPIABI_Comm comm, MPIABI_Info info,
   return mpi2abi_errorcode(ierr);
 }
 
-int MPIABI_Comm_rank(MPIABI_Comm comm, int *rank);
-int MPIABI_Comm_remote_group(MPIABI_Comm comm, MPIABI_Group *group);
-int MPIABI_Comm_remote_size(MPIABI_Comm comm, int *size);
+int MPIABI_Comm_rank(MPIABI_Comm comm, int *rank) {
+  int ierr = MPI_Comm_rank(abi2mpi_comm(comm), rank);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_remote_group(MPIABI_Comm comm, MPIABI_Group *group) {
+  MPI_Group mpi_group;
+  int ierr = MPI_Comm_remote_group(abi2mpi_comm(comm), &mpi_group);
+  *group = mpi2abi_group(mpi_group);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_remote_size(MPIABI_Comm comm, int *size) {
+  int ierr = MPI_Comm_remote_size(abi2mpi_comm(comm), size);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_set_attr(MPIABI_Comm comm, int comm_keyval,
-                         void *attribute_val);
-int MPIABI_Comm_set_info(MPIABI_Comm comm, MPIABI_Info info);
-int MPIABI_Comm_set_name(MPIABI_Comm comm, const char *comm_name);
+                         void *attribute_val) {
+  int ierr = MPI_Comm_set_attr(abi2mpi_comm(comm), comm_keyval, attribute_val);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_set_info(MPIABI_Comm comm, MPIABI_Info info) {
+  int ierr = MPI_Comm_set_info(abi2mpi_comm(comm), abi2mpi_info(info));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_set_name(MPIABI_Comm comm, const char *comm_name) {
+  int ierr = MPI_Comm_set_name(abi2mpi_comm(comm), comm_name);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_size(MPIABI_Comm comm, int *size) {
+  int ierr = MPI_Comm_size(abi2mpi_comm(comm), size);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_split(MPIABI_Comm comm, int color, int key,
                       MPIABI_Comm *newcomm);
 int MPIABI_Group_free(MPIABI_Group *group);

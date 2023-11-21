@@ -25,9 +25,6 @@ int mpiabi_loaded_version_patch = -1;
 
 static bool did_init_mpitrampoline = false;
 
-int (*MPIABI_Bsend_ptr)(const void *buf, int count, MPIABI_Datatype datatype,
-                        int dest, int tag, MPIABI_Comm comm);
-
 static void *load_library(const char *const libname) {
   void *handle;
   handle = dlopen(libname, dlopen_flags | RTLD_LOCAL | RTLD_DEEPBIND);

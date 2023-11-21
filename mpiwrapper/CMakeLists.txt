@@ -110,9 +110,9 @@ target_include_directories(
   PRIVATE ../mpiabi
 )
 target_link_libraries(mpiwrapper PRIVATE MPI::MPI_C Threads::Threads)
-set_target_properties(mpiwrapper PROPERTIES
-  VERSION ${PROJECT_VERSION}
-  SOVERSION ${SOVERSION}
-)
+#TODO set_target_properties(mpiwrapper PROPERTIES
+#TODO   VERSION ${PROJECT_VERSION}
+#TODO   SOVERSION ${SOVERSION}
+#TODO )
 
 install(TARGETS mpiwrapper LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
