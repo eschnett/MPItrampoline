@@ -22,7 +22,8 @@ check_language(C)
 if(NOT(CMAKE_C_COMPILER))
   message(FATAL_ERROR "No C support")
 endif()
-set(CMAKE_C_STANDARD 99)
+# set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD 11)        # for atomics; could use OpenMP instead
 enable_language(C)
 
 find_package(MPI REQUIRED)
