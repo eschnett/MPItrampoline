@@ -7,11 +7,14 @@
 #include <mpi-ext.h>
 #endif
 
+#include <pthread.h>
+
 #include <assert.h>
 #include <stdatomic.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
+#include <stdlib.h>
 #include <string.h>
 
 #if MPI_VERSION > 4 || (MPI_VERSION == 4 && MPI_SUBVERSION >= 0)
@@ -512,6 +515,52 @@ static MPIABI_Datatype mpi2abi_datatype(MPI_Datatype datatype) {
   return (MPIABI_Datatype)(uintptr_t)datatype;
 }
 
+static MPI_Errhandler abi2mpi_errhandler(MPIABI_Errhandler errhandler) {
+  switch ((uintptr_t)errhandler) {
+  case (uintptr_t)MPIABI_ERRHANDLER_NULL:
+    return MPI_ERRHANDLER_NULL;
+  case (uintptr_t)MPIABI_ERRORS_ARE_FATAL:
+    return MPI_ERRORS_ARE_FATAL;
+  case (uintptr_t)MPIABI_ERRORS_ABORT:
+    return MPI_ERRORS_ABORT;
+  case (uintptr_t)MPIABI_ERRORS_RETURN:
+    return MPI_ERRORS_RETURN;
+  default:
+    return (MPI_Errhandler)(uintptr_t)errhandler;
+  }
+}
+
+static MPIABI_Errhandler mpi2abi_errhandler(MPI_Errhandler errhandler) {
+  if (errhandler == MPI_ERRHANDLER_NULL)
+    return MPIABI_ERRHANDLER_NULL;
+  if (errhandler == MPI_ERRORS_ARE_FATAL)
+    return MPIABI_ERRORS_ARE_FATAL;
+  if (errhandler == MPI_ERRORS_ABORT)
+    return MPIABI_ERRORS_ABORT;
+  if (errhandler == MPI_ERRORS_RETURN)
+    return MPIABI_ERRORS_RETURN;
+  return (MPIABI_Errhandler)(uintptr_t)errhandler;
+}
+
+static MPI_Group abi2mpi_group(MPIABI_Group group) {
+  switch ((uintptr_t)group) {
+  case (uintptr_t)MPIABI_GROUP_EMPTY:
+    return MPI_GROUP_EMPTY;
+  case (uintptr_t)MPIABI_GROUP_NULL:
+    return MPI_GROUP_NULL;
+  default:
+    return (MPI_Group)(uintptr_t)group;
+  }
+}
+
+static MPIABI_Group mpi2abi_group(MPI_Group group) {
+  if (group == MPI_GROUP_EMPTY)
+    return MPIABI_GROUP_EMPTY;
+  if (group == MPI_GROUP_NULL)
+    return MPIABI_GROUP_NULL;
+  return (MPIABI_Group)(uintptr_t)group;
+}
+
 static MPI_Info abi2mpi_info(MPIABI_Info info) {
   switch ((uintptr_t)info) {
   case (uintptr_t)MPIABI_INFO_ENV:
@@ -869,7 +918,88 @@ static int abi2mpi_tag(int tag) {
 
 ////////////////////////////////////////////////////////////////////////////////
 
+// Prototype because this function is called by other functions
+
 int MPIABI_Comm_size(MPIABI_Comm comm, int *rank);
+
+////////////////////////////////////////////////////////////////////////////////
+
+// A C lambda function (aka callback)
+
+struct lambda {
+  void (*function)(void *argument);
+  void *argument;
+};
+
+////////////////////////////////////////////////////////////////////////////////
+
+// We need to attach actions to MPI requests. These actions are run
+// when the MPI request has completed. They are run after the MPI
+// request has completed but before the MPIABI request has completed.
+
+#define MAX_NUM_REQUEST_ACTIONS 10
+static atomic_int num_request_actions = 0;
+static pthread_mutex_t request_actions_mutex = PTHREAD_MUTEX_INITIALIZER;
+static MPIABI_Request request_action_keys[MAX_NUM_REQUEST_ACTIONS] = {
+    MPIABI_REQUEST_NULL, MPIABI_REQUEST_NULL, MPIABI_REQUEST_NULL,
+    MPIABI_REQUEST_NULL, MPIABI_REQUEST_NULL, MPIABI_REQUEST_NULL,
+    MPIABI_REQUEST_NULL, MPIABI_REQUEST_NULL, MPIABI_REQUEST_NULL,
+    MPIABI_REQUEST_NULL,
+};
+static struct lambda request_action_values[MAX_NUM_REQUEST_ACTIONS];
+
+static void request_action_insert(MPIABI_Request request,
+                                  struct lambda action) {
+  pthread_mutex_lock(&request_actions_mutex);
+  const int my_action =
+      atomic_fetch_add_explicit(&num_request_actions, 1, memory_order_relaxed);
+  assert(my_action < MAX_NUM_REQUEST_ACTIONS);
+  request_action_keys[my_action] = request;
+  request_action_values[my_action] = action;
+  pthread_mutex_unlock(&request_actions_mutex);
+}
+
+static void request_action_find(MPIABI_Request request, bool *restrict found,
+                                struct lambda *restrict action) {
+  *found = false;
+  pthread_mutex_lock(&request_actions_mutex);
+  for (int my_action = 0; my_action < num_request_actions; ++my_action) {
+    if (request_action_keys[my_action] == request) {
+      *found = true;
+      *action = request_action_values[my_action];
+      const int other_action =
+          atomic_load_explicit(&num_request_actions, memory_order_relaxed) - 1;
+      if (my_action < other_action) {
+        request_action_keys[my_action] = request_action_keys[other_action];
+        request_action_values[my_action] = request_action_values[other_action];
+      }
+      atomic_store_explicit(&num_request_actions, other_action,
+                            memory_order_relaxed);
+      break;
+    }
+  }
+  pthread_mutex_unlock(&request_actions_mutex);
+}
+
+static void request_action_apply_slow(MPIABI_Request request) {
+  bool found;
+  struct lambda action;
+  request_action_find(request, &found, &action);
+  if (found)
+    action.function(action.argument);
+}
+
+static inline bool request_actions_empty() {
+  return __builtin_expect(atomic_load(&num_request_actions) == 0, true);
+}
+
+static inline void request_action_apply(MPIABI_Request request) {
+  if (request == MPIABI_REQUEST_NULL)
+    return;
+  if (__builtin_expect(atomic_load(&num_request_actions) == 0, true))
+    return;
+  request_action_apply_slow(request);
+}
 
 ////////////////////////////////////////////////////////////////////////////////
 
@@ -950,6 +1080,7 @@ int MPIABI_Buffer_iflush(MPIABI_Request *request) {
 int MPIABI_Cancel(MPIABI_Request *request) {
   MPI_Request mpi_request = abi2mpi_request(*request);
   int ierr = MPI_Cancel(&mpi_request);
+  request_action_apply(*request);
   *request = mpi2abi_request(mpi_request);
   return mpi2abi_errorcode(ierr);
 }
@@ -1289,6 +1420,7 @@ int MPIABI_Recv_init_c(void *buf, MPIABI_Count count, MPIABI_Datatype datatype,
 int MPIABI_Request_free(MPIABI_Request *request) {
   MPI_Request mpi_request = abi2mpi_request(*request);
   int ierr = MPI_Request_free(&mpi_request);
+  request_action_apply(*request);
   *request = mpi2abi_request(mpi_request);
   return mpi2abi_errorcode(ierr);
 }
@@ -1592,8 +1724,11 @@ int MPIABI_Test(MPIABI_Request *request, int *flag, MPIABI_Status *status) {
   MPI_Request mpi_request = abi2mpi_request(*request);
   MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
   int ierr = MPI_Test(&mpi_request, flag, mpi_status);
-  *request = mpi2abi_request(mpi_request);
-  mpi2abi_statusptr(mpi_status);
+  if (*flag) {
+    request_action_apply(*request);
+    *request = mpi2abi_request(mpi_request);
+    mpi2abi_statusptr(mpi_status);
+  }
   return mpi2abi_errorcode(ierr);
 }
 
@@ -1605,57 +1740,67 @@ int MPIABI_Test_cancelled(const MPIABI_Status *status, int *flag) {
 
 int MPIABI_Testall(int count, MPIABI_Request array_of_requests[], int *flag,
                    MPIABI_Status array_of_statuses[]) {
+  MPI_Request mpi_array_of_requests[count];
   for (int n = 0; n < count; ++n)
-    ((MPI_Request *)array_of_requests)[n] =
-        abi2mpi_request(array_of_requests[n]);
+    mpi_array_of_requests[n] = abi2mpi_request(array_of_requests[n]);
   bool ignore_statuses = array_of_statuses == MPIABI_STATUSES_IGNORE;
-  int ierr = MPI_Testall(count, (MPI_Request *)array_of_requests, flag,
+  int ierr = MPI_Testall(count, mpi_array_of_requests, flag,
                          ignore_statuses ? MPI_STATUSES_IGNORE
                                          : (MPI_Status *)array_of_statuses);
-  for (int n = count - 1; n >= 0; --n)
-    array_of_requests[n] =
-        mpi2abi_request(((MPI_Request *)array_of_requests)[n]);
-  if (!ignore_statuses && *flag)
-    for (int n = count - 1; n >= 0; --n)
-      array_of_statuses[n] =
-          mpi2abi_status(((MPI_Status *)array_of_statuses)[n]);
+  if (*flag) {
+    const bool skip_request_actions = request_actions_empty();
+    for (int n = 0; n < count; ++n) {
+      if (!skip_request_actions)
+        request_action_apply(array_of_requests[n]);
+      array_of_requests[n] = mpi2abi_request(mpi_array_of_requests[n]);
+    }
+    if (!ignore_statuses)
+      for (int n = count - 1; n >= 0; --n)
+        array_of_statuses[n] =
+            mpi2abi_status(((MPI_Status *)array_of_statuses)[n]);
+  }
   return mpi2abi_errorcode(ierr);
 }
 
 int MPIABI_Testany(int count, MPIABI_Request array_of_requests[], int *index,
                    int *flag, MPIABI_Status *status) {
+  MPI_Request mpi_array_of_requests[count];
   for (int n = 0; n < count; ++n)
-    ((MPI_Request *)array_of_requests)[n] =
-        abi2mpi_request(array_of_requests[n]);
+    mpi_array_of_requests[n] = abi2mpi_request(array_of_requests[n]);
   MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
-  int ierr = MPI_Testany(count, (MPI_Request *)array_of_requests, index, flag,
-                         mpi_status);
-  for (int n = count - 1; n >= 0; --n)
-    array_of_requests[n] =
-        mpi2abi_request(((MPI_Request *)array_of_requests)[n]);
-  if (*flag)
+  int ierr = MPI_Testany(count, mpi_array_of_requests, index, flag, mpi_status);
+  if (*flag) {
+    request_action_apply(array_of_requests[*index]);
+    array_of_requests[*index] = mpi2abi_request(mpi_array_of_requests[*index]);
     mpi2abi_statusptr(mpi_status);
+  }
   return mpi2abi_errorcode(ierr);
 }
 
 int MPIABI_Testsome(int incount, MPIABI_Request array_of_requests[],
                     int *outcount, int array_of_indices[],
                     MPIABI_Status array_of_statuses[]) {
+  MPI_Request mpi_array_of_requests[incount];
   for (int n = 0; n < incount; ++n)
-    ((MPI_Request *)array_of_requests)[n] =
-        abi2mpi_request(array_of_requests[n]);
+    mpi_array_of_requests[n] = abi2mpi_request(array_of_requests[n]);
   bool ignore_statuses = array_of_statuses == MPIABI_STATUSES_IGNORE;
   int ierr = MPI_Testsome(
-      incount, (MPI_Request *)array_of_requests, outcount, array_of_indices,
+      incount, mpi_array_of_requests, outcount, array_of_indices,
       ignore_statuses ? MPI_STATUSES_IGNORE : (MPI_Status *)array_of_statuses);
-  for (int n = incount - 1; n >= 0; --n)
-    array_of_requests[n] =
-        mpi2abi_request(((MPI_Request *)array_of_requests)[n]);
   *outcount = mpi2abi_count(*outcount);
-  if (!ignore_statuses && *outcount != MPIABI_UNDEFINED)
-    for (int n = *outcount - 1; n >= 0; --n)
-      array_of_statuses[n] =
-          mpi2abi_status(((MPI_Status *)array_of_statuses)[n]);
+  if (*outcount != MPIABI_UNDEFINED && *outcount > 0) {
+    const bool skip_request_actions = request_actions_empty();
+    for (int n = 0; n < *outcount; ++n) {
+      const int index = array_of_indices[n];
+      if (!skip_request_actions)
+        request_action_apply(array_of_requests[index]);
+      array_of_requests[index] = mpi2abi_request(mpi_array_of_requests[index]);
+    }
+    if (!ignore_statuses)
+      for (int n = *outcount - 1; n >= 0; --n)
+        array_of_statuses[n] =
+            mpi2abi_status(((MPI_Status *)array_of_statuses)[n]);
+  }
   return mpi2abi_errorcode(ierr);
 }
 
@@ -1663,6 +1808,7 @@ int MPIABI_Wait(MPIABI_Request *request, MPIABI_Status *status) {
   MPI_Request mpi_request = abi2mpi_request(*request);
   MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
   int ierr = MPI_Wait(&mpi_request, mpi_status);
+  request_action_apply(*request);
   *request = mpi2abi_request(mpi_request);
   mpi2abi_statusptr(mpi_status);
   return mpi2abi_errorcode(ierr);
@@ -1670,16 +1816,19 @@ int MPIABI_Wait(MPIABI_Request *request, MPIABI_Status *status) {
 
 int MPIABI_Waitall(int count, MPIABI_Request array_of_requests[],
                    MPIABI_Status array_of_statuses[]) {
+  MPI_Request mpi_array_of_requests[count];
   for (int n = 0; n < count; ++n)
-    ((MPI_Request *)array_of_requests)[n] =
-        abi2mpi_request(array_of_requests[n]);
+    mpi_array_of_requests[n] = abi2mpi_request(array_of_requests[n]);
   bool ignore_statuses = array_of_statuses == MPIABI_STATUSES_IGNORE;
-  int ierr = MPI_Waitall(count, (MPI_Request *)array_of_requests,
+  int ierr = MPI_Waitall(count, mpi_array_of_requests,
                          ignore_statuses ? MPI_STATUSES_IGNORE
                                          : (MPI_Status *)array_of_statuses);
-  for (int n = count - 1; n >= 0; --n)
-    array_of_requests[n] =
-        mpi2abi_request(((MPI_Request *)array_of_requests)[n]);
+  const bool skip_request_actions = request_actions_empty();
+  for (int n = 0; n < count; ++n) {
+    if (!skip_request_actions)
+      request_action_apply(array_of_requests[n]);
+    array_of_requests[n] = mpi2abi_request(mpi_array_of_requests[n]);
+  }
   if (!ignore_statuses)
     for (int n = count - 1; n >= 0; --n)
       array_of_statuses[n] =
@@ -1689,15 +1838,13 @@ int MPIABI_Waitall(int count, MPIABI_Request array_of_requests[],
 
 int MPIABI_Waitany(int count, MPIABI_Request array_of_requests[], int *index,
                    MPIABI_Status *status) {
+  MPI_Request mpi_array_of_requests[count];
   for (int n = 0; n < count; ++n)
-    ((MPI_Request *)array_of_requests)[n] =
-        abi2mpi_request(array_of_requests[n]);
+    mpi_array_of_requests[n] = abi2mpi_request(array_of_requests[n]);
   MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
-  int ierr =
-      MPI_Waitany(count, (MPI_Request *)array_of_requests, index, mpi_status);
-  for (int n = count - 1; n >= 0; --n)
-    array_of_requests[n] =
-        mpi2abi_request(((MPI_Request *)array_of_requests)[n]);
+  int ierr = MPI_Waitany(count, mpi_array_of_requests, index, mpi_status);
+  request_action_apply(array_of_requests[*index]);
+  array_of_requests[*index] = mpi2abi_request(mpi_array_of_requests[*index]);
   mpi2abi_statusptr(mpi_status);
   return mpi2abi_errorcode(ierr);
 }
@@ -1705,21 +1852,27 @@ int MPIABI_Waitany(int count, MPIABI_Request array_of_requests[], int *index,
 int MPIABI_Waitsome(int incount, MPIABI_Request array_of_requests[],
                     int *outcount, int array_of_indices[],
                     MPIABI_Status array_of_statuses[]) {
+  MPI_Request mpi_array_of_requests[incount];
   for (int n = 0; n < incount; ++n)
-    ((MPI_Request *)array_of_requests)[n] =
-        abi2mpi_request(array_of_requests[n]);
+    mpi_array_of_requests[n] = abi2mpi_request(array_of_requests[n]);
   bool ignore_statuses = array_of_statuses == MPIABI_STATUSES_IGNORE;
   int ierr = MPI_Waitsome(
-      incount, (MPI_Request *)array_of_requests, outcount, array_of_indices,
+      incount, mpi_array_of_requests, outcount, array_of_indices,
       ignore_statuses ? MPI_STATUSES_IGNORE : (MPI_Status *)array_of_statuses);
-  for (int n = incount - 1; n >= 0; --n)
-    array_of_requests[n] =
-        mpi2abi_request(((MPI_Request *)array_of_requests)[n]);
   *outcount = mpi2abi_count(*outcount);
-  if (!ignore_statuses && *outcount != MPIABI_UNDEFINED)
-    for (int n = *outcount - 1; n >= 0; --n)
-      array_of_statuses[n] =
-          mpi2abi_status(((MPI_Status *)array_of_statuses)[n]);
+  if (*outcount != MPIABI_UNDEFINED && *outcount > 0) {
+    const bool skip_request_actions = request_actions_empty();
+    for (int n = 0; n < *outcount; ++n) {
+      const int index = array_of_indices[n];
+      if (!skip_request_actions)
+        request_action_apply(array_of_requests[index]);
+      array_of_requests[index] = mpi2abi_request(mpi_array_of_requests[index]);
+    }
+    if (!ignore_statuses)
+      for (int n = *outcount - 1; n >= 0; --n)
+        array_of_statuses[n] =
+            mpi2abi_status(((MPI_Status *)array_of_statuses)[n]);
+  }
   return mpi2abi_errorcode(ierr);
 }
 
@@ -3954,32 +4107,160 @@ int MPIABI_Type_get_value_index(MPIABI_Datatype value_type,
 
 // A.3.5 Groups, Contexts, Communicators, and Caching C Bindings
 
-int MPIABI_Comm_compare(MPIABI_Comm comm1, MPIABI_Comm comm2, int *result);
+int MPIABI_Comm_compare(MPIABI_Comm comm1, MPIABI_Comm comm2, int *result) {
+  int ierr = MPI_Comm_compare(abi2mpi_comm(comm1), abi2mpi_comm(comm2), result);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_create(MPIABI_Comm comm, MPIABI_Group group,
-                       MPIABI_Comm *newcomm);
+                       MPIABI_Comm *newcomm) {
+  MPI_Comm mpi_newcomm;
+  int ierr =
+      MPI_Comm_create(abi2mpi_comm(comm), abi2mpi_group(group), &mpi_newcomm);
+  *newcomm = mpi2abi_comm(mpi_newcomm);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_create_from_group(MPIABI_Group group, const char *stringtag,
                                   MPIABI_Info info,
                                   MPIABI_Errhandler errhandler,
-                                  MPIABI_Comm *newcomm);
+                                  MPIABI_Comm *newcomm) {
+  MPI_Comm mpi_newcomm;
+  int ierr = MPI_Comm_create_from_group(
+      abi2mpi_group(group), stringtag, abi2mpi_info(info),
+      abi2mpi_errhandler(errhandler), &mpi_newcomm);
+  *newcomm = mpi2abi_comm(mpi_newcomm);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_create_group(MPIABI_Comm comm, MPIABI_Group group, int tag,
-                             MPIABI_Comm *newcomm);
+                             MPIABI_Comm *newcomm) {
+  MPI_Comm mpi_newcomm;
+  int ierr = MPI_Comm_create_group(abi2mpi_comm(comm), abi2mpi_group(group),
+                                   tag, &mpi_newcomm);
+  *newcomm = mpi2abi_comm(mpi_newcomm);
+  return mpi2abi_errorcode(ierr);
+}
+
+struct abi_Comm_create_keyval_state {
+  MPIABI_Comm_copy_attr_function *abi_comm_copy_attr_fn;
+  MPIABI_Comm_delete_attr_function *abi_comm_delete_attr_fn;
+  void *abi_extra_state;
+};
+static int mpi_Comm_create_keyval_copy_attr_function(
+    MPI_Comm oldcomm, int comm_keyval, void *extra_state,
+    void *attribute_val_in, void *attribute_val_out, int *flag) {
+  const struct abi_Comm_create_keyval_state *mpi_extra_state = extra_state;
+  return mpi_extra_state->abi_comm_copy_attr_fn(
+      mpi2abi_comm(oldcomm), comm_keyval, mpi_extra_state->abi_extra_state,
+      attribute_val_in, attribute_val_out, flag);
+}
+static int mpi_Comm_create_keyval_delete_attr_function(MPI_Comm comm,
+                                                       int comm_keyval,
+                                                       void *attribute_val,
+                                                       void *extra_state) {
+  const struct abi_Comm_create_keyval_state *mpi_extra_state = extra_state;
+  return mpi_extra_state->abi_comm_delete_attr_fn(
+      mpi2abi_comm(comm), comm_keyval, attribute_val,
+      mpi_extra_state->abi_extra_state);
+}
 int MPIABI_Comm_create_keyval(
     MPIABI_Comm_copy_attr_function *comm_copy_attr_fn,
     MPIABI_Comm_delete_attr_function *comm_delete_attr_fn, int *comm_keyval,
-    void *extra_state);
-int MPIABI_Comm_delete_attr(MPIABI_Comm comm, int comm_keyval);
-int MPIABI_Comm_dup(MPIABI_Comm comm, MPIABI_Comm *newcomm);
+    void *extra_state) {
+  struct abi_Comm_create_keyval_state *mpi_extra_state =
+      malloc(sizeof *mpi_extra_state);
+  mpi_extra_state->abi_comm_copy_attr_fn = comm_copy_attr_fn;
+  mpi_extra_state->abi_comm_delete_attr_fn = comm_delete_attr_fn;
+  mpi_extra_state->abi_extra_state = extra_state;
+  int ierr = MPI_Comm_create_keyval(mpi_Comm_create_keyval_copy_attr_function,
+                                    mpi_Comm_create_keyval_delete_attr_function,
+                                    comm_keyval, mpi_extra_state);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_delete_attr(MPIABI_Comm comm, int comm_keyval) {
+  int ierr = MPI_Comm_delete_attr(abi2mpi_comm(comm), comm_keyval);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_dup(MPIABI_Comm comm, MPIABI_Comm *newcomm) {
+  MPI_Comm mpi_newcomm;
+  int ierr = MPI_Comm_dup(abi2mpi_comm(comm), &mpi_newcomm);
+  *newcomm = mpi2abi_comm(mpi_newcomm);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_dup_with_info(MPIABI_Comm comm, MPIABI_Info info,
-                              MPIABI_Comm *newcomm);
-int MPIABI_Comm_free(MPIABI_Comm *comm);
-int MPIABI_Comm_get_name(MPIABI_Comm comm, char *comm_name, int *resultlen);
-int MPIABI_Comm_free_keyval(int *comm_keyval);
+                              MPIABI_Comm *newcomm) {
+  MPI_Comm mpi_newcomm;
+  int ierr = MPI_Comm_dup_with_info(abi2mpi_comm(comm), abi2mpi_info(info),
+                                    &mpi_newcomm);
+  *newcomm = mpi2abi_comm(mpi_newcomm);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_free(MPIABI_Comm *comm) {
+  MPI_Comm mpi_comm = abi2mpi_comm(*comm);
+  int ierr = MPI_Comm_free(&mpi_comm);
+  *comm = mpi2abi_comm(mpi_comm);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_get_name(MPIABI_Comm comm, char *comm_name, int *resultlen) {
+  int ierr = MPI_Comm_get_name(abi2mpi_comm(comm), comm_name, resultlen);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_free_keyval(int *comm_keyval) {
+  // We do not free the keyval wrappers
+  int ierr = MPI_Comm_free_keyval(comm_keyval);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_get_attr(MPIABI_Comm comm, int comm_keyval, void *attribute_val,
-                         int *flag);
-int MPIABI_Comm_get_info(MPIABI_Comm comm, MPIABI_Info *info_used);
-int MPIABI_Comm_group(MPIABI_Comm comm, MPIABI_Group *group);
+                         int *flag) {
+  int ierr =
+      MPI_Comm_get_attr(abi2mpi_comm(comm), comm_keyval, attribute_val, flag);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_get_info(MPIABI_Comm comm, MPIABI_Info *info_used) {
+  MPI_Info mpi_info_used;
+  int ierr = MPI_Comm_get_info(abi2mpi_comm(comm), &mpi_info_used);
+  *info_used = mpi2abi_info(mpi_info_used);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_group(MPIABI_Comm comm, MPIABI_Group *group) {
+  MPI_Group mpi_group;
+  int ierr = MPI_Comm_group(abi2mpi_comm(comm), &mpi_group);
+  *group = mpi2abi_group(mpi_group);
+  return mpi2abi_errorcode(ierr);
+}
+
+struct finish_Comm_idup_state {
+  MPIABI_Comm *newcomm;
+  MPI_Comm mpi_newcomm;
+};
+static void finish_Comm_idup(void *state1) {
+  struct finish_Comm_idup_state *state = state1;
+  *state->newcomm = mpi2abi_comm(state->mpi_newcomm);
+  free(state);
+}
 int MPIABI_Comm_idup(MPIABI_Comm comm, MPIABI_Comm *newcomm,
-                     MPIABI_Request *request);
+                     MPIABI_Request *request) {
+  struct finish_Comm_idup_state *finish_Comm_idup_state =
+      malloc(sizeof *finish_Comm_idup_state);
+  MPI_Request mpi_request;
+  int ierr = MPI_Comm_idup(abi2mpi_comm(comm),
+                           &finish_Comm_idup_state->mpi_newcomm, &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  struct lambda action = {finish_Comm_idup, finish_Comm_idup_state};
+  request_action_insert(*request, action);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_idup_with_info(MPIABI_Comm comm, MPIABI_Info info,
                                MPIABI_Comm *newcomm, MPIABI_Request *request);
 int MPIABI_Comm_rank(MPIABI_Comm comm, int *rank);

@@ -23,14 +23,18 @@ if(NOT(CMAKE_C_COMPILER))
   message(FATAL_ERROR "No C support")
 endif()
 # set(CMAKE_C_STANDARD 99)
-set(CMAKE_C_STANDARD 11)        # for atomics; could use OpenMP instead
+set(CMAKE_C_STANDARD 11)        # for atomics and mutexes; could use OpenMP instead
 enable_language(C)
 
-find_package(MPI REQUIRED)
-message(STATUS "Using MPIEXEC_EXECUTABLE: ${MPIEXEC_EXECUTABLE}")
-if(${MPIEXEC_EXECUTABLE} STREQUAL "MPIEXEC_EXECUTABLE-NOTFOUND")
-  message(FATAL_ERROR "MPIEXEC_EXECUTABLE not set. Set the cmake variable MPIEXEC_EXECUTABLE to point to mpiexec.")
-endif()
+# find_package(MPI REQUIRED)
+# message(STATUS "Using MPIEXEC_EXECUTABLE: ${MPIEXEC_EXECUTABLE}")
+# if(${MPIEXEC_EXECUTABLE} STREQUAL "MPIEXEC_EXECUTABLE-NOTFOUND")
+#   message(FATAL_ERROR "MPIEXEC_EXECUTABLE not set. Set the cmake variable MPIEXEC_EXECUTABLE to point to mpiexec.")
+# endif()
+
+include(FindMPI)
+# include(FindOpenMP)
+include(FindThreads)
 
 # include(CheckCSourceCompiles)
 include(CheckFunctionExists)
@@ -101,15 +105,15 @@ configure_file(mpiwrapper.h.in mpiwrapper.h @ONLY)
 
 add_library(mpiwrapper
   MODULE
-  mpiwrapper.c
   mpiwrapper.h
+  mpiwrapper.c
 )
 target_include_directories(
   mpiwrapper
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
   PUBLIC include ../mpiabi
 )
-target_link_libraries(mpiwrapper PRIVATE MPI::MPI_C)
+target_link_libraries(mpiwrapper PRIVATE MPI::MPI_C Threads::Threads)
 set_target_properties(mpiwrapper PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION ${SOVERSION}
