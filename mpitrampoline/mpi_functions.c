@@ -872,6 +872,7 @@ extern inline int MPI_Comm_set_attr(MPI_Comm comm, int comm_keyval,
                                     void *attribute_val);
 extern inline int MPI_Comm_set_info(MPI_Comm comm, MPI_Info info);
 extern inline int MPI_Comm_set_name(MPI_Comm comm, const char *comm_name);
+extern inline int MPI_Comm_size(MPI_Comm comm, int *size);
 extern inline int MPI_Comm_split(MPI_Comm comm, int color, int key,
                                  MPI_Comm *newcomm);
 extern inline int MPI_Group_free(MPI_Group *group);

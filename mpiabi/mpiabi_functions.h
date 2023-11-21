@@ -820,6 +820,7 @@ int MPIABI_Comm_set_attr(MPIABI_Comm comm, int comm_keyval,
                          void *attribute_val);
 int MPIABI_Comm_set_info(MPIABI_Comm comm, MPIABI_Info info);
 int MPIABI_Comm_set_name(MPIABI_Comm comm, const char *comm_name);
+int MPIABI_Comm_size(MPIABI_Comm comm, int *size);
 int MPIABI_Comm_split(MPIABI_Comm comm, int color, int key,
                       MPIABI_Comm *newcomm);
 int MPIABI_Group_free(MPIABI_Group *group);

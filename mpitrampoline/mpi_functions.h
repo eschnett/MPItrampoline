@@ -1751,6 +1751,10 @@ inline int MPI_Comm_set_name(MPI_Comm comm, const char *comm_name) {
   return MPIABI_Comm_set_name(comm, comm_name);
 }
 
+inline int MPI_Comm_size(MPI_Comm comm, int *size) {
+  return MPIABI_Comm_size(comm, size);
+}
+
 inline int MPI_Comm_split(MPI_Comm comm, int color, int key,
                           MPI_Comm *newcomm) {
   return MPIABI_Comm_split(comm, color, key, newcomm);

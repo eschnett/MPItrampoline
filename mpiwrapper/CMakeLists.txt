@@ -25,37 +25,47 @@ endif()
 set(CMAKE_C_STANDARD 99)
 enable_language(C)
 
+find_package(MPI REQUIRED)
+message(STATUS "Using MPIEXEC_EXECUTABLE: ${MPIEXEC_EXECUTABLE}")
+if(${MPIEXEC_EXECUTABLE} STREQUAL "MPIEXEC_EXECUTABLE-NOTFOUND")
+  message(FATAL_ERROR "MPIEXEC_EXECUTABLE not set. Set the cmake variable MPIEXEC_EXECUTABLE to point to mpiexec.")
+endif()
+
 # include(CheckCSourceCompiles)
 include(CheckFunctionExists)
 include(CheckIncludeFile)
+include(CheckIncludeFiles)
 include(CheckSymbolExists)
 include(CheckTypeSize)
 
 check_include_file(mpi.h HAVE_MPI_H)
-check_include_file(mpi-ext.h HAVE_MPI_EXT_H)
+# OpenMPI 5.0.0 does not allow including `mpi-ext.h` without first
+# including `mpi.h` <https://github.com/open-mpi/ompi/issues/12111>
+# check_include_file(mpi-ext.h HAVE_MPI_EXT_H)
+check_include_files("mpi.h;mpi-ext.h" HAVE_MPI_EXT_H)
 
 list(APPEND CMAKE_EXTRA_INCLUDE_FILES mpi.h)
 
-check_type_size(uintptr_t SIZEOF_UINTPTR_T)
+# check_type_size(uintptr_t SIZEOF_UINTPTR_T)
 
-check_type_size(MPI_Aint SIZEOF_MPI_AINT)
-check_type_size(MPI_Count SIZEOF_MPI_COUNT)
-check_type_size(MPI_Fint SIZEOF_MPI_FINT)
-check_type_size(MPI_Offset SIZEOF_MPI_OFFSET)
-check_type_size(MPI_Status SIZEOF_MPI_STATUS)
-check_type_size(MPI_F08_status SIZEOF_MPI_F08_STATUS)
+# check_type_size(MPI_Aint SIZEOF_MPI_AINT)
+# check_type_size(MPI_Count SIZEOF_MPI_COUNT)
+# check_type_size(MPI_Fint SIZEOF_MPI_FINT)
+# check_type_size(MPI_Offset SIZEOF_MPI_OFFSET)
+# check_type_size(MPI_Status SIZEOF_MPI_STATUS)
+# check_type_size(MPI_F08_status SIZEOF_MPI_F08_STATUS)
 
-check_type_size(MPI_Comm SIZEOF_MPI_COMM)
-check_type_size(MPI_Datatype SIZEOF_MPI_DATATYPE)
-check_type_size(MPI_Errhandler SIZEOF_MPI_ERRHANDLER)
-check_type_size(MPI_File SIZEOF_MPI_FILE)
-check_type_size(MPI_Group SIZEOF_MPI_GROUP)
-check_type_size(MPI_Info SIZEOF_MPI_INFO)
-check_type_size(MPI_Message SIZEOF_MPI_MESSAGE)
-check_type_size(MPI_Op SIZEOF_MPI_OP)
-check_type_size(MPI_Request SIZEOF_MPI_REQUEST)
-check_type_size(MPI_Session SIZEOF_MPI_SESSION)
-check_type_size(MPI_Win SIZEOF_MPI_WIN)
+# check_type_size(MPI_Comm SIZEOF_MPI_COMM)
+# check_type_size(MPI_Datatype SIZEOF_MPI_DATATYPE)
+# check_type_size(MPI_Errhandler SIZEOF_MPI_ERRHANDLER)
+# check_type_size(MPI_File SIZEOF_MPI_FILE)
+# check_type_size(MPI_Group SIZEOF_MPI_GROUP)
+# check_type_size(MPI_Info SIZEOF_MPI_INFO)
+# check_type_size(MPI_Message SIZEOF_MPI_MESSAGE)
+# check_type_size(MPI_Op SIZEOF_MPI_OP)
+# check_type_size(MPI_Request SIZEOF_MPI_REQUEST)
+# check_type_size(MPI_Session SIZEOF_MPI_SESSION)
+# check_type_size(MPI_Win SIZEOF_MPI_WIN)
 
 check_symbol_exists(MPI_INTEGER1 mpi.h HAVE_MPI_INTEGER1)
 check_symbol_exists(MPI_INTEGER2 mpi.h HAVE_MPI_INTEGER2)
@@ -89,6 +99,7 @@ check_function_exists(MPIX_Query_ze_support HAVE_MPIX_QUERY_ZE_SUPPORT)
 configure_file(mpiwrapper.h.in mpiwrapper.h @ONLY)
 
 add_library(mpiwrapper
+  MODULE
   mpiwrapper.c
   mpiwrapper.h
 )
@@ -97,6 +108,7 @@ target_include_directories(
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
   PUBLIC include ../mpiabi
 )
+target_link_libraries(mpiwrapper PRIVATE MPI::MPI_C)
 set_target_properties(mpiwrapper PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION ${SOVERSION}
