@@ -129,6 +129,6 @@ jobs:
           return 0;
         }
         EOF
-        mpicc -c hello.c
-        mpicc -o hello hello.o
+        /usr/local/bin/mpicc -c hello.c
+        /usr/local/bin/mpicc -o hello hello.o
         mpiexec -n 3 ./hello
