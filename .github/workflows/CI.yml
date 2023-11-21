@@ -10,13 +10,14 @@ env:
   BUILD_TYPE: Debug
 
 jobs:
-  mpiwrapper:
+  build:
     strategy:
       matrix:
         os: [ubuntu-22.04]
         # OpenMPI is too far away from MPI 4
         # mpi: [MPICH, OpenMPI]
         mpi: [MPICH]
+        shared: [shared-off, shared-on]
 
     runs-on: ${{matrix.os}}
 
@@ -58,102 +59,51 @@ jobs:
         path: /usr/local
         key: ${{steps.cache.cache-primary-key}}
 
-    - name: Configure
+    - name: Configure MPIwrapper
       working-directory: ${{github.workspace}}/mpiwrapper
       run: |
         cmake \
             -B ${{github.workspace}}/build \
-            -DCMAKE_BUILD_TYPE=Debug \
             -DCMAKE_C_COMPILER=mpicc \
             -DCMAKE_INSTALL_PREFIX=$HOME/mpiwrapper-${{matrix.mpi}}
 
-    - name: Build
+    - name: Build MPIwrapper
       working-directory: ${{github.workspace}}/mpiwrapper
-      run: cmake --build ${{github.workspace}}/build --verbose
+      run: cmake --build ${{github.workspace}}/build --config Debug
 
     # - name: Test
     #   working-directory: ${{github.workspace}}/build
     #   run: ctest -C ${{env.BUILD_TYPE}}
 
-    - name: Install
+    - name: Install MPIwrapper
       working-directory: ${{github.workspace}}/mpiwrapper
-      run: cmake --install ${{github.workspace}}/build
+      run: cmake --install ${{github.workspace}}/build --config Debug
 
-    # - name: Test
-    #   run: |
-    #     cat >hello.c <<EOF
-    #     %:include <mpi.h>
-    #     %:include <stdio.h>
-    #     int main(int argc, char **argv) {
-    #       MPI_Init(&argc, &argv);
-    #       int size, rank;
-    #       MPI_Comm_size(MPI_COMM_WORLD, &size);
-    #       MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    #       for (int n=0; n<size; ++n) {
-    #         if (rank == n)
-    #           printf("Hello from process %d/%d\n", rank, size);
-    #         MPI_Barrier(MPI_COMM_WORLD);
-    #       }
-    #       MPI_Finalize();
-    #       return 0;
-    #     }
-    #     EOF
-    #     cc -I$HOME/mpitrampoline/include -c hello.c
-    #     cc -L$HOME/mpitrampoline/lib -o hello hello.o -lmpitrampoline
-    #     mpiexec -n 3 ./hello
-
-  mpitrampoline:
-    strategy:
-      matrix:
-        os: [ubuntu-22.04]
-        shared: [shared-off, shared-on]
-
-    runs-on: ${{matrix.os}}
-
-    steps:
-    - uses: actions/checkout@v4
-
-    - name: Configure
+    - name: Configure MPItrampoline
       working-directory: ${{github.workspace}}/mpitrampoline
       run: |
         shared=$(echo ${{matrix.shared}} | sed -e 's/shared-//')
         cmake \
             -B ${{github.workspace}}/build \
             -DBUILD_SHARED_LIBS=${shared} \
-            -DCMAKE_BUILD_TYPE=Debug \
             -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
 
-    - name: Build
+    - name: Build MPItrampoline
       working-directory: ${{github.workspace}}/mpitrampoline
-      run: cmake --build ${{github.workspace}}/build --verbose
+      run: cmake --build ${{github.workspace}}/build --config Debug
 
     # - name: Test
     #   working-directory: ${{github.workspace}}/build,
     #   run: ctest -C ${{env.BUILD_TYPE}}
 
-    - name: Install
+    - name: Install MPItrampoline
       working-directory: ${{github.workspace}}/mpitrampoline
-      run: cmake --install ${{github.workspace}}/build
+      run: cmake --install ${{github.workspace}}/build --config Debug
 
-    # - name: Test
-    #   run: |
-    #     cat >hello.c <<EOF
-    #     %:include <mpi.h>
-    #     %:include <stdio.h>
-    #     int main(int argc, char **argv) {
-    #       MPI_Init(&argc, &argv);
-    #       int size, rank;
-    #       MPI_Comm_size(MPI_COMM_WORLD, &size);
-    #       MPI_Comm_rank(MPI_COMM_WORLD, &rank);
-    #       for (int n=0; n<size; ++n) {
-    #         if (rank == n)
-    #           printf("Hello from process %d/%d\n", rank, size);
-    #         MPI_Barrier(MPI_COMM_WORLD);
-    #       }
-    #       MPI_Finalize();
-    #       return 0;
-    #     }
-    #     EOF
-    #     cc -I$HOME/mpitrampoline/include -c hello.c
-    #     cc -L$HOME/mpitrampoline/lib -o hello hello.o -lmpitrampoline
-    #     mpiexec -n 3 ./hello
+    - name: Test
+      working-directory: ${{github.workspace}}/test
+      run: |
+        gcc -I$HOME/mpitrampoline/include -c hello-world.c
+        gcc -L$HOME/mpitrampoline/lib -o hello-world hello-world.o -lmpitrampoline
+        env MPITRAMPOLINE_LIB=$HOME/mpiwrapper/lib/libmpiwrapper.so ./hello-world
+        env MPITRAMPOLINE_LIB=$HOME/mpiwrapper/lib/libmpiwrapper.so mpiexec -n 4 ./hello-world
