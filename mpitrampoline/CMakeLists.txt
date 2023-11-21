@@ -45,7 +45,7 @@ target_include_directories(
 set_target_properties(mpitrampoline PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION ${SOVERSION}
-  PUBLIC_HEADER "mpi.h;${CMAKE_CURRENT_BINARY_DIR}/mpitrampoline.h;mpi_constants.h;mpi_functions.h;mpi_types.h;../mpiabi/mpiabi.h;../mpiabi/mpiabi_constants.h;../mpiabi/mpiabi_functions.h;../mpiabi/mpiabi_types.h;../mpiabi/mpiabi_version.h"
+  PUBLIC_HEADER "mpi.h;${CMAKE_CURRENT_BINARY_DIR}/mpitrampoline.h;mpi_constants.h;mpi_functions.h;mpi_types.h;mpiabi_function_pointers.h;../mpiabi/mpiabi.h;../mpiabi/mpiabi_constants.h;../mpiabi/mpiabi_functions.h;../mpiabi/mpiabi_types.h;../mpiabi/mpiabi_version.h"
 )
 
 install(TARGETS mpitrampoline EXPORT MPItrampolineTargets)
