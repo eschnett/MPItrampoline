@@ -34,6 +34,8 @@ add_library(mpitrampoline
   mpi_functions.c
   mpi_functions.h
   mpi_types.h
+  mpiabi_function_pointers.h
+  mpiabi_function_pointers.c
 )
 target_include_directories(
   mpitrampoline

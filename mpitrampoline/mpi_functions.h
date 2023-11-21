@@ -3,8 +3,7 @@
 
 #include "mpi_constants.h"
 #include "mpi_types.h"
-
-#include <mpiabi.h>
+#include "mpiabi_function_pointers.h"
 
 // Declare (and inline-define) MPI functions
 
