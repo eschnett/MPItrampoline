@@ -63,13 +63,13 @@ jobs:
       working-directory: ${{github.workspace}}/mpiwrapper
       run: |
         cmake \
-            -B ${{github.workspace}}/build \
+            -B build \
             -DCMAKE_C_COMPILER=mpicc \
             -DCMAKE_INSTALL_PREFIX=$HOME/mpiwrapper-${{matrix.mpi}}
 
     - name: Build MPIwrapper
       working-directory: ${{github.workspace}}/mpiwrapper
-      run: cmake --build ${{github.workspace}}/build --config Debug
+      run: cmake --build build --config Debug
 
     # - name: Test
     #   working-directory: ${{github.workspace}}/build
@@ -77,20 +77,20 @@ jobs:
 
     - name: Install MPIwrapper
       working-directory: ${{github.workspace}}/mpiwrapper
-      run: cmake --install ${{github.workspace}}/build --config Debug
+      run: cmake --install build --config Debug
 
     - name: Configure MPItrampoline
       working-directory: ${{github.workspace}}/mpitrampoline
       run: |
         shared=$(echo ${{matrix.shared}} | sed -e 's/shared-//')
         cmake \
-            -B ${{github.workspace}}/build \
+            -B build \
             -DBUILD_SHARED_LIBS=${shared} \
             -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
 
     - name: Build MPItrampoline
       working-directory: ${{github.workspace}}/mpitrampoline
-      run: cmake --build ${{github.workspace}}/build --config Debug
+      run: cmake --build build --config Debug
 
     # - name: Test
     #   working-directory: ${{github.workspace}}/build,
@@ -98,7 +98,7 @@ jobs:
 
     - name: Install MPItrampoline
       working-directory: ${{github.workspace}}/mpitrampoline
-      run: cmake --install ${{github.workspace}}/build --config Debug
+      run: cmake --install build --config Debug
 
     - name: Test
       working-directory: ${{github.workspace}}/test
