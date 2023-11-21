@@ -63,6 +63,7 @@ jobs:
       run: |
         cmake \
             -B ${{github.workspace}}/build \
+            -DCMAKE_BUILD_TYPE=Debug \
             -DCMAKE_C_COMPILER=mpicc \
             -DCMAKE_INSTALL_PREFIX=$HOME/mpiwrapper-${{matrix.mpi}}
 
@@ -96,6 +97,7 @@ jobs:
         cmake \
             -B ${{github.workspace}}/build \
             -DBUILD_SHARED_LIBS=${shared} \
+            -DCMAKE_BUILD_TYPE=Debug \
             -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
 
     - name: Build
@@ -129,6 +131,6 @@ jobs:
           return 0;
         }
         EOF
-        cc -I/usr/local/include -c hello.c
-        cc -L/usr/local/lib -o hello hello.o -lmpitrampoline
+        cc -I$HOME/mpitrampoline/include -c hello.c
+        cc -L$HOME/mpitrampoline/lib -o hello hello.o -lmpitrampoline
         mpiexec -n 3 ./hello
