@@ -4,13 +4,13 @@
 int main(int argc, char **argv) {
   printf("Hello, World!\n");
 
-  printf("Using MPItrampoline %d.%d.%d\n", MPITRAMPOLINE_VERSION_MAJOR,
+  printf("Compiled with MPItrampoline %d.%d.%d\n", MPITRAMPOLINE_VERSION_MAJOR,
          MPITRAMPOLINE_VERSION_MINOR, MPITRAMPOLINE_VERSION_PATCH);
-  printf("Using MPItrampoline %d.%d.%d\n", mpitrampoline_version_major,
+  printf("Running with MPItrampoline %d.%d.%d\n", mpitrampoline_version_major,
          mpitrampoline_version_minor, mpitrampoline_version_patch);
 
-  // MPI_Init(&argc, &argv);
-  //
+  MPI_Init(&argc, &argv);
+
   // int size, rank;
   // MPI_Comm_size(MPI_COMM_WORLD, &size);
   // MPI_Comm_rank(MPI_COMM_WORLD, &rank);

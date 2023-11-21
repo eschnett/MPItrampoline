@@ -4912,48 +4912,187 @@ int MPIABI_Info_set(MPIABI_Info info, const char *key, const char *value);
 
 // A.3.9 Process Creation and Management C Bindings
 
-int MPIABI_Abort(MPIABI_Comm comm, int errorcode);
-int MPIABI_Close_port(const char *port_name);
+int MPIABI_Abort(MPIABI_Comm comm, int errorcode) {
+  int ierr = MPI_Abort(abi2mpi_comm(comm), errorcode);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Close_port(const char *port_name) {
+  int ierr = MPI_Close_port(port_name);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_accept(const char *port_name, MPIABI_Info info, int root,
-                       MPIABI_Comm comm, MPIABI_Comm *newcomm);
+                       MPIABI_Comm comm, MPIABI_Comm *newcomm) {
+  MPI_Comm mpi_newcomm;
+  int ierr = MPI_Comm_accept(port_name, abi2mpi_info(info), root,
+                             abi2mpi_comm(comm), &mpi_newcomm);
+  *newcomm = mpi2abi_comm(mpi_newcomm);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_connect(const char *port_name, MPIABI_Info info, int root,
-                        MPIABI_Comm comm, MPIABI_Comm *newcomm);
-int MPIABI_Comm_disconnect(MPIABI_Comm *comm);
-int MPIABI_Comm_get_parent(MPIABI_Comm *parent);
-int MPIABI_Comm_join(int fd, MPIABI_Comm *intercomm);
+                        MPIABI_Comm comm, MPIABI_Comm *newcomm) {
+  MPI_Comm mpi_newcomm;
+  int ierr = MPI_Comm_connect(port_name, abi2mpi_info(info), root,
+                              abi2mpi_comm(comm), &mpi_newcomm);
+  *newcomm = mpi2abi_comm(mpi_newcomm);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_disconnect(MPIABI_Comm *comm) {
+  MPI_Comm mpi_comm = abi2mpi_comm(*comm);
+  int ierr = MPI_Comm_disconnect(&mpi_comm);
+  *comm = mpi2abi_comm(mpi_comm);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_get_parent(MPIABI_Comm *parent) {
+  MPI_Comm mpi_parent;
+  int ierr = MPI_Comm_get_parent(&mpi_parent);
+  *parent = mpi2abi_comm(mpi_parent);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_join(int fd, MPIABI_Comm *intercomm) {
+  MPI_Comm mpi_intercomm;
+  int ierr = MPI_Comm_join(fd, &mpi_intercomm);
+  *intercomm = mpi2abi_comm(mpi_intercomm);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_spawn(const char *command, char *argv[], int maxprocs,
                       MPIABI_Info info, int root, MPIABI_Comm comm,
-                      MPIABI_Comm *intercomm, int array_of_errcodes[]);
+                      MPIABI_Comm *intercomm, int array_of_errcodes[]) {
+  MPI_Comm mpi_intercomm;
+  int ierr =
+      MPI_Comm_spawn(command, argv, maxprocs, abi2mpi_info(info), root,
+                     abi2mpi_comm(comm), &mpi_intercomm, array_of_errcodes);
+  *intercomm = mpi2abi_comm(mpi_intercomm);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_spawn_multiple(int count, char *array_of_commands[],
                                char **array_of_argv[],
                                const int array_of_maxprocs[],
                                const MPIABI_Info array_of_info[], int root,
                                MPIABI_Comm comm, MPIABI_Comm *intercomm,
-                               int array_of_errcodes[]);
-int MPIABI_Finalize(void);
-int MPIABI_Finalized(int *flag);
-int MPIABI_Init(int *argc, char ***argv);
-int MPIABI_Init_thread(int *argc, char ***argv, int required, int *provided);
-int MPIABI_Initialized(int *flag);
-int MPIABI_Is_thread_main(int *flag);
+                               int array_of_errcodes[]) {
+  MPI_Info mpi_array_of_info[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_info[n] = abi2mpi_info(array_of_info[n]);
+  MPI_Comm mpi_intercomm;
+  int ierr = MPI_Comm_spawn_multiple(count, array_of_commands, array_of_argv,
+                                     array_of_maxprocs, mpi_array_of_info, root,
+                                     abi2mpi_comm(comm), &mpi_intercomm,
+                                     array_of_errcodes);
+  *intercomm = mpi2abi_comm(mpi_intercomm);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Finalize(void) {
+  int ierr = MPI_Finalize();
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Finalized(int *flag) {
+  int ierr = MPI_Finalized(flag);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Init(int *argc, char ***argv) {
+  int ierr = MPI_Init(argc, argv);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Init_thread(int *argc, char ***argv, int required, int *provided) {
+  int ierr = MPI_Init_thread(argc, argv, required, provided);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Initialized(int *flag) {
+  int ierr = MPI_Initialized(flag);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Is_thread_main(int *flag) {
+  int ierr = MPI_Is_thread_main(flag);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Lookup_name(const char *service_name, MPIABI_Info info,
-                       char *port_name);
-int MPIABI_Open_port(MPIABI_Info info, char *port_name);
+                       char *port_name) {
+  int ierr = MPI_Lookup_name(service_name, abi2mpi_info(info), port_name);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Open_port(MPIABI_Info info, char *port_name) {
+  int ierr = MPI_Open_port(abi2mpi_info(info), port_name);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Publish_name(const char *service_name, MPIABI_Info info,
-                        const char *port_name);
-int MPIABI_Query_thread(int *provided);
-int MPIABI_Session_finalize(MPIABI_Session *session);
-int MPIABI_Session_get_info(MPIABI_Session session, MPIABI_Info *info_used);
+                        const char *port_name) {
+  int ierr = MPI_Publish_name(service_name, abi2mpi_info(info), port_name);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Query_thread(int *provided) {
+  int ierr = MPI_Query_thread(provided);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Session_finalize(MPIABI_Session *session) {
+  MPI_Session mpi_session = abi2mpi_session(*session);
+  int ierr = MPI_Session_finalize(&mpi_session);
+  *session = mpi2abi_session(mpi_session);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Session_get_info(MPIABI_Session session, MPIABI_Info *info_used) {
+  MPI_Info mpi_info_used;
+  int ierr = MPI_Session_get_info(abi2mpi_session(session), &mpi_info_used);
+  *info_used = mpi2abi_info(mpi_info_used);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Session_get_nth_pset(MPIABI_Session session, MPIABI_Info info, int n,
-                                int *pset_len, char *pset_name);
+                                int *pset_len, char *pset_name) {
+  int ierr = MPI_Session_get_nth_pset(
+      abi2mpi_session(session), abi2mpi_info(info), n, pset_len, pset_name);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Session_get_num_psets(MPIABI_Session session, MPIABI_Info info,
-                                 int *npset_names);
+                                 int *npset_names) {
+  int ierr = MPI_Session_get_num_psets(abi2mpi_session(session),
+                                       abi2mpi_info(info), npset_names);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Session_get_pset_info(MPIABI_Session session, const char *pset_name,
-                                 MPIABI_Info *info);
+                                 MPIABI_Info *info) {
+  MPI_Info mpi_info;
+  int ierr =
+      MPI_Session_get_pset_info(abi2mpi_session(session), pset_name, &mpi_info);
+  *info = mpi2abi_info(mpi_info);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Session_init(MPIABI_Info info, MPIABI_Errhandler errhandler,
-                        MPIABI_Session *session);
+                        MPIABI_Session *session) {
+  MPI_Session mpi_session;
+  int ierr = MPI_Session_init(abi2mpi_info(info),
+                              abi2mpi_errhandler(errhandler), &mpi_session);
+  *session = mpi2abi_session(mpi_session);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Unpublish_name(const char *service_name, MPIABI_Info info,
-                          const char *port_name);
+                          const char *port_name) {
+  int ierr = MPI_Unpublish_name(service_name, abi2mpi_info(info), port_name);
+  return mpi2abi_errorcode(ierr);
+}
 
 // A.3.10 One-Sided Communications C Bindings
 
