@@ -1914,12 +1914,12 @@ extern int (*MPIABI_Type_size_x)(MPIABI_Datatype datatype, MPIABI_Count *size);
 
 // MPIX
 
-extern int (*MPIXABI_Query_cuda_support)();
+extern int (*MPIXABI_Query_cuda_support)(void);
 
-extern int (*MPIXABI_Query_hip_support)();
+extern int (*MPIXABI_Query_hip_support)(void);
 
-extern int (*MPIXABI_Query_rocm_support)();
+extern int (*MPIXABI_Query_rocm_support)(void);
 
-extern int (*MPIXABI_Query_ze_support)();
+extern int (*MPIXABI_Query_ze_support)(void);
 
 #endif // #ifndef MPIABI_FUNCTIONS_H

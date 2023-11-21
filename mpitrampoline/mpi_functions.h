@@ -3837,12 +3837,16 @@ inline int MPI_Type_size_x(MPI_Datatype datatype, MPI_Count *size) {
 
 // MPIX
 
-inline int MPIX_Query_cuda_support() { return MPIXABI_Query_cuda_support(); }
+inline int MPIX_Query_cuda_support(void) {
+  return MPIXABI_Query_cuda_support();
+}
 
-inline int MPIX_Query_hip_support() { return MPIXABI_Query_hip_support(); }
+inline int MPIX_Query_hip_support(void) { return MPIXABI_Query_hip_support(); }
 
-inline int MPIX_Query_rocm_support() { return MPIXABI_Query_rocm_support(); }
+inline int MPIX_Query_rocm_support(void) {
+  return MPIXABI_Query_rocm_support();
+}
 
-inline int MPIX_Query_ze_support() { return MPIXABI_Query_ze_support(); }
+inline int MPIX_Query_ze_support(void) { return MPIXABI_Query_ze_support(); }
 
 #endif // #ifndef MPI_FUNCTIONS_H

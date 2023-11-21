@@ -43,7 +43,7 @@ static void *load_library(const char *const libname) {
 #elif __linux__
 
   fprintf(stderr, "[MPItrampoline] Calling dlopen\n");
-  handle = dlopen(libname, RTLD_LOCAL | RTLD_DEEPBIND);
+  handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL | RTLD_DEEPBIND);
 
 #else
 #error "Unsupported operating system"
@@ -73,7 +73,7 @@ static void *get_symbol(void *handle, const char *name) {
   return ptr;
 }
 
-static void mpitrampoline_init() {
+static void mpitrampoline_init(void) {
   if (did_init_mpitrampoline)
     return;
   did_init_mpitrampoline = true;
@@ -126,7 +126,7 @@ static void mpitrampoline_init() {
     exit(1);
   }
 
-  MPIABI_Init = get_symbol(handle, "MPIABI_Init");
+  MPIABI_Init = (int (*)(int *, char ***))get_symbol(handle, "MPIABI_Init");
 }
 
 #ifdef __APPLE__
@@ -135,7 +135,7 @@ static void mpitrampoline_init() {
 #define CONSTRUCTOR_PRIORITY (1000)
 #endif
 static void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
-mpitrampoline_init_auto() {
+mpitrampoline_init_auto(void) {
   fprintf(stderr, "[MPItrampoline] This is MPItrampoline %d.%d.%d\n",
           MPITRAMPOLINE_VERSION_MAJOR, MPITRAMPOLINE_VERSION_MINOR,
           MPITRAMPOLINE_VERSION_PATCH);

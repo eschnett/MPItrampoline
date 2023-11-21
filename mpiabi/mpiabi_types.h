@@ -20,7 +20,6 @@ typedef struct {
   int MPI_ERROR;
   int mpi_reserved[5];
 } MPIABI_Status;
-_Static_assert(sizeof(MPIABI_Status) == 32, "");
 
 typedef MPIABI_Status MPIABI_F08_status;
 

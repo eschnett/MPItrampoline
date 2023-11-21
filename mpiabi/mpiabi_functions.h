@@ -1711,13 +1711,13 @@ int MPIABI_Type_size_x(MPIABI_Datatype datatype, MPIABI_Count *size);
 
 // MPIX
 
-int MPIXABI_Query_cuda_support();
+int MPIXABI_Query_cuda_support(void);
 
-int MPIXABI_Query_hip_support();
+int MPIXABI_Query_hip_support(void);
 
-int MPIXABI_Query_rocm_support();
+int MPIXABI_Query_rocm_support(void);
 
-int MPIXABI_Query_ze_support();
+int MPIXABI_Query_ze_support(void);
 
 #ifdef __cplusplus
 }

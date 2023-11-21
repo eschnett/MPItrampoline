@@ -1826,10 +1826,10 @@ extern inline int MPI_Type_size_x(MPI_Datatype datatype, MPI_Count *size);
 
 // MPIX
 
-extern inline int MPIX_Query_cuda_support();
+extern inline int MPIX_Query_cuda_support(void);
 
-extern inline int MPIX_Query_hip_support();
+extern inline int MPIX_Query_hip_support(void);
 
-extern inline int MPIX_Query_rocm_support();
+extern inline int MPIX_Query_rocm_support(void);
 
-extern inline int MPIX_Query_ze_support();
+extern inline int MPIX_Query_ze_support(void);
