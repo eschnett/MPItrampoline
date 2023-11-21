@@ -937,6 +937,8 @@ struct lambda {
 // when the MPI request has completed. They are run after the MPI
 // request has completed but before the MPIABI request has completed.
 
+// This does not work for persistent requests.
+
 #define MAX_NUM_REQUEST_ACTIONS 10
 static atomic_int num_request_actions = 0;
 static pthread_mutex_t request_actions_mutex = PTHREAD_MUTEX_INITIALIZER;
@@ -4262,7 +4264,19 @@ int MPIABI_Comm_idup(MPIABI_Comm comm, MPIABI_Comm *newcomm,
 }
 
 int MPIABI_Comm_idup_with_info(MPIABI_Comm comm, MPIABI_Info info,
-                               MPIABI_Comm *newcomm, MPIABI_Request *request);
+                               MPIABI_Comm *newcomm, MPIABI_Request *request) {
+  struct finish_Comm_idup_state *finish_Comm_idup_state =
+      malloc(sizeof *finish_Comm_idup_state);
+  MPI_Request mpi_request;
+  int ierr = MPI_Comm_idup_with_info(abi2mpi_comm(comm), abi2mpi_info(info),
+                                     &finish_Comm_idup_state->mpi_newcomm,
+                                     &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  struct lambda action = {finish_Comm_idup, finish_Comm_idup_state};
+  request_action_insert(*request, action);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_rank(MPIABI_Comm comm, int *rank);
 int MPIABI_Comm_remote_group(MPIABI_Comm comm, MPIABI_Group *group);
 int MPIABI_Comm_remote_size(MPIABI_Comm comm, int *size);
