@@ -98,7 +98,7 @@ static void mpitrampoline_init() {
     exit(1);
   }
 
-  MPIABI_Init = *(void *)get_symbol(handle, "MPIABI_Init");
+  MPIABI_Init = get_symbol(handle, "MPIABI_Init");
 }
 
 #ifdef __APPLE__
