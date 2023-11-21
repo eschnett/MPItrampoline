@@ -63,6 +63,8 @@ static void *load_library(const char *const libname) {
 
 static void *get_symbol(void *handle, const char *name) {
   void *ptr = dlsym(handle, name);
+#warning "TODO"
+  fprintf(stderr, "MPItrampoline: Symbol \"%s\" resolved to %p\n", name, ptr);
   if (!ptr) {
     fprintf(stderr, "MPItrampoline: Could not resolve symbol \"%s\"\n", name);
     const char *const error = dlerror();
@@ -126,7 +128,7 @@ static void mpitrampoline_init(void) {
     exit(1);
   }
 
-  MPIABI_Init = (int (*)(int *, char ***))get_symbol(handle, "MPIABI_Init");
+  MPIABI_Init_ptr = (int (*)(int *, char ***))get_symbol(handle, "MPIABI_Init");
 }
 
 #ifdef __APPLE__

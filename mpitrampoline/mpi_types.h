@@ -1,7 +1,7 @@
 #ifndef MPI_TYPES_H
 #define MPI_TYPES_H
 
-#include <mpiabi.h>
+#include <mpiabi_types.h>
 
 // Define MPI types
 

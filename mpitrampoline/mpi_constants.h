@@ -3,7 +3,7 @@
 
 #include "mpi_types.h"
 
-#include <mpiabi.h>
+#include <mpiabi_constants.h>
 
 // Define MPI constants
 
