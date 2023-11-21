@@ -44,6 +44,7 @@ target_include_directories(
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
   PRIVATE ../mpiabi
 )
+target_link_libraries(mpitrampoline PRIVATE ${CMAKE_DL_LIBS})
 set_target_properties(mpitrampoline PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION ${SOVERSION}
