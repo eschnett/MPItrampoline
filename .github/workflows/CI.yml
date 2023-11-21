@@ -129,6 +129,6 @@ jobs:
           return 0;
         }
         EOF
-        /usr/local/bin/mpicc -c hello.c
-        /usr/local/bin/mpicc -o hello hello.o
+        cc -I/usr/local/include -c hello.c
+        cc -L/usr/local/lib -o hello hello.o -lmpitrampoline
         mpiexec -n 3 ./hello

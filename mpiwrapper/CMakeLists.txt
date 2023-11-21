@@ -26,11 +26,7 @@ endif()
 set(CMAKE_C_STANDARD 11)        # for atomics and mutexes; could use OpenMP instead
 enable_language(C)
 
-# find_package(MPI REQUIRED)
-# message(STATUS "Using MPIEXEC_EXECUTABLE: ${MPIEXEC_EXECUTABLE}")
-# if(${MPIEXEC_EXECUTABLE} STREQUAL "MPIEXEC_EXECUTABLE-NOTFOUND")
-#   message(FATAL_ERROR "MPIEXEC_EXECUTABLE not set. Set the cmake variable MPIEXEC_EXECUTABLE to point to mpiexec.")
-# endif()
+include(GNUInstallDirs)
 
 include(FindMPI)
 # include(FindOpenMP)
@@ -111,12 +107,12 @@ add_library(mpiwrapper
 target_include_directories(
   mpiwrapper
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
-  PUBLIC include ../mpiabi
+  PRIVATE ../mpiabi
 )
 target_link_libraries(mpiwrapper PRIVATE MPI::MPI_C Threads::Threads)
 set_target_properties(mpiwrapper PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION ${SOVERSION}
-  # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
-  # PUBLIC_HEADER "include/mpi.h;include/mpio.h;mpiabi/mpiabi.h"
 )
+
+install(TARGETS mpiwrapper LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

@@ -29,19 +29,21 @@ configure_file(mpitrampoline.h.in mpitrampoline.h @ONLY)
 
 add_library(mpitrampoline
   mpi.h
+  mpitrampoline.h
   mpi_constants.h
   mpi_functions.c
   mpi_functions.h
   mpi_types.h
-  mpitrampoline.h
 )
 target_include_directories(
   mpitrampoline
-  PUBLIC include ../mpiabi
+  PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+  PRIVATE ../mpiabi
 )
 set_target_properties(mpitrampoline PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION ${SOVERSION}
-  # TODO: Add mpi-version.h etc. as public headers instead of installing them manually
-  # PUBLIC_HEADER "include/mpi.h;include/mpio.h;mpiabi/mpiabi.h"
+  PUBLIC_HEADER "mpi.h;${CMAKE_CURRENT_BINARY_DIR}/mpitrampoline.h;mpi_constants.h;mpi_functions.h;mpi_types.h;../mpiabi/mpiabi.h;../mpiabi/mpiabi_constants.h;../mpiabi/mpiabi_functions.h;../mpiabi/mpiabi_types.h"
 )
+
+install(TARGETS mpitrampoline EXPORT MPItrampolineTargets)
