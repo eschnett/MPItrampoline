@@ -1,5 +1,7 @@
 #include "mpiabi_function_pointers.h"
 
+#include <mpiabi_version.h>
+
 #include <dlfcn.h>
 
 #include <stdbool.h>
