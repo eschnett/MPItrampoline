@@ -59,22 +59,24 @@ jobs:
         key: ${{steps.cache.cache-primary-key}}
 
     - name: Configure
+      working-directory: ${{github.workspace}}/mpiwrapper
       run: |
-        cd mpiwrapper
         cmake \
             -B ${{github.workspace}}/build \
             -DCMAKE_C_COMPILER=mpicc \
             -DCMAKE_INSTALL_PREFIX=$HOME/mpiwrapper-${{matrix.mpi}}
 
     - name: Build
-      run: cd mpiwrapper && cmake --build ${{github.workspace}}/build --verbose
+      working-directory: ${{github.workspace}}/mpiwrapper
+      run: cmake --build ${{github.workspace}}/build --verbose
 
     # - name: Test
     #   working-directory: ${{github.workspace}}/build
     #   run: ctest -C ${{env.BUILD_TYPE}}
 
     - name: Install
-      run: cd mpiwrapper && cmake --install ${{github.workspace}}/build
+      working-directory: ${{github.workspace}}/mpiwrapper
+      run: cmake --install ${{github.workspace}}/build
 
   mpitrampoline:
     strategy:
@@ -88,20 +90,45 @@ jobs:
     - uses: actions/checkout@v4
 
     - name: Configure
+      working-directory: ${{github.workspace}}/mpitrampoline
       run: |
         shared=$(echo ${{matrix.shared}} | sed -e 's/shared-//')
-        cd mpitrampoline
         cmake \
             -B ${{github.workspace}}/build \
             -DBUILD_SHARED_LIBS=${shared} \
             -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
 
     - name: Build
-      run: cd mpitrampoline && cmake --build ${{github.workspace}}/build --verbose
+      working-directory: ${{github.workspace}}/mpitrampoline
+      run: cmake --build ${{github.workspace}}/build --verbose
 
     # - name: Test
-    #   working-directory: ${{github.workspace}}/build
+    #   working-directory: ${{github.workspace}}/build,
     #   run: ctest -C ${{env.BUILD_TYPE}}
 
     - name: Install
-      run: cd mpitrampoline && cmake --install ${{github.workspace}}/build
+      working-directory: ${{github.workspace}}/mpitrampoline
+      run: cmake --install ${{github.workspace}}/build
+
+    - name: Test
+      run: |
+        cat >hello.c <<EOF
+        %:include <mpi.h>
+        %:include <stdio.h>
+        int main(int argc, char **argv) {
+          MPI_Init(&argc, &argv);
+          int size, rank;
+          MPI_Comm_size(MPI_COMM_WORLD, &size);
+          MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+          for (int n=0; n<size; ++n) {
+            if (rank == n)
+              printf("Hello from process %d/%d\n", rank, size);
+            MPI_Barrier(MPI_COMM_WORLD);
+          }
+          MPI_Finalize();
+          return 0;
+        }
+        EOF
+        mpicc -c hello.c
+        mpicc -o hello hello.o
+        mpiexec -n 3 ./hello
