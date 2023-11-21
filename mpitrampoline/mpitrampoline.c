@@ -1,17 +1,19 @@
 #include "mpiabi_function_pointers.h"
 
-#include <mpiabi_version.h>
-
 #include <dlfcn.h>
 
 #include <stdio.h>
 #include <stdlib.h>
 
-const int mpirampoline_version_major = MPITRAMPOLINE_VERSION_MAJOR;
-const int mpirampoline_version_minor = MPITRAMPOLINE_VERSION_MINOR;
-const int mpirampoline_version_patch = MPITRAMPOLINE_VERSION_PATCH;
+const int mpitrampoline_version_major = MPITRAMPOLINE_VERSION_MAJOR;
+const int mpitrampoline_version_minor = MPITRAMPOLINE_VERSION_MINOR;
+const int mpitrampoline_version_patch = MPITRAMPOLINE_VERSION_PATCH;
 
 const char *const mpitrampoline_version = MPITRAMPOLINE_VERSION;
+
+const int mpiabi_version_major = MPIABI_VERSION_MAJOR;
+const int mpiabi_version_minor = MPIABI_VERSION_MINOR;
+const int mpiabi_version_patch = MPIABI_VERSION_PATCH;
 
 int mpiwrapper_version_major = -1;
 int mpiwrapper_version_minor = -1;
