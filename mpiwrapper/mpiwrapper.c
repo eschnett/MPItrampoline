@@ -41,6 +41,10 @@ const int mpiwrapper_version_patch = MPIWRAPPER_VERSION_PATCH;
 
 const char *const mpiwrapper_version = MPIWRAPPER_VERSION;
 
+const int mpiabi_version_major = MPIABI_VERSION_MAJOR;
+const int mpiabi_version_minor = MPIABI_VERSION_MINOR;
+const int mpiabi_version_patch = MPIABI_VERSION_PATCH;
+
 // Define MPIABI functions
 
 static MPI_Comm abi2mpi_comm(MPIABI_Comm comm) {
@@ -686,11 +690,33 @@ static MPIABI_Request mpi2abi_request(MPI_Request request) {
 }
 
 static MPI_Session abi2mpi_session(MPIABI_Session session) {
-  return (MPI_Session)(uintptr_t)session;
+  switch ((uintptr_t)session) {
+  case (uintptr_t)MPIABI_SESSION_NULL:
+    return MPI_SESSION_NULL;
+  default:
+    return (MPI_Session)(uintptr_t)session;
+  }
 }
 
 static MPIABI_Session mpi2abi_session(MPI_Session session) {
+  if (session == MPI_SESSION_NULL)
+    return MPIABI_SESSION_NULL;
   return (MPIABI_Session)(uintptr_t)session;
+}
+
+static MPI_Win abi2mpi_win(MPIABI_Win win) {
+  switch ((uintptr_t)win) {
+  case (uintptr_t)MPIABI_WIN_NULL:
+    return MPI_WIN_NULL;
+  default:
+    return (MPI_Win)(uintptr_t)win;
+  }
+}
+
+static MPIABI_Win mpi2abi_win(MPI_Win win) {
+  if (win == MPI_WIN_NULL)
+    return MPIABI_WIN_NULL;
+  return (MPIABI_Win)(uintptr_t)win;
 }
 
 static MPI_Status abi2mpi_status(MPIABI_Status abi_status) {
@@ -3692,23 +3718,23 @@ int MPIABI_Op_commutative(MPIABI_Op op, int *commute) {
 static atomic_int num_op_wrappers = 0;
 static atomic_int num_op_wrappers_c = 0;
 
-static MPIABI_User_function *user_fn[MAX_NUM_OP_WRAPPERS] = {
+static MPIABI_User_function *user_fns[MAX_NUM_OP_WRAPPERS] = {
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 };
-static MPIABI_User_function_c *user_fn_c[MAX_NUM_OP_WRAPPERS] = {
+static MPIABI_User_function_c *user_fns_c[MAX_NUM_OP_WRAPPERS] = {
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 };
 
 static void wrap_user_fn_impl(int op_wrapper_num, void *invec, void *inoutvec,
                               int *len, MPI_Datatype *datatype) {
   MPIABI_Datatype abi_datatype = mpi2abi_datatype(*datatype);
-  user_fn[op_wrapper_num](invec, inoutvec, len, &abi_datatype);
+  user_fns[op_wrapper_num](invec, inoutvec, len, &abi_datatype);
 }
 static void wrap_user_fn_c_impl(int op_wrapper_num, void *invec, void *inoutvec,
                                 MPI_Count *len, MPI_Datatype *datatype) {
   MPIABI_Count abi_len = *len;
   MPIABI_Datatype abi_datatype = mpi2abi_datatype(*datatype);
-  user_fn_c[op_wrapper_num](invec, inoutvec, &abi_len, &abi_datatype);
+  user_fns_c[op_wrapper_num](invec, inoutvec, &abi_len, &abi_datatype);
 }
 
 #define DEFINE_WRAP_USER_FN(N)                                                 \
@@ -3748,6 +3774,7 @@ int MPIABI_Op_create(MPIABI_User_function *user_fn, int commute,
   MPI_Op mpi_op;
   int op_wrapper_num = atomic_fetch_add(&num_op_wrappers, 1);
   assert(op_wrapper_num < MAX_NUM_OP_WRAPPERS);
+  user_fns[op_wrapper_num] = user_fn;
   int ierr = MPI_Op_create(wrap_user_fn[op_wrapper_num], commute, &mpi_op);
   *op = mpi2abi_op(mpi_op);
   return mpi2abi_errorcode(ierr);
@@ -3757,6 +3784,8 @@ int MPIABI_Op_create_c(MPIABI_User_function_c *user_fn, int commute,
                        MPIABI_Op *op) {
   MPI_Op mpi_op;
   int op_wrapper_num = atomic_fetch_add(&num_op_wrappers_c, 1);
+  assert(op_wrapper_num < MAX_NUM_OP_WRAPPERS);
+  user_fns_c[op_wrapper_num] = user_fn;
   int ierr = MPI_Op_create_c(wrap_user_fn_c[op_wrapper_num], commute, &mpi_op);
   *op = mpi2abi_op(mpi_op);
   return mpi2abi_errorcode(ierr);
@@ -4254,6 +4283,7 @@ int MPIABI_Comm_idup(MPIABI_Comm comm, MPIABI_Comm *newcomm,
                      MPIABI_Request *request) {
   struct finish_Comm_idup_state *finish_Comm_idup_state =
       malloc(sizeof *finish_Comm_idup_state);
+  finish_Comm_idup_state->newcomm = newcomm;
   MPI_Request mpi_request;
   int ierr = MPI_Comm_idup(abi2mpi_comm(comm),
                            &finish_Comm_idup_state->mpi_newcomm, &mpi_request);
@@ -4267,6 +4297,7 @@ int MPIABI_Comm_idup_with_info(MPIABI_Comm comm, MPIABI_Info info,
                                MPIABI_Comm *newcomm, MPIABI_Request *request) {
   struct finish_Comm_idup_state *finish_Comm_idup_state =
       malloc(sizeof *finish_Comm_idup_state);
+  finish_Comm_idup_state->newcomm = newcomm;
   MPI_Request mpi_request;
   int ierr = MPI_Comm_idup_with_info(abi2mpi_comm(comm), abi2mpi_info(info),
                                      &finish_Comm_idup_state->mpi_newcomm,
@@ -4316,66 +4347,304 @@ int MPIABI_Comm_size(MPIABI_Comm comm, int *size) {
 }
 
 int MPIABI_Comm_split(MPIABI_Comm comm, int color, int key,
-                      MPIABI_Comm *newcomm);
-int MPIABI_Group_free(MPIABI_Group *group);
+                      MPIABI_Comm *newcomm) {
+  MPI_Comm mpi_newcomm;
+  int ierr = MPI_Comm_split(abi2mpi_comm(comm), color, key, &mpi_newcomm);
+  *newcomm = mpi2abi_comm(mpi_newcomm);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Group_free(MPIABI_Group *group) {
+  MPI_Group mpi_group = abi2mpi_group(*group);
+  int ierr = MPI_Group_free(&mpi_group);
+  *group = mpi2abi_group(mpi_group);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_split_type(MPIABI_Comm comm, int split_type, int key,
-                           MPIABI_Info info, MPIABI_Comm *newcomm);
-int MPIABI_Comm_test_inter(MPIABI_Comm comm, int *flag);
-int MPIABI_Group_compare(MPIABI_Group group1, MPIABI_Group group2, int *result);
+                           MPIABI_Info info, MPIABI_Comm *newcomm) {
+  MPI_Comm mpi_newcomm;
+  int ierr = MPI_Comm_split_type(abi2mpi_comm(comm), split_type, key,
+                                 abi2mpi_info(info), &mpi_newcomm);
+  *newcomm = mpi2abi_comm(mpi_newcomm);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_test_inter(MPIABI_Comm comm, int *flag) {
+  int ierr = MPI_Comm_test_inter(abi2mpi_comm(comm), flag);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Group_compare(MPIABI_Group group1, MPIABI_Group group2,
+                         int *result) {
+  int ierr =
+      MPI_Group_compare(abi2mpi_group(group1), abi2mpi_group(group2), result);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Group_difference(MPIABI_Group group1, MPIABI_Group group2,
-                            MPIABI_Group *newgroup);
+                            MPIABI_Group *newgroup) {
+  MPI_Group mpi_newgroup;
+  int ierr = MPI_Group_difference(abi2mpi_group(group1), abi2mpi_group(group2),
+                                  &mpi_newgroup);
+  *newgroup = mpi2abi_group(mpi_newgroup);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Group_excl(MPIABI_Group group, int n, const int ranks[],
-                      MPIABI_Group *newgroup);
+                      MPIABI_Group *newgroup) {
+  MPI_Group mpi_newgroup;
+  int ierr = MPI_Group_excl(abi2mpi_group(group), n, ranks, &mpi_newgroup);
+  *newgroup = mpi2abi_group(mpi_newgroup);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Group_from_session_pset(MPIABI_Session session,
                                    const char *pset_name,
-                                   MPIABI_Group *newgroup);
+                                   MPIABI_Group *newgroup) {
+  MPI_Group mpi_newgroup;
+  int ierr = MPI_Group_from_session_pset(abi2mpi_session(session), pset_name,
+                                         &mpi_newgroup);
+  *newgroup = mpi2abi_group(mpi_newgroup);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Group_incl(MPIABI_Group group, int n, const int ranks[],
-                      MPIABI_Group *newgroup);
+                      MPIABI_Group *newgroup) {
+  MPI_Group mpi_newgroup;
+  int ierr = MPI_Group_incl(abi2mpi_group(group), n, ranks, &mpi_newgroup);
+  *newgroup = mpi2abi_group(mpi_newgroup);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Group_intersection(MPIABI_Group group1, MPIABI_Group group2,
-                              MPIABI_Group *newgroup);
+                              MPIABI_Group *newgroup) {
+  MPI_Group mpi_newgroup;
+  int ierr = MPI_Group_intersection(abi2mpi_group(group1),
+                                    abi2mpi_group(group2), &mpi_newgroup);
+  *newgroup = mpi2abi_group(mpi_newgroup);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Group_range_excl(MPIABI_Group group, int n, int ranges[][3],
-                            MPIABI_Group *newgroup);
+                            MPIABI_Group *newgroup) {
+  MPI_Group mpi_newgroup;
+  int ierr =
+      MPI_Group_range_excl(abi2mpi_group(group), n, ranges, &mpi_newgroup);
+  *newgroup = mpi2abi_group(mpi_newgroup);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Group_range_incl(MPIABI_Group group, int n, int ranges[][3],
-                            MPIABI_Group *newgroup);
-int MPIABI_Group_rank(MPIABI_Group group, int *rank);
-int MPIABI_Group_size(MPIABI_Group group, int *size);
+                            MPIABI_Group *newgroup) {
+  MPI_Group mpi_newgroup;
+  int ierr =
+      MPI_Group_range_incl(abi2mpi_group(group), n, ranges, &mpi_newgroup);
+  *newgroup = mpi2abi_group(mpi_newgroup);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Group_rank(MPIABI_Group group, int *rank) {
+  int ierr = MPI_Group_rank(abi2mpi_group(group), rank);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Group_size(MPIABI_Group group, int *size) {
+  int ierr = MPI_Group_size(abi2mpi_group(group), size);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Group_translate_ranks(MPIABI_Group group1, int n, const int ranks1[],
-                                 MPIABI_Group group2, int ranks2[]);
+                                 MPIABI_Group group2, int ranks2[]) {
+  int ierr = MPI_Group_translate_ranks(abi2mpi_group(group1), n, ranks1,
+                                       abi2mpi_group(group2), ranks2);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Group_union(MPIABI_Group group1, MPIABI_Group group2,
-                       MPIABI_Group *newgroup);
+                       MPIABI_Group *newgroup) {
+  MPI_Group mpi_newgroup;
+  int ierr = MPI_Group_union(abi2mpi_group(group1), abi2mpi_group(group2),
+                             &mpi_newgroup);
+  *newgroup = mpi2abi_group(mpi_newgroup);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Intercomm_create(MPIABI_Comm local_comm, int local_leader,
                             MPIABI_Comm peer_comm, int remote_leader, int tag,
-                            MPIABI_Comm *newintercomm);
+                            MPIABI_Comm *newintercomm) {
+  MPI_Comm mpi_newintercomm;
+  int ierr = MPI_Intercomm_create(abi2mpi_comm(local_comm), local_leader,
+                                  abi2mpi_comm(peer_comm), remote_leader, tag,
+                                  &mpi_newintercomm);
+  *newintercomm = mpi2abi_comm(mpi_newintercomm);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Intercomm_create_from_groups(
     MPIABI_Group local_group, int local_leader, MPIABI_Group remote_group,
     int remote_leader, const char *stringtag, MPIABI_Info info,
-    MPIABI_Errhandler errhandler, MPIABI_Comm *newintercomm);
+    MPIABI_Errhandler errhandler, MPIABI_Comm *newintercomm) {
+  MPI_Comm mpi_newintercomm;
+  int ierr = MPI_Intercomm_create_from_groups(
+      abi2mpi_group(local_group), local_leader, abi2mpi_group(remote_group),
+      remote_leader, stringtag, abi2mpi_info(info),
+      abi2mpi_errhandler(errhandler), &mpi_newintercomm);
+  *newintercomm = mpi2abi_comm(mpi_newintercomm);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Intercomm_merge(MPIABI_Comm intercomm, int high,
-                           MPIABI_Comm *newintracomm);
+                           MPIABI_Comm *newintracomm) {
+  MPI_Comm mpi_newintracomm;
+  int ierr =
+      MPI_Intercomm_merge(abi2mpi_comm(intercomm), high, &mpi_newintracomm);
+  *newintracomm = mpi2abi_comm(mpi_newintracomm);
+  return mpi2abi_errorcode(ierr);
+}
+
+struct abi_Type_create_keyval_state {
+  MPIABI_Type_copy_attr_function *abi_type_copy_attr_fn;
+  MPIABI_Type_delete_attr_function *abi_type_delete_attr_fn;
+  void *abi_extra_state;
+};
+static int mpi_Type_create_keyval_copy_attr_function(
+    MPI_Datatype oldtype, int type_keyval, void *extra_state,
+    void *attribute_val_in, void *attribute_val_out, int *flag) {
+  const struct abi_Type_create_keyval_state *mpi_extra_state = extra_state;
+  return mpi_extra_state->abi_type_copy_attr_fn(
+      mpi2abi_datatype(oldtype), type_keyval, mpi_extra_state->abi_extra_state,
+      attribute_val_in, attribute_val_out, flag);
+}
+static int mpi_Type_create_keyval_delete_attr_function(MPI_Datatype type,
+                                                       int type_keyval,
+                                                       void *attribute_val,
+                                                       void *extra_state) {
+  const struct abi_Type_create_keyval_state *mpi_extra_state = extra_state;
+  return mpi_extra_state->abi_type_delete_attr_fn(
+      mpi2abi_datatype(type), type_keyval, attribute_val,
+      mpi_extra_state->abi_extra_state);
+}
 int MPIABI_Type_create_keyval(
     MPIABI_Type_copy_attr_function *type_copy_attr_fn,
     MPIABI_Type_delete_attr_function *type_delete_attr_fn, int *type_keyval,
-    void *extra_state);
-int MPIABI_Type_delete_attr(MPIABI_Datatype datatype, int type_keyval);
-int MPIABI_Type_free_keyval(int *type_keyval);
+    void *extra_state) {
+  struct abi_Type_create_keyval_state *mpi_extra_state =
+      malloc(sizeof *mpi_extra_state);
+  mpi_extra_state->abi_type_copy_attr_fn = type_copy_attr_fn;
+  mpi_extra_state->abi_type_delete_attr_fn = type_delete_attr_fn;
+  mpi_extra_state->abi_extra_state = extra_state;
+  int ierr = MPI_Type_create_keyval(mpi_Type_create_keyval_copy_attr_function,
+                                    mpi_Type_create_keyval_delete_attr_function,
+                                    type_keyval, mpi_extra_state);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Type_delete_attr(MPIABI_Datatype datatype, int type_keyval) {
+  int ierr = MPI_Type_delete_attr(abi2mpi_datatype(datatype), type_keyval);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Type_free_keyval(int *type_keyval) {
+  // We do not free the keyval wrappers
+  int ierr = MPI_Type_free_keyval(type_keyval);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_get_attr(MPIABI_Datatype datatype, int type_keyval,
-                         void *attribute_val, int *flag);
+                         void *attribute_val, int *flag) {
+  int ierr = MPI_Type_get_attr(abi2mpi_datatype(datatype), type_keyval,
+                               attribute_val, flag);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_get_name(MPIABI_Datatype datatype, char *type_name,
-                         int *resultlen);
+                         int *resultlen) {
+  int ierr =
+      MPI_Type_get_name(abi2mpi_datatype(datatype), type_name, resultlen);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Type_set_attr(MPIABI_Datatype datatype, int type_keyval,
-                         void *attribute_val);
-int MPIABI_Type_set_name(MPIABI_Datatype datatype, const char *type_name);
+                         void *attribute_val) {
+  int ierr =
+      MPI_Type_set_attr(abi2mpi_datatype(datatype), type_keyval, attribute_val);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Type_set_name(MPIABI_Datatype datatype, const char *type_name) {
+  int ierr = MPI_Type_set_name(abi2mpi_datatype(datatype), type_name);
+  return mpi2abi_errorcode(ierr);
+}
+
+struct abi_Win_create_keyval_state {
+  MPIABI_Win_copy_attr_function *abi_win_copy_attr_fn;
+  MPIABI_Win_delete_attr_function *abi_win_delete_attr_fn;
+  void *abi_extra_state;
+};
+static int mpi_Win_create_keyval_copy_attr_function(
+    MPI_Win oldwin, int win_keyval, void *extra_state, void *attribute_val_in,
+    void *attribute_val_out, int *flag) {
+  const struct abi_Win_create_keyval_state *mpi_extra_state = extra_state;
+  return mpi_extra_state->abi_win_copy_attr_fn(
+      mpi2abi_win(oldwin), win_keyval, mpi_extra_state->abi_extra_state,
+      attribute_val_in, attribute_val_out, flag);
+}
+static int mpi_Win_create_keyval_delete_attr_function(MPI_Win win,
+                                                      int win_keyval,
+                                                      void *attribute_val,
+                                                      void *extra_state) {
+  const struct abi_Win_create_keyval_state *mpi_extra_state = extra_state;
+  return mpi_extra_state->abi_win_delete_attr_fn(
+      mpi2abi_win(win), win_keyval, attribute_val,
+      mpi_extra_state->abi_extra_state);
+}
 int MPIABI_Win_create_keyval(
     MPIABI_Win_copy_attr_function *win_copy_attr_fn,
     MPIABI_Win_delete_attr_function *win_delete_attr_fn, int *win_keyval,
-    void *extra_state);
-int MPIABI_Win_delete_attr(MPIABI_Win win, int win_keyval);
-int MPIABI_Win_free_keyval(int *win_keyval);
+    void *extra_state) {
+  struct abi_Win_create_keyval_state *mpi_extra_state =
+      malloc(sizeof *mpi_extra_state);
+  mpi_extra_state->abi_win_copy_attr_fn = win_copy_attr_fn;
+  mpi_extra_state->abi_win_delete_attr_fn = win_delete_attr_fn;
+  mpi_extra_state->abi_extra_state = extra_state;
+  int ierr = MPI_Win_create_keyval(mpi_Win_create_keyval_copy_attr_function,
+                                   mpi_Win_create_keyval_delete_attr_function,
+                                   win_keyval, mpi_extra_state);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_delete_attr(MPIABI_Win win, int win_keyval) {
+  int ierr = MPI_Win_delete_attr(abi2mpi_win(win), win_keyval);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_free_keyval(int *win_keyval) {
+  int ierr = MPI_Win_free_keyval(win_keyval);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Win_get_attr(MPIABI_Win win, int win_keyval, void *attribute_val,
-                        int *flag);
-int MPIABI_Win_get_name(MPIABI_Win win, char *win_name, int *resultlen);
-int MPIABI_Win_set_attr(MPIABI_Win win, int win_keyval, void *attribute_val);
-int MPIABI_Win_set_name(MPIABI_Win win, const char *win_name);
+                        int *flag) {
+  int ierr =
+      MPI_Win_get_attr(abi2mpi_win(win), win_keyval, attribute_val, flag);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_get_name(MPIABI_Win win, char *win_name, int *resultlen) {
+  int ierr = MPI_Win_get_name(abi2mpi_win(win), win_name, resultlen);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_set_attr(MPIABI_Win win, int win_keyval, void *attribute_val) {
+  int ierr = MPI_Win_set_attr(abi2mpi_win(win), win_keyval, attribute_val);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_set_name(MPIABI_Win win, const char *win_name) {
+  int ierr = MPI_Win_set_name(abi2mpi_win(win), win_name);
+  return mpi2abi_errorcode(ierr);
+}
 
 // A.3.6 Virtual Topologies for MPI Processes C Bindings
 
@@ -4884,7 +5153,6 @@ int MPIABI_File_iread_shared_c(MPIABI_File fh, void *buf, MPIABI_Count count,
                                MPIABI_Request *request);
 int MPIABI_File_iwrite(MPIABI_File fh, const void *buf, int count,
                        MPIABI_Datatype datatype, MPIABI_Request *request);
-;
 int MPIABI_File_iwrite_all(MPIABI_File fh, const void *buf, int count,
                            MPIABI_Datatype datatype, MPIABI_Request *request);
 int MPIABI_File_iwrite_all_c(MPIABI_File fh, const void *buf,
@@ -4901,7 +5169,6 @@ int MPIABI_File_iwrite_at_all_c(MPIABI_File fh, MPIABI_Offset offset,
                                 const void *buf, MPIABI_Count count,
                                 MPIABI_Datatype datatype,
                                 MPIABI_Request *request);
-;
 int MPIABI_File_iwrite_at_c(MPIABI_File fh, MPIABI_Offset offset,
                             const void *buf, MPIABI_Count count,
                             MPIABI_Datatype datatype, MPIABI_Request *request);
@@ -4915,7 +5182,6 @@ int MPIABI_File_iwrite_shared_c(MPIABI_File fh, const void *buf,
                                 MPIABI_Request *request);
 int MPIABI_File_open(MPIABI_Comm comm, const char *filename, int amode,
                      MPIABI_Info info, MPIABI_File *fh);
-;
 int MPIABI_File_preallocate(MPIABI_File fh, MPIABI_Offset size);
 int MPIABI_File_read(MPIABI_File fh, void *buf, int count,
                      MPIABI_Datatype datatype, MPIABI_Status *status);
@@ -4925,7 +5191,6 @@ int MPIABI_File_read_all_begin(MPIABI_File fh, void *buf, int count,
                                MPIABI_Datatype datatype);
 int MPIABI_File_read_all_begin_c(MPIABI_File fh, void *buf, MPIABI_Count count,
                                  MPIABI_Datatype datatype);
-;
 int MPIABI_File_read_all_c(MPIABI_File fh, void *buf, MPIABI_Count count,
                            MPIABI_Datatype datatype, MPIABI_Status *status);
 int MPIABI_File_read_all_end(MPIABI_File fh, void *buf, MPIABI_Status *status);

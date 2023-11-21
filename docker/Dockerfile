@@ -49,4 +49,4 @@ WORKDIR /MPItrampoline/test
 RUN cc -Wall -g -c hello-world.c
 RUN cc -Wall -g -o hello-world hello-world.o -lmpitrampoline
 RUN ./hello-world
-RUN mpiexec -4 ./hello-world
+RUN mpiexec -n 4 ./hello-world

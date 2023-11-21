@@ -36,8 +36,9 @@ add_library(mpitrampoline
   mpi_functions.h
   mpi_types.h
   mpiabi_function_pointers.h
-  mpiabi_function_pointers.c
+  # mpiabi_function_pointers.c
 )
+target_compile_options(mpitrampoline PRIVATE -Wall -Wextra -Wpedantic)
 target_include_directories(
   mpitrampoline
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}

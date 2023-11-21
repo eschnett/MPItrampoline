@@ -3,6 +3,9 @@
 
 #include <mpiabi_version.h>
 
+#ifdef __linux__
+#include <link.h>
+#endif
 #include <dlfcn.h>
 
 #include <stdbool.h>
@@ -31,7 +34,21 @@ static bool did_init_mpitrampoline = false;
 
 static void *load_library(const char *const libname) {
   void *handle;
+
+#ifdef __APPLE__
+
+  fprintf(stderr, "[MPItrampoline] Calling dlopen\n");
+  handle = dlopen(libname, RTLD_LOCAL);
+
+#elif __linux__
+
+  fprintf(stderr, "[MPItrampoline] Calling dlopen\n");
   handle = dlopen(libname, RTLD_LOCAL | RTLD_DEEPBIND);
+
+#else
+#error "Unsupported operating system"
+#endif
+
   if (!handle) {
     fprintf(stderr, "MPItrampoline: Could not dlopen library \"%s\"\n",
             libname);
@@ -40,6 +57,7 @@ static void *load_library(const char *const libname) {
       fprintf(stderr, "MPItrampoline: dlerror: %s\n", error);
     exit(1);
   }
+
   return handle;
 }
 
@@ -60,7 +78,13 @@ static void mpitrampoline_init() {
     return;
   did_init_mpitrampoline = true;
 
-  const char *const libname = "/usr/local/lib/libmpiwrapper.so";
+  const char *const libname = getenv("MPITRAMPOLINE_LIB");
+  if (!libname || libname[0] == '\0') {
+    fprintf(stderr,
+            "[MPItrampoline] Environment variable \"MPITRAMPOLINE_LIB\" is not "
+            "set, cannot load MPIwrapper library\n");
+    exit(1);
+  }
 
   void *handle = load_library(libname);
 
@@ -120,3 +144,9 @@ mpitrampoline_init_auto() {
 
   mpitrampoline_init();
 }
+
+// We define the common symbols here in this file to ensure that this
+// file is linked into the executable, so that
+// `mpitrampoline_init_auto` is actually run
+
+#include "mpiabi_function_pointers.c"
