@@ -1,3 +1,4 @@
+#include "mpitrampoline.h"
 #include "mpiabi_function_pointers.h"
 
 #include <mpiabi_version.h>
