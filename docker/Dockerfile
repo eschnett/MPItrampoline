@@ -12,6 +12,7 @@ RUN apt update && \
         build-essential \
         ca-certificates \
         cmake \
+        gdb \
         git \
         less \
         libmpich-dev \

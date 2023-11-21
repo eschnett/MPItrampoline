@@ -513,40 +513,40 @@ MPIABI_Topo_test_ptr = get_symbol(handle, "MPIABI_Topo_test");
 //TODO MPIABI_Info_get_nthkey_ptr = get_symbol(handle, "MPIABI_Info_get_nthkey");
 //TODO MPIABI_Info_get_string_ptr = get_symbol(handle, "MPIABI_Info_get_string");
 //TODO MPIABI_Info_set_ptr = get_symbol(handle, "MPIABI_Info_set");
-//TODO 
-//TODO // A.3.9 Process Creation and Management C Bindings
-//TODO 
-//TODO MPIABI_Abort_ptr = get_symbol(handle, "MPIABI_Abort");
-//TODO MPIABI_Close_port_ptr = get_symbol(handle, "MPIABI_Close_port");
-//TODO MPIABI_Comm_accept_ptr = get_symbol(handle, "MPIABI_Comm_accept");
-//TODO MPIABI_Comm_connect_ptr = get_symbol(handle, "MPIABI_Comm_connect");
-//TODO MPIABI_Comm_disconnect_ptr = get_symbol(handle, "MPIABI_Comm_disconnect");
-//TODO MPIABI_Comm_get_parent_ptr = get_symbol(handle, "MPIABI_Comm_get_parent");
-//TODO MPIABI_Comm_join_ptr = get_symbol(handle, "MPIABI_Comm_join");
-//TODO MPIABI_Comm_spawn_ptr = get_symbol(handle, "MPIABI_Comm_spawn");
-//TODO MPIABI_Comm_spawn_multiple_ptr =
-//TODO     get_symbol(handle, "MPIABI_Comm_spawn_multiple");
-//TODO MPIABI_Finalize_ptr = get_symbol(handle, "MPIABI_Finalize");
-//TODO MPIABI_Finalized_ptr = get_symbol(handle, "MPIABI_Finalized");
-//TODO MPIABI_Init_ptr = get_symbol(handle, "MPIABI_Init");
-//TODO MPIABI_Init_thread_ptr = get_symbol(handle, "MPIABI_Init_thread");
-//TODO MPIABI_Initialized_ptr = get_symbol(handle, "MPIABI_Initialized");
-//TODO MPIABI_Is_thread_main_ptr = get_symbol(handle, "MPIABI_Is_thread_main");
-//TODO MPIABI_Lookup_name_ptr = get_symbol(handle, "MPIABI_Lookup_name");
-//TODO MPIABI_Open_port_ptr = get_symbol(handle, "MPIABI_Open_port");
-//TODO MPIABI_Publish_name_ptr = get_symbol(handle, "MPIABI_Publish_name");
-//TODO MPIABI_Query_thread_ptr = get_symbol(handle, "MPIABI_Query_thread");
-//TODO MPIABI_Session_finalize_ptr = get_symbol(handle, "MPIABI_Session_finalize");
-//TODO MPIABI_Session_get_info_ptr = get_symbol(handle, "MPIABI_Session_get_info");
-//TODO MPIABI_Session_get_nth_pset_ptr =
-//TODO     get_symbol(handle, "MPIABI_Session_get_nth_pset");
-//TODO MPIABI_Session_get_num_psets_ptr =
-//TODO     get_symbol(handle, "MPIABI_Session_get_num_psets");
-//TODO MPIABI_Session_get_pset_info_ptr =
-//TODO     get_symbol(handle, "MPIABI_Session_get_pset_info");
-//TODO MPIABI_Session_init_ptr = get_symbol(handle, "MPIABI_Session_init");
-//TODO MPIABI_Unpublish_name_ptr = get_symbol(handle, "MPIABI_Unpublish_name");
-//TODO 
+
+// A.3.9 Process Creation and Management C Bindings
+
+MPIABI_Abort_ptr = get_symbol(handle, "MPIABI_Abort");
+MPIABI_Close_port_ptr = get_symbol(handle, "MPIABI_Close_port");
+MPIABI_Comm_accept_ptr = get_symbol(handle, "MPIABI_Comm_accept");
+MPIABI_Comm_connect_ptr = get_symbol(handle, "MPIABI_Comm_connect");
+MPIABI_Comm_disconnect_ptr = get_symbol(handle, "MPIABI_Comm_disconnect");
+MPIABI_Comm_get_parent_ptr = get_symbol(handle, "MPIABI_Comm_get_parent");
+MPIABI_Comm_join_ptr = get_symbol(handle, "MPIABI_Comm_join");
+MPIABI_Comm_spawn_ptr = get_symbol(handle, "MPIABI_Comm_spawn");
+MPIABI_Comm_spawn_multiple_ptr =
+    get_symbol(handle, "MPIABI_Comm_spawn_multiple");
+MPIABI_Finalize_ptr = get_symbol(handle, "MPIABI_Finalize");
+MPIABI_Finalized_ptr = get_symbol(handle, "MPIABI_Finalized");
+MPIABI_Init_ptr = get_symbol(handle, "MPIABI_Init");
+MPIABI_Init_thread_ptr = get_symbol(handle, "MPIABI_Init_thread");
+MPIABI_Initialized_ptr = get_symbol(handle, "MPIABI_Initialized");
+MPIABI_Is_thread_main_ptr = get_symbol(handle, "MPIABI_Is_thread_main");
+MPIABI_Lookup_name_ptr = get_symbol(handle, "MPIABI_Lookup_name");
+MPIABI_Open_port_ptr = get_symbol(handle, "MPIABI_Open_port");
+MPIABI_Publish_name_ptr = get_symbol(handle, "MPIABI_Publish_name");
+MPIABI_Query_thread_ptr = get_symbol(handle, "MPIABI_Query_thread");
+MPIABI_Session_finalize_ptr = get_symbol(handle, "MPIABI_Session_finalize");
+MPIABI_Session_get_info_ptr = get_symbol(handle, "MPIABI_Session_get_info");
+MPIABI_Session_get_nth_pset_ptr =
+    get_symbol(handle, "MPIABI_Session_get_nth_pset");
+MPIABI_Session_get_num_psets_ptr =
+    get_symbol(handle, "MPIABI_Session_get_num_psets");
+MPIABI_Session_get_pset_info_ptr =
+    get_symbol(handle, "MPIABI_Session_get_pset_info");
+MPIABI_Session_init_ptr = get_symbol(handle, "MPIABI_Session_init");
+MPIABI_Unpublish_name_ptr = get_symbol(handle, "MPIABI_Unpublish_name");
+
 //TODO // A.3.10 One-Sided Communications C Bindings
 //TODO 
 //TODO MPIABI_Accumulate_ptr = get_symbol(handle, "MPIABI_Accumulate");
