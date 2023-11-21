@@ -2,6 +2,7 @@
 
 #include <dlfcn.h>
 
+#include <stdbool.h>
 #include <stdio.h>
 #include <stdlib.h>
 
@@ -56,7 +57,9 @@ static void mpitrampoline_init() {
     return;
   did_init_mpitrampoline = true;
 
-  void *handle = load_library("/usr/local/lib/libmpiwrapper.so");
+  const char *const libname = "/usr/local/lib/libmpiwrapper.so";
+
+  void *handle = load_library(libname);
 
   mpiwrapper_version_major =
       *(int const *)get_symbol(handle, "mpiwrapper_version_major");
@@ -64,10 +67,9 @@ static void mpitrampoline_init() {
       *(int const *)get_symbol(handle, "mpiwrapper_version_minor");
   mpiwrapper_version_patch =
       *(int const *)get_symbol(handle, "mpiwrapper_version_patch");
-  if (verbose)
-    fprintf(stderr, "[MPItrampoline] Loaded MPIwrapper %d.%d.%d\n",
-            mpiwrapper_version_major, mpiwrapper_version_minor,
-            mpiwrapper_version_patch);
+  fprintf(stderr, "[MPItrampoline] Loaded MPIwrapper %d.%d.%d\n",
+          mpiwrapper_version_major, mpiwrapper_version_minor,
+          mpiwrapper_version_patch);
 
   mpiabi_loaded_version_major =
       *(int const *)get_symbol(handle, "mpiabi_version_major");
@@ -75,10 +77,9 @@ static void mpitrampoline_init() {
       *(int const *)get_symbol(handle, "mpiabi_version_minor");
   mpiabi_loaded_version_patch =
       *(int const *)get_symbol(handle, "mpiabi_version_patch");
-  if (verbose)
-    fprintf(stderr, "[MPItrampoline] Found MPI ABI version %d.%d.%d\n",
-            mpiabi_loaded_version_major, mpiabi_loaded_version_minor,
-            mpiabi_loaded_version_patch);
+  fprintf(stderr, "[MPItrampoline] Found MPI ABI version %d.%d.%d\n",
+          mpiabi_loaded_version_major, mpiabi_loaded_version_minor,
+          mpiabi_loaded_version_patch);
 
   if (mpiabi_loaded_version_major != mpiabi_version_major ||
       mpiabi_loaded_version_minor < mpiabi_version_minor) {
