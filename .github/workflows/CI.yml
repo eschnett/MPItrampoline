@@ -114,7 +114,7 @@ jobs:
     - name: Test Fortran
       working-directory: ${{github.workspace}}/test
       run: |
-        gfortran -fcray-pointer -I$HOME/mpitrampoline/include -c hello-world-fortran.f90)
+        gfortran -fcray-pointer -I$HOME/mpitrampoline/include -c hello-world-fortran.f90
         gfortran -L$HOME/mpitrampoline/lib -Wl,-rpath,$HOME/mpitrampoline/lib -o hello-world-fortran hello-world-fortran.o -lmpitrampoline
         export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
         ./hello-world-fortran
