@@ -18,11 +18,14 @@ int main(int argc, char **argv) {
   if (rank == 0)
     printf("Hello, World!\n");
 
-  for (int n = 0; n < size; ++n) {
-    if (rank == n)
-      printf("  process %d/%d\n", rank, size);
-    MPI_Barrier(MPI_COMM_WORLD);
-  }
+  int token;
+  if (rank > 0)
+    MPI_Recv(&token, 0, MPI_INT, rank - 1, 0, MPI_COMM_WORLD,
+             MPI_STATUS_IGNORE);
+  printf("  process %d/%d\n", rank, size);
+  if (rank < size - 1)
+    MPI_Send(&token, 0, MPI_INT, rank + 1, 0, MPI_COMM_WORLD);
+  MPI_Barrier(MPI_COMM_WORLD);
 
   if (rank == 0)
     printf("Done.\n");

@@ -84,6 +84,14 @@ static void *get_symbol(void *handle, const char *name) {
 void (*mpiabi_init_ptr)(MPIABI_Fint *ierror);
 void (*mpiabi_finalize_ptr)(MPIABI_Fint *ierror);
 void (*mpiabi_barrier_ptr)(MPIABI_Fint *comm, MPIABI_Fint *ierror);
+void (*mpiabi_recv_ptr)(MPIABI_Fint *buf, MPIABI_Fint *count,
+                        MPIABI_Fint *datatype, MPIABI_Fint *source,
+                        MPIABI_Fint *tag, MPIABI_Fint *comm,
+                        MPIABI_Fint *status, MPIABI_Fint *ierror);
+void (*mpiabi_send_ptr)(MPIABI_Fint *buf, MPIABI_Fint *count,
+                        MPIABI_Fint *datatype, MPIABI_Fint *dest,
+                        MPIABI_Fint *tag, MPIABI_Fint *comm,
+                        MPIABI_Fint *ierror);
 void (*mpiabi_comm_size_ptr)(MPIABI_Fint *comm, MPIABI_Fint *size,
                              MPIABI_Fint *ierror);
 void (*mpiabi_comm_rank_ptr)(MPIABI_Fint *comm, MPIABI_Fint *rank,
@@ -96,6 +104,8 @@ void set_mpiabi_function_pointers(void *const handle) {
   mpiabi_init_ptr = get_symbol(handle, "mpiabi_init_");
   mpiabi_finalize_ptr = get_symbol(handle, "mpiabi_finalize_");
   mpiabi_barrier_ptr = get_symbol(handle, "mpiabi_barrier_");
+  mpiabi_recv_ptr = get_symbol(handle, "mpiabi_recv_");
+  mpiabi_send_ptr = get_symbol(handle, "mpiabi_send_");
   mpiabi_comm_size_ptr = get_symbol(handle, "mpiabi_comm_size_");
   mpiabi_comm_rank_ptr = get_symbol(handle, "mpiabi_comm_rank_");
 }
@@ -173,13 +183,29 @@ mpitrampoline_init_auto(void) {
 }
 
 void mpi_init_(MPI_Fint *ierror) { (*mpiabi_init_ptr)(ierror); }
+
 void mpi_finalize_(MPI_Fint *ierror) { (*mpiabi_finalize_ptr)(ierror); }
+
 void mpi_barrier_(MPI_Fint *comm, MPI_Fint *ierror) {
   (*mpiabi_barrier_ptr)(comm, ierror);
 }
+
+void mpi_recv_(MPI_Fint *buf, MPI_Fint *count, MPI_Fint *datatype,
+               MPI_Fint *source, MPI_Fint *tag, MPI_Fint *comm,
+               MPI_Fint *status, MPI_Fint *ierror) {
+  (*mpiabi_recv_ptr)(buf, count, datatype, source, tag, comm, status, ierror);
+}
+
+void mpi_send_(MPI_Fint *buf, MPI_Fint *count, MPI_Fint *datatype,
+               MPI_Fint *dest, MPI_Fint *tag, MPI_Fint *comm,
+               MPI_Fint *ierror) {
+  (*mpiabi_send_ptr)(buf, count, datatype, dest, tag, comm, ierror);
+}
+
 void mpi_comm_size_(MPI_Fint *comm, MPI_Fint *size, MPI_Fint *ierror) {
   (*mpiabi_comm_size_ptr)(comm, size, ierror);
 }
+
 void mpi_comm_rank_(MPI_Fint *comm, MPI_Fint *rank, MPI_Fint *ierror) {
   (*mpiabi_comm_rank_ptr)(comm, rank, ierror);
 }

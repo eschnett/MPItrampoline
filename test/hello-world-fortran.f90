@@ -3,9 +3,10 @@ program hello
   include "mpif.h"
 
   integer size, rank
-  integer n
+  integer token
+  integer status(MPI_STATUS_SIZE)
   integer ierror
-  
+
   print '("Hello, World!")'
 
   print '("Running with MPItrampoline ",i0,".",i0,".",i0)', &
@@ -20,12 +21,19 @@ program hello
      print '("Hello, World!")'
   end if
 
-  do n = 0, size-1
-     if (rank == n) then
-        print '("  process ",i0,"/",i0)', rank, size
-        call MPI_Barrier(MPI_COMM_WORLD, ierror)
-     end if
-  end do
+  if (rank > 0) then
+     print '("A.0")'
+     call MPI_Recv(token, 0, MPI_INTEGER, rank - 1, 0, MPI_COMM_WORLD, MPI_STATUS_IGNORE, ierror)
+     print '("A.1")'
+  end if
+  print '("  process ",i0,"/",i0)', rank, size
+  if (rank < size - 1) then
+     print '("A.2")'
+     call MPI_Send(token, 0, MPI_INTEGER, rank + 1, 0, MPI_COMM_WORLD, ierror)
+     print '("A.3")'
+  end if
+  call MPI_Barrier(MPI_COMM_WORLD, ierror)
+  print '("A.4")'
 
   if (rank == 0) then
      print '("Done.")'

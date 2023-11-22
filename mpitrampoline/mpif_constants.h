@@ -468,3 +468,341 @@
       parameter (MPI_COMM_WORLD = MPIABI_COMM_WORLD)
       integer MPI_COMM_SELF
       parameter (MPI_COMM_SELF = MPIABI_COMM_SELF)
+
+! // Communicator split type constants
+! enum {
+!   MPIABI_COMM_TYPE_SHARED = -1001,          // arXiv:2308.11214
+!   MPIABI_COMM_TYPE_HW_UNGUIDED = -1002,     // arXiv:2308.11214
+!   MPIABI_COMM_TYPE_HW_GUIDED = -1003,       // arXiv:2308.11214
+!   MPIABI_COMM_TYPE_RESOURCE_GUIDED = -1004, // [nonstandard]
+! };
+!
+! // Results of communicator and group comparisons
+!
+! enum {
+!   MPIABI_IDENT = -701,     // arXiv:2308.11214
+!   MPIABI_CONGRUENT = -702, // arXiv:2308.11214
+!   MPIABI_SIMILAR = -703,   // arXiv:2308.11214
+!   MPIABI_UNEQUAL = -704,   // arXiv:2308.11214
+! };
+!
+! // Environmental inquiry info key
+!
+! #define MPIABI_INFO_ENV ((MPIABI_Info)0b000100110001) // [nonstandard]
+!
+! // Environmental inquiry keys
+!
+! enum {
+!   MPIABI_TAG_UB = -201,          // arXiv:2308.11214
+!   MPIABI_IO = -202,              // arXiv:2308.11214
+!   MPIABI_HOST = -203,            // arXiv:2308.11214 [deprecated]
+!   MPIABI_WTIME_IS_GLOBAL = -204, // arXiv:2308.11214
+! };
+!
+! // Collective Operations
+!
+! #define MPIABI_MAX ((MPIABI_Op)0b000000100011)     // arXiv:2308.11214
+! #define MPIABI_MIN ((MPIABI_Op)0b000000100010)     // arXiv:2308.11214
+! #define MPIABI_SUM ((MPIABI_Op)0b000000100001)     // arXiv:2308.11214
+! #define MPIABI_PROD ((MPIABI_Op)0b000000100100)    // arXiv:2308.11214
+! #define MPIABI_MAXLOC ((MPIABI_Op)0b000000111001)  // arXiv:2308.11214
+! #define MPIABI_MINLOC ((MPIABI_Op)0b000000111000)  // arXiv:2308.11214
+! #define MPIABI_BAND ((MPIABI_Op)0b000000101000)    // arXiv:2308.11214
+! #define MPIABI_BOR ((MPIABI_Op)0b000000101001)     // arXiv:2308.11214
+! #define MPIABI_BXOR ((MPIABI_Op)0b000000101010)    // arXiv:2308.11214
+! #define MPIABI_LAND ((MPIABI_Op)0b000000110000)    // arXiv:2308.11214
+! #define MPIABI_LOR ((MPIABI_Op)0b000000110001)     // arXiv:2308.11214
+! #define MPIABI_LXOR ((MPIABI_Op)0b000000110010)    // arXiv:2308.11214
+! #define MPIABI_REPLACE ((MPIABI_Op)0b000000111100) // arXiv:2308.11214
+! #define MPIABI_NO_OP ((MPIABI_Op)0b000000111101)   // arXiv:2308.11214
+
+!     Null Handles
+
+      integer MPI_GROUP_NULL
+      parameter (MPI_GROUP_NULL = MPIABI_GROUP_NULL)
+      integer MPI_COMM_NULL
+      parameter (MPI_COMM_NULL = MPIABI_COMM_NULL)
+      integer MPI_DATATYPE_NULL
+      parameter (MPI_DATATYPE_NULL = MPIABI_DATATYPE_NULL)
+      integer MPI_REQUEST_NULL
+      parameter (MPI_REQUEST_NULL = MPIABI_REQUEST_NULL)
+      integer MPI_OP_NULL
+      parameter (MPI_OP_NULL = MPIABI_OP_NULL)
+      integer MPI_ERRHANDLER_NULL
+      parameter (MPI_ERRHANDLER_NULL = MPIABI_ERRHANDLER_NULL)
+      integer MPI_FILE_NULL
+      parameter (MPI_FILE_NULL = MPIABI_FILE_NULL)
+      integer MPI_INFO_NULL
+      parameter (MPI_INFO_NULL = MPIABI_INFO_NULL)
+      integer MPI_SESSION_NULL
+      parameter (MPI_SESSION_NULL = MPIABI_SESSION_NULL)
+      integer MPI_WIN_NULL
+      parameter (MPI_WIN_NULL = MPIABI_WIN_NULL)
+      integer MPI_MESSAGE_NULL
+      parameter (MPI_MESSAGE_NULL = MPIABI_MESSAGE_NULL)
+
+!     Empty group
+
+      integer MPI_GROUP_EMPTY
+      parameter (MPI_GROUP_EMPTY = MPIABI_GROUP_EMPTY)
+
+! // Topologies
+!
+! enum {
+!   MPIABI_GRAPH = -1801,      // arXiv:2308.11214
+!   MPIABI_CART = -1803,       // arXiv:2308.11214
+!   MPIABI_DIST_GRAPH = -1802, // arXiv:2308.11214
+! };
+!
+! // Predefined functions
+!
+! #define MPIABI_COMM_NULL_COPY_FN                                               \
+!   ((MPIABI_Comm_copy_attr_function)0) // arXiv:2308.11214
+! #define MPIABI_COMM_DUP_FN                                                     \
+!   ((MPIABI_Comm_copy_attr_function)1) // arXiv:2308.11214
+! #define MPIABI_COMM_NULL_DELETE_FN                                             \
+!   ((MPIABI_Comm_delete_attr_function)0) // arXiv:2308.11214
+!
+! #define MPIABI_WIN_NULL_COPY_FN                                                \
+!   ((MPIABI_Win_copy_attr_function)0)                         // arXiv:2308.11214
+! #define MPIABI_WIN_DUP_FN ((MPIABI_Win_copy_attr_function)1) // arXiv:2308.11214
+! #define MPIABI_WIN_NULL_DELETE_FN                                              \
+!   ((MPIABI_Win_delete_attr_function)0) // arXiv:2308.11214
+!
+! #define MPIABI_TYPE_NULL_COPY_FN                                               \
+!   ((MPIABI_Type_copy_attr_function)0) // arXiv:2308.11214
+! #define MPIABI_TYPE_DUP_FN                                                     \
+!   ((MPIABI_Type_copy_attr_function)1) // arXiv:2308.11214
+! #define MPIABI_TYPE_NULL_DELETE_FN                                             \
+!   ((MPIABI_Type_delete_attr_function)0) // arXiv:2308.11214
+!
+! #define MPIABI_CONVERSION_FN_NULL                                              \
+!   ((MPIABI_Datarep_conversion_function)0) // arXiv:2308.11214
+! #define MPIABI_CONVERSION_FN_NULL_C                                            \
+!   ((MPIABI_Datarep_conversion_function_c)0) // arXiv:2308.11214
+!
+! // Deprecated predefined functions
+!
+! #define MPIABI_NULL_COPY_FN ((MPIABI_Copy_function)0)
+! #define MPIABI_DUP_FN ((MPIABI_Copy_function)1)
+! #define MPIABI_NULL_DELETE_FN ((MPIABI_Delete_function)0)
+!
+! // Predefined Attribute Keys
+!
+! enum {
+!   MPIABI_APPNUM = -205,            // arXiv:2308.11214
+!   MPIABI_LASTUSEDCODE = -206,      // arXiv:2308.11214
+!   MPIABI_UNIVERSE_SIZE = -207,     // arXiv:2308.11214
+!   MPIABI_WIN_BASE = -301,          // arXiv:2308.11214
+!   MPIABI_WIN_DISP_UNIT = -302,     // arXiv:2308.11214
+!   MPIABI_WIN_SIZE = -303,          // arXiv:2308.11214
+!   MPIABI_WIN_CREATE_FLAVOR = -304, // arXiv:2308.11214
+!   MPIABI_WIN_MODEL = -305,         // arXiv:2308.11214
+! };
+!
+! // MPI Window Create Flavors
+!
+! enum {
+!   MPIABI_WIN_FLAVOR_CREATE = -1102,   // arXiv:2308.11214
+!   MPIABI_WIN_FLAVOR_ALLOCATE = -1101, // arXiv:2308.11214
+!   MPIABI_WIN_FLAVOR_DYNAMIC = -1103,  // arXiv:2308.11214
+!   MPIABI_WIN_FLAVOR_SHARED = -1104,   // arXiv:2308.11214
+! };
+!
+! // MPI Window Models
+!
+! enum {
+!   MPIABI_WIN_SEPARATE = -1201, // arXiv:2308.11214
+!   MPIABI_WIN_UNIFIED = -1202,  // arXiv:2308.11214
+! };
+!
+! // Mode Constants
+!
+! enum {
+!   MPIABI_MODE_APPEND = 1,          // arXiv:2308.11214
+!   MPIABI_MODE_CREATE = 2,          // arXiv:2308.11214
+!   MPIABI_MODE_DELETE_ON_CLOSE = 4, // arXiv:2308.11214
+!   MPIABI_MODE_EXCL = 8,            // arXiv:2308.11214
+!   MPIABI_MODE_NOCHECK = 1024,      // arXiv:2308.11214
+!   MPIABI_MODE_NOPRECEDE = 2048,    // arXiv:2308.11214
+!   MPIABI_MODE_NOPUT = 4096,        // arXiv:2308.11214
+!   MPIABI_MODE_NOSTORE = 8192,      // arXiv:2308.11214
+!   MPIABI_MODE_NOSUCCEED = 16384,   // arXiv:2308.11214
+!   MPIABI_MODE_RDONLY = 16,         // arXiv:2308.11214
+!   MPIABI_MODE_RDWR = 32,           // arXiv:2308.11214
+!   MPIABI_MODE_SEQUENTIAL = 64,     // arXiv:2308.11214
+!   MPIABI_MODE_UNIQUE_OPEN = 128,   // arXiv:2308.11214
+!   MPIABI_MODE_WRONLY = 256,        // arXiv:2308.11214
+! };
+!
+! // Datatype Decoding Constants
+!
+! enum {
+!   MPIABI_COMBINER_CONTIGUOUS = -1303,     // arXiv:2308.11214
+!   MPIABI_COMBINER_DARRAY = -1312,         // arXiv:2308.11214
+!   MPIABI_COMBINER_DUP = -1302,            // arXiv:2308.11214
+!   MPIABI_COMBINER_F90_COMPLEX = -1314,    // arXiv:2308.11214
+!   MPIABI_COMBINER_F90_INTEGER = -1315,    // arXiv:2308.11214
+!   MPIABI_COMBINER_F90_REAL = -1313,       // arXiv:2308.11214
+!   MPIABI_COMBINER_HINDEXED = -1307,       // arXiv:2308.11214
+!   MPIABI_COMBINER_HVECTOR = -1305,        // arXiv:2308.11214
+!   MPIABI_COMBINER_INDEXED_BLOCK = -1308,  // arXiv:2308.11214
+!   MPIABI_COMBINER_HINDEXED_BLOCK = -1309, // arXiv:2308.11214
+!   MPIABI_COMBINER_INDEXED = -1306,        // arXiv:2308.11214
+!   MPIABI_COMBINER_NAMED = -1301,          // arXiv:2308.11214
+!   MPIABI_COMBINER_RESIZED = -1316,        // arXiv:2308.11214
+!   MPIABI_COMBINER_STRUCT = -1310,         // arXiv:2308.11214
+!   MPIABI_COMBINER_SUBARRAY = -1311,       // arXiv:2308.11214
+!   MPIABI_COMBINER_VECTOR = -1304,         // arXiv:2308.11214
+! };
+!
+! // Threads Constants
+!
+! enum {
+!   MPIABI_THREAD_FUNNELED = -803,   // arXiv:2308.11214
+!   MPIABI_THREAD_MULTIPLE = -801,   // arXiv:2308.11214
+!   MPIABI_THREAD_SERIALIZED = -802, // arXiv:2308.11214
+!   MPIABI_THREAD_SINGLE = -804,     // arXiv:2308.11214
+! };
+!
+! // File Operation Constants, Part 1
+!
+! #define MPIABI_DISPLACEMENT_CURRENT ((MPIABI_Offset)-501) // arXiv:2308.11214
+!
+! // File Operation Constants, Part 2
+!
+! enum {
+!   MPIABI_DISTRIBUTE_BLOCK = -1401,     // arXiv:2308.11214
+!   MPIABI_DISTRIBUTE_CYCLIC = -1402,    // arXiv:2308.11214
+!   MPIABI_DISTRIBUTE_DFLT_DARG = -1403, // arXiv:2308.11214
+!   MPIABI_DISTRIBUTE_NONE = -1404,      // arXiv:2308.11214
+!   MPIABI_ORDER_C = -1501,              // arXiv:2308.11214
+!   MPIABI_ORDER_FORTRAN = -1502,        // arXiv:2308.11214
+!   MPIABI_SEEK_CUR = -1601,             // arXiv:2308.11214
+!   MPIABI_SEEK_END = -1602,             // arXiv:2308.11214
+!   MPIABI_SEEK_SET = -1603,             // arXiv:2308.11214
+! };
+!
+! // F90 Datatype Matching Constants
+!
+! enum {
+!   MPIABI_TYPECLASS_COMPLEX = -1702, // arXiv:2308.11214
+!   MPIABI_TYPECLASS_INTEGER = -1703, // arXiv:2308.11214
+!   MPIABI_TYPECLASS_REAL = -1701,    // arXiv:2308.11214
+! };
+
+!     Constants Specifying Empty or Ignored Input
+
+      integer MPI_ARGVS_NULL(1)
+      pointer (MPIABI_ARGVS_NULL_PTR, MPI_ARGVS_NULL)
+      integer MPI_ARGV_NULL(1)
+      pointer (MPIABI_ARGV_NULL_PTR, MPI_ARGV_NULL)
+      integer MPI_ERRCODES_IGNORE(1)
+      pointer (MPIABI_ERRCODES_IGNORE_PTR, MPI_ERRCODES_IGNORE)
+      integer MPI_STATUSES_IGNORE(1)
+      pointer (MPIABI_STATUSES_IGNORE_PTR, MPI_STATUSES_IGNORE)
+      integer MPI_STATUS_IGNORE(1)
+      pointer (MPIABI_STATUS_IGNORE_PTR, MPI_STATUS_IGNORE)
+      integer MPI_UNWEIGHTED(1)
+      pointer (MPIABI_UNWEIGHTED_PTR, MPI_UNWEIGHTED)
+      integer MPI_WEIGHTS_EMPTY(1)
+      pointer (MPIABI_WEIGHTS_EMPTY_PTR, MPI_WEIGHTS_EMPTY)
+
+! // C Constants Specifying Ignored Input (no Fortran)
+!
+! #define MPIABI_F_STATUSES_IGNORE ((MPIABI_Fint *))
+! #define MPIABI_F_STATUS_IGNORE ((MPIABI_Fint *))
+!
+! #define MPIABI_F08_STATUSES_IGNORE ((MPIABI_F08_status *))
+! #define MPIABI_F08_STATUS_IGNORE ((MPIABI_F08_status *))
+!
+! // C preprocessor Constants and Fortran Parameters
+! enum {
+!   MPIABI_SUBVERSION = 1,
+!   MPIABI_VERSION = 4,
+! };
+!
+! // Null handles used in the MPI tool information interface
+!
+! #define MPIABI_T_ENUM_NULL ((MPIABI_T_enum))
+! #define MPIABI_T_CVAR_HANDLE_NULL ((MPIABI_T_cvar_handle))
+! #define MPIABI_T_PVAR_HANDLE_NULL ((MPIABI_T_pvar_handle))
+! #define MPIABI_T_PVAR_SESSION_NULL ((MPIABI_T_pvar_session))
+!
+! // Verbosity Levels in the MPI tool information interface
+!
+! enum {
+!   MPIABI_T_VERBOSITY_USER_BASIC, // [nonstandard]
+!   MPIABI_T_VERBOSITY_USER_DETAIL,
+!   MPIABI_T_VERBOSITY_USER_ALL,
+!   MPIABI_T_VERBOSITY_TUNER_BASIC,
+!   MPIABI_T_VERBOSITY_TUNER_DETAIL,
+!   MPIABI_T_VERBOSITY_TUNER_ALL,
+!   MPIABI_T_VERBOSITY_MPIDEV_BASIC,
+!   MPIABI_T_VERBOSITY_MPIDEV_DETAIL,
+!   MPIABI_T_VERBOSITY_MPIDEV_ALL,
+! };
+!
+! // Constants to identify associations of variables in the MPI tool information
+! // interface
+!
+! enum {
+!   MPIABI_T_BIND_NO_OBJECT, // [nonstandard]
+!   MPIABI_T_BIND_MPI_COMM,
+!   MPIABI_T_BIND_MPI_DATATYPE,
+!   MPIABI_T_BIND_MPI_ERRHANDLER,
+!   MPIABI_T_BIND_MPI_FILE,
+!   MPIABI_T_BIND_MPI_GROUP,
+!   MPIABI_T_BIND_MPI_OP,
+!   MPIABI_T_BIND_MPI_REQUEST,
+!   MPIABI_T_BIND_MPI_WIN,
+!   MPIABI_T_BIND_MPI_MESSAGE,
+!   MPIABI_T_BIND_MPI_INFO,
+!   MPIABI_T_BIND_MPI_SESSION,
+! };
+!
+! // Constants describing the scope of a control variable in the MPI tool
+! // information interface
+!
+! enum {
+!   MPIABI_T_SCOPE_CONSTANT, // [nonstandard]
+!   MPIABI_T_SCOPE_READONLY,
+!   MPIABI_T_SCOPE_LOCAL,
+!   MPIABI_T_SCOPE_GROUP,
+!   MPIABI_T_SCOPE_GROUP_EQ,
+!   MPIABI_T_SCOPE_ALL,
+!   MPIABI_T_SCOPE_ALL_EQ,
+! };
+!
+! // Additional constants used
+!
+! #define MPIABI_T_PVAR_ALL_HANDLES ((MPIABI_T_pvar_handle))
+!
+! // Performance variables classes used by the MPI tool information interface
+!
+! enum {
+!   MPIABI_T_PVAR_CLASS_STATE, // [nonstandard]
+!   MPIABI_T_PVAR_CLASS_LEVEL,
+!   MPIABI_T_PVAR_CLASS_SIZE,
+!   MPIABI_T_PVAR_CLASS_PERCENTAGE,
+!   MPIABI_T_PVAR_CLASS_HIGHWATERMARK,
+!   MPIABI_T_PVAR_CLASS_LOWWATERMARK,
+!   MPIABI_T_PVAR_CLASS_COUNTER,
+!   MPIABI_T_PVAR_CLASS_AGGREGATE,
+!   MPIABI_T_PVAR_CLASS_TIMER,
+!   MPIABI_T_PVAR_CLASS_GENERIC,
+! };
+!
+! // Source event ordering guarantees in the MPI tool information interface
+!
+! #define MPIABI_T_SOURCE_ORDERED ((MPIABI_T_source_order))
+! #define MPIABI_T_SOURCE_UNORDERED ((MPIABI_T_source_order))
+!
+! // Callback safety requirement levels used in the MPI tool information interface
+!
+! #define MPIABI_T_CB_REQUIRE_NONE ((MPIABI_T_cb_safety))
+! #define MPIABI_T_CB_REQUIRE_MPI_RESTRICTED ((MPIABI_T_cb_safety))
+! #define MPIABI_T_CB_REQUIRE_THREAD_SAFE ((MPIABI_T_cb_safety))
+! #define MPIABI_T_CB_REQUIRE_ASYNC_SIGNAL_SAFE ((MPIABI_T_cb_safety))
+!
+! #endif // #ifndef MPIABI_CONSTANTS_H
