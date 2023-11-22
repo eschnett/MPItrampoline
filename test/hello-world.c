@@ -1,5 +1,6 @@
 #include <mpi.h>
 #include <stdio.h>
+#include <stdlib.h>
 
 int main(int argc, char **argv) {
   printf("Hello, World!\n");
@@ -14,6 +15,15 @@ int main(int argc, char **argv) {
   int size, rank;
   MPI_Comm_size(MPI_COMM_WORLD, &size);
   MPI_Comm_rank(MPI_COMM_WORLD, &rank);
+
+  if (argc >= 2) {
+    const int expected_size = atoi(argv[1]);
+    if (size != want_size) {
+      fprintf(stderr, "rank %d, size %d, expected size %d\n", rank, size,
+              expected_size);
+      exit(1);
+    }
+  }
 
   if (rank == 0)
     printf("Hello, World!\n");

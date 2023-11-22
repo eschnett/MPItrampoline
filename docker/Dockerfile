@@ -6,8 +6,8 @@ ARG cpuarch=amd64
 
 FROM ${cpuarch}/debian:12.2
 
-# MPICH, OpenMPI
-ARG mpivendor=MPICH
+# mpich, openmpi
+ARG mpivendor=mpich
 
 # 1. Install dependencies
 
@@ -23,8 +23,8 @@ RUN apt update && \
 
 # Install system MPI
 RUN case ${mpivendor} in \
-        MPICH) pkgs=libmpich-dev;; \
-        OpenMPI) pkgs=libopenmpi-dev;; \
+        mpich) pkgs=libmpich-dev;; \
+        openmpi) pkgs=libopenmpi-dev;; \
         *) exit 1;; \
     esac && \
     apt-get --yes --no-install-recommends install ${pkgs}
@@ -63,8 +63,8 @@ WORKDIR /MPItrampoline/test
 
 RUN /usr/local/bin/mpicc -c hello-world.c
 RUN /usr/local/bin/mpicc -o hello-world hello-world.o
-RUN ./hello-world
-RUN mpiexec -n 4 ./hello-world
+RUN ./hello-world 1
+RUN mpiexec -n 4 ./hello-world 4
 
 RUN /usr/local/bin/mpifc -c hello-world-fortran.f90
 RUN /usr/local/bin/mpifc -o hello-world-fortran hello-world-fortran.o

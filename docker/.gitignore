@@ -1,0 +1,3 @@
+mpi-test-suite-*.log
+mpi-test-suite-*.succeeded
+mpi-test-suite-*.failed

@@ -108,8 +108,8 @@ jobs:
         $HOME/mpitrampoline/bin/mpicc -c hello-world.c
         $HOME/mpitrampoline/bin/mpicc -o hello-world hello-world.o
         export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
-        ./hello-world
-        mpiexec -n 4 ./hello-world
+        ./hello-world 1
+        mpiexec -n 4 ./hello-world 4
 
     - name: Test Fortran
       working-directory: ${{github.workspace}}/test
