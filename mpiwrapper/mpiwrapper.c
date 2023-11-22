@@ -546,6 +546,21 @@ static MPIABI_Errhandler mpi2abi_errhandler(MPI_Errhandler errhandler) {
   return (MPIABI_Errhandler)(uintptr_t)errhandler;
 }
 
+static MPI_File abi2mpi_file(MPIABI_File file) {
+  switch ((uintptr_t)file) {
+  case (uintptr_t)MPIABI_FILE_NULL:
+    return MPI_FILE_NULL;
+  default:
+    return (MPI_File)(uintptr_t)file;
+  }
+}
+
+static MPIABI_File mpi2abi_file(MPI_File file) {
+  if (file == MPI_FILE_NULL)
+    return MPIABI_FILE_NULL;
+  return (MPIABI_File)(uintptr_t)file;
+}
+
 static MPI_Group abi2mpi_group(MPIABI_Group group) {
   switch ((uintptr_t)group) {
   case (uintptr_t)MPIABI_GROUP_EMPTY:
@@ -5416,62 +5431,249 @@ int MPIABI_Topo_test(MPIABI_Comm comm, int *status) {
 
 // A.3.7 MPI Environmental Management C Bindings
 
-int MPIABI_Add_error_class(int *errorclass);
-int MPIABI_Add_error_code(int errorclass, int *errorcode);
-int MPIABI_Add_error_string(int errorcode, const char *string);
-int MPIABI_Alloc_mem(MPIABI_Aint size, MPIABI_Info info, void *baseptr);
-int MPIABI_Comm_call_errhandler(MPIABI_Comm comm, int errorcode);
+int MPIABI_Add_error_class(int *errorclass) {
+  int ierr = MPI_Add_error_class(errorclass);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Add_error_code(int errorclass, int *errorcode) {
+  int ierr = MPI_Add_error_code(errorclass, errorcode);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Add_error_string(int errorcode, const char *string) {
+  int ierr = MPI_Add_error_string(errorcode, string);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Alloc_mem(MPIABI_Aint size, MPIABI_Info info, void *baseptr) {
+  int ierr = MPI_Alloc_mem(size, abi2mpi_info(info), baseptr);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_call_errhandler(MPIABI_Comm comm, int errorcode) {
+  int ierr = MPI_Comm_call_errhandler(abi2mpi_comm(comm), errorcode);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Comm_create_errhandler(
     MPIABI_Comm_errhandler_function *comm_errhandler_fn,
-    MPIABI_Errhandler *errhandler);
-int MPIABI_Comm_get_errhandler(MPIABI_Comm comm, MPIABI_Errhandler *errhandler);
-int MPIABI_Comm_set_errhandler(MPIABI_Comm comm, MPIABI_Errhandler errhandler);
-int MPIABI_Errhandler_free(MPIABI_Errhandler *errhandler);
-int MPIABI_Error_class(int errorcode, int *errorclass);
-int MPIABI_Error_string(int errorcode, char *string, int *resultlen);
-int MPIABI_File_call_errhandler(MPIABI_File fh, int errorcode);
+    MPIABI_Errhandler *errhandler) {
+  // This is not possible; errhandler calls cannot be forwarded
+  assert(0);
+}
+
+int MPIABI_Comm_get_errhandler(MPIABI_Comm comm,
+                               MPIABI_Errhandler *errhandler) {
+  MPI_Errhandler mpi_errhandler;
+  int ierr = MPI_Comm_get_errhandler(abi2mpi_comm(comm), &mpi_errhandler);
+  *errhandler = mpi2abi_errhandler(mpi_errhandler);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Comm_set_errhandler(MPIABI_Comm comm, MPIABI_Errhandler errhandler) {
+  int ierr = MPI_Comm_set_errhandler(abi2mpi_comm(comm),
+                                     abi2mpi_errhandler(errhandler));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Errhandler_free(MPIABI_Errhandler *errhandler) {
+  MPI_Errhandler mpi_errhandler;
+  int ierr = MPI_Errhandler_free(&mpi_errhandler);
+  *errhandler = mpi2abi_errhandler(mpi_errhandler);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Error_class(int errorcode, int *errorclass) {
+  int ierr = MPI_Error_class(errorcode, errorclass);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Error_string(int errorcode, char *string, int *resultlen) {
+  int ierr = MPI_Error_string(errorcode, string, resultlen);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_call_errhandler(MPIABI_File fh, int errorcode) {
+  int ierr = MPI_File_call_errhandler(abi2mpi_file(fh), errorcode);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_create_errhandler(
     MPIABI_File_errhandler_function *file_errhandler_fn,
-    MPIABI_Errhandler *errhandler);
-int MPIABI_File_get_errhandler(MPIABI_File file, MPIABI_Errhandler *errhandler);
-int MPIABI_File_set_errhandler(MPIABI_File file, MPIABI_Errhandler errhandler);
-int MPIABI_Free_mem(void *base);
-int MPIABI_Get_hw_resource_info(MPIABI_Info *hw_info);
-int MPIABI_Get_library_version(char *version, int *resultlen);
-int MPIABI_Get_processor_name(char *name, int *resultlen);
-int MPIABI_Get_version(int *version, int *subversion);
-int MPIABI_Remove_error_class(int errorclass);
-int MPIABI_Remove_error_code(int errorcode);
-int MPIABI_Remove_error_string(int errorcode);
-int MPIABI_Session_call_errhandler(MPIABI_Session session, int errorcode);
+    MPIABI_Errhandler *errhandler) {
+  // This is not possible; errhandler calls cannot be forwarded
+  assert(0);
+}
+
+int MPIABI_File_get_errhandler(MPIABI_File file,
+                               MPIABI_Errhandler *errhandler) {
+  MPI_Errhandler mpi_errhandler;
+  int ierr = MPI_File_get_errhandler(abi2mpi_file(file), &mpi_errhandler);
+  errhandler = mpi2abi_errhandler(mpi_errhandler);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_set_errhandler(MPIABI_File file, MPIABI_Errhandler errhandler) {
+  int ierr = MPI_File_set_errhandler(abi2mpi_file(file),
+                                     abi2mpi_errhandler(errhandler));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Free_mem(void *base) {
+  int ierr = MPI_Free_mem(base);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Get_hw_resource_info(MPIABI_Info *hw_info) {
+  MPI_Info mpi_hw_info;
+  int ierr = MPI_Get_hw_resource_info(&mpi_hw_info);
+  *hw_info = mpi2abi_info(mpi_hw_info);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Get_library_version(char *version, int *resultlen) {
+  int ierr = MPI_Get_library_version(version, resultlen);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Get_processor_name(char *name, int *resultlen) {
+  int ierr = MPI_Get_processor_name(name, resultlen);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Get_version(int *version, int *subversion) {
+  int ierr = MPI_Get_version(version, subversion);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Remove_error_class(int errorclass) {
+  int ierr = MPI_Remove_error_class(errorclass);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Remove_error_code(int errorcode) {
+  int ierr = MPI_Remove_error_code(errorcode);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Remove_error_string(int errorcode) {
+  int ierr = MPI_Remove_error_string(errorcode);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Session_call_errhandler(MPIABI_Session session, int errorcode) {
+  int ierr = MPI_Session_call_errhandler(abi2mpi_session(session), errorcode);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Session_create_errhandler(
     MPIABI_Session_errhandler_function *session_errhandler_fn,
-    MPIABI_Errhandler *errhandler);
+    MPIABI_Errhandler *errhandler) {
+  // This is not possible; errhandler calls cannot be forwarded
+  assert(0);
+}
+
 int MPIABI_Session_get_errhandler(MPIABI_Session session,
-                                  MPIABI_Errhandler *errhandler);
+                                  MPIABI_Errhandler *errhandler) {
+  MPI_Errhandler mpi_errhandler;
+  int ierr =
+      MPI_Session_get_errhandler(abi2mpi_session(session), &mpi_errhandler);
+  *errhandler = mpi2abi_errhandler(mpi_errhandler);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Session_set_errhandler(MPIABI_Session session,
-                                  MPIABI_Errhandler errhandler);
-int MPIABI_Win_call_errhandler(MPIABI_Win win, int errorcode);
+                                  MPIABI_Errhandler errhandler) {
+  int ierr = MPI_Session_set_errhandler(abi2mpi_session(session),
+                                        abi2mpi_errhandler(errhandler));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_call_errhandler(MPIABI_Win win, int errorcode) {
+  int ierr = MPI_Win_call_errhandler(abi2mpi_win(win), errorcode);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Win_create_errhandler(
     MPIABI_Win_errhandler_function *win_errhandler_fn,
-    MPIABI_Errhandler *errhandler);
-int MPIABI_Win_get_errhandler(MPIABI_Win win, MPIABI_Errhandler *errhandler);
-int MPIABI_Win_set_errhandler(MPIABI_Win win, MPIABI_Errhandler errhandler);
-double MPIABI_Wtick(void);
-double MPIABI_Wtime(void);
+    MPIABI_Errhandler *errhandler) {
+  // This is not possible; errhandler calls cannot be forwarded
+  assert(0);
+}
+
+int MPIABI_Win_get_errhandler(MPIABI_Win win, MPIABI_Errhandler *errhandler) {
+  MPI_Errhandler mpi_errhandler;
+  int ierr = MPI_Win_get_errhandler(abi2mpi_win(win), &mpi_errhandler);
+  *errhandler = mpi2abi_errhandler(mpi_errhandler);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_set_errhandler(MPIABI_Win win, MPIABI_Errhandler errhandler) {
+  int ierr =
+      MPI_Win_set_errhandler(abi2mpi_win(win), abi2mpi_errhandler(errhandler));
+  return mpi2abi_errorcode(ierr);
+}
+
+double MPIABI_Wtick(void) { return MPI_Wtick(); }
+
+double MPIABI_Wtime(void) { return MPI_Wtime(); }
 
 // A.3.8 The Info Object C Bindings
 
-int MPIABI_Info_create(MPIABI_Info *info);
-int MPIABI_Info_create_env(int argc, char *argv[], MPIABI_Info *info);
-int MPIABI_Info_delete(MPIABI_Info info, const char *key);
-int MPIABI_Info_dup(MPIABI_Info info, MPIABI_Info *newinfo);
-int MPIABI_Info_free(MPIABI_Info *info);
-int MPIABI_Info_get_nkeys(MPIABI_Info info, int *nkeys);
-int MPIABI_Info_get_nthkey(MPIABI_Info info, int n, char *key);
+int MPIABI_Info_create(MPIABI_Info *info) {
+  MPI_Info mpi_info;
+  int ierr = MPI_Info_create(&mpi_info);
+  *info = mpi2abi_info(mpi_info);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Info_create_env(int argc, char *argv[], MPIABI_Info *info) {
+  MPI_Info mpi_info;
+  int ierr = MPI_Info_create_env(argc, argv, &mpi_info);
+  *info = mpi2abi_info(mpi_info);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Info_delete(MPIABI_Info info, const char *key) {
+  int ierr = MPI_Info_delete(abi2mpi_info(info), key);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Info_dup(MPIABI_Info info, MPIABI_Info *newinfo) {
+  MPI_Info mpi_newinfo;
+  int ierr = MPI_Info_dup(abi2mpi_info(info), &mpi_newinfo);
+  *newinfo = mpi2abi_info(mpi_newinfo);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Info_free(MPIABI_Info *info) {
+  MPI_Info mpi_info = abi2mpi_info(*info);
+  int ierr = MPI_Info_free(&mpi_info);
+  *info = mpi2abi_info(mpi_info);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Info_get_nkeys(MPIABI_Info info, int *nkeys) {
+  int ierr = MPI_Info_get_nkeys(abi2mpi_info(info), nkeys);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Info_get_nthkey(MPIABI_Info info, int n, char *key) {
+  int ierr = MPI_Info_get_nthkey(abi2mpi_info(info), n, key);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Info_get_string(MPIABI_Info info, const char *key, int *buflen,
-                           char *value, int *flag);
-int MPIABI_Info_set(MPIABI_Info info, const char *key, const char *value);
+                           char *value, int *flag) {
+  int ierr = MPI_Info_get_string(abi2mpi_info(info), key, buflen, value, flag);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Info_set(MPIABI_Info info, const char *key, const char *value) {
+  int ierr = MPI_Info_set(abi2mpi_info(info), key, value);
+  return mpi2abi_errorcode(ierr);
+}
 
 // A.3.9 Process Creation and Management C Bindings
 

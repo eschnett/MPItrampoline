@@ -449,70 +449,70 @@ MPIABI_Neighbor_alltoallw_init_c_ptr =
     get_symbol(handle, "MPIABI_Neighbor_alltoallw_init_c");
 MPIABI_Topo_test_ptr = get_symbol(handle, "MPIABI_Topo_test");
 
-//TODO // A.3.7 MPI Environmental Management C Bindings
-//TODO 
-//TODO MPIABI_Add_error_class_ptr = get_symbol(handle, "MPIABI_Add_error_class");
-//TODO MPIABI_Add_error_code_ptr = get_symbol(handle, "MPIABI_Add_error_code");
-//TODO MPIABI_Add_error_string_ptr = get_symbol(handle, "MPIABI_Add_error_string");
-//TODO MPIABI_Alloc_mem_ptr = get_symbol(handle, "MPIABI_Alloc_mem");
-//TODO MPIABI_Comm_call_errhandler_ptr =
-//TODO     get_symbol(handle, "MPIABI_Comm_call_errhandler");
-//TODO MPIABI_Comm_create_errhandler_ptr =
-//TODO     get_symbol(handle, "MPIABI_Comm_create_errhandler");
-//TODO MPIABI_Comm_get_errhandler_ptr =
-//TODO     get_symbol(handle, "MPIABI_Comm_get_errhandler");
-//TODO MPIABI_Comm_set_errhandler_ptr =
-//TODO     get_symbol(handle, "MPIABI_Comm_set_errhandler");
-//TODO MPIABI_Errhandler_free_ptr = get_symbol(handle, "MPIABI_Errhandler_free");
-//TODO MPIABI_Error_class_ptr = get_symbol(handle, "MPIABI_Error_class");
-//TODO MPIABI_Error_string_ptr = get_symbol(handle, "MPIABI_Error_string");
-//TODO MPIABI_File_call_errhandler_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_call_errhandler");
-//TODO MPIABI_File_create_errhandler_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_create_errhandler");
-//TODO MPIABI_File_get_errhandler_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_get_errhandler");
-//TODO MPIABI_File_set_errhandler_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_set_errhandler");
-//TODO MPIABI_Free_mem_ptr = get_symbol(handle, "MPIABI_Free_mem");
-//TODO MPIABI_Get_hw_resource_info_ptr =
-//TODO     get_symbol(handle, "MPIABI_Get_hw_resource_info");
-//TODO MPIABI_Get_library_version_ptr =
-//TODO     get_symbol(handle, "MPIABI_Get_library_version");
-//TODO MPIABI_Get_processor_name_ptr = get_symbol(handle, "MPIABI_Get_processor_name");
-//TODO MPIABI_Get_version_ptr = get_symbol(handle, "MPIABI_Get_version");
-//TODO MPIABI_Remove_error_class_ptr = get_symbol(handle, "MPIABI_Remove_error_class");
-//TODO MPIABI_Remove_error_code_ptr = get_symbol(handle, "MPIABI_Remove_error_code");
-//TODO MPIABI_Remove_error_string_ptr =
-//TODO     get_symbol(handle, "MPIABI_Remove_error_string");
-//TODO MPIABI_Session_call_errhandler_ptr =
-//TODO     get_symbol(handle, "MPIABI_Session_call_errhandler");
-//TODO MPIABI_Session_create_errhandler_ptr =
-//TODO     get_symbol(handle, "MPIABI_Session_create_errhandler");
-//TODO MPIABI_Session_get_errhandler_ptr =
-//TODO     get_symbol(handle, "MPIABI_Session_get_errhandler");
-//TODO MPIABI_Session_set_errhandler_ptr =
-//TODO     get_symbol(handle, "MPIABI_Session_set_errhandler");
-//TODO MPIABI_Win_call_errhandler_ptr =
-//TODO     get_symbol(handle, "MPIABI_Win_call_errhandler");
-//TODO MPIABI_Win_create_errhandler_ptr =
-//TODO     get_symbol(handle, "MPIABI_Win_create_errhandler");
-//TODO MPIABI_Win_get_errhandler_ptr = get_symbol(handle, "MPIABI_Win_get_errhandler");
-//TODO MPIABI_Win_set_errhandler_ptr = get_symbol(handle, "MPIABI_Win_set_errhandler");
-//TODO MPIABI_Wtick_ptr = get_symbol(handle, "MPIABI_Wtick");
-//TODO MPIABI_Wtime_ptr = get_symbol(handle, "MPIABI_Wtime");
-//TODO 
-//TODO // A.3.8 The Info Object C Bindings
-//TODO 
-//TODO MPIABI_Info_create_ptr = get_symbol(handle, "MPIABI_Info_create");
-//TODO MPIABI_Info_create_env_ptr = get_symbol(handle, "MPIABI_Info_create_env");
-//TODO MPIABI_Info_delete_ptr = get_symbol(handle, "MPIABI_Info_delete");
-//TODO MPIABI_Info_dup_ptr = get_symbol(handle, "MPIABI_Info_dup");
-//TODO MPIABI_Info_free_ptr = get_symbol(handle, "MPIABI_Info_free");
-//TODO MPIABI_Info_get_nkeys_ptr = get_symbol(handle, "MPIABI_Info_get_nkeys");
-//TODO MPIABI_Info_get_nthkey_ptr = get_symbol(handle, "MPIABI_Info_get_nthkey");
-//TODO MPIABI_Info_get_string_ptr = get_symbol(handle, "MPIABI_Info_get_string");
-//TODO MPIABI_Info_set_ptr = get_symbol(handle, "MPIABI_Info_set");
+// A.3.7 MPI Environmental Management C Bindings
+
+MPIABI_Add_error_class_ptr = get_symbol(handle, "MPIABI_Add_error_class");
+MPIABI_Add_error_code_ptr = get_symbol(handle, "MPIABI_Add_error_code");
+MPIABI_Add_error_string_ptr = get_symbol(handle, "MPIABI_Add_error_string");
+MPIABI_Alloc_mem_ptr = get_symbol(handle, "MPIABI_Alloc_mem");
+MPIABI_Comm_call_errhandler_ptr =
+    get_symbol(handle, "MPIABI_Comm_call_errhandler");
+MPIABI_Comm_create_errhandler_ptr =
+    get_symbol(handle, "MPIABI_Comm_create_errhandler");
+MPIABI_Comm_get_errhandler_ptr =
+    get_symbol(handle, "MPIABI_Comm_get_errhandler");
+MPIABI_Comm_set_errhandler_ptr =
+    get_symbol(handle, "MPIABI_Comm_set_errhandler");
+MPIABI_Errhandler_free_ptr = get_symbol(handle, "MPIABI_Errhandler_free");
+MPIABI_Error_class_ptr = get_symbol(handle, "MPIABI_Error_class");
+MPIABI_Error_string_ptr = get_symbol(handle, "MPIABI_Error_string");
+MPIABI_File_call_errhandler_ptr =
+    get_symbol(handle, "MPIABI_File_call_errhandler");
+MPIABI_File_create_errhandler_ptr =
+    get_symbol(handle, "MPIABI_File_create_errhandler");
+MPIABI_File_get_errhandler_ptr =
+    get_symbol(handle, "MPIABI_File_get_errhandler");
+MPIABI_File_set_errhandler_ptr =
+    get_symbol(handle, "MPIABI_File_set_errhandler");
+MPIABI_Free_mem_ptr = get_symbol(handle, "MPIABI_Free_mem");
+MPIABI_Get_hw_resource_info_ptr =
+    get_symbol(handle, "MPIABI_Get_hw_resource_info");
+MPIABI_Get_library_version_ptr =
+    get_symbol(handle, "MPIABI_Get_library_version");
+MPIABI_Get_processor_name_ptr = get_symbol(handle, "MPIABI_Get_processor_name");
+MPIABI_Get_version_ptr = get_symbol(handle, "MPIABI_Get_version");
+MPIABI_Remove_error_class_ptr = get_symbol(handle, "MPIABI_Remove_error_class");
+MPIABI_Remove_error_code_ptr = get_symbol(handle, "MPIABI_Remove_error_code");
+MPIABI_Remove_error_string_ptr =
+    get_symbol(handle, "MPIABI_Remove_error_string");
+MPIABI_Session_call_errhandler_ptr =
+    get_symbol(handle, "MPIABI_Session_call_errhandler");
+MPIABI_Session_create_errhandler_ptr =
+    get_symbol(handle, "MPIABI_Session_create_errhandler");
+MPIABI_Session_get_errhandler_ptr =
+    get_symbol(handle, "MPIABI_Session_get_errhandler");
+MPIABI_Session_set_errhandler_ptr =
+    get_symbol(handle, "MPIABI_Session_set_errhandler");
+MPIABI_Win_call_errhandler_ptr =
+    get_symbol(handle, "MPIABI_Win_call_errhandler");
+MPIABI_Win_create_errhandler_ptr =
+    get_symbol(handle, "MPIABI_Win_create_errhandler");
+MPIABI_Win_get_errhandler_ptr = get_symbol(handle, "MPIABI_Win_get_errhandler");
+MPIABI_Win_set_errhandler_ptr = get_symbol(handle, "MPIABI_Win_set_errhandler");
+MPIABI_Wtick_ptr = get_symbol(handle, "MPIABI_Wtick");
+MPIABI_Wtime_ptr = get_symbol(handle, "MPIABI_Wtime");
+
+// A.3.8 The Info Object C Bindings
+
+MPIABI_Info_create_ptr = get_symbol(handle, "MPIABI_Info_create");
+MPIABI_Info_create_env_ptr = get_symbol(handle, "MPIABI_Info_create_env");
+MPIABI_Info_delete_ptr = get_symbol(handle, "MPIABI_Info_delete");
+MPIABI_Info_dup_ptr = get_symbol(handle, "MPIABI_Info_dup");
+MPIABI_Info_free_ptr = get_symbol(handle, "MPIABI_Info_free");
+MPIABI_Info_get_nkeys_ptr = get_symbol(handle, "MPIABI_Info_get_nkeys");
+MPIABI_Info_get_nthkey_ptr = get_symbol(handle, "MPIABI_Info_get_nthkey");
+MPIABI_Info_get_string_ptr = get_symbol(handle, "MPIABI_Info_get_string");
+MPIABI_Info_set_ptr = get_symbol(handle, "MPIABI_Info_set");
 
 // A.3.9 Process Creation and Management C Bindings
 
@@ -547,324 +547,384 @@ MPIABI_Session_get_pset_info_ptr =
 MPIABI_Session_init_ptr = get_symbol(handle, "MPIABI_Session_init");
 MPIABI_Unpublish_name_ptr = get_symbol(handle, "MPIABI_Unpublish_name");
 
-//TODO // A.3.10 One-Sided Communications C Bindings
-//TODO 
-//TODO MPIABI_Accumulate_ptr = get_symbol(handle, "MPIABI_Accumulate");
-//TODO MPIABI_Accumulate_c_ptr = get_symbol(handle, "MPIABI_Accumulate_c");
-//TODO MPIABI_Compare_and_swap_ptr = get_symbol(handle, "MPIABI_Compare_and_swap");
-//TODO MPIABI_Fetch_and_op_ptr = get_symbol(handle, "MPIABI_Fetch_and_op");
-//TODO MPIABI_Get_ptr = get_symbol(handle, "MPIABI_Get");
-//TODO MPIABI_Get_accumulate_ptr = get_symbol(handle, "MPIABI_Get_accumulate");
-//TODO MPIABI_Get_accumulate_c_ptr = get_symbol(handle, "MPIABI_Get_accumulate_c");
-//TODO MPIABI_Get_c_ptr = get_symbol(handle, "MPIABI_Get_c");
-//TODO MPIABI_Put_ptr = get_symbol(handle, "MPIABI_Put");
-//TODO MPIABI_Put_c_ptr = get_symbol(handle, "MPIABI_Put_c");
-//TODO MPIABI_Raccumulate_ptr = get_symbol(handle, "MPIABI_Raccumulate");
-//TODO MPIABI_Raccumulate_c_ptr = get_symbol(handle, "MPIABI_Raccumulate_c");
-//TODO MPIABI_Rget_ptr = get_symbol(handle, "MPIABI_Rget");
-//TODO MPIABI_Rget_accumulate_ptr = get_symbol(handle, "MPIABI_Rget_accumulate");
-//TODO MPIABI_Rget_accumulate_c_ptr = get_symbol(handle, "MPIABI_Rget_accumulate_c");
-//TODO MPIABI_Rget_c_ptr = get_symbol(handle, "MPIABI_Rget_c");
-//TODO MPIABI_Rput_ptr = get_symbol(handle, "MPIABI_Rput");
-//TODO MPIABI_Rput_c_ptr = get_symbol(handle, "MPIABI_Rput_c");
-//TODO MPIABI_Win_allocate_ptr = get_symbol(handle, "MPIABI_Win_allocate");
-//TODO MPIABI_Win_allocate_c_ptr = get_symbol(handle, "MPIABI_Win_allocate_c");
-//TODO MPIABI_Win_allocate_shared_ptr =
-//TODO     get_symbol(handle, "MPIABI_Win_allocate_shared");
-//TODO MPIABI_Win_allocate_shared_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_Win_allocate_shared_c");
-//TODO MPIABI_Win_attach_ptr = get_symbol(handle, "MPIABI_Win_attach");
-//TODO MPIABI_Win_complete_ptr = get_symbol(handle, "MPIABI_Win_complete");
-//TODO MPIABI_Win_create_ptr = get_symbol(handle, "MPIABI_Win_create");
-//TODO MPIABI_Win_create_c_ptr = get_symbol(handle, "MPIABI_Win_create_c");
-//TODO MPIABI_Win_create_dynamic_ptr = get_symbol(handle, "MPIABI_Win_create_dynamic");
-//TODO MPIABI_Win_detach_ptr = get_symbol(handle, "MPIABI_Win_detach");
-//TODO MPIABI_Win_fence_ptr = get_symbol(handle, "MPIABI_Win_fence");
-//TODO MPIABI_Win_flush_ptr = get_symbol(handle, "MPIABI_Win_flush");
-//TODO MPIABI_Win_flush_all_ptr = get_symbol(handle, "MPIABI_Win_flush_all");
-//TODO MPIABI_Win_flush_local_ptr = get_symbol(handle, "MPIABI_Win_flush_local");
-//TODO MPIABI_Win_flush_local_all_ptr =
-//TODO     get_symbol(handle, "MPIABI_Win_flush_local_all");
-//TODO MPIABI_Win_free_ptr = get_symbol(handle, "MPIABI_Win_free");
-//TODO MPIABI_Win_get_group_ptr = get_symbol(handle, "MPIABI_Win_get_group");
-//TODO MPIABI_Win_get_info_ptr = get_symbol(handle, "MPIABI_Win_get_info");
-//TODO MPIABI_Win_lock_ptr = get_symbol(handle, "MPIABI_Win_lock");
-//TODO MPIABI_Win_lock_all_ptr = get_symbol(handle, "MPIABI_Win_lock_all");
-//TODO MPIABI_Win_post_ptr = get_symbol(handle, "MPIABI_Win_post");
-//TODO MPIABI_Win_set_info_ptr = get_symbol(handle, "MPIABI_Win_set_info");
-//TODO MPIABI_Win_shared_query_ptr = get_symbol(handle, "MPIABI_Win_shared_query");
-//TODO MPIABI_Win_shared_query_c_ptr = get_symbol(handle, "MPIABI_Win_shared_query_c");
-//TODO MPIABI_Win_start_ptr = get_symbol(handle, "MPIABI_Win_start");
-//TODO MPIABI_Win_sync_ptr = get_symbol(handle, "MPIABI_Win_sync");
-//TODO MPIABI_Win_test_ptr = get_symbol(handle, "MPIABI_Win_test");
-//TODO MPIABI_Win_unlock_ptr = get_symbol(handle, "MPIABI_Win_unlock");
-//TODO MPIABI_Win_unlock_all_ptr = get_symbol(handle, "MPIABI_Win_unlock_all");
-//TODO MPIABI_Win_wait_ptr = get_symbol(handle, "MPIABI_Win_wait");
-//TODO 
-//TODO // A.3.11 External Interfaces C Bindings
-//TODO 
-//TODO MPIABI_Grequest_complete_ptr = get_symbol(handle, "MPIABI_Grequest_complete");
-//TODO MPIABI_Grequest_start_ptr = get_symbol(handle, "MPIABI_Grequest_start");
-//TODO MPIABI_Status_set_cancelled_ptr =
-//TODO     get_symbol(handle, "MPIABI_Status_set_cancelled");
-//TODO MPIABI_Status_set_elements_ptr =
-//TODO     get_symbol(handle, "MPIABI_Status_set_elements");
-//TODO MPIABI_Status_set_elements_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_Status_set_elements_c");
-//TODO MPIABI_Status_set_error_ptr = get_symbol(handle, "MPIABI_Status_set_error");
-//TODO MPIABI_Status_set_source_ptr = get_symbol(handle, "MPIABI_Status_set_source");
-//TODO MPIABI_Status_set_tag_ptr = get_symbol(handle, "MPIABI_Status_set_tag");
-//TODO 
-//TODO // A.3.12 I/O C Bindings
-//TODO 
-//TODO MPIABI_File_close_ptr = get_symbol(handle, "MPIABI_File_close");
-//TODO MPIABI_File_delete_ptr = get_symbol(handle, "MPIABI_File_delete");
-//TODO MPIABI_File_get_amode_ptr = get_symbol(handle, "MPIABI_File_get_amode");
-//TODO MPIABI_File_get_atomicity_ptr = get_symbol(handle, "MPIABI_File_get_atomicity");
-//TODO MPIABI_File_get_byte_offset_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_get_byte_offset");
-//TODO MPIABI_File_get_group_ptr = get_symbol(handle, "MPIABI_File_get_group");
-//TODO MPIABI_File_get_info_ptr = get_symbol(handle, "MPIABI_File_get_info");
-//TODO MPIABI_File_get_position_ptr = get_symbol(handle, "MPIABI_File_get_position");
-//TODO MPIABI_File_get_position_shared_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_get_position_shared");
-//TODO MPIABI_File_get_size_ptr = get_symbol(handle, "MPIABI_File_get_size");
-//TODO MPIABI_File_get_type_extent_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_get_type_extent");
-//TODO MPIABI_File_get_type_extent_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_get_type_extent_c");
-//TODO MPIABI_File_get_view_ptr = get_symbol(handle, "MPIABI_File_get_view");
-//TODO MPIABI_File_iread_ptr = get_symbol(handle, "MPIABI_File_iread");
-//TODO MPIABI_File_iread_all_ptr = get_symbol(handle, "MPIABI_File_iread_all");
-//TODO MPIABI_File_iread_all_c_ptr = get_symbol(handle, "MPIABI_File_iread_all_c");
-//TODO MPIABI_File_iread_at_ptr = get_symbol(handle, "MPIABI_File_iread_at");
-//TODO MPIABI_File_iread_at_all_ptr = get_symbol(handle, "MPIABI_File_iread_at_all");
-//TODO MPIABI_File_iread_at_all_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_iread_at_all_c");
-//TODO MPIABI_File_iread_at_c_ptr = get_symbol(handle, "MPIABI_File_iread_at_c");
-//TODO MPIABI_File_iread_c_ptr = get_symbol(handle, "MPIABI_File_iread_c");
-//TODO MPIABI_File_iread_shared_ptr = get_symbol(handle, "MPIABI_File_iread_shared");
-//TODO MPIABI_File_iread_shared_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_iread_shared_c");
-//TODO MPIABI_File_iwrite_ptr = get_symbol(handle, "MPIABI_File_iwrite");
-//TODO MPIABI_File_iwrite_all_ptr = get_symbol(handle, "MPIABI_File_iwrite_all");
-//TODO MPIABI_File_iwrite_all_c_ptr = get_symbol(handle, "MPIABI_File_iwrite_all_c");
-//TODO MPIABI_File_iwrite_at_ptr = get_symbol(handle, "MPIABI_File_iwrite_at");
-//TODO MPIABI_File_iwrite_at_all_ptr = get_symbol(handle, "MPIABI_File_iwrite_at_all");
-//TODO MPIABI_File_iwrite_at_all_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_iwrite_at_all_c");
-//TODO MPIABI_File_iwrite_at_c_ptr = get_symbol(handle, "MPIABI_File_iwrite_at_c");
-//TODO MPIABI_File_iwrite_c_ptr = get_symbol(handle, "MPIABI_File_iwrite_c");
-//TODO MPIABI_File_iwrite_shared_ptr = get_symbol(handle, "MPIABI_File_iwrite_shared");
-//TODO MPIABI_File_iwrite_shared_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_iwrite_shared_c");
-//TODO MPIABI_File_open_ptr = get_symbol(handle, "MPIABI_File_open");
-//TODO MPIABI_File_preallocate_ptr = get_symbol(handle, "MPIABI_File_preallocate");
-//TODO MPIABI_File_read_ptr = get_symbol(handle, "MPIABI_File_read");
-//TODO MPIABI_File_read_all_ptr = get_symbol(handle, "MPIABI_File_read_all");
-//TODO MPIABI_File_read_all_begin_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_read_all_begin");
-//TODO MPIABI_File_read_all_begin_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_read_all_begin_c");
-//TODO MPIABI_File_read_all_c_ptr = get_symbol(handle, "MPIABI_File_read_all_c");
-//TODO MPIABI_File_read_all_end_ptr = get_symbol(handle, "MPIABI_File_read_all_end");
-//TODO MPIABI_File_read_at_ptr = get_symbol(handle, "MPIABI_File_read_at");
-//TODO MPIABI_File_read_at_all_ptr = get_symbol(handle, "MPIABI_File_read_at_all");
-//TODO MPIABI_File_read_at_all_begin_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_read_at_all_begin");
-//TODO MPIABI_File_read_at_all_begin_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_read_at_all_begin_c");
-//TODO MPIABI_File_read_at_all_c_ptr = get_symbol(handle, "MPIABI_File_read_at_all_c");
-//TODO MPIABI_File_read_at_all_end_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_read_at_all_end");
-//TODO MPIABI_File_read_at_c_ptr = get_symbol(handle, "MPIABI_File_read_at_c");
-//TODO MPIABI_File_read_c_ptr = get_symbol(handle, "MPIABI_File_read_c");
-//TODO MPIABI_File_read_ordered_ptr = get_symbol(handle, "MPIABI_File_read_ordered");
-//TODO MPIABI_File_read_ordered_begin_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_read_ordered_begin");
-//TODO MPIABI_File_read_ordered_begin_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_read_ordered_begin_c");
-//TODO MPIABI_File_read_ordered_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_read_ordered_c");
-//TODO MPIABI_File_read_ordered_end_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_read_ordered_end");
-//TODO MPIABI_File_read_shared_ptr = get_symbol(handle, "MPIABI_File_read_shared");
-//TODO MPIABI_File_read_shared_c_ptr = get_symbol(handle, "MPIABI_File_read_shared_c");
-//TODO MPIABI_File_seek_ptr = get_symbol(handle, "MPIABI_File_seek");
-//TODO MPIABI_File_seek_shared_ptr = get_symbol(handle, "MPIABI_File_seek_shared");
-//TODO MPIABI_File_set_atomicity_ptr = get_symbol(handle, "MPIABI_File_set_atomicity");
-//TODO MPIABI_File_set_info_ptr = get_symbol(handle, "MPIABI_File_set_info");
-//TODO MPIABI_File_set_size_ptr = get_symbol(handle, "MPIABI_File_set_size");
-//TODO MPIABI_File_set_view_ptr = get_symbol(handle, "MPIABI_File_set_view");
-//TODO MPIABI_File_sync_ptr = get_symbol(handle, "MPIABI_File_sync");
-//TODO MPIABI_File_write_ptr = get_symbol(handle, "MPIABI_File_write");
-//TODO MPIABI_File_write_all_ptr = get_symbol(handle, "MPIABI_File_write_all");
-//TODO MPIABI_File_write_all_begin_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_write_all_begin");
-//TODO MPIABI_File_write_all_begin_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_write_all_begin_c");
-//TODO MPIABI_File_write_all_c_ptr = get_symbol(handle, "MPIABI_File_write_all_c");
-//TODO MPIABI_File_write_all_end_ptr = get_symbol(handle, "MPIABI_File_write_all_end");
-//TODO MPIABI_File_write_at_ptr = get_symbol(handle, "MPIABI_File_write_at");
-//TODO MPIABI_File_write_at_all_ptr = get_symbol(handle, "MPIABI_File_write_at_all");
-//TODO MPIABI_File_write_at_all_begin_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_write_at_all_begin");
-//TODO MPIABI_File_write_at_all_begin_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_write_at_all_begin_c");
-//TODO MPIABI_File_write_at_all_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_write_at_all_c");
-//TODO MPIABI_File_write_at_all_end_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_write_at_all_end");
-//TODO MPIABI_File_write_at_c_ptr = get_symbol(handle, "MPIABI_File_write_at_c");
-//TODO MPIABI_File_write_c_ptr = get_symbol(handle, "MPIABI_File_write_c");
-//TODO MPIABI_File_write_ordered_ptr = get_symbol(handle, "MPIABI_File_write_ordered");
-//TODO MPIABI_File_write_ordered_begin_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_write_ordered_begin");
-//TODO MPIABI_File_write_ordered_begin_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_write_ordered_begin_c");
-//TODO MPIABI_File_write_ordered_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_write_ordered_c");
-//TODO MPIABI_File_write_ordered_end_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_write_ordered_end");
-//TODO MPIABI_File_write_shared_ptr = get_symbol(handle, "MPIABI_File_write_shared");
-//TODO MPIABI_File_write_shared_c_ptr =
-//TODO     get_symbol(handle, "MPIABI_File_write_shared_c");
-//TODO MPIABI_Register_datarep_ptr = get_symbol(handle, "MPIABI_Register_datarep");
-//TODO MPIABI_Register_datarep_c_ptr = get_symbol(handle, "MPIABI_Register_datarep_c");
-//TODO 
-//TODO // A.3.13 Language Bindings C Bindings
-//TODO 
-//TODO MPIABI_Comm_c2f_ptr = get_symbol(handle, "MPIABI_Comm_c2f");
-//TODO MPIABI_Comm_f2c_ptr = get_symbol(handle, "MPIABI_Comm_f2c");
-//TODO MPIABI_Errhandler_c2f_ptr = get_symbol(handle, "MPIABI_Errhandler_c2f");
-//TODO MPIABI_Errhandler_f2c_ptr = get_symbol(handle, "MPIABI_Errhandler_f2c");
-//TODO MPIABI_File_c2f_ptr = get_symbol(handle, "MPIABI_File_c2f");
-//TODO MPIABI_File_f2c_ptr = get_symbol(handle, "MPIABI_File_f2c");
-//TODO MPIABI_Group_c2f_ptr = get_symbol(handle, "MPIABI_Group_c2f");
-//TODO MPIABI_Group_f2c_ptr = get_symbol(handle, "MPIABI_Group_f2c");
-//TODO MPIABI_Info_c2f_ptr = get_symbol(handle, "MPIABI_Info_c2f");
-//TODO MPIABI_Info_f2c_ptr = get_symbol(handle, "MPIABI_Info_f2c");
-//TODO MPIABI_Message_c2f_ptr = get_symbol(handle, "MPIABI_Message_c2f");
-//TODO MPIABI_Message_f2c_ptr = get_symbol(handle, "MPIABI_Message_f2c");
-//TODO MPIABI_Op_c2f_ptr = get_symbol(handle, "MPIABI_Op_c2f");
-//TODO MPIABI_Op_f2c_ptr = get_symbol(handle, "MPIABI_Op_f2c");
-//TODO MPIABI_Request_c2f_ptr = get_symbol(handle, "MPIABI_Request_c2f");
-//TODO MPIABI_Request_f2c_ptr = get_symbol(handle, "MPIABI_Request_f2c");
-//TODO MPIABI_Session_c2f_ptr = get_symbol(handle, "MPIABI_Session_c2f");
-//TODO MPIABI_Session_f2c_ptr = get_symbol(handle, "MPIABI_Session_f2c");
-//TODO MPIABI_Status_f082f_ptr = get_symbol(handle, "MPIABI_Status_f082f");
-//TODO MPIABI_Status_c2f_ptr = get_symbol(handle, "MPIABI_Status_c2f");
-//TODO MPIABI_Status_c2f08_ptr = get_symbol(handle, "MPIABI_Status_c2f08");
-//TODO MPIABI_Status_f082c_ptr = get_symbol(handle, "MPIABI_Status_f082c");
-//TODO MPIABI_Status_f2c_ptr = get_symbol(handle, "MPIABI_Status_f2c");
-//TODO MPIABI_Status_f2f08_ptr = get_symbol(handle, "MPIABI_Status_f2f08");
-//TODO MPIABI_Type_c2f_ptr = get_symbol(handle, "MPIABI_Type_c2f");
-//TODO MPIABI_Type_create_f90_complex_ptr =
-//TODO     get_symbol(handle, "MPIABI_Type_create_f90_complex");
-//TODO MPIABI_Type_create_f90_integer_ptr =
-//TODO     get_symbol(handle, "MPIABI_Type_create_f90_integer");
-//TODO MPIABI_Type_create_f90_real_ptr =
-//TODO     get_symbol(handle, "MPIABI_Type_create_f90_real");
-//TODO MPIABI_Type_f2c_ptr = get_symbol(handle, "MPIABI_Type_f2c");
-//TODO MPIABI_Type_match_size_ptr = get_symbol(handle, "MPIABI_Type_match_size");
-//TODO MPIABI_Win_c2f_ptr = get_symbol(handle, "MPIABI_Win_c2f");
-//TODO MPIABI_Win_f2c_ptr = get_symbol(handle, "MPIABI_Win_f2c");
-//TODO 
-//TODO // A.3.14 Tools / Profiling Interface C Bindings
-//TODO 
-//TODO MPIABI_Pcontrol_ptr = get_symbol(handle, "MPIABI_Pcontrol");
-//TODO 
-//TODO // A.3.15 Tools / MPI Tool Information Interface C Bindings
-//TODO 
-//TODO MPIABI_T_category_changed_ptr = get_symbol(handle, "MPIABI_T_category_changed");
-//TODO MPIABI_T_category_get_categories_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_category_get_categories");
-//TODO MPIABI_T_category_get_cvars_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_category_get_cvars");
-//TODO MPIABI_T_category_get_events_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_category_get_events");
-//TODO MPIABI_T_category_get_index_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_category_get_index");
-//TODO MPIABI_T_category_get_info_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_category_get_info");
-//TODO MPIABI_T_category_get_num_ptr = get_symbol(handle, "MPIABI_T_category_get_num");
-//TODO MPIABI_T_category_get_num_events_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_category_get_num_events");
-//TODO MPIABI_T_category_get_pvars_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_category_get_pvars");
-//TODO MPIABI_T_cvar_get_index_ptr = get_symbol(handle, "MPIABI_T_cvar_get_index");
-//TODO MPIABI_T_cvar_get_info_ptr = get_symbol(handle, "MPIABI_T_cvar_get_info");
-//TODO MPIABI_T_cvar_get_num_ptr = get_symbol(handle, "MPIABI_T_cvar_get_num");
-//TODO MPIABI_T_cvar_handle_alloc_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_cvar_handle_alloc");
-//TODO MPIABI_T_cvar_handle_free_ptr = get_symbol(handle, "MPIABI_T_cvar_handle_free");
-//TODO MPIABI_T_cvar_read_ptr = get_symbol(handle, "MPIABI_T_cvar_read");
-//TODO MPIABI_T_cvar_write_ptr = get_symbol(handle, "MPIABI_T_cvar_write");
-//TODO MPIABI_T_enum_get_info_ptr = get_symbol(handle, "MPIABI_T_enum_get_info");
-//TODO MPIABI_T_enum_get_item_ptr = get_symbol(handle, "MPIABI_T_enum_get_item");
-//TODO MPIABI_T_event_callback_get_info_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_event_callback_get_info");
-//TODO MPIABI_T_event_callback_set_info_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_event_callback_set_info");
-//TODO MPIABI_T_event_copy_ptr = get_symbol(handle, "MPIABI_T_event_copy");
-//TODO MPIABI_T_event_get_index_ptr = get_symbol(handle, "MPIABI_T_event_get_index");
-//TODO MPIABI_T_event_get_info_ptr = get_symbol(handle, "MPIABI_T_event_get_info");
-//TODO MPIABI_T_event_get_num_ptr = get_symbol(handle, "MPIABI_T_event_get_num");
-//TODO MPIABI_T_event_get_source_ptr = get_symbol(handle, "MPIABI_T_event_get_source");
-//TODO MPIABI_T_event_get_timestamp_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_event_get_timestamp");
-//TODO MPIABI_T_event_handle_alloc_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_event_handle_alloc");
-//TODO MPIABI_T_event_handle_free_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_event_handle_free");
-//TODO MPIABI_T_event_handle_get_info_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_event_handle_get_info");
-//TODO MPIABI_T_event_handle_set_info_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_event_handle_set_info");
-//TODO MPIABI_T_event_read_ptr = get_symbol(handle, "MPIABI_T_event_read");
-//TODO MPIABI_T_event_register_callback_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_event_register_callback");
-//TODO MPIABI_T_event_set_dropped_handler_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_event_set_dropped_handler");
-//TODO MPIABI_T_finalize_ptr = get_symbol(handle, "MPIABI_T_finalize");
-//TODO MPIABI_T_init_thread_ptr = get_symbol(handle, "MPIABI_T_init_thread");
-//TODO MPIABI_T_pvar_get_index_ptr = get_symbol(handle, "MPIABI_T_pvar_get_index");
-//TODO MPIABI_T_pvar_get_info_ptr = get_symbol(handle, "MPIABI_T_pvar_get_info");
-//TODO MPIABI_T_pvar_get_num_ptr = get_symbol(handle, "MPIABI_T_pvar_get_num");
-//TODO MPIABI_T_pvar_handle_alloc_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_pvar_handle_alloc");
-//TODO MPIABI_T_pvar_handle_free_ptr = get_symbol(handle, "MPIABI_T_pvar_handle_free");
-//TODO MPIABI_T_pvar_read_ptr = get_symbol(handle, "MPIABI_T_pvar_read");
-//TODO MPIABI_T_pvar_readreset_ptr = get_symbol(handle, "MPIABI_T_pvar_readreset");
-//TODO MPIABI_T_pvar_reset_ptr = get_symbol(handle, "MPIABI_T_pvar_reset");
-//TODO MPIABI_T_pvar_session_create_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_pvar_session_create");
-//TODO MPIABI_T_pvar_session_free_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_pvar_session_free");
-//TODO MPIABI_T_pvar_start_ptr = get_symbol(handle, "MPIABI_T_pvar_start");
-//TODO MPIABI_T_pvar_stop_ptr = get_symbol(handle, "MPIABI_T_pvar_stop");
-//TODO MPIABI_T_pvar_write_ptr = get_symbol(handle, "MPIABI_T_pvar_write");
-//TODO MPIABI_T_source_get_info_ptr = get_symbol(handle, "MPIABI_T_source_get_info");
-//TODO MPIABI_T_source_get_num_ptr = get_symbol(handle, "MPIABI_T_source_get_num");
-//TODO MPIABI_T_source_get_timestamp_ptr =
-//TODO     get_symbol(handle, "MPIABI_T_source_get_timestamp");
-//TODO 
-//TODO // A.3.16 Deprecated C Bindings
-//TODO 
-//TODO MPIABI_Attr_delete_ptr = get_symbol(handle, "MPIABI_Attr_delete");
-//TODO MPIABI_Attr_get_ptr = get_symbol(handle, "MPIABI_Attr_get");
-//TODO MPIABI_Attr_put_ptr = get_symbol(handle, "MPIABI_Attr_put");
-//TODO MPIABI_Get_elements_x_ptr = get_symbol(handle, "MPIABI_Get_elements_x");
-//TODO MPIABI_Info_get_ptr = get_symbol(handle, "MPIABI_Info_get");
-//TODO MPIABI_Info_get_valuelen_ptr = get_symbol(handle, "MPIABI_Info_get_valuelen");
-//TODO MPIABI_Keyval_create_ptr = get_symbol(handle, "MPIABI_Keyval_create");
-//TODO MPIABI_Keyval_free_ptr = get_symbol(handle, "MPIABI_Keyval_free");
-//TODO MPIABI_Status_set_elements_x_ptr =
-//TODO     get_symbol(handle, "MPIABI_Status_set_elements_x");
-//TODO MPIABI_Type_get_extent_x_ptr = get_symbol(handle, "MPIABI_Type_get_extent_x");
-//TODO MPIABI_Type_get_true_extent_x_ptr =
-//TODO     get_symbol(handle, "MPIABI_Type_get_true_extent_x");
-//TODO MPIABI_Type_size_x_ptr = get_symbol(handle, "MPIABI_Type_size_x");
+// TODO // A.3.10 One-Sided Communications C Bindings
+// TODO
+// TODO MPIABI_Accumulate_ptr = get_symbol(handle, "MPIABI_Accumulate");
+// TODO MPIABI_Accumulate_c_ptr = get_symbol(handle, "MPIABI_Accumulate_c");
+// TODO MPIABI_Compare_and_swap_ptr = get_symbol(handle,
+// "MPIABI_Compare_and_swap");
+// TODO MPIABI_Fetch_and_op_ptr = get_symbol(handle, "MPIABI_Fetch_and_op");
+// TODO MPIABI_Get_ptr = get_symbol(handle, "MPIABI_Get");
+// TODO MPIABI_Get_accumulate_ptr = get_symbol(handle, "MPIABI_Get_accumulate");
+// TODO MPIABI_Get_accumulate_c_ptr = get_symbol(handle,
+// "MPIABI_Get_accumulate_c");
+// TODO MPIABI_Get_c_ptr = get_symbol(handle, "MPIABI_Get_c");
+// TODO MPIABI_Put_ptr = get_symbol(handle, "MPIABI_Put");
+// TODO MPIABI_Put_c_ptr = get_symbol(handle, "MPIABI_Put_c");
+// TODO MPIABI_Raccumulate_ptr = get_symbol(handle, "MPIABI_Raccumulate");
+// TODO MPIABI_Raccumulate_c_ptr = get_symbol(handle, "MPIABI_Raccumulate_c");
+// TODO MPIABI_Rget_ptr = get_symbol(handle, "MPIABI_Rget");
+// TODO MPIABI_Rget_accumulate_ptr = get_symbol(handle,
+// "MPIABI_Rget_accumulate");
+// TODO MPIABI_Rget_accumulate_c_ptr = get_symbol(handle,
+// "MPIABI_Rget_accumulate_c");
+// TODO MPIABI_Rget_c_ptr = get_symbol(handle, "MPIABI_Rget_c");
+// TODO MPIABI_Rput_ptr = get_symbol(handle, "MPIABI_Rput");
+// TODO MPIABI_Rput_c_ptr = get_symbol(handle, "MPIABI_Rput_c");
+// TODO MPIABI_Win_allocate_ptr = get_symbol(handle, "MPIABI_Win_allocate");
+// TODO MPIABI_Win_allocate_c_ptr = get_symbol(handle, "MPIABI_Win_allocate_c");
+// TODO MPIABI_Win_allocate_shared_ptr =
+// TODO     get_symbol(handle, "MPIABI_Win_allocate_shared");
+// TODO MPIABI_Win_allocate_shared_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_Win_allocate_shared_c");
+// TODO MPIABI_Win_attach_ptr = get_symbol(handle, "MPIABI_Win_attach");
+// TODO MPIABI_Win_complete_ptr = get_symbol(handle, "MPIABI_Win_complete");
+// TODO MPIABI_Win_create_ptr = get_symbol(handle, "MPIABI_Win_create");
+// TODO MPIABI_Win_create_c_ptr = get_symbol(handle, "MPIABI_Win_create_c");
+// TODO MPIABI_Win_create_dynamic_ptr = get_symbol(handle,
+// "MPIABI_Win_create_dynamic");
+// TODO MPIABI_Win_detach_ptr = get_symbol(handle, "MPIABI_Win_detach");
+// TODO MPIABI_Win_fence_ptr = get_symbol(handle, "MPIABI_Win_fence");
+// TODO MPIABI_Win_flush_ptr = get_symbol(handle, "MPIABI_Win_flush");
+// TODO MPIABI_Win_flush_all_ptr = get_symbol(handle, "MPIABI_Win_flush_all");
+// TODO MPIABI_Win_flush_local_ptr = get_symbol(handle,
+// "MPIABI_Win_flush_local");
+// TODO MPIABI_Win_flush_local_all_ptr =
+// TODO     get_symbol(handle, "MPIABI_Win_flush_local_all");
+// TODO MPIABI_Win_free_ptr = get_symbol(handle, "MPIABI_Win_free");
+// TODO MPIABI_Win_get_group_ptr = get_symbol(handle, "MPIABI_Win_get_group");
+// TODO MPIABI_Win_get_info_ptr = get_symbol(handle, "MPIABI_Win_get_info");
+// TODO MPIABI_Win_lock_ptr = get_symbol(handle, "MPIABI_Win_lock");
+// TODO MPIABI_Win_lock_all_ptr = get_symbol(handle, "MPIABI_Win_lock_all");
+// TODO MPIABI_Win_post_ptr = get_symbol(handle, "MPIABI_Win_post");
+// TODO MPIABI_Win_set_info_ptr = get_symbol(handle, "MPIABI_Win_set_info");
+// TODO MPIABI_Win_shared_query_ptr = get_symbol(handle,
+// "MPIABI_Win_shared_query");
+// TODO MPIABI_Win_shared_query_c_ptr = get_symbol(handle,
+// "MPIABI_Win_shared_query_c");
+// TODO MPIABI_Win_start_ptr = get_symbol(handle, "MPIABI_Win_start");
+// TODO MPIABI_Win_sync_ptr = get_symbol(handle, "MPIABI_Win_sync");
+// TODO MPIABI_Win_test_ptr = get_symbol(handle, "MPIABI_Win_test");
+// TODO MPIABI_Win_unlock_ptr = get_symbol(handle, "MPIABI_Win_unlock");
+// TODO MPIABI_Win_unlock_all_ptr = get_symbol(handle, "MPIABI_Win_unlock_all");
+// TODO MPIABI_Win_wait_ptr = get_symbol(handle, "MPIABI_Win_wait");
+// TODO
+// TODO // A.3.11 External Interfaces C Bindings
+// TODO
+// TODO MPIABI_Grequest_complete_ptr = get_symbol(handle,
+// "MPIABI_Grequest_complete");
+// TODO MPIABI_Grequest_start_ptr = get_symbol(handle, "MPIABI_Grequest_start");
+// TODO MPIABI_Status_set_cancelled_ptr =
+// TODO     get_symbol(handle, "MPIABI_Status_set_cancelled");
+// TODO MPIABI_Status_set_elements_ptr =
+// TODO     get_symbol(handle, "MPIABI_Status_set_elements");
+// TODO MPIABI_Status_set_elements_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_Status_set_elements_c");
+// TODO MPIABI_Status_set_error_ptr = get_symbol(handle,
+// "MPIABI_Status_set_error");
+// TODO MPIABI_Status_set_source_ptr = get_symbol(handle,
+// "MPIABI_Status_set_source");
+// TODO MPIABI_Status_set_tag_ptr = get_symbol(handle, "MPIABI_Status_set_tag");
+// TODO
+// TODO // A.3.12 I/O C Bindings
+// TODO
+// TODO MPIABI_File_close_ptr = get_symbol(handle, "MPIABI_File_close");
+// TODO MPIABI_File_delete_ptr = get_symbol(handle, "MPIABI_File_delete");
+// TODO MPIABI_File_get_amode_ptr = get_symbol(handle, "MPIABI_File_get_amode");
+// TODO MPIABI_File_get_atomicity_ptr = get_symbol(handle,
+// "MPIABI_File_get_atomicity");
+// TODO MPIABI_File_get_byte_offset_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_get_byte_offset");
+// TODO MPIABI_File_get_group_ptr = get_symbol(handle, "MPIABI_File_get_group");
+// TODO MPIABI_File_get_info_ptr = get_symbol(handle, "MPIABI_File_get_info");
+// TODO MPIABI_File_get_position_ptr = get_symbol(handle,
+// "MPIABI_File_get_position");
+// TODO MPIABI_File_get_position_shared_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_get_position_shared");
+// TODO MPIABI_File_get_size_ptr = get_symbol(handle, "MPIABI_File_get_size");
+// TODO MPIABI_File_get_type_extent_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_get_type_extent");
+// TODO MPIABI_File_get_type_extent_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_get_type_extent_c");
+// TODO MPIABI_File_get_view_ptr = get_symbol(handle, "MPIABI_File_get_view");
+// TODO MPIABI_File_iread_ptr = get_symbol(handle, "MPIABI_File_iread");
+// TODO MPIABI_File_iread_all_ptr = get_symbol(handle, "MPIABI_File_iread_all");
+// TODO MPIABI_File_iread_all_c_ptr = get_symbol(handle,
+// "MPIABI_File_iread_all_c");
+// TODO MPIABI_File_iread_at_ptr = get_symbol(handle, "MPIABI_File_iread_at");
+// TODO MPIABI_File_iread_at_all_ptr = get_symbol(handle,
+// "MPIABI_File_iread_at_all");
+// TODO MPIABI_File_iread_at_all_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_iread_at_all_c");
+// TODO MPIABI_File_iread_at_c_ptr = get_symbol(handle,
+// "MPIABI_File_iread_at_c");
+// TODO MPIABI_File_iread_c_ptr = get_symbol(handle, "MPIABI_File_iread_c");
+// TODO MPIABI_File_iread_shared_ptr = get_symbol(handle,
+// "MPIABI_File_iread_shared");
+// TODO MPIABI_File_iread_shared_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_iread_shared_c");
+// TODO MPIABI_File_iwrite_ptr = get_symbol(handle, "MPIABI_File_iwrite");
+// TODO MPIABI_File_iwrite_all_ptr = get_symbol(handle,
+// "MPIABI_File_iwrite_all");
+// TODO MPIABI_File_iwrite_all_c_ptr = get_symbol(handle,
+// "MPIABI_File_iwrite_all_c");
+// TODO MPIABI_File_iwrite_at_ptr = get_symbol(handle, "MPIABI_File_iwrite_at");
+// TODO MPIABI_File_iwrite_at_all_ptr = get_symbol(handle,
+// "MPIABI_File_iwrite_at_all");
+// TODO MPIABI_File_iwrite_at_all_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_iwrite_at_all_c");
+// TODO MPIABI_File_iwrite_at_c_ptr = get_symbol(handle,
+// "MPIABI_File_iwrite_at_c");
+// TODO MPIABI_File_iwrite_c_ptr = get_symbol(handle, "MPIABI_File_iwrite_c");
+// TODO MPIABI_File_iwrite_shared_ptr = get_symbol(handle,
+// "MPIABI_File_iwrite_shared");
+// TODO MPIABI_File_iwrite_shared_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_iwrite_shared_c");
+// TODO MPIABI_File_open_ptr = get_symbol(handle, "MPIABI_File_open");
+// TODO MPIABI_File_preallocate_ptr = get_symbol(handle,
+// "MPIABI_File_preallocate");
+// TODO MPIABI_File_read_ptr = get_symbol(handle, "MPIABI_File_read");
+// TODO MPIABI_File_read_all_ptr = get_symbol(handle, "MPIABI_File_read_all");
+// TODO MPIABI_File_read_all_begin_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_read_all_begin");
+// TODO MPIABI_File_read_all_begin_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_read_all_begin_c");
+// TODO MPIABI_File_read_all_c_ptr = get_symbol(handle,
+// "MPIABI_File_read_all_c");
+// TODO MPIABI_File_read_all_end_ptr = get_symbol(handle,
+// "MPIABI_File_read_all_end");
+// TODO MPIABI_File_read_at_ptr = get_symbol(handle, "MPIABI_File_read_at");
+// TODO MPIABI_File_read_at_all_ptr = get_symbol(handle,
+// "MPIABI_File_read_at_all");
+// TODO MPIABI_File_read_at_all_begin_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_read_at_all_begin");
+// TODO MPIABI_File_read_at_all_begin_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_read_at_all_begin_c");
+// TODO MPIABI_File_read_at_all_c_ptr = get_symbol(handle,
+// "MPIABI_File_read_at_all_c");
+// TODO MPIABI_File_read_at_all_end_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_read_at_all_end");
+// TODO MPIABI_File_read_at_c_ptr = get_symbol(handle, "MPIABI_File_read_at_c");
+// TODO MPIABI_File_read_c_ptr = get_symbol(handle, "MPIABI_File_read_c");
+// TODO MPIABI_File_read_ordered_ptr = get_symbol(handle,
+// "MPIABI_File_read_ordered");
+// TODO MPIABI_File_read_ordered_begin_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_read_ordered_begin");
+// TODO MPIABI_File_read_ordered_begin_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_read_ordered_begin_c");
+// TODO MPIABI_File_read_ordered_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_read_ordered_c");
+// TODO MPIABI_File_read_ordered_end_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_read_ordered_end");
+// TODO MPIABI_File_read_shared_ptr = get_symbol(handle,
+// "MPIABI_File_read_shared");
+// TODO MPIABI_File_read_shared_c_ptr = get_symbol(handle,
+// "MPIABI_File_read_shared_c");
+// TODO MPIABI_File_seek_ptr = get_symbol(handle, "MPIABI_File_seek");
+// TODO MPIABI_File_seek_shared_ptr = get_symbol(handle,
+// "MPIABI_File_seek_shared");
+// TODO MPIABI_File_set_atomicity_ptr = get_symbol(handle,
+// "MPIABI_File_set_atomicity");
+// TODO MPIABI_File_set_info_ptr = get_symbol(handle, "MPIABI_File_set_info");
+// TODO MPIABI_File_set_size_ptr = get_symbol(handle, "MPIABI_File_set_size");
+// TODO MPIABI_File_set_view_ptr = get_symbol(handle, "MPIABI_File_set_view");
+// TODO MPIABI_File_sync_ptr = get_symbol(handle, "MPIABI_File_sync");
+// TODO MPIABI_File_write_ptr = get_symbol(handle, "MPIABI_File_write");
+// TODO MPIABI_File_write_all_ptr = get_symbol(handle, "MPIABI_File_write_all");
+// TODO MPIABI_File_write_all_begin_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_write_all_begin");
+// TODO MPIABI_File_write_all_begin_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_write_all_begin_c");
+// TODO MPIABI_File_write_all_c_ptr = get_symbol(handle,
+// "MPIABI_File_write_all_c");
+// TODO MPIABI_File_write_all_end_ptr = get_symbol(handle,
+// "MPIABI_File_write_all_end");
+// TODO MPIABI_File_write_at_ptr = get_symbol(handle, "MPIABI_File_write_at");
+// TODO MPIABI_File_write_at_all_ptr = get_symbol(handle,
+// "MPIABI_File_write_at_all");
+// TODO MPIABI_File_write_at_all_begin_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_write_at_all_begin");
+// TODO MPIABI_File_write_at_all_begin_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_write_at_all_begin_c");
+// TODO MPIABI_File_write_at_all_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_write_at_all_c");
+// TODO MPIABI_File_write_at_all_end_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_write_at_all_end");
+// TODO MPIABI_File_write_at_c_ptr = get_symbol(handle,
+// "MPIABI_File_write_at_c");
+// TODO MPIABI_File_write_c_ptr = get_symbol(handle, "MPIABI_File_write_c");
+// TODO MPIABI_File_write_ordered_ptr = get_symbol(handle,
+// "MPIABI_File_write_ordered");
+// TODO MPIABI_File_write_ordered_begin_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_write_ordered_begin");
+// TODO MPIABI_File_write_ordered_begin_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_write_ordered_begin_c");
+// TODO MPIABI_File_write_ordered_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_write_ordered_c");
+// TODO MPIABI_File_write_ordered_end_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_write_ordered_end");
+// TODO MPIABI_File_write_shared_ptr = get_symbol(handle,
+// "MPIABI_File_write_shared");
+// TODO MPIABI_File_write_shared_c_ptr =
+// TODO     get_symbol(handle, "MPIABI_File_write_shared_c");
+// TODO MPIABI_Register_datarep_ptr = get_symbol(handle,
+// "MPIABI_Register_datarep");
+// TODO MPIABI_Register_datarep_c_ptr = get_symbol(handle,
+// "MPIABI_Register_datarep_c");
+// TODO
+// TODO // A.3.13 Language Bindings C Bindings
+// TODO
+// TODO MPIABI_Comm_c2f_ptr = get_symbol(handle, "MPIABI_Comm_c2f");
+// TODO MPIABI_Comm_f2c_ptr = get_symbol(handle, "MPIABI_Comm_f2c");
+// TODO MPIABI_Errhandler_c2f_ptr = get_symbol(handle, "MPIABI_Errhandler_c2f");
+// TODO MPIABI_Errhandler_f2c_ptr = get_symbol(handle, "MPIABI_Errhandler_f2c");
+// TODO MPIABI_File_c2f_ptr = get_symbol(handle, "MPIABI_File_c2f");
+// TODO MPIABI_File_f2c_ptr = get_symbol(handle, "MPIABI_File_f2c");
+// TODO MPIABI_Group_c2f_ptr = get_symbol(handle, "MPIABI_Group_c2f");
+// TODO MPIABI_Group_f2c_ptr = get_symbol(handle, "MPIABI_Group_f2c");
+// TODO MPIABI_Info_c2f_ptr = get_symbol(handle, "MPIABI_Info_c2f");
+// TODO MPIABI_Info_f2c_ptr = get_symbol(handle, "MPIABI_Info_f2c");
+// TODO MPIABI_Message_c2f_ptr = get_symbol(handle, "MPIABI_Message_c2f");
+// TODO MPIABI_Message_f2c_ptr = get_symbol(handle, "MPIABI_Message_f2c");
+// TODO MPIABI_Op_c2f_ptr = get_symbol(handle, "MPIABI_Op_c2f");
+// TODO MPIABI_Op_f2c_ptr = get_symbol(handle, "MPIABI_Op_f2c");
+// TODO MPIABI_Request_c2f_ptr = get_symbol(handle, "MPIABI_Request_c2f");
+// TODO MPIABI_Request_f2c_ptr = get_symbol(handle, "MPIABI_Request_f2c");
+// TODO MPIABI_Session_c2f_ptr = get_symbol(handle, "MPIABI_Session_c2f");
+// TODO MPIABI_Session_f2c_ptr = get_symbol(handle, "MPIABI_Session_f2c");
+// TODO MPIABI_Status_f082f_ptr = get_symbol(handle, "MPIABI_Status_f082f");
+// TODO MPIABI_Status_c2f_ptr = get_symbol(handle, "MPIABI_Status_c2f");
+// TODO MPIABI_Status_c2f08_ptr = get_symbol(handle, "MPIABI_Status_c2f08");
+// TODO MPIABI_Status_f082c_ptr = get_symbol(handle, "MPIABI_Status_f082c");
+// TODO MPIABI_Status_f2c_ptr = get_symbol(handle, "MPIABI_Status_f2c");
+// TODO MPIABI_Status_f2f08_ptr = get_symbol(handle, "MPIABI_Status_f2f08");
+// TODO MPIABI_Type_c2f_ptr = get_symbol(handle, "MPIABI_Type_c2f");
+// TODO MPIABI_Type_create_f90_complex_ptr =
+// TODO     get_symbol(handle, "MPIABI_Type_create_f90_complex");
+// TODO MPIABI_Type_create_f90_integer_ptr =
+// TODO     get_symbol(handle, "MPIABI_Type_create_f90_integer");
+// TODO MPIABI_Type_create_f90_real_ptr =
+// TODO     get_symbol(handle, "MPIABI_Type_create_f90_real");
+// TODO MPIABI_Type_f2c_ptr = get_symbol(handle, "MPIABI_Type_f2c");
+// TODO MPIABI_Type_match_size_ptr = get_symbol(handle,
+// "MPIABI_Type_match_size");
+// TODO MPIABI_Win_c2f_ptr = get_symbol(handle, "MPIABI_Win_c2f");
+// TODO MPIABI_Win_f2c_ptr = get_symbol(handle, "MPIABI_Win_f2c");
+// TODO
+// TODO // A.3.14 Tools / Profiling Interface C Bindings
+// TODO
+// TODO MPIABI_Pcontrol_ptr = get_symbol(handle, "MPIABI_Pcontrol");
+// TODO
+// TODO // A.3.15 Tools / MPI Tool Information Interface C Bindings
+// TODO
+// TODO MPIABI_T_category_changed_ptr = get_symbol(handle,
+// "MPIABI_T_category_changed");
+// TODO MPIABI_T_category_get_categories_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_category_get_categories");
+// TODO MPIABI_T_category_get_cvars_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_category_get_cvars");
+// TODO MPIABI_T_category_get_events_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_category_get_events");
+// TODO MPIABI_T_category_get_index_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_category_get_index");
+// TODO MPIABI_T_category_get_info_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_category_get_info");
+// TODO MPIABI_T_category_get_num_ptr = get_symbol(handle,
+// "MPIABI_T_category_get_num");
+// TODO MPIABI_T_category_get_num_events_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_category_get_num_events");
+// TODO MPIABI_T_category_get_pvars_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_category_get_pvars");
+// TODO MPIABI_T_cvar_get_index_ptr = get_symbol(handle,
+// "MPIABI_T_cvar_get_index");
+// TODO MPIABI_T_cvar_get_info_ptr = get_symbol(handle,
+// "MPIABI_T_cvar_get_info");
+// TODO MPIABI_T_cvar_get_num_ptr = get_symbol(handle, "MPIABI_T_cvar_get_num");
+// TODO MPIABI_T_cvar_handle_alloc_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_cvar_handle_alloc");
+// TODO MPIABI_T_cvar_handle_free_ptr = get_symbol(handle,
+// "MPIABI_T_cvar_handle_free");
+// TODO MPIABI_T_cvar_read_ptr = get_symbol(handle, "MPIABI_T_cvar_read");
+// TODO MPIABI_T_cvar_write_ptr = get_symbol(handle, "MPIABI_T_cvar_write");
+// TODO MPIABI_T_enum_get_info_ptr = get_symbol(handle,
+// "MPIABI_T_enum_get_info");
+// TODO MPIABI_T_enum_get_item_ptr = get_symbol(handle,
+// "MPIABI_T_enum_get_item");
+// TODO MPIABI_T_event_callback_get_info_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_event_callback_get_info");
+// TODO MPIABI_T_event_callback_set_info_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_event_callback_set_info");
+// TODO MPIABI_T_event_copy_ptr = get_symbol(handle, "MPIABI_T_event_copy");
+// TODO MPIABI_T_event_get_index_ptr = get_symbol(handle,
+// "MPIABI_T_event_get_index");
+// TODO MPIABI_T_event_get_info_ptr = get_symbol(handle,
+// "MPIABI_T_event_get_info");
+// TODO MPIABI_T_event_get_num_ptr = get_symbol(handle,
+// "MPIABI_T_event_get_num");
+// TODO MPIABI_T_event_get_source_ptr = get_symbol(handle,
+// "MPIABI_T_event_get_source");
+// TODO MPIABI_T_event_get_timestamp_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_event_get_timestamp");
+// TODO MPIABI_T_event_handle_alloc_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_event_handle_alloc");
+// TODO MPIABI_T_event_handle_free_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_event_handle_free");
+// TODO MPIABI_T_event_handle_get_info_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_event_handle_get_info");
+// TODO MPIABI_T_event_handle_set_info_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_event_handle_set_info");
+// TODO MPIABI_T_event_read_ptr = get_symbol(handle, "MPIABI_T_event_read");
+// TODO MPIABI_T_event_register_callback_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_event_register_callback");
+// TODO MPIABI_T_event_set_dropped_handler_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_event_set_dropped_handler");
+// TODO MPIABI_T_finalize_ptr = get_symbol(handle, "MPIABI_T_finalize");
+// TODO MPIABI_T_init_thread_ptr = get_symbol(handle, "MPIABI_T_init_thread");
+// TODO MPIABI_T_pvar_get_index_ptr = get_symbol(handle,
+// "MPIABI_T_pvar_get_index");
+// TODO MPIABI_T_pvar_get_info_ptr = get_symbol(handle,
+// "MPIABI_T_pvar_get_info");
+// TODO MPIABI_T_pvar_get_num_ptr = get_symbol(handle, "MPIABI_T_pvar_get_num");
+// TODO MPIABI_T_pvar_handle_alloc_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_pvar_handle_alloc");
+// TODO MPIABI_T_pvar_handle_free_ptr = get_symbol(handle,
+// "MPIABI_T_pvar_handle_free");
+// TODO MPIABI_T_pvar_read_ptr = get_symbol(handle, "MPIABI_T_pvar_read");
+// TODO MPIABI_T_pvar_readreset_ptr = get_symbol(handle,
+// "MPIABI_T_pvar_readreset");
+// TODO MPIABI_T_pvar_reset_ptr = get_symbol(handle, "MPIABI_T_pvar_reset");
+// TODO MPIABI_T_pvar_session_create_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_pvar_session_create");
+// TODO MPIABI_T_pvar_session_free_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_pvar_session_free");
+// TODO MPIABI_T_pvar_start_ptr = get_symbol(handle, "MPIABI_T_pvar_start");
+// TODO MPIABI_T_pvar_stop_ptr = get_symbol(handle, "MPIABI_T_pvar_stop");
+// TODO MPIABI_T_pvar_write_ptr = get_symbol(handle, "MPIABI_T_pvar_write");
+// TODO MPIABI_T_source_get_info_ptr = get_symbol(handle,
+// "MPIABI_T_source_get_info");
+// TODO MPIABI_T_source_get_num_ptr = get_symbol(handle,
+// "MPIABI_T_source_get_num");
+// TODO MPIABI_T_source_get_timestamp_ptr =
+// TODO     get_symbol(handle, "MPIABI_T_source_get_timestamp");
+// TODO
+// TODO // A.3.16 Deprecated C Bindings
+// TODO
+// TODO MPIABI_Attr_delete_ptr = get_symbol(handle, "MPIABI_Attr_delete");
+// TODO MPIABI_Attr_get_ptr = get_symbol(handle, "MPIABI_Attr_get");
+// TODO MPIABI_Attr_put_ptr = get_symbol(handle, "MPIABI_Attr_put");
+// TODO MPIABI_Get_elements_x_ptr = get_symbol(handle, "MPIABI_Get_elements_x");
+// TODO MPIABI_Info_get_ptr = get_symbol(handle, "MPIABI_Info_get");
+// TODO MPIABI_Info_get_valuelen_ptr = get_symbol(handle,
+// "MPIABI_Info_get_valuelen");
+// TODO MPIABI_Keyval_create_ptr = get_symbol(handle, "MPIABI_Keyval_create");
+// TODO MPIABI_Keyval_free_ptr = get_symbol(handle, "MPIABI_Keyval_free");
+// TODO MPIABI_Status_set_elements_x_ptr =
+// TODO     get_symbol(handle, "MPIABI_Status_set_elements_x");
+// TODO MPIABI_Type_get_extent_x_ptr = get_symbol(handle,
+// "MPIABI_Type_get_extent_x");
+// TODO MPIABI_Type_get_true_extent_x_ptr =
+// TODO     get_symbol(handle, "MPIABI_Type_get_true_extent_x");
+// TODO MPIABI_Type_size_x_ptr = get_symbol(handle, "MPIABI_Type_size_x");
 
 // MPIX
 
