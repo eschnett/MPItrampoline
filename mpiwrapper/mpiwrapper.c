@@ -5865,134 +5865,432 @@ int MPIABI_Accumulate(const void *origin_addr, int origin_count,
                       MPIABI_Datatype origin_datatype, int target_rank,
                       MPIABI_Aint target_disp, int target_count,
                       MPIABI_Datatype target_datatype, MPIABI_Op op,
-                      MPIABI_Win win);
+                      MPIABI_Win win) {
+  int ierr = MPI_Accumulate(
+      origin_addr, origin_count, abi2mpi_datatype(origin_datatype), target_rank,
+      target_disp, target_count, abi2mpi_datatype(target_datatype),
+      abi2mpi_op(op), abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Accumulate_c(const void *origin_addr, MPIABI_Count origin_count,
                         MPIABI_Datatype origin_datatype, int target_rank,
                         MPIABI_Aint target_disp, MPIABI_Count target_count,
                         MPIABI_Datatype target_datatype, MPIABI_Op op,
-                        MPIABI_Win win);
+                        MPIABI_Win win) {
+  int ierr = MPI_Accumulate_c(
+      origin_addr, origin_count, abi2mpi_datatype(origin_datatype), target_rank,
+      target_disp, target_count, abi2mpi_datatype(target_datatype),
+      abi2mpi_op(op), abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Compare_and_swap(const void *origin_addr, const void *compare_addr,
                             void *result_addr, MPIABI_Datatype datatype,
                             int target_rank, MPIABI_Aint target_disp,
-                            MPIABI_Win win);
+                            MPIABI_Win win) {
+  int ierr = MPI_Compare_and_swap(origin_addr, compare_addr, result_addr,
+                                  abi2mpi_datatype(datatype), target_rank,
+                                  target_disp, abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Fetch_and_op(const void *origin_addr, void *result_addr,
                         MPIABI_Datatype datatype, int target_rank,
-                        MPIABI_Aint target_disp, MPIABI_Op op, MPIABI_Win win);
+                        MPIABI_Aint target_disp, MPIABI_Op op, MPIABI_Win win) {
+  int ierr = MPI_Fetch_and_op(origin_addr, result_addr,
+                              abi2mpi_datatype(datatype), target_rank,
+                              target_disp, abi2mpi_op(op), abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Get(void *origin_addr, int origin_count,
                MPIABI_Datatype origin_datatype, int target_rank,
                MPIABI_Aint target_disp, int target_count,
-               MPIABI_Datatype target_datatype, MPIABI_Win win);
+               MPIABI_Datatype target_datatype, MPIABI_Win win) {
+  int ierr =
+      MPI_Get(origin_addr, origin_count, abi2mpi_datatype(origin_datatype),
+              target_rank, target_disp, target_count,
+              abi2mpi_datatype(target_datatype), abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Get_accumulate(const void *origin_addr, int origin_count,
                           MPIABI_Datatype origin_datatype, void *result_addr,
                           int result_count, MPIABI_Datatype result_datatype,
                           int target_rank, MPIABI_Aint target_disp,
                           int target_count, MPIABI_Datatype target_datatype,
-                          MPIABI_Op op, MPIABI_Win win);
+                          MPIABI_Op op, MPIABI_Win win) {
+  int ierr = MPI_Get_accumulate(
+      origin_addr, origin_count, abi2mpi_datatype(origin_datatype), result_addr,
+      result_count, abi2mpi_datatype(result_datatype), target_rank, target_disp,
+      target_count, abi2mpi_datatype(target_datatype), abi2mpi_op(op),
+      abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Get_accumulate_c(const void *origin_addr, MPIABI_Count origin_count,
                             MPIABI_Datatype origin_datatype, void *result_addr,
                             MPIABI_Count result_count,
                             MPIABI_Datatype result_datatype, int target_rank,
                             MPIABI_Aint target_disp, MPIABI_Count target_count,
                             MPIABI_Datatype target_datatype, MPIABI_Op op,
-                            MPIABI_Win win);
+                            MPIABI_Win win) {
+  int ierr = MPI_Get_accumulate_c(
+      origin_addr, origin_count, abi2mpi_datatype(origin_datatype), result_addr,
+      result_count, abi2mpi_datatype(result_datatype), target_rank, target_disp,
+      target_count, abi2mpi_datatype(target_datatype), abi2mpi_op(op),
+      abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Get_c(void *origin_addr, MPIABI_Count origin_count,
                  MPIABI_Datatype origin_datatype, int target_rank,
                  MPIABI_Aint target_disp, MPIABI_Count target_count,
-                 MPIABI_Datatype target_datatype, MPIABI_Win win);
+                 MPIABI_Datatype target_datatype, MPIABI_Win win) {
+  int ierr =
+      MPI_Get_c(origin_addr, origin_count, abi2mpi_datatype(origin_datatype),
+                target_rank, target_disp, target_count,
+                abi2mpi_datatype(target_datatype), abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Put(const void *origin_addr, int origin_count,
                MPIABI_Datatype origin_datatype, int target_rank,
                MPIABI_Aint target_disp, int target_count,
-               MPIABI_Datatype target_datatype, MPIABI_Win win);
+               MPIABI_Datatype target_datatype, MPIABI_Win win) {
+  int ierr =
+      MPI_Put(origin_addr, origin_count, abi2mpi_datatype(origin_datatype),
+              target_rank, target_disp, target_count,
+              abi2mpi_datatype(target_datatype), abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Put_c(const void *origin_addr, MPIABI_Count origin_count,
                  MPIABI_Datatype origin_datatype, int target_rank,
                  MPIABI_Aint target_disp, MPIABI_Count target_count,
-                 MPIABI_Datatype target_datatype, MPIABI_Win win);
+                 MPIABI_Datatype target_datatype, MPIABI_Win win) {
+  int ierr =
+      MPI_Put(origin_addr, origin_count, abi2mpi_datatype(origin_datatype),
+              target_rank, target_disp, target_count,
+              abi2mpi_datatype(target_datatype), abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Raccumulate(const void *origin_addr, int origin_count,
                        MPIABI_Datatype origin_datatype, int target_rank,
                        MPIABI_Aint target_disp, int target_count,
                        MPIABI_Datatype target_datatype, MPIABI_Op op,
-                       MPIABI_Win win, MPIABI_Request *request);
+                       MPIABI_Win win, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_Raccumulate(
+      origin_addr, origin_count, abi2mpi_datatype(origin_datatype), target_rank,
+      target_disp, target_count, abi2mpi_datatype(target_datatype),
+      abi2mpi_op(op), abi2mpi_win(win), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Raccumulate_c(const void *origin_addr, MPIABI_Count origin_count,
                          MPIABI_Datatype origin_datatype, int target_rank,
                          MPIABI_Aint target_disp, MPIABI_Count target_count,
                          MPIABI_Datatype target_datatype, MPIABI_Op op,
-                         MPIABI_Win win, MPIABI_Request *request);
+                         MPIABI_Win win, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_Raccumulate_c(
+      origin_addr, origin_count, abi2mpi_datatype(origin_datatype), target_rank,
+      target_disp, target_count, abi2mpi_datatype(target_datatype),
+      abi2mpi_op(op), abi2mpi_win(win), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Rget(void *origin_addr, int origin_count,
                 MPIABI_Datatype origin_datatype, int target_rank,
                 MPIABI_Aint target_disp, int target_count,
                 MPIABI_Datatype target_datatype, MPIABI_Win win,
-                MPIABI_Request *request);
+                MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_Rget(
+      origin_addr, origin_count, abi2mpi_datatype(origin_datatype), target_rank,
+      target_disp, target_count, abi2mpi_datatype(target_datatype),
+      abi2mpi_win(win), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Rget_accumulate(const void *origin_addr, int origin_count,
                            MPIABI_Datatype origin_datatype, void *result_addr,
                            int result_count, MPIABI_Datatype result_datatype,
                            int target_rank, MPIABI_Aint target_disp,
                            int target_count, MPIABI_Datatype target_datatype,
                            MPIABI_Op op, MPIABI_Win win,
-                           MPIABI_Request *request);
+                           MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_Rget_accumulate(
+      origin_addr, origin_count, abi2mpi_datatype(origin_datatype), result_addr,
+      result_count, abi2mpi_datatype(result_datatype), target_rank, target_disp,
+      target_count, abi2mpi_datatype(target_datatype), abi2mpi_op(op),
+      abi2mpi_win(win), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Rget_accumulate_c(const void *origin_addr, MPIABI_Count origin_count,
                              MPIABI_Datatype origin_datatype, void *result_addr,
                              MPIABI_Count result_count,
                              MPIABI_Datatype result_datatype, int target_rank,
                              MPIABI_Aint target_disp, MPIABI_Count target_count,
                              MPIABI_Datatype target_datatype, MPIABI_Op op,
-                             MPIABI_Win win, MPIABI_Request *request);
+                             MPIABI_Win win, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_Rget_accumulate_c(
+      origin_addr, origin_count, abi2mpi_datatype(origin_datatype), result_addr,
+      result_count, abi2mpi_datatype(result_datatype), target_rank, target_disp,
+      target_count, abi2mpi_datatype(target_datatype), abi2mpi_op(op),
+      abi2mpi_win(win), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Rget_c(void *origin_addr, MPIABI_Count origin_count,
                   MPIABI_Datatype origin_datatype, int target_rank,
                   MPIABI_Aint target_disp, MPIABI_Count target_count,
                   MPIABI_Datatype target_datatype, MPIABI_Win win,
-                  MPIABI_Request *request);
+                  MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_Rget_c(
+      origin_addr, origin_count, abi2mpi_datatype(origin_datatype), target_rank,
+      target_disp, target_count, abi2mpi_datatype(target_datatype),
+      abi2mpi_win(win), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Rput(const void *origin_addr, int origin_count,
                 MPIABI_Datatype origin_datatype, int target_rank,
                 MPIABI_Aint target_disp, int target_count,
                 MPIABI_Datatype target_datatype, MPIABI_Win win,
-                MPIABI_Request *request);
+                MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_Rput(
+      origin_addr, origin_count, abi2mpi_datatype(origin_datatype), target_rank,
+      target_disp, target_count, abi2mpi_datatype(target_datatype),
+      abi2mpi_win(win), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Rput_c(const void *origin_addr, MPIABI_Count origin_count,
                   MPIABI_Datatype origin_datatype, int target_rank,
                   MPIABI_Aint target_disp, MPIABI_Count target_count,
                   MPIABI_Datatype target_datatype, MPIABI_Win win,
-                  MPIABI_Request *request);
+                  MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_Rput_c(
+      origin_addr, origin_count, abi2mpi_datatype(origin_datatype), target_rank,
+      target_disp, target_count, abi2mpi_datatype(target_datatype),
+      abi2mpi_win(win), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Win_allocate(MPIABI_Aint size, int disp_unit, MPIABI_Info info,
-                        MPIABI_Comm comm, void *baseptr, MPIABI_Win *win);
+                        MPIABI_Comm comm, void *baseptr, MPIABI_Win *win) {
+  MPI_Win mpi_win;
+  int ierr = MPI_Win_allocate(size, disp_unit, abi2mpi_info(info),
+                              abi2mpi_comm(comm), baseptr, &mpi_win);
+  *win = mpi2abi_win(mpi_win);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Win_allocate_c(MPIABI_Aint size, MPIABI_Aint disp_unit,
                           MPIABI_Info info, MPIABI_Comm comm, void *baseptr,
-                          MPIABI_Win *win);
+                          MPIABI_Win *win) {
+  MPI_Win mpi_win;
+  int ierr = MPI_Win_allocate(size, disp_unit, abi2mpi_info(info),
+                              abi2mpi_comm(comm), baseptr, &mpi_win);
+  *win = mpi2abi_win(mpi_win);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Win_allocate_shared(MPIABI_Aint size, int disp_unit,
                                MPIABI_Info info, MPIABI_Comm comm,
-                               void *baseptr, MPIABI_Win *win);
+                               void *baseptr, MPIABI_Win *win) {
+  MPI_Win mpi_win;
+  int ierr = MPI_Win_allocate_shared(size, disp_unit, abi2mpi_info(info),
+                                     abi2mpi_comm(comm), baseptr, &mpi_win);
+  *win = mpi2abi_win(mpi_win);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Win_allocate_shared_c(MPIABI_Aint size, MPIABI_Aint disp_unit,
                                  MPIABI_Info info, MPIABI_Comm comm,
-                                 void *baseptr, MPIABI_Win *win);
-int MPIABI_Win_attach(MPIABI_Win win, void *base, MPIABI_Aint size);
-int MPIABI_Win_complete(MPIABI_Win win);
+                                 void *baseptr, MPIABI_Win *win) {
+  MPI_Win mpi_win;
+  int ierr = MPI_Win_allocate_shared_c(size, disp_unit, abi2mpi_info(info),
+                                       abi2mpi_comm(comm), baseptr, &mpi_win);
+  *win = mpi2abi_win(mpi_win);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_attach(MPIABI_Win win, void *base, MPIABI_Aint size) {
+  int ierr = MPI_Win_attach(abi2mpi_win(win), base, size);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_complete(MPIABI_Win win) {
+  int ierr = MPI_Win_complete(abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Win_create(void *base, MPIABI_Aint size, int disp_unit,
-                      MPIABI_Info info, MPIABI_Comm comm, MPIABI_Win *win);
+                      MPIABI_Info info, MPIABI_Comm comm, MPIABI_Win *win) {
+  MPI_Win mpi_win;
+  int ierr = MPI_Win_create(base, size, disp_unit, abi2mpi_info(info),
+                            abi2mpi_comm(comm), &mpi_win);
+  *win = mpi2abi_win(mpi_win);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Win_create_c(void *base, MPIABI_Aint size, MPIABI_Aint disp_unit,
-                        MPIABI_Info info, MPIABI_Comm comm, MPIABI_Win *win);
+                        MPIABI_Info info, MPIABI_Comm comm, MPIABI_Win *win) {
+  MPI_Win mpi_win;
+  int ierr = MPI_Win_create_c(base, size, disp_unit, abi2mpi_info(info),
+                              abi2mpi_comm(comm), &mpi_win);
+  *win = mpi2abi_win(mpi_win);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Win_create_dynamic(MPIABI_Info info, MPIABI_Comm comm,
-                              MPIABI_Win *win);
-int MPIABI_Win_detach(MPIABI_Win win, const void *base);
-int MPIABI_Win_fence(int assert, MPIABI_Win win);
-int MPIABI_Win_flush(int rank, MPIABI_Win win);
-int MPIABI_Win_flush_all(MPIABI_Win win);
-int MPIABI_Win_flush_local(int rank, MPIABI_Win win);
-int MPIABI_Win_flush_local_all(MPIABI_Win win);
-int MPIABI_Win_free(MPIABI_Win *win);
-int MPIABI_Win_get_group(MPIABI_Win win, MPIABI_Group *group);
-int MPIABI_Win_get_info(MPIABI_Win win, MPIABI_Info *info_used);
-int MPIABI_Win_lock(int lock_type, int rank, int assert, MPIABI_Win win);
-int MPIABI_Win_lock_all(int assert, MPIABI_Win win);
-int MPIABI_Win_post(MPIABI_Group group, int assert, MPIABI_Win win);
-int MPIABI_Win_set_info(MPIABI_Win win, MPIABI_Info info);
+                              MPIABI_Win *win) {
+  MPI_Win mpi_win;
+  int ierr =
+      MPI_Win_create_dynamic(abi2mpi_info(info), abi2mpi_comm(comm), &mpi_win);
+  *win = mpi2abi_win(mpi_win);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_detach(MPIABI_Win win, const void *base) {
+  int ierr = MPI_Win_detach(abi2mpi_win(win), base);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_fence(int assert, MPIABI_Win win) {
+  int ierr = MPI_Win_fence(assert, abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_flush(int rank, MPIABI_Win win) {
+  int ierr = MPI_Win_flush(rank, abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_flush_all(MPIABI_Win win) {
+  int ierr = MPI_Win_flush_all(abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_flush_local(int rank, MPIABI_Win win) {
+  int ierr = MPI_Win_flush_local(rank, abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_flush_local_all(MPIABI_Win win) {
+  int ierr = MPI_Win_flush_local_all(abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_free(MPIABI_Win *win) {
+  MPI_Win mpi_win = abi2mpi_win(*win);
+  int ierr = MPI_Win_free(&mpi_win);
+  *win = mpi2abi_win(mpi_win);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_get_group(MPIABI_Win win, MPIABI_Group *group) {
+  MPI_Group mpi_group;
+  int ierr = MPI_Win_get_group(abi2mpi_win(win), &mpi_group);
+  *group = mpi2abi_group(mpi_group);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_get_info(MPIABI_Win win, MPIABI_Info *info_used) {
+  MPI_Info mpi_info_used;
+  int ierr = MPI_Win_get_info(abi2mpi_win(win), &mpi_info_used);
+  *info_used = mpi2abi_info(mpi_info_used);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_lock(int lock_type, int rank, int assert, MPIABI_Win win) {
+  int ierr = MPI_Win_lock(lock_type, rank, assert, abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_lock_all(int assert, MPIABI_Win win) {
+  int ierr = MPI_Win_lock_all(assert, abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_post(MPIABI_Group group, int assert, MPIABI_Win win) {
+  int ierr = MPI_Win_post(abi2mpi_group(group), assert, abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_set_info(MPIABI_Win win, MPIABI_Info info) {
+  int ierr = MPI_Win_set_info(abi2mpi_win(win), abi2mpi_info(info));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Win_shared_query(MPIABI_Win win, int rank, MPIABI_Aint *size,
-                            int *disp_unit, void *baseptr);
+                            int *disp_unit, void *baseptr) {
+  MPI_Aint mpi_size;
+  int ierr = MPI_Win_shared_query(abi2mpi_win(win), rank, &mpi_size, disp_unit,
+                                  baseptr);
+  *size = mpi_size;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Win_shared_query_c(MPIABI_Win win, int rank, MPIABI_Aint *size,
-                              MPIABI_Aint *disp_unit, void *baseptr);
-int MPIABI_Win_start(MPIABI_Group group, int assert, MPIABI_Win win);
-int MPIABI_Win_sync(MPIABI_Win win);
-int MPIABI_Win_test(MPIABI_Win win, int *flag);
-int MPIABI_Win_unlock(int rank, MPIABI_Win win);
-int MPIABI_Win_unlock_all(MPIABI_Win win);
-int MPIABI_Win_wait(MPIABI_Win win);
+                              MPIABI_Aint *disp_unit, void *baseptr) {
+  MPI_Aint mpi_size;
+  MPI_Aint mpi_disp_unit;
+  int ierr = MPI_Win_shared_query_c(abi2mpi_win(win), rank, &mpi_size,
+                                    &mpi_disp_unit, baseptr);
+  *size = mpi_size;
+  *disp_unit = mpi_disp_unit;
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_start(MPIABI_Group group, int assert, MPIABI_Win win) {
+  int ierr = MPI_Win_start(abi2mpi_group(group), assert, abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_sync(MPIABI_Win win) {
+  int ierr = MPI_Win_sync(abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_test(MPIABI_Win win, int *flag) {
+  int ierr = MPI_Win_test(abi2mpi_win(win), flag);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_unlock(int rank, MPIABI_Win win) {
+  int ierr = MPI_Win_unlock(rank, abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_unlock_all(MPIABI_Win win) {
+  int ierr = MPI_Win_unlock_all(abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Win_wait(MPIABI_Win win) {
+  int ierr = MPI_Win_wait(abi2mpi_win(win));
+  return mpi2abi_errorcode(ierr);
+}
 
 // A.3.11 External Interfaces C Bindings
 
