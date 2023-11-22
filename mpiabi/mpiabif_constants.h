@@ -5,18 +5,14 @@
 !     Variable Address Size
 !     Define these first because they are used in other definitions.
 
-      integer MPIABI_DUMMY_INTEGER
-      parameter (MPIABI_DUMMY_INTEGER = 0)
-      integer*8 MPIABI_DUMMY_INTEGER8
-      parameter (MPIABI_DUMMY_INTEGER8 = 0)
       integer MPIABI_ADDRESS_KIND
-      parameter (MPIABI_ADDRESS_KIND = kind(MPIABI_DUMMY_INTEGER8))
+      parameter (MPIABI_ADDRESS_KIND = kind(loc(MPIABI_ADDRESS_KIND)))
       integer MPIABI_COUNT_KIND
-      parameter (MPIABI_COUNT_KIND = kind(MPIABI_DUMMY_INTEGER8))
+      parameter (MPIABI_COUNT_KIND = MPIABI_ADDRESS_KIND)
       integer MPIABI_INTEGER_KIND
-      parameter (MPIABI_INTEGER_KIND = kind(MPIABI_DUMMY_INTEGER))
+      parameter (MPIABI_INTEGER_KIND = kind(0))
       integer MPIABI_OFFSET_KIND
-      parameter (MPIABI_OFFSET_KIND = kind(MPIABI_DUMMY_INTEGER8))
+      parameter (MPIABI_OFFSET_KIND = MPIABI_ADDRESS_KIND)
 
 !     Error classes
 

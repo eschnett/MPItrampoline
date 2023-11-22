@@ -1,4 +1,4 @@
-# docker build --build-arg cpuarch=amd64 --build-arg GITHASH=$(git rev-parse HEAD) --build-arg mpivendor=MPICH --tag mpitrampoline6 --progress plain .
+# docker build --build-arg cpuarch=amd64 --build-arg githash=$(git rev-parse HEAD) --build-arg mpivendor=MPICH --tag mpitrampoline6 --progress plain .
 # docker run --interactive --rm --tty mpitrampoline6
 
 # amd64, arm32v5, arm32v7, arm64v8, i386, mips64le, ppc64le, riscv64
@@ -22,7 +22,7 @@ RUN apt update && \
         ninja-build
 
 # Install system MPI
-RUN case $mpivendor in \
+RUN case ${mpivendor} in \
         MPICH) pkgs=libmpich-dev;; \
         OpenMPI) pkgs=libopenmpi-dev;; \
         *) exit 1;; \
@@ -31,10 +31,10 @@ RUN case $mpivendor in \
 
 # 2. Download MPItrampoline
 
-ARG GITHASH
+ARG githash
 RUN git clone -b eschnett/MPItrampoline6 https://github.com/eschnett/MPItrampoline && \
     cd MPItrampoline && \
-    git checkout ${GITHASH}
+    git checkout ${githash}
 
 # 3. Build MPIwrapper
 
@@ -42,7 +42,6 @@ WORKDIR /MPItrampoline/mpiwrapper
 RUN cmake -B build -G Ninja \
         -DCMAKE_BUILD_TYPE=Debug \
         -DCMAKE_C_COMPILER=mpicc \
-        -DCMAKE_CXX_COMPILER=mpic++ \
         -DCMAKE_Fortran_COMPILER=mpifort \
         -DCMAKE_INSTALL_PREFIX=/usr/local
 RUN cmake --build build
