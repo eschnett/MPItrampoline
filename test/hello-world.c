@@ -18,7 +18,7 @@ int main(int argc, char **argv) {
 
   if (argc >= 2) {
     const int expected_size = atoi(argv[1]);
-    if (size != want_size) {
+    if (size != expected_size) {
       fprintf(stderr, "rank %d, size %d, expected size %d\n", rank, size,
               expected_size);
       exit(1);
