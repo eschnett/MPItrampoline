@@ -6919,3 +6919,37 @@ int MPIXABI_Query_ze_support() {
   return 0;
 #endif
 }
+
+// extern void mpi_init_(MPI_Fint *ierror);
+// void mpiabi_init_(MPIABI_Fint *ierror) {
+//   mpi_init_(ierror);
+//   *ierror = mpi2abi_errorcode(*ierror);
+// }
+// 
+// extern void mpi_finalize_(MPI_Fint *ierror);
+// void mpiabi_finalize_(MPIABI_Fint *ierror) {
+//   mpi_finalize_(ierror);
+//   *ierror = mpi2abi_errorcode(*ierror);
+// }
+// 
+// extern void mpi_barrier_(MPI_Fint *comm, MPI_Fint *ierror);
+// void mpiabi_barrier_(MPIABI_Fint *comm, MPIABI_Fint *ierror) {
+//   MPI_Fint mpi_comm = abi2mpi_comm(*comm);
+//   mpi_barrier_(&mpi_comm, ierror);
+//   *ierror = mpi2abi_errorcode(*ierror);
+// }
+// 
+// extern void mpi_comm_size_(MPI_Fint *comm, MPI_Fint *size, MPI_Fint *ierror);
+// void mpiabi_comm_size_(MPIABI_Fint *comm, MPIABI_Fint *size,
+//                        MPIABI_Fint *ierror) {
+//   MPI_Fint mpi_comm = abi2mpi_comm(*comm);
+//   mpi_comm_size_(&mpi_comm, size, ierror);
+//   *ierror = mpi2abi_errorcode(*ierror);
+// }
+// 
+// extern void mpi_comm_rank_(MPI_Fint *comm, MPI_Fint *rank, MPI_Fint *ierror);
+// void mpiabi_comm_rank_(MPIABI_Fint *comm, MPIABI_Fint *rank,
+//                        MPIABI_Fint *ierror) {
+//   mpi_comm_rank_(comm, rank, ierror);
+//   *ierror = mpi2abi_errorcode(*ierror);
+// }

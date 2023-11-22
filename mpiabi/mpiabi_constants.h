@@ -326,6 +326,7 @@ enum {
 #define MPIABI_NO_OP ((MPIABI_Op)0b000000111101)   // arXiv:2308.11214
 
 // Null Handles
+
 #define MPIABI_GROUP_NULL ((MPIABI_Group)0b000100000100) // arXiv:2308.11214
 #define MPIABI_COMM_NULL ((MPIABI_Comm)0b000100000000)   // arXiv:2308.11214
 #define MPIABI_DATATYPE_NULL                                                   \

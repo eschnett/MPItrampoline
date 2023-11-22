@@ -3,7 +3,7 @@ project(
   MPIwrapper VERSION 3.0.0
   DESCRIPTION "MPI wrapper"
   HOMEPAGE_URL "https://github.com/eschnett/MPItrampoline"
-  LANGUAGES C
+  LANGUAGES C Fortran
   )
 
 # SOVERSION is the ABI version of MPItrampoline. (That's different
@@ -18,6 +18,7 @@ project(
 set(SOVERSION 3)
 
 include(CheckLanguage)
+
 check_language(C)
 if(NOT(CMAKE_C_COMPILER))
   message(FATAL_ERROR "No C support")
@@ -25,6 +26,12 @@ endif()
 # set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD 11)        # for atomics and mutexes; could use OpenMP instead
 enable_language(C)
+
+check_language(Fortran)
+if(NOT(CMAKE_Fortran_COMPILER))
+  message(FATAL_ERROR "No Fortran support")
+endif()
+enable_language(Fortran)
 
 include(GNUInstallDirs)
 
@@ -103,14 +110,17 @@ add_library(mpiwrapper
   MODULE
   mpiwrapper.h
   mpiwrapper.c
+  mpiwrapper.f90
+  mpiwrapper_functions.f90
 )
 target_compile_options(mpiwrapper PRIVATE -Wall -Wextra -fdiagnostics-show-option)
+target_compile_options(mpiwrapper PUBLIC -fcray-pointer)
 target_include_directories(
   mpiwrapper
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
   PRIVATE ../mpiabi
 )
-target_link_libraries(mpiwrapper PRIVATE MPI::MPI_C Threads::Threads)
+target_link_libraries(mpiwrapper PRIVATE MPI::MPI_C MPI::MPI_Fortran Threads::Threads)
 #TODO set_target_properties(mpiwrapper PROPERTIES
 #TODO   VERSION ${PROJECT_VERSION}
 #TODO   SOVERSION ${SOVERSION}

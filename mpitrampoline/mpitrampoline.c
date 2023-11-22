@@ -1,5 +1,6 @@
-#include "mpitrampoline.h"
-#include "mpiabi_function_pointers.h"
+#include "mpi.h"
+// #include "mpitrampoline.h"
+// #include "mpiabi_function_pointers.h"
 
 #include <mpiabi_version.h>
 
@@ -79,8 +80,24 @@ static void *get_symbol(void *handle, const char *name) {
 
 #include "mpiabi_function_pointers.c"
 
+// Fortran
+void (*mpiabi_init_ptr)(MPIABI_Fint *ierror);
+void (*mpiabi_finalize_ptr)(MPIABI_Fint *ierror);
+void (*mpiabi_barrier_ptr)(MPIABI_Fint *comm, MPIABI_Fint *ierror);
+void (*mpiabi_comm_size_ptr)(MPIABI_Fint *comm, MPIABI_Fint *size,
+                             MPIABI_Fint *ierror);
+void (*mpiabi_comm_rank_ptr)(MPIABI_Fint *comm, MPIABI_Fint *rank,
+                             MPIABI_Fint *ierror);
+
 void set_mpiabi_function_pointers(void *const handle) {
 #include "set_mpiabi_function_pointers.c"
+
+  // Fortran
+  mpiabi_init_ptr = get_symbol(handle, "mpiabi_init_");
+  mpiabi_finalize_ptr = get_symbol(handle, "mpiabi_finalize_");
+  mpiabi_barrier_ptr = get_symbol(handle, "mpiabi_barrier_");
+  mpiabi_comm_size_ptr = get_symbol(handle, "mpiabi_comm_size_");
+  mpiabi_comm_rank_ptr = get_symbol(handle, "mpiabi_comm_rank_");
 }
 
 static void mpitrampoline_init(void) {
@@ -153,4 +170,16 @@ mpitrampoline_init_auto(void) {
           MPIABI_VERSION_MAJOR, MPIABI_VERSION_MINOR, MPIABI_VERSION_PATCH);
 
   mpitrampoline_init();
+}
+
+void mpi_init_(MPI_Fint *ierror) { (*mpiabi_init_ptr)(ierror); }
+void mpi_finalize_(MPI_Fint *ierror) { (*mpiabi_finalize_ptr)(ierror); }
+void mpi_barrier_(MPI_Fint *comm, MPI_Fint *ierror) {
+  (*mpiabi_barrier_ptr)(comm, ierror);
+}
+void mpi_comm_size_(MPI_Fint *comm, MPI_Fint *size, MPI_Fint *ierror) {
+  (*mpiabi_comm_size_ptr)(comm, size, ierror);
+}
+void mpi_comm_rank_(MPI_Fint *comm, MPI_Fint *rank, MPI_Fint *ierror) {
+  (*mpiabi_comm_rank_ptr)(comm, rank, ierror);
 }

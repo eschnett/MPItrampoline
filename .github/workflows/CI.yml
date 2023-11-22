@@ -102,10 +102,20 @@ jobs:
       working-directory: ${{github.workspace}}/mpitrampoline
       run: cmake --install build
 
-    - name: Test
+    - name: Test C
       working-directory: ${{github.workspace}}/test
       run: |
         gcc -I$HOME/mpitrampoline/include -c hello-world.c
         gcc -L$HOME/mpitrampoline/lib -Wl,-rpath,$HOME/mpitrampoline/lib -o hello-world hello-world.o -lmpitrampoline
-        env MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so ./hello-world
-        env MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so mpiexec -n 4 ./hello-world
+        export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
+        ./hello-world
+        mpiexec -n 4 ./hello-world
+
+    - name: Test Fortran
+      working-directory: ${{github.workspace}}/test
+      run: |
+        gfortran -fcray-pointer -I$HOME/mpitrampoline/include -c hello-world-fortran.f90)
+        gfortran -L$HOME/mpitrampoline/lib -Wl,-rpath,$HOME/mpitrampoline/lib -o hello-world-fortran hello-world-fortran.o -lmpitrampoline
+        export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
+        ./hello-world-fortran
+        mpiexec -n 4 ./hello-world-fortran

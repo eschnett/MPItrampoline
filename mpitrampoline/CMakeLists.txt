@@ -28,14 +28,22 @@ enable_language(C)
 configure_file(mpitrampoline.h.in mpitrampoline.h @ONLY)
 
 add_library(mpitrampoline
+  # MPI C header files
   mpi.h
-  mpitrampoline.h
-  mpitrampoline.c
-  mpi_constants.h
-  mpi_functions.c
-  mpi_functions.h
   mpi_types.h
+  mpi_constants.h
+  mpi_functions.h
   mpiabi_function_pointers.h
+  mpitrampoline.h
+  # MPI Fortran header files
+  mpif.h
+  mpif_types.h
+  mpif_constants.h
+  mpif_functions.h
+  mpitrampolinef.h
+  # Implementation
+  mpitrampoline.c
+  mpi_functions.c
   # mpiabi_function_pointers.c
 )
 target_compile_options(mpitrampoline PRIVATE -Wall -Wextra -Wpedantic)
@@ -45,10 +53,29 @@ target_include_directories(
   PRIVATE ../mpiabi
 )
 target_link_libraries(mpitrampoline PRIVATE ${CMAKE_DL_LIBS})
+list(APPEND public_headers
+  mpi.h
+  mpi_types.h
+  mpi_constants.h
+  mpi_functions.h
+  mpiabi_function_pointers.h
+  ${CMAKE_CURRENT_BINARY_DIR}/mpitrampoline.h
+  ../mpiabi/mpiabi_types.h
+  ../mpiabi/mpiabi_constants.h
+  ../mpiabi/mpiabi_version.h
+  mpif.h
+  mpif_types.h
+  mpif_constants.h
+  mpif_functions.h
+  mpitrampolinef.h
+  ../mpiabi/mpiabif_types.h
+  ../mpiabi/mpiabif_constants.h
+  ../mpiabi/mpiabif_functions.h
+)
 set_target_properties(mpitrampoline PROPERTIES
   VERSION ${PROJECT_VERSION}
   SOVERSION ${SOVERSION}
-  PUBLIC_HEADER "mpi.h;${CMAKE_CURRENT_BINARY_DIR}/mpitrampoline.h;mpi_constants.h;mpi_functions.h;mpi_types.h;mpiabi_function_pointers.h;;../mpiabi/mpiabi_constants.h;;../mpiabi/mpiabi_types.h;../mpiabi/mpiabi_version.h"
+  PUBLIC_HEADER "${public_headers}"
 )
 
 install(TARGETS mpitrampoline EXPORT MPItrampolineTargets)
