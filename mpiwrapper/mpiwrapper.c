@@ -5066,9 +5066,9 @@ int MPIABI_Ineighbor_alltoallv_c(
   MPI_Count mpi_sendcounts[size];
   for (int n = 0; n < size; ++n)
     mpi_sendcounts[n] = sendcounts[n];
-  MPI_Aint mpi_rdispls[size];
+  MPI_Aint mpi_sdispls[size];
   for (int n = 0; n < size; ++n)
-    mpi_rdispls[n] = rdispls[n];
+    mpi_sdispls[n] = sdispls[n];
   MPI_Count mpi_recvcounts[size];
   for (int n = 0; n < size; ++n)
     mpi_recvcounts[n] = recvcounts[n];
@@ -5131,9 +5131,9 @@ int MPIABI_Ineighbor_alltoallw_c(const void *sendbuf,
   MPI_Count mpi_sendcounts[size];
   for (int n = 0; n < size; ++n)
     mpi_sendcounts[n] = sendcounts[n];
-  MPI_Aint mpi_rdispls[size];
+  MPI_Aint mpi_sdispls[size];
   for (int n = 0; n < size; ++n)
-    mpi_rdispls[n] = rdispls[n];
+    mpi_sdispls[n] = sdispls[n];
   MPI_Count mpi_recvcounts[size];
   for (int n = 0; n < size; ++n)
     mpi_recvcounts[n] = recvcounts[n];
@@ -5472,9 +5472,9 @@ int MPIABI_Neighbor_alltoallw_c(
   MPI_Count mpi_sendcounts[size];
   for (int n = 0; n < size; ++n)
     mpi_sendcounts[n] = sendcounts[n];
-  MPI_Aint mpi_rdispls[size];
+  MPI_Aint mpi_sdispls[size];
   for (int n = 0; n < size; ++n)
-    mpi_rdispls[n] = rdispls[n];
+    mpi_sdispls[n] = sdispls[n];
   MPI_Count mpi_recvcounts[size];
   for (int n = 0; n < size; ++n)
     mpi_recvcounts[n] = recvcounts[n];
@@ -5536,9 +5536,9 @@ int MPIABI_Neighbor_alltoallw_init_c(
   MPI_Count mpi_sendcounts[size];
   for (int n = 0; n < size; ++n)
     mpi_sendcounts[n] = sendcounts[n];
-  MPI_Aint mpi_rdispls[size];
+  MPI_Aint mpi_sdispls[size];
   for (int n = 0; n < size; ++n)
-    mpi_rdispls[n] = rdispls[n];
+    mpi_sdispls[n] = sdispls[n];
   MPI_Count mpi_recvcounts[size];
   for (int n = 0; n < size; ++n)
     mpi_recvcounts[n] = recvcounts[n];
