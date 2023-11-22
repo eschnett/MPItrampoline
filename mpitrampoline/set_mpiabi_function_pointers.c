@@ -799,11 +799,11 @@ MPIABI_Status_set_tag_ptr = get_symbol(handle, "MPIABI_Status_set_tag");
 // "MPIABI_Type_match_size");
 // TODO MPIABI_Win_c2f_ptr = get_symbol(handle, "MPIABI_Win_c2f");
 // TODO MPIABI_Win_f2c_ptr = get_symbol(handle, "MPIABI_Win_f2c");
-// TODO
-// TODO // A.3.14 Tools / Profiling Interface C Bindings
-// TODO
-// TODO MPIABI_Pcontrol_ptr = get_symbol(handle, "MPIABI_Pcontrol");
-// TODO
+
+// A.3.14 Tools / Profiling Interface C Bindings
+
+MPIABI_Pcontrol_ptr = get_symbol(handle, "MPIABI_Pcontrol");
+
 // TODO // A.3.15 Tools / MPI Tool Information Interface C Bindings
 // TODO
 // TODO MPIABI_T_category_changed_ptr = get_symbol(handle,
@@ -895,25 +895,23 @@ MPIABI_Status_set_tag_ptr = get_symbol(handle, "MPIABI_Status_set_tag");
 // "MPIABI_T_source_get_num");
 // TODO MPIABI_T_source_get_timestamp_ptr =
 // TODO     get_symbol(handle, "MPIABI_T_source_get_timestamp");
-// TODO
-// TODO // A.3.16 Deprecated C Bindings
-// TODO
-// TODO MPIABI_Attr_delete_ptr = get_symbol(handle, "MPIABI_Attr_delete");
-// TODO MPIABI_Attr_get_ptr = get_symbol(handle, "MPIABI_Attr_get");
-// TODO MPIABI_Attr_put_ptr = get_symbol(handle, "MPIABI_Attr_put");
-// TODO MPIABI_Get_elements_x_ptr = get_symbol(handle, "MPIABI_Get_elements_x");
-// TODO MPIABI_Info_get_ptr = get_symbol(handle, "MPIABI_Info_get");
-// TODO MPIABI_Info_get_valuelen_ptr = get_symbol(handle,
-// "MPIABI_Info_get_valuelen");
-// TODO MPIABI_Keyval_create_ptr = get_symbol(handle, "MPIABI_Keyval_create");
-// TODO MPIABI_Keyval_free_ptr = get_symbol(handle, "MPIABI_Keyval_free");
-// TODO MPIABI_Status_set_elements_x_ptr =
-// TODO     get_symbol(handle, "MPIABI_Status_set_elements_x");
-// TODO MPIABI_Type_get_extent_x_ptr = get_symbol(handle,
-// "MPIABI_Type_get_extent_x");
-// TODO MPIABI_Type_get_true_extent_x_ptr =
-// TODO     get_symbol(handle, "MPIABI_Type_get_true_extent_x");
-// TODO MPIABI_Type_size_x_ptr = get_symbol(handle, "MPIABI_Type_size_x");
+
+// A.3.16 Deprecated C Bindings
+
+MPIABI_Attr_delete_ptr = get_symbol(handle, "MPIABI_Attr_delete");
+MPIABI_Attr_get_ptr = get_symbol(handle, "MPIABI_Attr_get");
+MPIABI_Attr_put_ptr = get_symbol(handle, "MPIABI_Attr_put");
+MPIABI_Get_elements_x_ptr = get_symbol(handle, "MPIABI_Get_elements_x");
+MPIABI_Info_get_ptr = get_symbol(handle, "MPIABI_Info_get");
+MPIABI_Info_get_valuelen_ptr = get_symbol(handle, "MPIABI_Info_get_valuelen");
+MPIABI_Keyval_create_ptr = get_symbol(handle, "MPIABI_Keyval_create");
+MPIABI_Keyval_free_ptr = get_symbol(handle, "MPIABI_Keyval_free");
+MPIABI_Status_set_elements_x_ptr =
+    get_symbol(handle, "MPIABI_Status_set_elements_x");
+MPIABI_Type_get_extent_x_ptr = get_symbol(handle, "MPIABI_Type_get_extent_x");
+MPIABI_Type_get_true_extent_x_ptr =
+    get_symbol(handle, "MPIABI_Type_get_true_extent_x");
+MPIABI_Type_size_x_ptr = get_symbol(handle, "MPIABI_Type_size_x");
 
 // MPIX
 

@@ -3622,7 +3622,6 @@ inline MPI_Win MPI_Win_f2c(MPI_Fint win) { return (*MPIABI_Win_f2c_ptr)(win); }
 
 inline int MPI_Pcontrol(const int level, ...) {
   // Variadic arguments cannot be forwarded
-  // return (*MPIABI_Pcontrol_ptr)(level, ...);
   return MPI_SUCCESS;
 }
 

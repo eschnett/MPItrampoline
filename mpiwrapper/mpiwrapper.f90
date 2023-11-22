@@ -52,10 +52,8 @@ contains
     integer, intent(in) :: abi_status(MPIABI_STATUS_SIZE)
     integer, intent(in) :: mpi_status_storage(MPI_STATUS_SIZE)
     if (loc(abi_status) == loc(MPIABI_STATUS_IGNORE)) then
-       print '("abi2mpi_statusptr_uninitialized.0")'
        abi2mpi_statusptr_uninitialized = loc(MPI_STATUS_IGNORE)
     else
-       print '("abi2mpi_statusptr_uninitialized.1")'
        abi2mpi_statusptr_uninitialized = loc(mpi_status_storage)
     end if
   end function abi2mpi_statusptr_uninitialized
