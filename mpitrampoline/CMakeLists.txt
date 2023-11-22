@@ -18,6 +18,7 @@ project(
 set(SOVERSION 6)
 
 include(CheckLanguage)
+
 check_language(C)
 if(NOT(CMAKE_C_COMPILER))
   message(FATAL_ERROR "No C support")
@@ -25,7 +26,68 @@ endif()
 set(CMAKE_C_STANDARD 99)
 enable_language(C)
 
+check_language(CXX)
+if(NOT(CMAKE_CXX_COMPILER))
+  message(FATAL_ERROR "No C++ support")
+endif()
+# set(CMAKE_CXX_STANDARD 11)
+enable_language(CXX)
+
+check_language(Fortran)
+if(NOT(CMAKE_Fortran_COMPILER))
+  message(FATAL_ERROR "No C support")
+endif()
+enable_language(Fortran)
+
+include(GNUInstallDirs)
+
+# Check for Fortran features
+
+include(CheckFortranCompilerFlag)
+check_fortran_compiler_flag(-fallow-argument-mismatch Fortran_flag_allow_argument_mismatch)
+if(Fortran_flag_allow_argument_mismatch)
+  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fallow-argument-mismatch")
+endif()
+check_fortran_compiler_flag(-fcray-pointer Fortran_flag_cray_pointer)
+if(Fortran_flag_cray_pointer)
+  set(CMAKE_Fortran_FLAGS "${CMAKE_Fortran_FLAGS} -fcray-pointer")
+endif()
+check_fortran_source_compiles(
+  "
+  end
+  subroutine attr(buf)
+    integer buf
+    !dir$ ignore_tkr(tkr) buf
+  end
+  "
+  Fortran_attribute_dir_ignore_tkr
+  SRC_EXT f90
+)
+if(Fortran_attribute_dir_ignore_tkr)
+  add_compile_definitions(DIR_IGNORE_TKR=) # enabled
+else()
+  add_compile_definitions(DIR_IGNORE_TKR=!) # disabled
+endif()
+check_fortran_source_compiles(
+  "
+  end
+  subroutine attr(buf)
+    integer buf
+    !gcc$ attributes no_arg_check :: buf
+  end
+  "
+  Fortran_attribute_gcc_attributes_no_arg_check
+  SRC_EXT f90
+)
+if(Fortran_attribute_gcc_attributes_no_arg_check)
+  add_compile_definitions(GCC_ATTRIBUTES_NO_ARG_CHECK=) # enabled
+else()
+  add_compile_definitions(GCC_ATTRIBUTES_NO_ARG_CHECK=!) # disabled
+endif()
+add_compile_definitions(ENABLE_FORTRAN)
+
 configure_file(mpitrampoline.h.in mpitrampoline.h @ONLY)
+configure_file(mpitrampolinef.h.in mpitrampolinef.h @ONLY)
 
 add_library(mpitrampoline
   # MPI C header files
@@ -67,7 +129,7 @@ list(APPEND public_headers
   mpif_types.h
   mpif_constants.h
   mpif_functions.h
-  mpitrampolinef.h
+  ${CMAKE_CURRENT_BINARY_DIR}/mpitrampolinef.h
   ../mpiabi/mpiabif_types.h
   ../mpiabi/mpiabif_constants.h
   ../mpiabi/mpiabif_functions.h
@@ -79,3 +141,40 @@ set_target_properties(mpitrampoline PROPERTIES
 )
 
 install(TARGETS mpitrampoline EXPORT MPItrampolineTargets)
+
+# Install pkgconfig files
+
+configure_file(pkgconfig/MPItrampoline.pc.in pkgconfig/MPItrampoline.pc @ONLY)
+configure_file(pkgconfig/mpi-c.pc.in pkgconfig/mpi-c.pc @ONLY)
+configure_file(pkgconfig/mpi-cxx.pc.in pkgconfig/mpi-cxx.pc @ONLY)
+configure_file(pkgconfig/mpi-fort.pc.in pkgconfig/mpi-fort.pc @ONLY)
+install(
+  FILES
+  ${CMAKE_BINARY_DIR}/pkgconfig/MPItrampoline.pc
+  ${CMAKE_BINARY_DIR}/pkgconfig/mpi-c.pc
+  ${CMAKE_BINARY_DIR}/pkgconfig/mpi-cxx.pc
+  ${CMAKE_BINARY_DIR}/pkgconfig/mpi-fort.pc
+  DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+)
+
+# Install compiler wrappers
+
+configure_file(bin/mpicc.in bin/mpicc @ONLY)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/bin/mpicc
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+)
+configure_file(bin/mpicxx.in bin/mpicxx @ONLY)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/bin/mpicxx
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+)
+configure_file(bin/mpifc.in bin/mpifc @ONLY)
+configure_file(bin/mpifort.in bin/mpifort @ONLY)
+install(
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/bin/mpifc ${CMAKE_CURRENT_BINARY_DIR}/bin/mpifort
+  DESTINATION ${CMAKE_INSTALL_BINDIR}
+  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE GROUP_READ GROUP_EXECUTE WORLD_READ WORLD_EXECUTE
+)

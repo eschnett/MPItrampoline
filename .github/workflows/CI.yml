@@ -105,8 +105,8 @@ jobs:
     - name: Test C
       working-directory: ${{github.workspace}}/test
       run: |
-        gcc -I$HOME/mpitrampoline/include -c hello-world.c
-        gcc -L$HOME/mpitrampoline/lib -Wl,-rpath,$HOME/mpitrampoline/lib -o hello-world hello-world.o -lmpitrampoline
+        $HOME/mpitrampoline/bin/mpicc -c hello-world.c
+        $HOME/mpitrampoline/bin/mpicc -o hello-world hello-world.o
         export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
         ./hello-world
         mpiexec -n 4 ./hello-world
@@ -114,8 +114,8 @@ jobs:
     - name: Test Fortran
       working-directory: ${{github.workspace}}/test
       run: |
-        gfortran -fcray-pointer -I$HOME/mpitrampoline/include -c hello-world-fortran.f90
-        gfortran -L$HOME/mpitrampoline/lib -Wl,-rpath,$HOME/mpitrampoline/lib -o hello-world-fortran hello-world-fortran.o -lmpitrampoline
+        $HOME/mpitrampoline/bin/mpifc -c hello-world-fortran.f90
+        $HOME/mpitrampoline/bin/mpifc -o hello-world-fortran hello-world-fortran.o
         export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
         ./hello-world-fortran
         mpiexec -n 4 ./hello-world-fortran
