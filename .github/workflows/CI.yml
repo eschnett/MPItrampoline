@@ -104,6 +104,6 @@ jobs:
       working-directory: ${{github.workspace}}/test
       run: |
         gcc -I$HOME/mpitrampoline/include -c hello-world.c
-        gcc -L$HOME/mpitrampoline/lib -Wl,-rpath, -L$HOME/mpitrampoline/lib -o hello-world hello-world.o -lmpitrampoline
+        gcc -L$HOME/mpitrampoline/lib -Wl,-rpath,$HOME/mpitrampoline/lib -o hello-world hello-world.o -lmpitrampoline
         env MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so ./hello-world
         env MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so mpiexec -n 4 ./hello-world
