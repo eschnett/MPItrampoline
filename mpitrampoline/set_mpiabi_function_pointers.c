@@ -601,23 +601,20 @@ MPIABI_Win_unlock_ptr = get_symbol(handle, "MPIABI_Win_unlock");
 MPIABI_Win_unlock_all_ptr = get_symbol(handle, "MPIABI_Win_unlock_all");
 MPIABI_Win_wait_ptr = get_symbol(handle, "MPIABI_Win_wait");
 
-// TODO // A.3.11 External Interfaces C Bindings
-// TODO
-// TODO MPIABI_Grequest_complete_ptr = get_symbol(handle,
-// "MPIABI_Grequest_complete");
-// TODO MPIABI_Grequest_start_ptr = get_symbol(handle, "MPIABI_Grequest_start");
-// TODO MPIABI_Status_set_cancelled_ptr =
-// TODO     get_symbol(handle, "MPIABI_Status_set_cancelled");
-// TODO MPIABI_Status_set_elements_ptr =
-// TODO     get_symbol(handle, "MPIABI_Status_set_elements");
-// TODO MPIABI_Status_set_elements_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_Status_set_elements_c");
-// TODO MPIABI_Status_set_error_ptr = get_symbol(handle,
-// "MPIABI_Status_set_error");
-// TODO MPIABI_Status_set_source_ptr = get_symbol(handle,
-// "MPIABI_Status_set_source");
-// TODO MPIABI_Status_set_tag_ptr = get_symbol(handle, "MPIABI_Status_set_tag");
-// TODO
+// A.3.11 External Interfaces C Bindings
+
+MPIABI_Grequest_complete_ptr = get_symbol(handle, "MPIABI_Grequest_complete");
+MPIABI_Grequest_start_ptr = get_symbol(handle, "MPIABI_Grequest_start");
+MPIABI_Status_set_cancelled_ptr =
+    get_symbol(handle, "MPIABI_Status_set_cancelled");
+MPIABI_Status_set_elements_ptr =
+    get_symbol(handle, "MPIABI_Status_set_elements");
+MPIABI_Status_set_elements_c_ptr =
+    get_symbol(handle, "MPIABI_Status_set_elements_c");
+MPIABI_Status_set_error_ptr = get_symbol(handle, "MPIABI_Status_set_error");
+MPIABI_Status_set_source_ptr = get_symbol(handle, "MPIABI_Status_set_source");
+MPIABI_Status_set_tag_ptr = get_symbol(handle, "MPIABI_Status_set_tag");
+
 // TODO // A.3.12 I/O C Bindings
 // TODO
 // TODO MPIABI_File_close_ptr = get_symbol(handle, "MPIABI_File_close");

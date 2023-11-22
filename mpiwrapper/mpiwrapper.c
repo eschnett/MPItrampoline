@@ -808,9 +808,140 @@ static MPIABI_Status *mpi2abi_statusptr(MPI_Status *mpi_status) {
   return (MPIABI_Status *)mpi_status;
 }
 
+static int abi2mpi_errorcode(int errorcode) {
+  // Fast path
+  if (__builtin_expect(errorcode == MPIABI_SUCCESS, true))
+    return MPIABI_SUCCESS;
+  switch (errorcode) {
+  case MPIABI_ERR_ACCESS:
+    return MPI_ERR_ACCESS;
+  case MPIABI_ERR_AMODE:
+    return MPI_ERR_AMODE;
+  case MPIABI_ERR_ARG:
+    return MPI_ERR_ARG;
+  case MPIABI_ERR_ASSERT:
+    return MPI_ERR_ASSERT;
+  case MPIABI_ERR_BAD_FILE:
+    return MPI_ERR_BAD_FILE;
+  case MPIABI_ERR_BASE:
+    return MPI_ERR_BASE;
+  case MPIABI_ERR_BUFFER:
+    return MPI_ERR_BUFFER;
+  case MPIABI_ERR_COMM:
+    return MPI_ERR_COMM;
+  case MPIABI_ERR_CONVERSION:
+    return MPI_ERR_CONVERSION;
+  case MPIABI_ERR_COUNT:
+    return MPI_ERR_COUNT;
+  case MPIABI_ERR_DIMS:
+    return MPI_ERR_DIMS;
+  case MPIABI_ERR_DISP:
+    return MPI_ERR_DISP;
+  case MPIABI_ERR_DUP_DATAREP:
+    return MPI_ERR_DUP_DATAREP;
+  case MPIABI_ERR_FILE:
+    return MPI_ERR_FILE;
+  case MPIABI_ERR_FILE_EXISTS:
+    return MPI_ERR_FILE_EXISTS;
+  case MPIABI_ERR_FILE_IN_USE:
+    return MPI_ERR_FILE_IN_USE;
+  case MPIABI_ERR_GROUP:
+    return MPI_ERR_GROUP;
+  case MPIABI_ERR_INFO:
+    return MPI_ERR_INFO;
+  case MPIABI_ERR_INFO_KEY:
+    return MPI_ERR_INFO_KEY;
+  case MPIABI_ERR_INFO_NOKEY:
+    return MPI_ERR_INFO_NOKEY;
+  case MPIABI_ERR_INFO_VALUE:
+    return MPI_ERR_INFO_VALUE;
+  case MPIABI_ERR_INTERN:
+    return MPI_ERR_INTERN;
+  case MPIABI_ERR_IN_STATUS:
+    return MPI_ERR_IN_STATUS;
+  case MPIABI_ERR_IO:
+    return MPI_ERR_IO;
+  case MPIABI_ERR_KEYVAL:
+    return MPI_ERR_KEYVAL;
+  case MPIABI_ERR_LOCKTYPE:
+    return MPI_ERR_LOCKTYPE;
+  case MPIABI_ERR_NAME:
+    return MPI_ERR_NAME;
+  case MPIABI_ERR_NOT_SAME:
+    return MPI_ERR_NOT_SAME;
+  case MPIABI_ERR_NO_MEM:
+    return MPI_ERR_NO_MEM;
+  case MPIABI_ERR_NO_SPACE:
+    return MPI_ERR_NO_SPACE;
+  case MPIABI_ERR_NO_SUCH_FILE:
+    return MPI_ERR_NO_SUCH_FILE;
+  case MPIABI_ERR_OP:
+    return MPI_ERR_OP;
+  case MPIABI_ERR_OTHER:
+    return MPI_ERR_OTHER;
+  case MPIABI_ERR_PENDING:
+    return MPI_ERR_PENDING;
+  case MPIABI_ERR_PORT:
+    return MPI_ERR_PORT;
+  case MPIABI_ERR_PROC_ABORTED:
+    return MPI_ERR_PROC_ABORTED;
+  case MPIABI_ERR_QUOTA:
+    return MPI_ERR_QUOTA;
+  case MPIABI_ERR_RANK:
+    return MPI_ERR_RANK;
+  case MPIABI_ERR_READ_ONLY:
+    return MPI_ERR_READ_ONLY;
+  case MPIABI_ERR_REQUEST:
+    return MPI_ERR_REQUEST;
+  case MPIABI_ERR_RMA_ATTACH:
+    return MPI_ERR_RMA_ATTACH;
+  case MPIABI_ERR_RMA_CONFLICT:
+    return MPI_ERR_RMA_CONFLICT;
+  case MPIABI_ERR_RMA_FLAVOR:
+    return MPI_ERR_RMA_FLAVOR;
+  case MPIABI_ERR_RMA_RANGE:
+    return MPI_ERR_RMA_RANGE;
+  case MPIABI_ERR_RMA_SHARED:
+    return MPI_ERR_RMA_SHARED;
+  case MPIABI_ERR_RMA_SYNC:
+    return MPI_ERR_RMA_SYNC;
+  case MPIABI_ERR_ROOT:
+    return MPI_ERR_ROOT;
+  case MPIABI_ERR_SERVICE:
+    return MPI_ERR_SERVICE;
+  case MPIABI_ERR_SESSION:
+    return MPI_ERR_SESSION;
+  case MPIABI_ERR_SIZE:
+    return MPI_ERR_SIZE;
+  case MPIABI_ERR_SPAWN:
+    return MPI_ERR_SPAWN;
+  case MPIABI_ERR_TAG:
+    return MPI_ERR_TAG;
+  case MPIABI_ERR_TOPOLOGY:
+    return MPI_ERR_TOPOLOGY;
+  case MPIABI_ERR_TRUNCATE:
+    return MPI_ERR_TRUNCATE;
+  case MPIABI_ERR_TYPE:
+    return MPI_ERR_TYPE;
+  case MPIABI_ERR_UNKNOWN:
+    return MPI_ERR_UNKNOWN;
+  case MPIABI_ERR_UNSUPPORTED_DATAREP:
+    return MPI_ERR_UNSUPPORTED_DATAREP;
+  case MPIABI_ERR_UNSUPPORTED_OPERATION:
+    return MPI_ERR_UNSUPPORTED_OPERATION;
+  case MPIABI_ERR_VALUE_TOO_LARGE:
+    return MPI_ERR_VALUE_TOO_LARGE;
+  case MPIABI_ERR_WIN:
+    return MPI_ERR_WIN;
+  default:
+    // unknown error code
+    assert(0);
+  }
+}
+
 static int mpi2abi_errorcode(int errorcode) {
   // Fast path
-  if (errorcode == MPI_SUCCESS)
+  if (__builtin_expect(errorcode == MPI_SUCCESS, true))
     return MPIABI_SUCCESS;
   switch (errorcode) {
   case MPI_ERR_ACCESS:
@@ -5510,7 +5641,7 @@ int MPIABI_File_get_errhandler(MPIABI_File file,
                                MPIABI_Errhandler *errhandler) {
   MPI_Errhandler mpi_errhandler;
   int ierr = MPI_File_get_errhandler(abi2mpi_file(file), &mpi_errhandler);
-  errhandler = mpi2abi_errhandler(mpi_errhandler);
+  *errhandler = mpi2abi_errhandler(mpi_errhandler);
   return mpi2abi_errorcode(ierr);
 }
 
@@ -6294,19 +6425,99 @@ int MPIABI_Win_wait(MPIABI_Win win) {
 
 // A.3.11 External Interfaces C Bindings
 
-int MPIABI_Grequest_complete(MPIABI_Request request);
+int MPIABI_Grequest_complete(MPIABI_Request request) {
+  int ierr = MPI_Grequest_complete(abi2mpi_request(request));
+  return mpi2abi_errorcode(ierr);
+}
+
+struct abi_Grequest_start_state {
+  MPIABI_Grequest_query_function *abi_query_fn;
+  MPIABI_Grequest_free_function *abi_free_fn;
+  MPIABI_Grequest_cancel_function *abi_cancel_fn;
+  void *abi_extra_state;
+};
+static int mpi_Grequest_query_function(void *extra_state, MPI_Status *status) {
+  const struct abi_Grequest_start_state *mpi_extra_state = extra_state;
+  MPIABI_Status *abi_status = mpi2abi_statusptr(status);
+  int ierr = mpi_extra_state->abi_query_fn(mpi_extra_state->abi_extra_state,
+                                           abi_status);
+  abi2mpi_statusptr(abi_status);
+  return abi2mpi_errorcode(ierr);
+}
+static int mpi_Grequest_free_function(void *extra_state) {
+  const struct abi_Grequest_start_state *mpi_extra_state = extra_state;
+  int ierr = mpi_extra_state->abi_free_fn(mpi_extra_state->abi_extra_state);
+  return abi2mpi_errorcode(ierr);
+}
+static int mpi_Grequest_cancel_function(void *extra_state, int complete) {
+  const struct abi_Grequest_start_state *mpi_extra_state = extra_state;
+  int ierr = mpi_extra_state->abi_cancel_fn(mpi_extra_state->abi_extra_state,
+                                            complete);
+  return abi2mpi_errorcode(ierr);
+}
 int MPIABI_Grequest_start(MPIABI_Grequest_query_function *query_fn,
                           MPIABI_Grequest_free_function *free_fn,
                           MPIABI_Grequest_cancel_function *cancel_fn,
-                          void *extra_state, MPIABI_Request *request);
-int MPIABI_Status_set_cancelled(MPIABI_Status *status, int flag);
+                          void *extra_state, MPIABI_Request *request) {
+  struct abi_Grequest_start_state *mpi_extra_state =
+      malloc(sizeof *mpi_extra_state);
+  mpi_extra_state->abi_query_fn = query_fn;
+  mpi_extra_state->abi_free_fn = free_fn;
+  mpi_extra_state->abi_cancel_fn = cancel_fn;
+  mpi_extra_state->abi_extra_state = extra_state;
+  MPI_Request mpi_request;
+  int ierr = MPI_Grequest_start(
+      mpi_Grequest_query_function, mpi_Grequest_free_function,
+      mpi_Grequest_cancel_function, mpi_extra_state, &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Status_set_cancelled(MPIABI_Status *status, int flag) {
+  MPI_Status *mpi_status = abi2mpi_statusptr(status);
+  int ierr = MPI_Status_set_cancelled(mpi_status, flag);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Status_set_elements(MPIABI_Status *status, MPIABI_Datatype datatype,
-                               int count);
+                               int count) {
+  MPI_Status *mpi_status = abi2mpi_statusptr(status);
+  int ierr =
+      MPI_Status_set_elements(mpi_status, abi2mpi_datatype(datatype), count);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Status_set_elements_c(MPIABI_Status *status,
-                                 MPIABI_Datatype datatype, MPIABI_Count count);
-int MPIABI_Status_set_error(MPIABI_Status *status, int err);
-int MPIABI_Status_set_source(MPIABI_Status *status, int source);
-int MPIABI_Status_set_tag(MPIABI_Status *status, int tag);
+                                 MPIABI_Datatype datatype, MPIABI_Count count) {
+  MPI_Status *mpi_status = abi2mpi_statusptr(status);
+  int ierr =
+      MPI_Status_set_elements_c(mpi_status, abi2mpi_datatype(datatype), count);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Status_set_error(MPIABI_Status *status, int err) {
+  MPI_Status *mpi_status = abi2mpi_statusptr(status);
+  int ierr = MPI_Status_set_error(mpi_status, err);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Status_set_source(MPIABI_Status *status, int source) {
+  MPI_Status *mpi_status = abi2mpi_statusptr(status);
+  int ierr = MPI_Status_set_source(mpi_status, source);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_Status_set_tag(MPIABI_Status *status, int tag) {
+  MPI_Status *mpi_status = abi2mpi_statusptr(status);
+  int ierr = MPI_Status_set_tag(mpi_status, tag);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
 
 // A.3.12 I/O C Bindings
 
