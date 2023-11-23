@@ -6,7 +6,7 @@
 !     Define these first because they are used in other definitions.
 
       integer MPIABI_INTEGER_DUMMY
-      parameter (MPIABI_INTEGER_DUMMY = 0)
+      common /MPIABI_INTEGER_DUMMY/ MPIABI_INTEGER_DUMMY
       integer MPIABI_ADDRESS_KIND
       parameter (MPIABI_ADDRESS_KIND = kind(loc(MPIABI_INTEGER_DUMMY)))
       integer MPIABI_COUNT_KIND
