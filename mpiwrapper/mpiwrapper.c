@@ -305,7 +305,11 @@ static MPI_Datatype abi2mpi_datatype(MPIABI_Datatype datatype) {
     return MPI_2INTEGER;
     // [Removed constructs]
   case (uintptr_t)MPIABI_LB:
+#ifdef HAVE_MPI_LB
     return MPI_LB;
+#else
+    assert(0);
+#endif
   case (uintptr_t)MPIABI_UB:
     return MPI_UB;
   default:
@@ -511,9 +515,11 @@ static MPIABI_Datatype mpi2abi_datatype(MPI_Datatype datatype) {
     return MPIABI_2DOUBLE_PRECISION;
   if (datatype == MPI_2INTEGER)
     return MPIABI_2INTEGER;
-  // [Removed constructs]
+    // [Removed constructs]
+#ifdef HAVE_MPI_LB
   if (datatype == MPI_LB)
     return MPIABI_LB;
+#endif
   if (datatype == MPI_UB)
     return MPIABI_UB;
   return (MPIABI_Datatype)(uintptr_t)datatype;

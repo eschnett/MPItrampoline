@@ -99,6 +99,8 @@ check_symbol_exists(MPI_LOGICAL4 mpi.h HAVE_MPI_LOGICAL4)
 check_symbol_exists(MPI_LOGICAL8 mpi.h HAVE_MPI_LOGICAL8)
 check_symbol_exists(MPI_LOGICAL16 mpi.h HAVE_MPI_LOGICAL16)
 
+check_symbol_exists(MPI_LB mpi.h HAVE_MPI_LB)
+
 check_function_exists(MPIX_Query_cuda_support HAVE_MPIX_QUERY_CUDA_SUPPORT)
 check_function_exists(MPIX_Query_hip_support HAVE_MPIX_QUERY_HIP_SUPPORT)
 check_function_exists(MPIX_Query_rocm_support HAVE_MPIX_QUERY_ROCM_SUPPORT)
