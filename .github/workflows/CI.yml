@@ -14,9 +14,7 @@ jobs:
     strategy:
       matrix:
         os: [ubuntu-22.04]
-        # OpenMPI is too far away from MPI 4
-        # mpi: [MPICH, OpenMPI]
-        mpi: [MPICH]
+        mpi: [mpich, openmpi]
         shared: [shared-off, shared-on]
 
     runs-on: ${{matrix.os}}
@@ -27,37 +25,39 @@ jobs:
     - name: Install ${{matrix.mpi}}
       run: |
         case "${{matrix.mpi}}" in
-            MPICH)
+            mpich)
                 sudo apt-get update
                 sudo apt-get install libmpich-dev
                 ;;
-            OpenMPI)
+            openmpi)
+                sudo apt-get update
+                sudo apt-get install libopenmpi-dev
                 ;;
         esac
 
-    - name: Restore dependencies
-      id: cache
-      uses: actions/cache/restore@v3
-      with:
-        path: /usr/local
-        key: ${{runner.os}}-${{matrix.mpi}}-dependencies
-
-    - name: Build ${{matrix.mpi}}
-      if: steps.cache.outputs.cache-hit != 'true'
-      run: |
-        case "${{matrix.mpi}}" in
-            MPICH)
-                ;;
-            OpenMPI)
-                ./.github/workflows/install-openmpi.sh
-                ;;
-        esac
-
-    - name: Save dependencies
-      uses: actions/cache/save@v3
-      with:
-        path: /usr/local
-        key: ${{steps.cache.cache-primary-key}}
+    # - name: Restore dependencies
+    #   id: cache
+    #   uses: actions/cache/restore@v3
+    #   with:
+    #     path: /usr/local
+    #     key: ${{runner.os}}-${{matrix.mpi}}-dependencies
+    #
+    # - name: Build ${{matrix.mpi}}
+    #   if: steps.cache.outputs.cache-hit != 'true'
+    #   run: |
+    #     case "${{matrix.mpi}}" in
+    #         mpich)
+    #             ;;
+    #         openmpi)
+    #             ./.github/workflows/install-openmpi.sh
+    #             ;;
+    #     esac
+    #
+    # - name: Save dependencies
+    #   uses: actions/cache/save@v3
+    #   with:
+    #     path: /usr/local
+    #     key: ${{steps.cache.cache-primary-key}}
 
     - name: Configure MPIwrapper
       working-directory: ${{github.workspace}}/mpiwrapper
