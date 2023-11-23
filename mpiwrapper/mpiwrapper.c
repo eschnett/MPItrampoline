@@ -1108,6 +1108,18 @@ static int mpi2abi_count(int count) {
   return count;
 }
 
+static int abi2mpi_keyval(int keyval) {
+  if (keyval == MPIABI_KEYVAL_INVALID)
+    return MPI_KEYVAL_INVALID;
+  return keyval;
+}
+
+static int mpi2abi_keyval(int keyval) {
+  if (keyval == MPI_KEYVAL_INVALID)
+    return MPIABI_KEYVAL_INVALID;
+  return keyval;
+}
+
 static int abi2mpi_source(int source) {
   if (source == MPIABI_ANY_SOURCE)
     return MPI_ANY_SOURCE;
@@ -4377,8 +4389,9 @@ static int mpi_Comm_create_keyval_copy_attr_function(
     void *attribute_val_in, void *attribute_val_out, int *flag) {
   const struct abi_Comm_create_keyval_state *mpi_extra_state = extra_state;
   int ierr = mpi_extra_state->abi_comm_copy_attr_fn(
-      mpi2abi_comm(oldcomm), comm_keyval, mpi_extra_state->abi_extra_state,
-      attribute_val_in, attribute_val_out, flag);
+      mpi2abi_comm(oldcomm), mpi2abi_keyval(comm_keyval),
+      mpi_extra_state->abi_extra_state, attribute_val_in, attribute_val_out,
+      flag);
   return abi2mpi_errorcode(ierr);
 }
 static int mpi_Comm_create_keyval_delete_attr_function(MPI_Comm comm,
@@ -4387,7 +4400,7 @@ static int mpi_Comm_create_keyval_delete_attr_function(MPI_Comm comm,
                                                        void *extra_state) {
   const struct abi_Comm_create_keyval_state *mpi_extra_state = extra_state;
   int ierr = mpi_extra_state->abi_comm_delete_attr_fn(
-      mpi2abi_comm(comm), comm_keyval, attribute_val,
+      mpi2abi_comm(comm), mpi2abi_keyval(comm_keyval), attribute_val,
       mpi_extra_state->abi_extra_state);
   return abi2mpi_errorcode(ierr);
 }
@@ -4403,11 +4416,13 @@ int MPIABI_Comm_create_keyval(
   int ierr = MPI_Comm_create_keyval(mpi_Comm_create_keyval_copy_attr_function,
                                     mpi_Comm_create_keyval_delete_attr_function,
                                     comm_keyval, mpi_extra_state);
+  *comm_keyval = mpi2abi_keyval(*comm_keyval);
   return mpi2abi_errorcode(ierr);
 }
 
 int MPIABI_Comm_delete_attr(MPIABI_Comm comm, int comm_keyval) {
-  int ierr = MPI_Comm_delete_attr(abi2mpi_comm(comm), comm_keyval);
+  int ierr =
+      MPI_Comm_delete_attr(abi2mpi_comm(comm), abi2mpi_keyval(comm_keyval));
   return mpi2abi_errorcode(ierr);
 }
 
@@ -4440,15 +4455,17 @@ int MPIABI_Comm_get_name(MPIABI_Comm comm, char *comm_name, int *resultlen) {
 }
 
 int MPIABI_Comm_free_keyval(int *comm_keyval) {
+  int mpi_comm_keyval = abi2mpi_keyval(*comm_keyval);
   // We do not free the keyval wrappers
-  int ierr = MPI_Comm_free_keyval(comm_keyval);
+  int ierr = MPI_Comm_free_keyval(&mpi_comm_keyval);
+  *comm_keyval = mpi2abi_keyval(mpi_comm_keyval);
   return mpi2abi_errorcode(ierr);
 }
 
 int MPIABI_Comm_get_attr(MPIABI_Comm comm, int comm_keyval, void *attribute_val,
                          int *flag) {
-  int ierr =
-      MPI_Comm_get_attr(abi2mpi_comm(comm), comm_keyval, attribute_val, flag);
+  int ierr = MPI_Comm_get_attr(abi2mpi_comm(comm), abi2mpi_keyval(comm_keyval),
+                               attribute_val, flag);
   return mpi2abi_errorcode(ierr);
 }
 
@@ -4523,7 +4540,8 @@ int MPIABI_Comm_remote_size(MPIABI_Comm comm, int *size) {
 
 int MPIABI_Comm_set_attr(MPIABI_Comm comm, int comm_keyval,
                          void *attribute_val) {
-  int ierr = MPI_Comm_set_attr(abi2mpi_comm(comm), comm_keyval, attribute_val);
+  int ierr = MPI_Comm_set_attr(abi2mpi_comm(comm), abi2mpi_keyval(comm_keyval),
+                               attribute_val);
   return mpi2abi_errorcode(ierr);
 }
 
@@ -4709,8 +4727,9 @@ static int mpi_Type_create_keyval_copy_attr_function(
     void *attribute_val_in, void *attribute_val_out, int *flag) {
   const struct abi_Type_create_keyval_state *mpi_extra_state = extra_state;
   int ierr = mpi_extra_state->abi_type_copy_attr_fn(
-      mpi2abi_datatype(oldtype), type_keyval, mpi_extra_state->abi_extra_state,
-      attribute_val_in, attribute_val_out, flag);
+      mpi2abi_datatype(oldtype), mpi2abi_keyval(type_keyval),
+      mpi_extra_state->abi_extra_state, attribute_val_in, attribute_val_out,
+      flag);
   return abi2mpi_errorcode(ierr);
 }
 static int mpi_Type_create_keyval_delete_attr_function(MPI_Datatype type,
@@ -4719,7 +4738,7 @@ static int mpi_Type_create_keyval_delete_attr_function(MPI_Datatype type,
                                                        void *extra_state) {
   const struct abi_Type_create_keyval_state *mpi_extra_state = extra_state;
   int ierr = mpi_extra_state->abi_type_delete_attr_fn(
-      mpi2abi_datatype(type), type_keyval, attribute_val,
+      mpi2abi_datatype(type), mpi2abi_keyval(type_keyval), attribute_val,
       mpi_extra_state->abi_extra_state);
   return abi2mpi_errorcode(ierr);
 }
@@ -4735,24 +4754,29 @@ int MPIABI_Type_create_keyval(
   int ierr = MPI_Type_create_keyval(mpi_Type_create_keyval_copy_attr_function,
                                     mpi_Type_create_keyval_delete_attr_function,
                                     type_keyval, mpi_extra_state);
+  *type_keyval = mpi2abi_keyval(*type_keyval);
   return mpi2abi_errorcode(ierr);
 }
 
 int MPIABI_Type_delete_attr(MPIABI_Datatype datatype, int type_keyval) {
-  int ierr = MPI_Type_delete_attr(abi2mpi_datatype(datatype), type_keyval);
+  int ierr = MPI_Type_delete_attr(abi2mpi_datatype(datatype),
+                                  abi2mpi_keyval(type_keyval));
   return mpi2abi_errorcode(ierr);
 }
 
 int MPIABI_Type_free_keyval(int *type_keyval) {
   // We do not free the keyval wrappers
-  int ierr = MPI_Type_free_keyval(type_keyval);
+  int mpi_type_keyval = abi2mpi_keyval(*type_keyval);
+  int ierr = MPI_Type_free_keyval(&mpi_type_keyval);
+  *type_keyval = mpi2abi_keyval(mpi_type_keyval);
   return mpi2abi_errorcode(ierr);
 }
 
 int MPIABI_Type_get_attr(MPIABI_Datatype datatype, int type_keyval,
                          void *attribute_val, int *flag) {
-  int ierr = MPI_Type_get_attr(abi2mpi_datatype(datatype), type_keyval,
-                               attribute_val, flag);
+  int ierr =
+      MPI_Type_get_attr(abi2mpi_datatype(datatype), abi2mpi_keyval(type_keyval),
+                        attribute_val, flag);
   return mpi2abi_errorcode(ierr);
 }
 
@@ -4765,8 +4789,8 @@ int MPIABI_Type_get_name(MPIABI_Datatype datatype, char *type_name,
 
 int MPIABI_Type_set_attr(MPIABI_Datatype datatype, int type_keyval,
                          void *attribute_val) {
-  int ierr =
-      MPI_Type_set_attr(abi2mpi_datatype(datatype), type_keyval, attribute_val);
+  int ierr = MPI_Type_set_attr(abi2mpi_datatype(datatype),
+                               abi2mpi_keyval(type_keyval), attribute_val);
   return mpi2abi_errorcode(ierr);
 }
 
@@ -4785,8 +4809,9 @@ static int mpi_Win_create_keyval_copy_attr_function(
     void *attribute_val_out, int *flag) {
   const struct abi_Win_create_keyval_state *mpi_extra_state = extra_state;
   int ierr = mpi_extra_state->abi_win_copy_attr_fn(
-      mpi2abi_win(oldwin), win_keyval, mpi_extra_state->abi_extra_state,
-      attribute_val_in, attribute_val_out, flag);
+      mpi2abi_win(oldwin), mpi2abi_keyval(win_keyval),
+      mpi_extra_state->abi_extra_state, attribute_val_in, attribute_val_out,
+      flag);
   return abi2mpi_errorcode(ierr);
 }
 static int mpi_Win_create_keyval_delete_attr_function(MPI_Win win,
@@ -4795,7 +4820,7 @@ static int mpi_Win_create_keyval_delete_attr_function(MPI_Win win,
                                                       void *extra_state) {
   const struct abi_Win_create_keyval_state *mpi_extra_state = extra_state;
   int ierr = mpi_extra_state->abi_win_delete_attr_fn(
-      mpi2abi_win(win), win_keyval, attribute_val,
+      mpi2abi_win(win), mpi2abi_keyval(win_keyval), attribute_val,
       mpi_extra_state->abi_extra_state);
   return abi2mpi_errorcode(ierr);
 }
@@ -4811,23 +4836,26 @@ int MPIABI_Win_create_keyval(
   int ierr = MPI_Win_create_keyval(mpi_Win_create_keyval_copy_attr_function,
                                    mpi_Win_create_keyval_delete_attr_function,
                                    win_keyval, mpi_extra_state);
+  *win_keyval = mpi2abi_keyval(*win_keyval);
   return mpi2abi_errorcode(ierr);
 }
 
 int MPIABI_Win_delete_attr(MPIABI_Win win, int win_keyval) {
-  int ierr = MPI_Win_delete_attr(abi2mpi_win(win), win_keyval);
+  int ierr = MPI_Win_delete_attr(abi2mpi_win(win), abi2mpi_keyval(win_keyval));
   return mpi2abi_errorcode(ierr);
 }
 
 int MPIABI_Win_free_keyval(int *win_keyval) {
-  int ierr = MPI_Win_free_keyval(win_keyval);
+  int mpi_win_keyval = abi2mpi_keyval(*win_keyval);
+  int ierr = MPI_Win_free_keyval(&mpi_win_keyval);
+  *win_keyval = mpi2abi_keyval(mpi_win_keyval);
   return mpi2abi_errorcode(ierr);
 }
 
 int MPIABI_Win_get_attr(MPIABI_Win win, int win_keyval, void *attribute_val,
                         int *flag) {
-  int ierr =
-      MPI_Win_get_attr(abi2mpi_win(win), win_keyval, attribute_val, flag);
+  int ierr = MPI_Win_get_attr(abi2mpi_win(win), abi2mpi_keyval(win_keyval),
+                              attribute_val, flag);
   return mpi2abi_errorcode(ierr);
 }
 
@@ -4837,7 +4865,8 @@ int MPIABI_Win_get_name(MPIABI_Win win, char *win_name, int *resultlen) {
 }
 
 int MPIABI_Win_set_attr(MPIABI_Win win, int win_keyval, void *attribute_val) {
-  int ierr = MPI_Win_set_attr(abi2mpi_win(win), win_keyval, attribute_val);
+  int ierr = MPI_Win_set_attr(abi2mpi_win(win), abi2mpi_keyval(win_keyval),
+                              attribute_val);
   return mpi2abi_errorcode(ierr);
 }
 
@@ -7546,18 +7575,20 @@ int MPIABI_T_source_get_timestamp(int source_index, MPIABI_Count *timestamp);
 // A.3.16 Deprecated C Bindings
 
 int MPIABI_Attr_delete(MPIABI_Comm comm, int keyval) {
-  int ierr = MPI_Attr_delete(abi2mpi_comm(comm), keyval);
+  int ierr = MPI_Attr_delete(abi2mpi_comm(comm), abi2mpi_keyval(keyval));
   return mpi2abi_errorcode(ierr);
 }
 
 int MPIABI_Attr_get(MPIABI_Comm comm, int keyval, void *attribute_val,
                     int *flag) {
-  int ierr = MPI_Attr_get(abi2mpi_comm(comm), keyval, attribute_val, flag);
+  int ierr = MPI_Attr_get(abi2mpi_comm(comm), abi2mpi_keyval(keyval),
+                          attribute_val, flag);
   return mpi2abi_errorcode(ierr);
 }
 
 int MPIABI_Attr_put(MPIABI_Comm comm, int keyval, void *attribute_val) {
-  int ierr = MPI_Attr_put(abi2mpi_comm(comm), keyval, attribute_val);
+  int ierr =
+      MPI_Attr_put(abi2mpi_comm(comm), abi2mpi_keyval(keyval), attribute_val);
   return mpi2abi_errorcode(ierr);
 }
 
@@ -7594,17 +7625,18 @@ static int mpi_Keyval_create_copy_function(MPI_Comm oldcomm, int keyval,
                                            void *attribute_val_out, int *flag) {
   const struct abi_Keyval_create_state *mpi_extra_state = extra_state;
   int ierr = mpi_extra_state->abi_copy_fn(
-      mpi2abi_comm(oldcomm), keyval, mpi_extra_state->abi_extra_state,
-      attribute_val_in, attribute_val_out, flag);
+      mpi2abi_comm(oldcomm), mpi2abi_keyval(keyval),
+      mpi_extra_state->abi_extra_state, attribute_val_in, attribute_val_out,
+      flag);
   return abi2mpi_errorcode(ierr);
 }
 static int mpi_Keyval_create_delete_function(MPI_Comm comm, int keyval,
                                              void *attribute_val,
                                              void *extra_state) {
   const struct abi_Keyval_create_state *mpi_extra_state = extra_state;
-  int ierr =
-      mpi_extra_state->abi_delete_fn(mpi2abi_comm(comm), keyval, attribute_val,
-                                     mpi_extra_state->abi_extra_state);
+  int ierr = mpi_extra_state->abi_delete_fn(
+      mpi2abi_comm(comm), mpi2abi_keyval(keyval), attribute_val,
+      mpi_extra_state->abi_extra_state);
   return abi2mpi_errorcode(ierr);
 }
 int MPIABI_Keyval_create(MPIABI_Copy_function *copy_fn,
@@ -7618,11 +7650,14 @@ int MPIABI_Keyval_create(MPIABI_Copy_function *copy_fn,
   int ierr = MPI_Keyval_create(mpi_Keyval_create_copy_function,
                                mpi_Keyval_create_delete_function, keyval,
                                mpi_extra_state);
+  *keyval = mpi2abi_keyval(*keyval);
   return mpi2abi_errorcode(ierr);
 }
 
 int MPIABI_Keyval_free(int *keyval) {
-  int ierr = MPI_Keyval_free(keyval);
+  int mpi_keyval = abi2mpi_keyval(*keyval);
+  int ierr = MPI_Keyval_free(&mpi_keyval);
+  *keyval = mpi2abi_keyval(mpi_keyval);
   return mpi2abi_errorcode(ierr);
 }
 

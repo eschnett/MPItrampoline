@@ -120,4 +120,4 @@ RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    mpiexec $mpiexec_options -n 1 ./mpi_test_suite -h
+    mpiexec $mpiexec_options -n 1 ./mpi_test_suite -l
