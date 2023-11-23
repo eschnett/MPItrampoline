@@ -1,4 +1,4 @@
-# docker build --build-arg cpuarch=amd64 --build-arg githash=$(git rev-parse HEAD) --build-arg mpivendor=MPICH --tag mpitrampoline6 --progress plain .
+# docker build --build-arg cpuarch=amd64 --build-arg githash=$(git rev-parse HEAD) --build-arg mpivendor=mpich --tag mpitrampoline6 --progress plain .
 # docker run --interactive --rm --tty mpitrampoline6
 
 # amd64, arm32v5, arm32v7, arm64v8, i386, mips64le, ppc64le, riscv64
@@ -17,6 +17,7 @@ RUN apt update && \
         build-essential \
         ca-certificates \
         cmake \
+        gfortran \
         git \
         less \
         ninja-build

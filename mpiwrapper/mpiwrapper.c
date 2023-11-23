@@ -28,6 +28,7 @@
 #if MPI_VERSION_NUMBER < 400
 // Fake MPI 4 support, just enough to make the compiler happy
 #define MPI_Session MPI_Comm
+#define MPI_SESSION_NULL MPI_COMM_NULL
 #define MPI_User_function_c MPI_User_function
 #endif
 
@@ -910,7 +911,11 @@ static int abi2mpi_errorcode(int errorcode) {
   case MPIABI_ERR_PORT:
     return MPI_ERR_PORT;
   case MPIABI_ERR_PROC_ABORTED:
+#if MPI_VERSION_NUMBER >= 400
     return MPI_ERR_PROC_ABORTED;
+#else
+    assert(0);
+#endif
   case MPIABI_ERR_QUOTA:
     return MPI_ERR_QUOTA;
   case MPIABI_ERR_RANK:
@@ -935,9 +940,11 @@ static int abi2mpi_errorcode(int errorcode) {
     return MPI_ERR_ROOT;
   case MPIABI_ERR_SERVICE:
     return MPI_ERR_SERVICE;
-#if MPI_VERSION_NUMBER >= 400
   case MPIABI_ERR_SESSION:
+#if MPI_VERSION_NUMBER >= 400
     return MPI_ERR_SESSION;
+#else
+    assert(0);
 #endif
   case MPIABI_ERR_SIZE:
     return MPI_ERR_SIZE;
@@ -958,7 +965,11 @@ static int abi2mpi_errorcode(int errorcode) {
   case MPIABI_ERR_UNSUPPORTED_OPERATION:
     return MPI_ERR_UNSUPPORTED_OPERATION;
   case MPIABI_ERR_VALUE_TOO_LARGE:
+#if MPI_VERSION_NUMBER >= 400
     return MPI_ERR_VALUE_TOO_LARGE;
+#else
+    assert(0);
+#endif
   case MPIABI_ERR_WIN:
     return MPI_ERR_WIN;
   default:
@@ -1042,8 +1053,10 @@ static int mpi2abi_errorcode(int errorcode) {
     return MPIABI_ERR_PENDING;
   case MPI_ERR_PORT:
     return MPIABI_ERR_PORT;
+#if MPI_VERSION_NUMBER >= 400
   case MPI_ERR_PROC_ABORTED:
     return MPIABI_ERR_PROC_ABORTED;
+#endif
   case MPI_ERR_QUOTA:
     return MPIABI_ERR_QUOTA;
   case MPI_ERR_RANK:
@@ -1068,11 +1081,9 @@ static int mpi2abi_errorcode(int errorcode) {
     return MPIABI_ERR_ROOT;
   case MPI_ERR_SERVICE:
     return MPIABI_ERR_SERVICE;
-  case MPI_ERR_SESSION:
 #if MPI_VERSION_NUMBER >= 400
+  case MPI_ERR_SESSION:
     return MPIABI_ERR_SESSION;
-#else
-    assert(0);
 #endif
   case MPI_ERR_SIZE:
     return MPIABI_ERR_SIZE;
@@ -1092,8 +1103,10 @@ static int mpi2abi_errorcode(int errorcode) {
     return MPIABI_ERR_UNSUPPORTED_DATAREP;
   case MPI_ERR_UNSUPPORTED_OPERATION:
     return MPIABI_ERR_UNSUPPORTED_OPERATION;
+#if MPI_VERSION_NUMBER >= 400
   case MPI_ERR_VALUE_TOO_LARGE:
     return MPIABI_ERR_VALUE_TOO_LARGE;
+#endif
   case MPI_ERR_WIN:
     return MPIABI_ERR_WIN;
   default:

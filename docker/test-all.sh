@@ -1,8 +1,7 @@
 #!/bin/bash
 
 cpuarchs="amd64 arm32v5 arm32v7 arm64v8 i386 mips64le ppc64le riscv64 s390x"
-# "mpich openmpi"
-mpivendors="mpich"
+mpivendors="mpich openmpi"
 
 githash=$(git rev-parse HEAD)
 for cpuarch in ${cpuarchs}; do
