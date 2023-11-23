@@ -7195,9 +7195,23 @@ int MPIABI_File_write_at_all_begin_c(MPIABI_File fh, MPIABI_Offset offset,
 
 int MPIABI_File_write_at_all_c(MPIABI_File fh, MPIABI_Offset offset,
                                const void *buf, MPIABI_Count count,
-                               MPIABI_Datatype datatype, MPIABI_Status *status);
+                               MPIABI_Datatype datatype,
+                               MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write_at_all_c(abi2mpi_file(fh), offset, buf, count,
+                                     abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_at_all_end(MPIABI_File fh, const void *buf,
-                                 MPIABI_Status *status);
+                                 MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write_at_all_end(abi2mpi_file(fh), buf, mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_at_c(MPIABI_File fh, MPIABI_Offset offset,
                            const void *buf, MPIABI_Count count,
                            MPIABI_Datatype datatype, MPIABI_Status *status) {
