@@ -118,7 +118,7 @@ jobs:
     - name: Test C++
       working-directory: ${{github.workspace}}/test
       run: |
-        $HOME/mpitrampoline/bin/mpicxx -c hello-world-cxx.c
+        $HOME/mpitrampoline/bin/mpicxx -c hello-world-cxx.cxx
         $HOME/mpitrampoline/bin/mpicxx -o hello-world-cxx hello-world-cxx.o
         export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
         case "${{matrix.mpi}}" in
@@ -131,7 +131,7 @@ jobs:
     - name: Test fixed form Fortran
       working-directory: ${{github.workspace}}/test
       run: |
-        $HOME/mpitrampoline/bin/mpifc -c hello-world-f.c
+        $HOME/mpitrampoline/bin/mpifc -c hello-world-f.f
         $HOME/mpitrampoline/bin/mpifc -o hello-world-f hello-world-f.o
         export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
         case "${{matrix.mpi}}" in
@@ -144,7 +144,7 @@ jobs:
     - name: Test Fortran
       working-directory: ${{github.workspace}}/test
       run: |
-        $HOME/mpitrampoline/bin/mpifc -c hello-world-f90.c
+        $HOME/mpitrampoline/bin/mpifc -c hello-world-f90.f90
         $HOME/mpitrampoline/bin/mpifc -o hello-world-f90 hello-world-f90.o
         export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
         case "${{matrix.mpi}}" in
