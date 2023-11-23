@@ -108,8 +108,12 @@ jobs:
         $HOME/mpitrampoline/bin/mpicc -c hello-world.c
         $HOME/mpitrampoline/bin/mpicc -o hello-world hello-world.o
         export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
+        case "${{matrix.mpi}}" in
+            mpich) mpiexec_options='';;
+            openmpi) mpiexec_options='--oversubscribe';;
+        esac
         ./hello-world 1
-        mpiexec -n 4 ./hello-world 4
+        mpiexec $mpiexec_options -n 4 ./hello-world 4
 
     - name: Test Fortran
       working-directory: ${{github.workspace}}/test
@@ -117,5 +121,9 @@ jobs:
         $HOME/mpitrampoline/bin/mpifc -c hello-world-fortran.f90
         $HOME/mpitrampoline/bin/mpifc -o hello-world-fortran hello-world-fortran.o
         export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
+        case "${{matrix.mpi}}" in
+            mpich) mpiexec_options='';;
+            openmpi) mpiexec_options='--oversubscribe';;
+        esac
         ./hello-world-fortran
-        mpiexec -n 4 ./hello-world-fortran
+        mpiexec $mpiexec_options -n 4 ./hello-world-fortran
