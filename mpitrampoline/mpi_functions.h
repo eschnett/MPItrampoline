@@ -3960,6 +3960,46 @@ inline int MPI_Type_size_x(MPI_Datatype datatype, MPI_Count *size) {
   return (*MPIABI_Type_size_x_ptr)(datatype, size);
 }
 
+// Removed C Bindings
+
+inline int MPI_Address(void *location, MPI_Aint *address) {
+  return (*MPIABI_Address_ptr)(location, address);
+}
+
+inline int MPI_Type_hindexed(int count, int *array_of_blocklengths,
+                             MPI_Aint *array_of_displacements,
+                             MPI_Datatype oldtype, MPI_Datatype *newtype) {
+  return (*MPIABI_Type_hindexed_ptr)(count, array_of_blocklengths,
+                                     array_of_displacements, oldtype, newtype);
+}
+
+inline int MPI_Type_hvector(int count, int blocklength, MPI_Aint stride,
+                            MPI_Datatype oldtype, MPI_Datatype *newtype) {
+  return (*MPIABI_Type_hvector_ptr)(count, blocklength, stride, oldtype,
+                                    newtype);
+}
+
+inline int MPI_Type_struct(int count, int *array_of_blocklengths,
+                           MPI_Aint *array_of_displacements,
+                           MPI_Datatype *array_of_types,
+                           MPI_Datatype *newtype) {
+  return (*MPIABI_Type_struct_ptr)(count, array_of_blocklengths,
+                                   array_of_displacements, array_of_types,
+                                   newtype);
+}
+
+inline int MPI_Type_extent(MPI_Datatype datatype, MPI_Aint *extent) {
+  return (*MPIABI_Type_extent_ptr)(datatype, extent);
+}
+
+inline int MPI_Type_lb(MPI_Datatype datatype, MPI_Aint *displacement) {
+  return (*MPIABI_Type_lb_ptr)(datatype, displacement);
+}
+
+inline int MPI_Type_ub(MPI_Datatype datatype, MPI_Aint *displacement) {
+  return (*MPIABI_Type_ub_ptr)(datatype, displacement);
+}
+
 // MPIX
 
 inline int MPIX_Query_cuda_support(void) {

@@ -884,6 +884,16 @@ MPIABI_Type_get_true_extent_x_ptr =
     get_symbol(handle, "MPIABI_Type_get_true_extent_x");
 MPIABI_Type_size_x_ptr = get_symbol(handle, "MPIABI_Type_size_x");
 
+// Removed C Bindings
+
+MPIABI_Address_ptr = get_symbol(handle, "MPIABI_Address");
+MPIABI_Type_hindexed_ptr = get_symbol(handle, "MPIABI_Type_hindexed");
+MPIABI_Type_hvector_ptr = get_symbol(handle, "MPIABI_Type_hvector");
+MPIABI_Type_struct_ptr = get_symbol(handle, "MPIABI_Type_struct");
+MPIABI_Type_extent_ptr = get_symbol(handle, "MPIABI_Type_extent");
+MPIABI_Type_lb_ptr = get_symbol(handle, "MPIABI_Type_lb");
+MPIABI_Type_ub_ptr = get_symbol(handle, "MPIABI_Type_ub");
+
 // MPIX
 
 MPIXABI_Query_cuda_support_ptr =

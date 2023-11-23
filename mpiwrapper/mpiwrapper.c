@@ -7658,6 +7658,114 @@ int MPIABI_Type_size_x(MPIABI_Datatype datatype, MPIABI_Count *size) {
   return mpi2abi_errorcode(ierr);
 }
 
+// Removed C Bindings
+
+// deprecated, use `MPI_Get_address` instead
+int MPIABI_Address(void *location, MPIABI_Aint *address) {
+#if 0
+  MPI_Aint mpi_address;
+  int ierr = MPI_Address(location, &mpi_address);
+  *address = mpi_address;
+  return mpi2abi_errorcode(ierr);
+#endif
+  return MPIABI_Get_address(location, address);
+}
+
+// deprecated, use `MPI_Type_create_hindexed` instead
+int MPIABI_Type_hindexed(int count, int *array_of_blocklengths,
+                         MPIABI_Aint *array_of_displacements,
+                         MPIABI_Datatype oldtype, MPIABI_Datatype *newtype) {
+#if 0
+  MPI_Aint mpi_array_of_displacements[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_displacements[n] = array_of_displacements[n];
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_hindexed(count, array_of_blocklengths,
+                               mpi_array_of_displacements,
+                               abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+#endif
+  return MPIABI_Type_create_hindexed(count, array_of_blocklengths,
+                                     array_of_displacements, oldtype, newtype);
+}
+
+// deprecated, use `MPI_Type_create_hvector` instead
+int MPIABI_Type_hvector(int count, int blocklength, MPIABI_Aint stride,
+                        MPIABI_Datatype oldtype, MPIABI_Datatype *newtype) {
+#if 0
+  MPI_Datatype mpi_newtype;
+  int ierr = MPI_Type_hvector(count, blocklength, stride,
+                              abi2mpi_datatype(oldtype), &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+#endif
+  return MPIABI_Type_create_hvector(count, blocklength, stride, oldtype,
+                                    newtype);
+}
+
+// deprecated, use `MPI_Type_create_struct` instead
+int MPIABI_Type_struct(int count, int *array_of_blocklengths,
+                       MPIABI_Aint *array_of_displacements,
+                       MPIABI_Datatype *array_of_types,
+                       MPIABI_Datatype *newtype) {
+#if 0
+  MPI_Aint mpi_array_of_displacements[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_displacements[n] = array_of_displacements[n];
+  MPI_Datatype mpi_newtype;
+  MPI_Datatype mpi_array_of_types[count];
+  for (int n = 0; n < count; ++n)
+    mpi_array_of_types[n] = abi2mpi_datatype(array_of_types[n]);
+  int ierr =
+      MPI_Type_struct(count, array_of_blocklengths, mpi_array_of_displacements,
+                      mpi_array_of_types, &mpi_newtype);
+  *newtype = mpi2abi_datatype(mpi_newtype);
+  return mpi2abi_errorcode(ierr);
+#endif
+  return MPIABI_Type_create_struct(count, array_of_blocklengths,
+                                   array_of_displacements, array_of_types,
+                                   newtype);
+}
+
+// deprecated, use `MPI_Type_get_extent` instead
+int MPIABI_Type_extent(MPIABI_Datatype datatype, MPIABI_Aint *extent) {
+#if 0
+  MPI_Aint mpi_extent;
+  int ierr = MPI_Type_extent(abi2mpi_datatype(datatype), &mpi_extent);
+  *extent = mpi_extent;
+  return mpi2abi_errorcode(ierr);
+#endif
+  MPIABI_Aint lb;
+  return MPIABI_Type_get_extent(datatype, &lb, extent);
+}
+
+// deprecated, use `MPI_Type_get_extent` instead
+int MPIABI_Type_lb(MPIABI_Datatype datatype, MPIABI_Aint *displacement) {
+#if 0
+  MPI_Aint mpi_displacement;
+  int ierr = MPI_Type_lb(abi2mpi_datatype(datatype), &mpi_displacement);
+  *displacement = mpi_displacement;
+  return mpi2abi_errorcode(ierr);
+#endif
+  MPIABI_Aint extent;
+  return MPIABI_Type_get_extent(datatype, displacement, &extent);
+}
+
+// deprecated, use `MPI_Type_get_extent` instead
+int MPIABI_Type_ub(MPIABI_Datatype datatype, MPIABI_Aint *displacement) {
+#if 0
+  MPI_Aint mpi_displacement;
+  int ierr = MPI_Type_ub(abi2mpi_datatype(datatype), &mpi_displacement);
+  *displacement = mpi_displacement;
+  return mpi2abi_errorcode(ierr);
+#endif
+  MPIABI_Aint lb, extent;
+  int ierr = MPIABI_Type_get_extent(datatype, &lb, &extent);
+  *displacement = lb + extent;
+  return ierr;
+}
+
 // MPIX
 
 int MPIXABI_Query_cuda_support() {

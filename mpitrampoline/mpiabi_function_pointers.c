@@ -1851,6 +1851,24 @@ int (*MPIABI_Type_get_true_extent_x_ptr)(MPIABI_Datatype datatype,
                                          MPIABI_Count *true_extent);
 int (*MPIABI_Type_size_x_ptr)(MPIABI_Datatype datatype, MPIABI_Count *size);
 
+// Removed C Bindings
+
+int (*MPIABI_Address_ptr)(void *location, MPIABI_Aint *address);
+int (*MPIABI_Type_hindexed_ptr)(int count, int *array_of_blocklengths,
+                                MPIABI_Aint *array_of_displacements,
+                                MPIABI_Datatype oldtype,
+                                MPIABI_Datatype *newtype);
+int (*MPIABI_Type_hvector_ptr)(int count, int blocklength, MPIABI_Aint stride,
+                               MPIABI_Datatype oldtype,
+                               MPIABI_Datatype *newtype);
+int (*MPIABI_Type_struct_ptr)(int count, int *array_of_blocklengths,
+                              MPIABI_Aint *array_of_displacements,
+                              MPIABI_Datatype *array_of_types,
+                              MPIABI_Datatype *newtype);
+int (*MPIABI_Type_extent_ptr)(MPIABI_Datatype datatype, MPIABI_Aint *extent);
+int (*MPIABI_Type_lb_ptr)(MPIABI_Datatype datatype, MPIABI_Aint *displacement);
+int (*MPIABI_Type_ub_ptr)(MPIABI_Datatype datatype, MPIABI_Aint *displacement);
+
 // MPIX
 
 int (*MPIXABI_Query_cuda_support_ptr)(void);

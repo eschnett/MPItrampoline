@@ -17,6 +17,7 @@ RUN apt update && \
         build-essential \
         ca-certificates \
         cmake \
+        gengetopt \
         gfortran \
         git \
         less \
@@ -30,6 +31,9 @@ RUN case ${mpivendor} in \
     esac && \
     apt-get --yes --no-install-recommends install ${pkgs}
 
+RUN mkdir /home/cactus
+WORKDIR /home/cactus
+
 # 2. Download MPItrampoline
 
 ARG githash
@@ -39,7 +43,7 @@ RUN git clone -b eschnett/MPItrampoline6 https://github.com/eschnett/MPItrampoli
 
 # 3. Build MPIwrapper
 
-WORKDIR /MPItrampoline/mpiwrapper
+WORKDIR /home/cactus/MPItrampoline/mpiwrapper
 RUN cmake -B build -G Ninja \
         -DCMAKE_BUILD_TYPE=Debug \
         -DCMAKE_C_COMPILER=mpicc \
@@ -51,16 +55,16 @@ ENV MPITRAMPOLINE_LIB=/usr/local/lib/libmpiwrapper.so
 
 # 4. Build MPItrampoline
 
-WORKDIR /MPItrampoline/mpitrampoline
+WORKDIR /home/cactus/MPItrampoline/mpitrampoline
 RUN cmake -B build -G Ninja \
         -DCMAKE_BUILD_TYPE=Debug \
         -DCMAKE_INSTALL_PREFIX=/usr/local
 RUN cmake --build build
 RUN cmake --install build
 
-# 5. Run test
+# 5. Run simple tests
 
-WORKDIR /MPItrampoline/test
+WORKDIR /home/cactus/MPItrampoline/test
 
 RUN /usr/local/bin/mpicc -c hello-world-c.c
 RUN /usr/local/bin/mpicc -o hello-world-c hello-world-c.o
@@ -71,8 +75,8 @@ RUN case "${mpivendor}" in \
     esac && \
     mpiexec $mpiexec_options -n 4 ./hello-world-c 4
 
-RUN /usr/local/bin/mpicc -c hello-world-cxx.cxx
-RUN /usr/local/bin/mpicc -o hello-world-cxx hello-world-cxx.o
+RUN /usr/local/bin/mpicxx -c hello-world-cxx.cxx
+RUN /usr/local/bin/mpicxx -o hello-world-cxx hello-world-cxx.o
 RUN ./hello-world-cxx 1
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
@@ -80,8 +84,8 @@ RUN case "${mpivendor}" in \
     esac && \
     mpiexec $mpiexec_options -n 4 ./hello-world-cxx 4
 
-RUN /usr/local/bin/mpicxx -c hello-world-f.f
-RUN /usr/local/bin/mpicxx -o hello-world-f hello-world-f.o
+RUN /usr/local/bin/mpifc -c hello-world-f.f
+RUN /usr/local/bin/mpifc -o hello-world-f hello-world-f.o
 RUN ./hello-world-f 1
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
@@ -97,3 +101,14 @@ RUN case "${mpivendor}" in \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
     mpiexec $mpiexec_options -n 4 ./hello-world-f90 4
+
+# 6. Run OpenMPI test suite
+
+WORKDIR /home/cactus
+ADD https://github.com/open-mpi/mpi-test-suite/archive/refs/tags/v1.1.1.tar.gz /home/cactus/mpi-test-suite-1.1.1.tar.gz
+RUN tar xzf mpi-test-suite-1.1.1.tar.gz
+WORKDIR /home/cactus/mpi-test-suite-1.1.1
+RUN ./autogen.sh
+RUN ./configure CC=/usr/local/bin/mpicc
+RUN  make -j$(nproc)
+run mpiexec -n 1 ./mpi_test_suite -h

@@ -1826,6 +1826,23 @@ extern inline int MPI_Type_get_true_extent_x(MPI_Datatype datatype,
                                              MPI_Count *true_extent);
 extern inline int MPI_Type_size_x(MPI_Datatype datatype, MPI_Count *size);
 
+// Removed C Bindings
+
+extern inline int MPI_Address(void *location, MPI_Aint *address);
+extern inline int MPI_Type_hindexed(int count, int *array_of_blocklengths,
+                                    MPI_Aint *array_of_displacements,
+                                    MPI_Datatype oldtype,
+                                    MPI_Datatype *newtype);
+extern inline int MPI_Type_hvector(int count, int blocklength, MPI_Aint stride,
+                                   MPI_Datatype oldtype, MPI_Datatype *newtype);
+extern inline int MPI_Type_struct(int count, int *array_of_blocklengths,
+                                  MPI_Aint *array_of_displacements,
+                                  MPI_Datatype *array_of_types,
+                                  MPI_Datatype *newtype);
+extern inline int MPI_Type_extent(MPI_Datatype datatype, MPI_Aint *extent);
+extern inline int MPI_Type_lb(MPI_Datatype datatype, MPI_Aint *displacement);
+extern inline int MPI_Type_ub(MPI_Datatype datatype, MPI_Aint *displacement);
+
 // MPIX
 
 extern inline int MPIX_Query_cuda_support(void);
