@@ -615,152 +615,123 @@ MPIABI_Status_set_error_ptr = get_symbol(handle, "MPIABI_Status_set_error");
 MPIABI_Status_set_source_ptr = get_symbol(handle, "MPIABI_Status_set_source");
 MPIABI_Status_set_tag_ptr = get_symbol(handle, "MPIABI_Status_set_tag");
 
-// TODO // A.3.12 I/O C Bindings
-// TODO
-// TODO MPIABI_File_close_ptr = get_symbol(handle, "MPIABI_File_close");
-// TODO MPIABI_File_delete_ptr = get_symbol(handle, "MPIABI_File_delete");
-// TODO MPIABI_File_get_amode_ptr = get_symbol(handle, "MPIABI_File_get_amode");
-// TODO MPIABI_File_get_atomicity_ptr = get_symbol(handle,
-// "MPIABI_File_get_atomicity");
-// TODO MPIABI_File_get_byte_offset_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_get_byte_offset");
-// TODO MPIABI_File_get_group_ptr = get_symbol(handle, "MPIABI_File_get_group");
-// TODO MPIABI_File_get_info_ptr = get_symbol(handle, "MPIABI_File_get_info");
-// TODO MPIABI_File_get_position_ptr = get_symbol(handle,
-// "MPIABI_File_get_position");
-// TODO MPIABI_File_get_position_shared_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_get_position_shared");
-// TODO MPIABI_File_get_size_ptr = get_symbol(handle, "MPIABI_File_get_size");
-// TODO MPIABI_File_get_type_extent_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_get_type_extent");
-// TODO MPIABI_File_get_type_extent_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_get_type_extent_c");
-// TODO MPIABI_File_get_view_ptr = get_symbol(handle, "MPIABI_File_get_view");
-// TODO MPIABI_File_iread_ptr = get_symbol(handle, "MPIABI_File_iread");
-// TODO MPIABI_File_iread_all_ptr = get_symbol(handle, "MPIABI_File_iread_all");
-// TODO MPIABI_File_iread_all_c_ptr = get_symbol(handle,
-// "MPIABI_File_iread_all_c");
-// TODO MPIABI_File_iread_at_ptr = get_symbol(handle, "MPIABI_File_iread_at");
-// TODO MPIABI_File_iread_at_all_ptr = get_symbol(handle,
-// "MPIABI_File_iread_at_all");
-// TODO MPIABI_File_iread_at_all_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_iread_at_all_c");
-// TODO MPIABI_File_iread_at_c_ptr = get_symbol(handle,
-// "MPIABI_File_iread_at_c");
-// TODO MPIABI_File_iread_c_ptr = get_symbol(handle, "MPIABI_File_iread_c");
-// TODO MPIABI_File_iread_shared_ptr = get_symbol(handle,
-// "MPIABI_File_iread_shared");
-// TODO MPIABI_File_iread_shared_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_iread_shared_c");
-// TODO MPIABI_File_iwrite_ptr = get_symbol(handle, "MPIABI_File_iwrite");
-// TODO MPIABI_File_iwrite_all_ptr = get_symbol(handle,
-// "MPIABI_File_iwrite_all");
-// TODO MPIABI_File_iwrite_all_c_ptr = get_symbol(handle,
-// "MPIABI_File_iwrite_all_c");
-// TODO MPIABI_File_iwrite_at_ptr = get_symbol(handle, "MPIABI_File_iwrite_at");
-// TODO MPIABI_File_iwrite_at_all_ptr = get_symbol(handle,
-// "MPIABI_File_iwrite_at_all");
-// TODO MPIABI_File_iwrite_at_all_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_iwrite_at_all_c");
-// TODO MPIABI_File_iwrite_at_c_ptr = get_symbol(handle,
-// "MPIABI_File_iwrite_at_c");
-// TODO MPIABI_File_iwrite_c_ptr = get_symbol(handle, "MPIABI_File_iwrite_c");
-// TODO MPIABI_File_iwrite_shared_ptr = get_symbol(handle,
-// "MPIABI_File_iwrite_shared");
-// TODO MPIABI_File_iwrite_shared_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_iwrite_shared_c");
-// TODO MPIABI_File_open_ptr = get_symbol(handle, "MPIABI_File_open");
-// TODO MPIABI_File_preallocate_ptr = get_symbol(handle,
-// "MPIABI_File_preallocate");
-// TODO MPIABI_File_read_ptr = get_symbol(handle, "MPIABI_File_read");
-// TODO MPIABI_File_read_all_ptr = get_symbol(handle, "MPIABI_File_read_all");
-// TODO MPIABI_File_read_all_begin_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_read_all_begin");
-// TODO MPIABI_File_read_all_begin_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_read_all_begin_c");
-// TODO MPIABI_File_read_all_c_ptr = get_symbol(handle,
-// "MPIABI_File_read_all_c");
-// TODO MPIABI_File_read_all_end_ptr = get_symbol(handle,
-// "MPIABI_File_read_all_end");
-// TODO MPIABI_File_read_at_ptr = get_symbol(handle, "MPIABI_File_read_at");
-// TODO MPIABI_File_read_at_all_ptr = get_symbol(handle,
-// "MPIABI_File_read_at_all");
-// TODO MPIABI_File_read_at_all_begin_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_read_at_all_begin");
-// TODO MPIABI_File_read_at_all_begin_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_read_at_all_begin_c");
-// TODO MPIABI_File_read_at_all_c_ptr = get_symbol(handle,
-// "MPIABI_File_read_at_all_c");
-// TODO MPIABI_File_read_at_all_end_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_read_at_all_end");
-// TODO MPIABI_File_read_at_c_ptr = get_symbol(handle, "MPIABI_File_read_at_c");
-// TODO MPIABI_File_read_c_ptr = get_symbol(handle, "MPIABI_File_read_c");
-// TODO MPIABI_File_read_ordered_ptr = get_symbol(handle,
-// "MPIABI_File_read_ordered");
-// TODO MPIABI_File_read_ordered_begin_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_read_ordered_begin");
-// TODO MPIABI_File_read_ordered_begin_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_read_ordered_begin_c");
-// TODO MPIABI_File_read_ordered_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_read_ordered_c");
-// TODO MPIABI_File_read_ordered_end_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_read_ordered_end");
-// TODO MPIABI_File_read_shared_ptr = get_symbol(handle,
-// "MPIABI_File_read_shared");
-// TODO MPIABI_File_read_shared_c_ptr = get_symbol(handle,
-// "MPIABI_File_read_shared_c");
-// TODO MPIABI_File_seek_ptr = get_symbol(handle, "MPIABI_File_seek");
-// TODO MPIABI_File_seek_shared_ptr = get_symbol(handle,
-// "MPIABI_File_seek_shared");
-// TODO MPIABI_File_set_atomicity_ptr = get_symbol(handle,
-// "MPIABI_File_set_atomicity");
-// TODO MPIABI_File_set_info_ptr = get_symbol(handle, "MPIABI_File_set_info");
-// TODO MPIABI_File_set_size_ptr = get_symbol(handle, "MPIABI_File_set_size");
-// TODO MPIABI_File_set_view_ptr = get_symbol(handle, "MPIABI_File_set_view");
-// TODO MPIABI_File_sync_ptr = get_symbol(handle, "MPIABI_File_sync");
-// TODO MPIABI_File_write_ptr = get_symbol(handle, "MPIABI_File_write");
-// TODO MPIABI_File_write_all_ptr = get_symbol(handle, "MPIABI_File_write_all");
-// TODO MPIABI_File_write_all_begin_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_write_all_begin");
-// TODO MPIABI_File_write_all_begin_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_write_all_begin_c");
-// TODO MPIABI_File_write_all_c_ptr = get_symbol(handle,
-// "MPIABI_File_write_all_c");
-// TODO MPIABI_File_write_all_end_ptr = get_symbol(handle,
-// "MPIABI_File_write_all_end");
-// TODO MPIABI_File_write_at_ptr = get_symbol(handle, "MPIABI_File_write_at");
-// TODO MPIABI_File_write_at_all_ptr = get_symbol(handle,
-// "MPIABI_File_write_at_all");
-// TODO MPIABI_File_write_at_all_begin_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_write_at_all_begin");
-// TODO MPIABI_File_write_at_all_begin_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_write_at_all_begin_c");
-// TODO MPIABI_File_write_at_all_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_write_at_all_c");
-// TODO MPIABI_File_write_at_all_end_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_write_at_all_end");
-// TODO MPIABI_File_write_at_c_ptr = get_symbol(handle,
-// "MPIABI_File_write_at_c");
-// TODO MPIABI_File_write_c_ptr = get_symbol(handle, "MPIABI_File_write_c");
-// TODO MPIABI_File_write_ordered_ptr = get_symbol(handle,
-// "MPIABI_File_write_ordered");
-// TODO MPIABI_File_write_ordered_begin_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_write_ordered_begin");
-// TODO MPIABI_File_write_ordered_begin_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_write_ordered_begin_c");
-// TODO MPIABI_File_write_ordered_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_write_ordered_c");
-// TODO MPIABI_File_write_ordered_end_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_write_ordered_end");
-// TODO MPIABI_File_write_shared_ptr = get_symbol(handle,
-// "MPIABI_File_write_shared");
-// TODO MPIABI_File_write_shared_c_ptr =
-// TODO     get_symbol(handle, "MPIABI_File_write_shared_c");
-// TODO MPIABI_Register_datarep_ptr = get_symbol(handle,
-// "MPIABI_Register_datarep");
-// TODO MPIABI_Register_datarep_c_ptr = get_symbol(handle,
-// "MPIABI_Register_datarep_c");
-// TODO
+// A.3.12 I/O C Bindings
+
+MPIABI_File_close_ptr = get_symbol(handle, "MPIABI_File_close");
+MPIABI_File_delete_ptr = get_symbol(handle, "MPIABI_File_delete");
+MPIABI_File_get_amode_ptr = get_symbol(handle, "MPIABI_File_get_amode");
+MPIABI_File_get_atomicity_ptr = get_symbol(handle, "MPIABI_File_get_atomicity");
+MPIABI_File_get_byte_offset_ptr =
+    get_symbol(handle, "MPIABI_File_get_byte_offset");
+MPIABI_File_get_group_ptr = get_symbol(handle, "MPIABI_File_get_group");
+MPIABI_File_get_info_ptr = get_symbol(handle, "MPIABI_File_get_info");
+MPIABI_File_get_position_ptr = get_symbol(handle, "MPIABI_File_get_position");
+MPIABI_File_get_position_shared_ptr =
+    get_symbol(handle, "MPIABI_File_get_position_shared");
+MPIABI_File_get_size_ptr = get_symbol(handle, "MPIABI_File_get_size");
+MPIABI_File_get_type_extent_ptr =
+    get_symbol(handle, "MPIABI_File_get_type_extent");
+MPIABI_File_get_type_extent_c_ptr =
+    get_symbol(handle, "MPIABI_File_get_type_extent_c");
+MPIABI_File_get_view_ptr = get_symbol(handle, "MPIABI_File_get_view");
+MPIABI_File_iread_ptr = get_symbol(handle, "MPIABI_File_iread");
+MPIABI_File_iread_all_ptr = get_symbol(handle, "MPIABI_File_iread_all");
+MPIABI_File_iread_all_c_ptr = get_symbol(handle, "MPIABI_File_iread_all_c");
+MPIABI_File_iread_at_ptr = get_symbol(handle, "MPIABI_File_iread_at");
+MPIABI_File_iread_at_all_ptr = get_symbol(handle, "MPIABI_File_iread_at_all");
+MPIABI_File_iread_at_all_c_ptr =
+    get_symbol(handle, "MPIABI_File_iread_at_all_c");
+MPIABI_File_iread_at_c_ptr = get_symbol(handle, "MPIABI_File_iread_at_c");
+MPIABI_File_iread_c_ptr = get_symbol(handle, "MPIABI_File_iread_c");
+MPIABI_File_iread_shared_ptr = get_symbol(handle, "MPIABI_File_iread_shared");
+MPIABI_File_iread_shared_c_ptr =
+    get_symbol(handle, "MPIABI_File_iread_shared_c");
+MPIABI_File_iwrite_ptr = get_symbol(handle, "MPIABI_File_iwrite");
+MPIABI_File_iwrite_all_ptr = get_symbol(handle, "MPIABI_File_iwrite_all");
+MPIABI_File_iwrite_all_c_ptr = get_symbol(handle, "MPIABI_File_iwrite_all_c");
+MPIABI_File_iwrite_at_ptr = get_symbol(handle, "MPIABI_File_iwrite_at");
+MPIABI_File_iwrite_at_all_ptr = get_symbol(handle, "MPIABI_File_iwrite_at_all");
+MPIABI_File_iwrite_at_all_c_ptr =
+    get_symbol(handle, "MPIABI_File_iwrite_at_all_c");
+MPIABI_File_iwrite_at_c_ptr = get_symbol(handle, "MPIABI_File_iwrite_at_c");
+MPIABI_File_iwrite_c_ptr = get_symbol(handle, "MPIABI_File_iwrite_c");
+MPIABI_File_iwrite_shared_ptr = get_symbol(handle, "MPIABI_File_iwrite_shared");
+MPIABI_File_iwrite_shared_c_ptr =
+    get_symbol(handle, "MPIABI_File_iwrite_shared_c");
+MPIABI_File_open_ptr = get_symbol(handle, "MPIABI_File_open");
+MPIABI_File_preallocate_ptr = get_symbol(handle, "MPIABI_File_preallocate");
+MPIABI_File_read_ptr = get_symbol(handle, "MPIABI_File_read");
+MPIABI_File_read_all_ptr = get_symbol(handle, "MPIABI_File_read_all");
+MPIABI_File_read_all_begin_ptr =
+    get_symbol(handle, "MPIABI_File_read_all_begin");
+MPIABI_File_read_all_begin_c_ptr =
+    get_symbol(handle, "MPIABI_File_read_all_begin_c");
+MPIABI_File_read_all_c_ptr = get_symbol(handle, "MPIABI_File_read_all_c");
+MPIABI_File_read_all_end_ptr = get_symbol(handle, "MPIABI_File_read_all_end");
+MPIABI_File_read_at_ptr = get_symbol(handle, "MPIABI_File_read_at");
+MPIABI_File_read_at_all_ptr = get_symbol(handle, "MPIABI_File_read_at_all");
+MPIABI_File_read_at_all_begin_ptr =
+    get_symbol(handle, "MPIABI_File_read_at_all_begin");
+MPIABI_File_read_at_all_begin_c_ptr =
+    get_symbol(handle, "MPIABI_File_read_at_all_begin_c");
+MPIABI_File_read_at_all_c_ptr = get_symbol(handle, "MPIABI_File_read_at_all_c");
+MPIABI_File_read_at_all_end_ptr =
+    get_symbol(handle, "MPIABI_File_read_at_all_end");
+MPIABI_File_read_at_c_ptr = get_symbol(handle, "MPIABI_File_read_at_c");
+MPIABI_File_read_c_ptr = get_symbol(handle, "MPIABI_File_read_c");
+MPIABI_File_read_ordered_ptr = get_symbol(handle, "MPIABI_File_read_ordered");
+MPIABI_File_read_ordered_begin_ptr =
+    get_symbol(handle, "MPIABI_File_read_ordered_begin");
+MPIABI_File_read_ordered_begin_c_ptr =
+    get_symbol(handle, "MPIABI_File_read_ordered_begin_c");
+MPIABI_File_read_ordered_c_ptr =
+    get_symbol(handle, "MPIABI_File_read_ordered_c");
+MPIABI_File_read_ordered_end_ptr =
+    get_symbol(handle, "MPIABI_File_read_ordered_end");
+MPIABI_File_read_shared_ptr = get_symbol(handle, "MPIABI_File_read_shared");
+MPIABI_File_read_shared_c_ptr = get_symbol(handle, "MPIABI_File_read_shared_c");
+MPIABI_File_seek_ptr = get_symbol(handle, "MPIABI_File_seek");
+MPIABI_File_seek_shared_ptr = get_symbol(handle, "MPIABI_File_seek_shared");
+MPIABI_File_set_atomicity_ptr = get_symbol(handle, "MPIABI_File_set_atomicity");
+MPIABI_File_set_info_ptr = get_symbol(handle, "MPIABI_File_set_info");
+MPIABI_File_set_size_ptr = get_symbol(handle, "MPIABI_File_set_size");
+MPIABI_File_set_view_ptr = get_symbol(handle, "MPIABI_File_set_view");
+MPIABI_File_sync_ptr = get_symbol(handle, "MPIABI_File_sync");
+MPIABI_File_write_ptr = get_symbol(handle, "MPIABI_File_write");
+MPIABI_File_write_all_ptr = get_symbol(handle, "MPIABI_File_write_all");
+MPIABI_File_write_all_begin_ptr =
+    get_symbol(handle, "MPIABI_File_write_all_begin");
+MPIABI_File_write_all_begin_c_ptr =
+    get_symbol(handle, "MPIABI_File_write_all_begin_c");
+MPIABI_File_write_all_c_ptr = get_symbol(handle, "MPIABI_File_write_all_c");
+MPIABI_File_write_all_end_ptr = get_symbol(handle, "MPIABI_File_write_all_end");
+MPIABI_File_write_at_ptr = get_symbol(handle, "MPIABI_File_write_at");
+MPIABI_File_write_at_all_ptr = get_symbol(handle, "MPIABI_File_write_at_all");
+MPIABI_File_write_at_all_begin_ptr =
+    get_symbol(handle, "MPIABI_File_write_at_all_begin");
+MPIABI_File_write_at_all_begin_c_ptr =
+    get_symbol(handle, "MPIABI_File_write_at_all_begin_c");
+MPIABI_File_write_at_all_c_ptr =
+    get_symbol(handle, "MPIABI_File_write_at_all_c");
+MPIABI_File_write_at_all_end_ptr =
+    get_symbol(handle, "MPIABI_File_write_at_all_end");
+MPIABI_File_write_at_c_ptr = get_symbol(handle, "MPIABI_File_write_at_c");
+MPIABI_File_write_c_ptr = get_symbol(handle, "MPIABI_File_write_c");
+MPIABI_File_write_ordered_ptr = get_symbol(handle, "MPIABI_File_write_ordered");
+MPIABI_File_write_ordered_begin_ptr =
+    get_symbol(handle, "MPIABI_File_write_ordered_begin");
+MPIABI_File_write_ordered_begin_c_ptr =
+    get_symbol(handle, "MPIABI_File_write_ordered_begin_c");
+MPIABI_File_write_ordered_c_ptr =
+    get_symbol(handle, "MPIABI_File_write_ordered_c");
+MPIABI_File_write_ordered_end_ptr =
+    get_symbol(handle, "MPIABI_File_write_ordered_end");
+MPIABI_File_write_shared_ptr = get_symbol(handle, "MPIABI_File_write_shared");
+MPIABI_File_write_shared_c_ptr =
+    get_symbol(handle, "MPIABI_File_write_shared_c");
+MPIABI_Register_datarep_ptr = get_symbol(handle, "MPIABI_Register_datarep");
+MPIABI_Register_datarep_c_ptr = get_symbol(handle, "MPIABI_Register_datarep_c");
+
 // TODO // A.3.13 Language Bindings C Bindings
 // TODO
 // TODO MPIABI_Comm_c2f_ptr = get_symbol(handle, "MPIABI_Comm_c2f");

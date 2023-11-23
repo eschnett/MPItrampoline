@@ -6581,162 +6581,618 @@ int MPIABI_Status_set_tag(MPIABI_Status *status, int tag) {
 
 // A.3.12 I/O C Bindings
 
-int MPIABI_File_close(MPIABI_File *fh);
-int MPIABI_File_delete(const char *filename, MPIABI_Info info);
-int MPIABI_File_get_amode(MPIABI_File fh, int *amode);
-int MPIABI_File_get_atomicity(MPIABI_File fh, int *flag);
+int MPIABI_File_close(MPIABI_File *fh) {
+  MPI_File mpi_fh = abi2mpi_file(*fh);
+  int ierr = MPI_File_close(&mpi_fh);
+  *fh = mpi2abi_file(mpi_fh);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_delete(const char *filename, MPIABI_Info info) {
+  int ierr = MPI_File_delete(filename, abi2mpi_info(info));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_get_amode(MPIABI_File fh, int *amode) {
+  int ierr = MPI_File_get_amode(abi2mpi_file(fh), amode);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_get_atomicity(MPIABI_File fh, int *flag) {
+  int ierr = MPI_File_get_atomicity(abi2mpi_file(fh), flag);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_get_byte_offset(MPIABI_File fh, MPIABI_Offset offset,
-                                MPIABI_Offset *disp);
-int MPIABI_File_get_group(MPIABI_File fh, MPIABI_Group *group);
-int MPIABI_File_get_info(MPIABI_File fh, MPIABI_Info *info_used);
-int MPIABI_File_get_position(MPIABI_File fh, MPIABI_Offset *offset);
-int MPIABI_File_get_position_shared(MPIABI_File fh, MPIABI_Offset *offset);
-int MPIABI_File_get_size(MPIABI_File fh, MPIABI_Offset *size);
+                                MPIABI_Offset *disp) {
+  MPI_Offset mpi_disp;
+  int ierr = MPI_File_get_byte_offset(abi2mpi_file(fh), offset, &mpi_disp);
+  *disp = mpi_disp;
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_get_group(MPIABI_File fh, MPIABI_Group *group) {
+  MPI_Group mpi_group;
+  int ierr = MPI_File_get_group(abi2mpi_file(fh), &mpi_group);
+  *group = mpi2abi_group(mpi_group);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_get_info(MPIABI_File fh, MPIABI_Info *info_used) {
+  MPI_Info mpi_info_used;
+  int ierr = MPI_File_get_info(abi2mpi_file(fh), &mpi_info_used);
+  *info_used = mpi2abi_info(mpi_info_used);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_get_position(MPIABI_File fh, MPIABI_Offset *offset) {
+  MPI_Offset mpi_offset;
+  int ierr = MPI_File_get_position(abi2mpi_file(fh), &mpi_offset);
+  *offset = mpi_offset;
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_get_position_shared(MPIABI_File fh, MPIABI_Offset *offset) {
+  MPI_Offset mpi_offset;
+  int ierr = MPI_File_get_position_shared(abi2mpi_file(fh), &mpi_offset);
+  *offset = mpi_offset;
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_get_size(MPIABI_File fh, MPIABI_Offset *size) {
+  MPI_Offset mpi_size;
+  int ierr = MPI_File_get_size(abi2mpi_file(fh), &mpi_size);
+  *size = mpi_size;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_get_type_extent(MPIABI_File fh, MPIABI_Datatype datatype,
-                                MPIABI_Aint *extent);
+                                MPIABI_Aint *extent) {
+  MPI_Aint mpi_extent;
+  int ierr = MPI_File_get_type_extent(abi2mpi_file(fh),
+                                      abi2mpi_datatype(datatype), &mpi_extent);
+  *extent = mpi_extent;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_get_type_extent_c(MPIABI_File fh, MPIABI_Datatype datatype,
-                                  MPIABI_Count *extent);
+                                  MPIABI_Count *extent) {
+  MPI_Count mpi_extent;
+  int ierr = MPI_File_get_type_extent_c(
+      abi2mpi_file(fh), abi2mpi_datatype(datatype), &mpi_extent);
+  *extent = mpi_extent;
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_get_view(MPIABI_File fh, MPIABI_Offset *disp,
                          MPIABI_Datatype *etype, MPIABI_Datatype *filetype,
-                         char *datarep);
+                         char *datarep) {
+  MPI_Offset mpi_disp;
+  MPI_Datatype mpi_etype;
+  MPI_Datatype mpi_filetype;
+  int ierr = MPI_File_get_view(abi2mpi_file(fh), &mpi_disp, &mpi_etype,
+                               &mpi_filetype, datarep);
+  *disp = mpi_disp;
+  *etype = mpi2abi_datatype(mpi_etype);
+  *filetype = mpi2abi_datatype(mpi_filetype);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iread(MPIABI_File fh, void *buf, int count,
-                      MPIABI_Datatype datatype, MPIABI_Request *request);
+                      MPIABI_Datatype datatype, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iread(abi2mpi_file(fh), buf, count,
+                            abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iread_all(MPIABI_File fh, void *buf, int count,
-                          MPIABI_Datatype datatype, MPIABI_Request *request);
+                          MPIABI_Datatype datatype, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iread_all(abi2mpi_file(fh), buf, count,
+                                abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iread_all_c(MPIABI_File fh, void *buf, MPIABI_Count count,
-                            MPIABI_Datatype datatype, MPIABI_Request *request);
+                            MPIABI_Datatype datatype, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iread_all_c(abi2mpi_file(fh), buf, count,
+                                  abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iread_at(MPIABI_File fh, MPIABI_Offset offset, void *buf,
                          int count, MPIABI_Datatype datatype,
-                         MPIABI_Request *request);
+                         MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iread_at(abi2mpi_file(fh), offset, buf, count,
+                               abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iread_at_all(MPIABI_File fh, MPIABI_Offset offset, void *buf,
                              int count, MPIABI_Datatype datatype,
-                             MPIABI_Request *request);
+                             MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iread_at_all(abi2mpi_file(fh), offset, buf, count,
+                                   abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iread_at_all_c(MPIABI_File fh, MPIABI_Offset offset, void *buf,
                                MPIABI_Count count, MPIABI_Datatype datatype,
-                               MPIABI_Request *request);
+                               MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iread_at_all_c(abi2mpi_file(fh), offset, buf, count,
+                                     abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iread_at_c(MPIABI_File fh, MPIABI_Offset offset, void *buf,
                            MPIABI_Count count, MPIABI_Datatype datatype,
-                           MPIABI_Request *request);
+                           MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iread_at_c(abi2mpi_file(fh), offset, buf, count,
+                                 abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iread_c(MPIABI_File fh, void *buf, MPIABI_Count count,
-                        MPIABI_Datatype datatype, MPIABI_Request *request);
+                        MPIABI_Datatype datatype, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iread_c(abi2mpi_file(fh), buf, count,
+                              abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iread_shared(MPIABI_File fh, void *buf, int count,
-                             MPIABI_Datatype datatype, MPIABI_Request *request);
+                             MPIABI_Datatype datatype,
+                             MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iread_shared(abi2mpi_file(fh), buf, count,
+                                   abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iread_shared_c(MPIABI_File fh, void *buf, MPIABI_Count count,
                                MPIABI_Datatype datatype,
-                               MPIABI_Request *request);
+                               MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iread_shared_c(abi2mpi_file(fh), buf, count,
+                                     abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iwrite(MPIABI_File fh, const void *buf, int count,
-                       MPIABI_Datatype datatype, MPIABI_Request *request);
+                       MPIABI_Datatype datatype, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iwrite(abi2mpi_file(fh), buf, count,
+                             abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iwrite_all(MPIABI_File fh, const void *buf, int count,
-                           MPIABI_Datatype datatype, MPIABI_Request *request);
+                           MPIABI_Datatype datatype, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iwrite_all(abi2mpi_file(fh), buf, count,
+                                 abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iwrite_all_c(MPIABI_File fh, const void *buf,
                              MPIABI_Count count, MPIABI_Datatype datatype,
-                             MPIABI_Request *request);
+                             MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iwrite_all_c(abi2mpi_file(fh), buf, count,
+                                   abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iwrite_at(MPIABI_File fh, MPIABI_Offset offset, const void *buf,
                           int count, MPIABI_Datatype datatype,
-                          MPIABI_Request *request);
+                          MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iwrite_at(abi2mpi_file(fh), offset, buf, count,
+                                abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iwrite_at_all(MPIABI_File fh, MPIABI_Offset offset,
                               const void *buf, int count,
                               MPIABI_Datatype datatype,
-                              MPIABI_Request *request);
+                              MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iwrite_at_all(abi2mpi_file(fh), offset, buf, count,
+                                    abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iwrite_at_all_c(MPIABI_File fh, MPIABI_Offset offset,
                                 const void *buf, MPIABI_Count count,
                                 MPIABI_Datatype datatype,
-                                MPIABI_Request *request);
+                                MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iwrite_at_all_c(abi2mpi_file(fh), offset, buf, count,
+                                      abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iwrite_at_c(MPIABI_File fh, MPIABI_Offset offset,
                             const void *buf, MPIABI_Count count,
-                            MPIABI_Datatype datatype, MPIABI_Request *request);
+                            MPIABI_Datatype datatype, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iwrite_at_c(abi2mpi_file(fh), offset, buf, count,
+                                  abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iwrite_c(MPIABI_File fh, const void *buf, MPIABI_Count count,
-                         MPIABI_Datatype datatype, MPIABI_Request *request);
+                         MPIABI_Datatype datatype, MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iwrite_c(abi2mpi_file(fh), buf, count,
+                               abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iwrite_shared(MPIABI_File fh, const void *buf, int count,
                               MPIABI_Datatype datatype,
-                              MPIABI_Request *request);
+                              MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iwrite_shared(abi2mpi_file(fh), buf, count,
+                                    abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_iwrite_shared_c(MPIABI_File fh, const void *buf,
                                 MPIABI_Count count, MPIABI_Datatype datatype,
-                                MPIABI_Request *request);
+                                MPIABI_Request *request) {
+  MPI_Request mpi_request;
+  int ierr = MPI_File_iwrite_shared_c(abi2mpi_file(fh), buf, count,
+                                      abi2mpi_datatype(datatype), &mpi_request);
+  *request = mpi2abi_request(mpi_request);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_open(MPIABI_Comm comm, const char *filename, int amode,
-                     MPIABI_Info info, MPIABI_File *fh);
-int MPIABI_File_preallocate(MPIABI_File fh, MPIABI_Offset size);
+                     MPIABI_Info info, MPIABI_File *fh) {
+  MPI_File mpi_fh;
+  int ierr = MPI_File_open(abi2mpi_comm(comm), filename, amode,
+                           abi2mpi_info(info), &mpi_fh);
+  *fh = mpi2abi_file(mpi_fh);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_preallocate(MPIABI_File fh, MPIABI_Offset size) {
+  int ierr = MPI_File_preallocate(abi2mpi_file(fh), size);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read(MPIABI_File fh, void *buf, int count,
-                     MPIABI_Datatype datatype, MPIABI_Status *status);
+                     MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read(abi2mpi_file(fh), buf, count,
+                           abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_all(MPIABI_File fh, void *buf, int count,
-                         MPIABI_Datatype datatype, MPIABI_Status *status);
+                         MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read_all(abi2mpi_file(fh), buf, count,
+                               abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_all_begin(MPIABI_File fh, void *buf, int count,
-                               MPIABI_Datatype datatype);
+                               MPIABI_Datatype datatype) {
+  int ierr = MPI_File_read_all_begin(abi2mpi_file(fh), buf, count,
+                                     abi2mpi_datatype(datatype));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_all_begin_c(MPIABI_File fh, void *buf, MPIABI_Count count,
-                                 MPIABI_Datatype datatype);
+                                 MPIABI_Datatype datatype) {
+  int ierr = MPI_File_read_all_begin_c(abi2mpi_file(fh), buf, count,
+                                       abi2mpi_datatype(datatype));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_all_c(MPIABI_File fh, void *buf, MPIABI_Count count,
-                           MPIABI_Datatype datatype, MPIABI_Status *status);
-int MPIABI_File_read_all_end(MPIABI_File fh, void *buf, MPIABI_Status *status);
+                           MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read_all_c(abi2mpi_file(fh), buf, count,
+                                 abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_read_all_end(MPIABI_File fh, void *buf, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read_all_end(abi2mpi_file(fh), buf, mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_at(MPIABI_File fh, MPIABI_Offset offset, void *buf,
                         int count, MPIABI_Datatype datatype,
-                        MPIABI_Status *status);
+                        MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read_at(abi2mpi_file(fh), offset, buf, count,
+                              abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_at_all(MPIABI_File fh, MPIABI_Offset offset, void *buf,
                             int count, MPIABI_Datatype datatype,
-                            MPIABI_Status *status);
+                            MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read_at_all(abi2mpi_file(fh), offset, buf, count,
+                                  abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_at_all_begin(MPIABI_File fh, MPIABI_Offset offset,
                                   void *buf, int count,
-                                  MPIABI_Datatype datatype);
+                                  MPIABI_Datatype datatype) {
+  int ierr = MPI_File_read_at_all_begin(abi2mpi_file(fh), offset, buf, count,
+                                        abi2mpi_datatype(datatype));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_at_all_begin_c(MPIABI_File fh, MPIABI_Offset offset,
                                     void *buf, MPIABI_Count count,
-                                    MPIABI_Datatype datatype);
+                                    MPIABI_Datatype datatype) {
+  int ierr = MPI_File_read_at_all_begin_c(abi2mpi_file(fh), offset, buf, count,
+                                          abi2mpi_datatype(datatype));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_at_all_c(MPIABI_File fh, MPIABI_Offset offset, void *buf,
                               MPIABI_Count count, MPIABI_Datatype datatype,
-                              MPIABI_Status *status);
+                              MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read_at_all_c(abi2mpi_file(fh), offset, buf, count,
+                                    abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_at_all_end(MPIABI_File fh, void *buf,
-                                MPIABI_Status *status);
+                                MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read_at_all_end(abi2mpi_file(fh), buf, mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_at_c(MPIABI_File fh, MPIABI_Offset offset, void *buf,
                           MPIABI_Count count, MPIABI_Datatype datatype,
-                          MPIABI_Status *status);
+                          MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read_at(abi2mpi_file(fh), offset, buf, count,
+                              abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_c(MPIABI_File fh, void *buf, MPIABI_Count count,
-                       MPIABI_Datatype datatype, MPIABI_Status *status);
+                       MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read(abi2mpi_file(fh), buf, count,
+                           abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_ordered(MPIABI_File fh, void *buf, int count,
-                             MPIABI_Datatype datatype, MPIABI_Status *status);
+                             MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read_ordered(abi2mpi_file(fh), buf, count,
+                                   abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_ordered_begin(MPIABI_File fh, void *buf, int count,
-                                   MPIABI_Datatype datatype);
+                                   MPIABI_Datatype datatype) {
+  int ierr = MPI_File_read_ordered_begin(abi2mpi_file(fh), buf, count,
+                                         abi2mpi_datatype(datatype));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_ordered_begin_c(MPIABI_File fh, void *buf,
                                      MPIABI_Count count,
-                                     MPIABI_Datatype datatype);
+                                     MPIABI_Datatype datatype) {
+  int ierr = MPI_File_read_ordered_begin_c(abi2mpi_file(fh), buf, count,
+                                           abi2mpi_datatype(datatype));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_ordered_c(MPIABI_File fh, void *buf, MPIABI_Count count,
-                               MPIABI_Datatype datatype, MPIABI_Status *status);
+                               MPIABI_Datatype datatype,
+                               MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read_ordered_c(abi2mpi_file(fh), buf, count,
+                                     abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_ordered_end(MPIABI_File fh, void *buf,
-                                 MPIABI_Status *status);
+                                 MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read_ordered_end(abi2mpi_file(fh), buf, mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_shared(MPIABI_File fh, void *buf, int count,
-                            MPIABI_Datatype datatype, MPIABI_Status *status);
+                            MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read_shared(abi2mpi_file(fh), buf, count,
+                                  abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_read_shared_c(MPIABI_File fh, void *buf, MPIABI_Count count,
-                              MPIABI_Datatype datatype, MPIABI_Status *status);
-int MPIABI_File_seek(MPIABI_File fh, MPIABI_Offset offset, int whence);
-int MPIABI_File_seek_shared(MPIABI_File fh, MPIABI_Offset offset, int whence);
-int MPIABI_File_set_atomicity(MPIABI_File fh, int flag);
-int MPIABI_File_set_info(MPIABI_File fh, MPIABI_Info info);
-int MPIABI_File_set_size(MPIABI_File fh, MPIABI_Offset size);
+                              MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_read_shared_c(abi2mpi_file(fh), buf, count,
+                                    abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_seek(MPIABI_File fh, MPIABI_Offset offset, int whence) {
+  int ierr = MPI_File_seek(abi2mpi_file(fh), offset, whence);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_seek_shared(MPIABI_File fh, MPIABI_Offset offset, int whence) {
+  int ierr = MPI_File_seek_shared(abi2mpi_file(fh), offset, whence);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_set_atomicity(MPIABI_File fh, int flag) {
+  int ierr = MPI_File_set_atomicity(abi2mpi_file(fh), flag);
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_set_info(MPIABI_File fh, MPIABI_Info info) {
+  int ierr = MPI_File_set_info(abi2mpi_file(fh), abi2mpi_info(info));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_set_size(MPIABI_File fh, MPIABI_Offset size) {
+  int ierr = MPI_File_set_size(abi2mpi_file(fh), size);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_set_view(MPIABI_File fh, MPIABI_Offset disp,
                          MPIABI_Datatype etype, MPIABI_Datatype filetype,
-                         const char *datarep, MPIABI_Info info);
-int MPIABI_File_sync(MPIABI_File fh);
+                         const char *datarep, MPIABI_Info info) {
+  int ierr = MPI_File_set_view(abi2mpi_file(fh), disp, abi2mpi_datatype(etype),
+                               abi2mpi_datatype(filetype), datarep,
+                               abi2mpi_info(info));
+  return mpi2abi_errorcode(ierr);
+}
+
+int MPIABI_File_sync(MPIABI_File fh) {
+  int ierr = MPI_File_sync(abi2mpi_file(fh));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write(MPIABI_File fh, const void *buf, int count,
-                      MPIABI_Datatype datatype, MPIABI_Status *status);
+                      MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write(abi2mpi_file(fh), buf, count,
+                            abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_all(MPIABI_File fh, const void *buf, int count,
-                          MPIABI_Datatype datatype, MPIABI_Status *status);
+                          MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write_all(abi2mpi_file(fh), buf, count,
+                                abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_all_begin(MPIABI_File fh, const void *buf, int count,
-                                MPIABI_Datatype datatype);
+                                MPIABI_Datatype datatype) {
+  int ierr = MPI_File_write_all_begin(abi2mpi_file(fh), buf, count,
+                                      abi2mpi_datatype(datatype));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_all_begin_c(MPIABI_File fh, const void *buf,
-                                  MPIABI_Count count, MPIABI_Datatype datatype);
+                                  MPIABI_Count count,
+                                  MPIABI_Datatype datatype) {
+  int ierr = MPI_File_write_all_begin_c(abi2mpi_file(fh), buf, count,
+                                        abi2mpi_datatype(datatype));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_all_c(MPIABI_File fh, const void *buf, MPIABI_Count count,
-                            MPIABI_Datatype datatype, MPIABI_Status *status);
+                            MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write_all_c(abi2mpi_file(fh), buf, count,
+                                  abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_all_end(MPIABI_File fh, const void *buf,
-                              MPIABI_Status *status);
+                              MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write_all_end(abi2mpi_file(fh), buf, mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_at(MPIABI_File fh, MPIABI_Offset offset, const void *buf,
                          int count, MPIABI_Datatype datatype,
-                         MPIABI_Status *status);
+                         MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write_at(abi2mpi_file(fh), offset, buf, count,
+                               abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_at_all(MPIABI_File fh, MPIABI_Offset offset,
                              const void *buf, int count,
-                             MPIABI_Datatype datatype, MPIABI_Status *status);
+                             MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write_at_all(abi2mpi_file(fh), offset, buf, count,
+                                   abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_at_all_begin(MPIABI_File fh, MPIABI_Offset offset,
                                    const void *buf, int count,
-                                   MPIABI_Datatype datatype);
+                                   MPIABI_Datatype datatype) {
+  int ierr = MPI_File_write_at_all_begin(abi2mpi_file(fh), offset, buf, count,
+                                         abi2mpi_datatype(datatype));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_at_all_begin_c(MPIABI_File fh, MPIABI_Offset offset,
                                      const void *buf, MPIABI_Count count,
-                                     MPIABI_Datatype datatype);
+                                     MPIABI_Datatype datatype) {
+  int ierr = MPI_File_write_at_all_begin_c(abi2mpi_file(fh), offset, buf, count,
+                                           abi2mpi_datatype(datatype));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_at_all_c(MPIABI_File fh, MPIABI_Offset offset,
                                const void *buf, MPIABI_Count count,
                                MPIABI_Datatype datatype, MPIABI_Status *status);
@@ -6744,35 +7200,190 @@ int MPIABI_File_write_at_all_end(MPIABI_File fh, const void *buf,
                                  MPIABI_Status *status);
 int MPIABI_File_write_at_c(MPIABI_File fh, MPIABI_Offset offset,
                            const void *buf, MPIABI_Count count,
-                           MPIABI_Datatype datatype, MPIABI_Status *status);
+                           MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write_at_all_c(abi2mpi_file(fh), offset, buf, count,
+                                     abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_c(MPIABI_File fh, const void *buf, MPIABI_Count count,
-                        MPIABI_Datatype datatype, MPIABI_Status *status);
+                        MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write(abi2mpi_file(fh), buf, count,
+                            abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_ordered(MPIABI_File fh, const void *buf, int count,
-                              MPIABI_Datatype datatype, MPIABI_Status *status);
+                              MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write_ordered(abi2mpi_file(fh), buf, count,
+                                    abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_ordered_begin(MPIABI_File fh, const void *buf, int count,
-                                    MPIABI_Datatype datatype);
+                                    MPIABI_Datatype datatype) {
+  int ierr = MPI_File_write_ordered_begin(abi2mpi_file(fh), buf, count,
+                                          abi2mpi_datatype(datatype));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_ordered_begin_c(MPIABI_File fh, const void *buf,
                                       MPIABI_Count count,
-                                      MPIABI_Datatype datatype);
+                                      MPIABI_Datatype datatype) {
+  int ierr = MPI_File_write_ordered_begin_c(abi2mpi_file(fh), buf, count,
+                                            abi2mpi_datatype(datatype));
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_ordered_c(MPIABI_File fh, const void *buf,
                                 MPIABI_Count count, MPIABI_Datatype datatype,
-                                MPIABI_Status *status);
+                                MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write_ordered_c(abi2mpi_file(fh), buf, count,
+                                      abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_ordered_end(MPIABI_File fh, const void *buf,
-                                  MPIABI_Status *status);
+                                  MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write_ordered_end(abi2mpi_file(fh), buf, mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_shared(MPIABI_File fh, const void *buf, int count,
-                             MPIABI_Datatype datatype, MPIABI_Status *status);
+                             MPIABI_Datatype datatype, MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write_shared(abi2mpi_file(fh), buf, count,
+                                   abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_File_write_shared_c(MPIABI_File fh, const void *buf,
                                MPIABI_Count count, MPIABI_Datatype datatype,
-                               MPIABI_Status *status);
+                               MPIABI_Status *status) {
+  MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
+  int ierr = MPI_File_write_shared_c(abi2mpi_file(fh), buf, count,
+                                     abi2mpi_datatype(datatype), mpi_status);
+  mpi2abi_statusptr(mpi_status);
+  return mpi2abi_errorcode(ierr);
+}
+
+struct mpi_Register_datarep_state {
+  MPIABI_Datarep_conversion_function *abi_read_conversion_fn;
+  MPIABI_Datarep_conversion_function *abi_write_conversion_fn;
+  MPIABI_Datarep_extent_function *abi_dtype_file_extent_fn;
+  void *abi_extra_state;
+};
+static int mpi_Datarep_read_conversion_function(void *userbuf,
+                                                MPI_Datatype datatype,
+                                                int count, void *filebuf,
+                                                MPI_Offset position,
+                                                void *extra_state) {
+  const struct mpi_Register_datarep_state *mpi_extra_state = extra_state;
+  int ierr = mpi_extra_state->abi_read_conversion_fn(
+      userbuf, mpi2abi_datatype(datatype), count, filebuf, position,
+      mpi_extra_state->abi_extra_state);
+  return abi2mpi_errorcode(ierr);
+}
+static int mpi_Datarep_write_conversion_function(void *userbuf,
+                                                 MPI_Datatype datatype,
+                                                 int count, void *filebuf,
+                                                 MPI_Offset position,
+                                                 void *extra_state) {
+  const struct mpi_Register_datarep_state *mpi_extra_state = extra_state;
+  int ierr = mpi_extra_state->abi_write_conversion_fn(
+      userbuf, mpi2abi_datatype(datatype), count, filebuf, position,
+      mpi_extra_state->abi_extra_state);
+  return abi2mpi_errorcode(ierr);
+}
+static int mpi_Datarep_extent_function(MPI_Datatype datatype, MPI_Aint *extent,
+                                       void *extra_state) {
+  const struct mpi_Register_datarep_state *mpi_extra_state = extra_state;
+  MPIABI_Aint abi_extent;
+  int ierr = mpi_extra_state->abi_dtype_file_extent_fn(
+      mpi2abi_datatype(datatype), &abi_extent,
+      mpi_extra_state->abi_extra_state);
+  *extent = abi_extent;
+  return abi2mpi_errorcode(ierr);
+}
 int MPIABI_Register_datarep(
     const char *datarep, MPIABI_Datarep_conversion_function *read_conversion_fn,
     MPIABI_Datarep_conversion_function *write_conversion_fn,
-    MPIABI_Datarep_extent_function *dtype_file_extent_fn, void *extra_state);
+    MPIABI_Datarep_extent_function *dtype_file_extent_fn, void *extra_state) {
+  struct mpi_Register_datarep_state *mpi_extra_state =
+      malloc(sizeof *mpi_extra_state);
+  mpi_extra_state->abi_read_conversion_fn = read_conversion_fn;
+  mpi_extra_state->abi_write_conversion_fn = write_conversion_fn;
+  mpi_extra_state->abi_dtype_file_extent_fn = dtype_file_extent_fn;
+  mpi_extra_state->abi_extra_state = extra_state;
+  int ierr = MPI_Register_datarep(datarep, mpi_Datarep_read_conversion_function,
+                                  mpi_Datarep_write_conversion_function,
+                                  mpi_Datarep_extent_function, mpi_extra_state);
+  return mpi2abi_errorcode(ierr);
+}
+
+struct mpi_Register_datarep_state_c {
+  MPIABI_Datarep_conversion_function_c *abi_read_conversion_fn;
+  MPIABI_Datarep_conversion_function_c *abi_write_conversion_fn;
+  MPIABI_Datarep_extent_function *abi_dtype_file_extent_fn;
+  void *abi_extra_state;
+};
+static int
+mpi_Datarep_read_conversion_function_c(void *userbuf, MPI_Datatype datatype,
+                                       MPI_Count count, void *filebuf,
+                                       MPI_Offset position, void *extra_state) {
+  const struct mpi_Register_datarep_state_c *mpi_extra_state = extra_state;
+  int ierr = mpi_extra_state->abi_read_conversion_fn(
+      userbuf, mpi2abi_datatype(datatype), count, filebuf, position,
+      mpi_extra_state->abi_extra_state);
+  return abi2mpi_errorcode(ierr);
+}
+static int mpi_Datarep_write_conversion_function_c(
+    void *userbuf, MPI_Datatype datatype, MPI_Count count, void *filebuf,
+    MPI_Offset position, void *extra_state) {
+  const struct mpi_Register_datarep_state_c *mpi_extra_state = extra_state;
+  int ierr = mpi_extra_state->abi_write_conversion_fn(
+      userbuf, mpi2abi_datatype(datatype), count, filebuf, position,
+      mpi_extra_state->abi_extra_state);
+  return abi2mpi_errorcode(ierr);
+}
+static int mpi_Datarep_extent_function_c(MPI_Datatype datatype,
+                                         MPI_Aint *extent, void *extra_state) {
+  const struct mpi_Register_datarep_state_c *mpi_extra_state = extra_state;
+  MPIABI_Aint abi_extent;
+  int ierr = mpi_extra_state->abi_dtype_file_extent_fn(
+      mpi2abi_datatype(datatype), &abi_extent,
+      mpi_extra_state->abi_extra_state);
+  *extent = abi_extent;
+  return abi2mpi_errorcode(ierr);
+}
 int MPIABI_Register_datarep_c(
     const char *datarep,
     MPIABI_Datarep_conversion_function_c *read_conversion_fn,
     MPIABI_Datarep_conversion_function_c *write_conversion_fn,
-    MPIABI_Datarep_extent_function *dtype_file_extent_fn, void *extra_state);
+    MPIABI_Datarep_extent_function *dtype_file_extent_fn, void *extra_state) {
+  struct mpi_Register_datarep_state_c *mpi_extra_state =
+      malloc(sizeof *mpi_extra_state);
+  mpi_extra_state->abi_read_conversion_fn = read_conversion_fn;
+  mpi_extra_state->abi_write_conversion_fn = write_conversion_fn;
+  mpi_extra_state->abi_dtype_file_extent_fn = dtype_file_extent_fn;
+  mpi_extra_state->abi_extra_state = extra_state;
+  int ierr =
+      MPI_Register_datarep_c(datarep, mpi_Datarep_read_conversion_function_c,
+                             mpi_Datarep_write_conversion_function_c,
+                             mpi_Datarep_extent_function_c, mpi_extra_state);
+  return mpi2abi_errorcode(ierr);
+}
 
 // A.3.13 Language Bindings C Bindings
 

@@ -155,5 +155,31 @@ void MPI_Unpack_external_c() { assert(0); }
 void MPI_Win_allocate_shared_c() { assert(0); }
 void MPI_Win_create_c() { assert(0); }
 void MPI_Win_shared_query_c() { assert(0); }
+void MPI_File_get_type_extent_c() { assert(0); }
+void MPI_File_iread_all_c() { assert(0); }
+void MPI_File_iread_at_all_c() { assert(0); }
+void MPI_File_iread_at_c() { assert(0); }
+void MPI_File_iread_c() { assert(0); }
+void MPI_File_iread_shared_c() { assert(0); }
+void MPI_File_iwrite_all_c() { assert(0); }
+void MPI_File_iwrite_at_all_c() { assert(0); }
+void MPI_File_iwrite_at_c() { assert(0); }
+void MPI_File_iwrite_c() { assert(0); }
+void MPI_File_iwrite_shared_c() { assert(0); }
+void MPI_File_read_all_begin_c() { assert(0); }
+void MPI_File_read_all_c() { assert(0); }
+void MPI_File_read_at_all_begin_c() { assert(0); }
+void MPI_File_read_at_all_c() { assert(0); }
+void MPI_File_read_ordered_begin_c() { assert(0); }
+void MPI_File_read_ordered_c() { assert(0); }
+void MPI_File_read_shared_c() { assert(0); }
+void MPI_File_write_all_begin_c() { assert(0); }
+void MPI_File_write_all_c() { assert(0); }
+void MPI_File_write_at_all_begin_c() { assert(0); }
+void MPI_File_write_at_all_c() { assert(0); }
+void MPI_File_write_ordered_begin_c() { assert(0); }
+void MPI_File_write_ordered_c() { assert(0); }
+void MPI_File_write_shared_c() { assert(0); }
+void MPI_Register_datarep_c() { assert(0); }
 
 #endif

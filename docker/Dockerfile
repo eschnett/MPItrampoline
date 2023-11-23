@@ -65,9 +65,17 @@ WORKDIR /MPItrampoline/test
 RUN /usr/local/bin/mpicc -c hello-world.c
 RUN /usr/local/bin/mpicc -o hello-world hello-world.o
 RUN ./hello-world 1
-RUN mpiexec -n 4 ./hello-world 4
+RUN case "${mpivendor}" in \
+        mpich) mpiexec_options='';; \
+        openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
+    esac && \
+    mpiexec $mpiexec_options -n 4 ./hello-world 4
 
 RUN /usr/local/bin/mpifc -c hello-world-fortran.f90
 RUN /usr/local/bin/mpifc -o hello-world-fortran hello-world-fortran.o
 RUN ./hello-world-fortran
-RUN mpiexec -n 4 ./hello-world-fortran
+RUN case "${mpivendor}" in \
+        mpich) mpiexec_options='';; \
+        openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
+    esac && \
+    mpiexec $mpiexec_options -n 4 ./hello-world-fortran
