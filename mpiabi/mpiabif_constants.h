@@ -5,10 +5,8 @@
 !     Variable Address Size
 !     Define these first because they are used in other definitions.
 
-      integer MPIABI_INTEGER_DUMMY
-      common /MPIABI_INTEGER_DUMMY/ MPIABI_INTEGER_DUMMY
       integer MPIABI_ADDRESS_KIND
-      parameter (MPIABI_ADDRESS_KIND = kind(loc(MPIABI_INTEGER_DUMMY)))
+      parameter (MPIABI_ADDRESS_KIND = kind(loc(MPIABI_ADDRESS_KIND)))
       integer MPIABI_COUNT_KIND
       parameter (MPIABI_COUNT_KIND = MPIABI_ADDRESS_KIND)
       integer MPIABI_INTEGER_KIND

@@ -44,7 +44,7 @@ RUN git clone -b eschnett/MPItrampoline6 https://github.com/eschnett/MPItrampoli
 WORKDIR /home/cactus/MPItrampoline/mpitrampoline
 RUN cmake -B build -G Ninja \
         -DCMAKE_BUILD_TYPE=Debug \
-        -DCMAKE_INSTALL_PREFIX=/usr/local
+        -DCMAKE_INSTALL_PREFIX=/mpitrampoline
 RUN cmake --build build
 RUN cmake --install build
 
@@ -52,22 +52,22 @@ RUN cmake --install build
 
 WORKDIR /home/cactus/MPItrampoline/test
 
-RUN /usr/local/bin/mpicc -c hello-world-c.c
-RUN /usr/local/bin/mpicc -o hello-world-c hello-world-c.o
+RUN /mpitrampoline/bin/mpicc -c hello-world-c.c
+RUN /mpitrampoline/bin/mpicc -o hello-world-c hello-world-c.o
 
-RUN /usr/local/bin/mpicxx -c hello-world-cxx.cxx
-RUN /usr/local/bin/mpicxx -o hello-world-cxx hello-world-cxx.o
+RUN /mpitrampoline/bin/mpicxx -c hello-world-cxx.cxx
+RUN /mpitrampoline/bin/mpicxx -o hello-world-cxx hello-world-cxx.o
 
-RUN /usr/local/bin/mpifc -c hello-world-f.f
-RUN /usr/local/bin/mpifc -o hello-world-f hello-world-f.o
+RUN /mpitrampoline/bin/mpifc -c hello-world-f.f
+RUN /mpitrampoline/bin/mpifc -o hello-world-f hello-world-f.o
 
-RUN /usr/local/bin/mpifc -c hello-world-f90.f90
-RUN /usr/local/bin/mpifc -o hello-world-f90 hello-world-f90.o
+RUN /mpitrampoline/bin/mpifc -c hello-world-f90.f90
+RUN /mpitrampoline/bin/mpifc -o hello-world-f90 hello-world-f90.o
 
 # 2.3. Build OpenMPI test suite
 
 WORKDIR /home/cactus/mpi-test-suite-1.1.1
-RUN ./configure CC=/usr/local/bin/mpicc
+RUN ./configure CC=/mpitrampoline/bin/mpicc
 RUN  make -j$(nproc)
 
 # 3.1 Install system MPI
@@ -90,10 +90,10 @@ RUN cmake -B build -G Ninja \
         -DCMAKE_BUILD_TYPE=Debug \
         -DCMAKE_C_COMPILER=mpicc \
         -DCMAKE_Fortran_COMPILER=mpifort \
-        -DCMAKE_INSTALL_PREFIX=/usr/local
+        -DCMAKE_INSTALL_PREFIX=/mpiwrapper
 RUN cmake --build build
 RUN cmake --install build
-ENV MPITRAMPOLINE_LIB=/usr/local/lib/libmpiwrapper.so
+ENV MPITRAMPOLINE_LIB=/mpiwrapper/lib/libmpiwrapper.so
 
 # 3.3. Run simple tests
 
