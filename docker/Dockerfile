@@ -62,20 +62,38 @@ RUN cmake --install build
 
 WORKDIR /MPItrampoline/test
 
-RUN /usr/local/bin/mpicc -c hello-world.c
-RUN /usr/local/bin/mpicc -o hello-world hello-world.o
-RUN ./hello-world 1
+RUN /usr/local/bin/mpicc -c hello-world-c.c
+RUN /usr/local/bin/mpicc -o hello-world-c hello-world-c.o
+RUN ./hello-world-c 1
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    mpiexec $mpiexec_options -n 4 ./hello-world 4
+    mpiexec $mpiexec_options -n 4 ./hello-world-c 4
 
-RUN /usr/local/bin/mpifc -c hello-world-fortran.f90
-RUN /usr/local/bin/mpifc -o hello-world-fortran hello-world-fortran.o
-RUN ./hello-world-fortran
+RUN /usr/local/bin/mpicc -c hello-world-cxx.cxx
+RUN /usr/local/bin/mpicc -o hello-world-cxx hello-world-cxx.o
+RUN ./hello-world-cxx 1
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    mpiexec $mpiexec_options -n 4 ./hello-world-fortran
+    mpiexec $mpiexec_options -n 4 ./hello-world-cxx 4
+
+RUN /usr/local/bin/mpicxx -c hello-world-f.f
+RUN /usr/local/bin/mpicxx -o hello-world-f hello-world-f.o
+RUN ./hello-world-f 1
+RUN case "${mpivendor}" in \
+        mpich) mpiexec_options='';; \
+        openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
+    esac && \
+    mpiexec $mpiexec_options -n 4 ./hello-world-f 4
+
+RUN /usr/local/bin/mpifc -c hello-world-f90.f90
+RUN /usr/local/bin/mpifc -o hello-world-f90 hello-world-f90.o
+RUN ./hello-world-f90 1
+RUN case "${mpivendor}" in \
+        mpich) mpiexec_options='';; \
+        openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
+    esac && \
+    mpiexec $mpiexec_options -n 4 ./hello-world-f90 4

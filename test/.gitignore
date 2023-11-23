@@ -1,4 +1,5 @@
-hello-world.o
-hello-world
-hello-world-fortran.o
-hello-world-fortran
+*.o
+hello-world-c
+hello-world-cxx
+hello-world-f90
+hello-world-f

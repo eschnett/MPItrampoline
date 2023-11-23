@@ -105,25 +105,51 @@ jobs:
     - name: Test C
       working-directory: ${{github.workspace}}/test
       run: |
-        $HOME/mpitrampoline/bin/mpicc -c hello-world.c
-        $HOME/mpitrampoline/bin/mpicc -o hello-world hello-world.o
+        $HOME/mpitrampoline/bin/mpicc -c hello-world-c.c
+        $HOME/mpitrampoline/bin/mpicc -o hello-world-c hello-world-c.o
         export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
         case "${{matrix.mpi}}" in
             mpich) mpiexec_options='';;
             openmpi) mpiexec_options='--oversubscribe';;
         esac
-        ./hello-world 1
-        mpiexec $mpiexec_options -n 4 ./hello-world 4
+        ./hello-world-c 1
+        mpiexec $mpiexec_options -n 4 ./hello-world-c 4
+
+    - name: Test C++
+      working-directory: ${{github.workspace}}/test
+      run: |
+        $HOME/mpitrampoline/bin/mpicxx -c hello-world-cxx.c
+        $HOME/mpitrampoline/bin/mpicxx -o hello-world-cxx hello-world-cxx.o
+        export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
+        case "${{matrix.mpi}}" in
+            mpich) mpiexec_options='';;
+            openmpi) mpiexec_options='--oversubscribe';;
+        esac
+        ./hello-world-cxx 1
+        mpiexec $mpiexec_options -n 4 ./hello-world-cxx 4
+
+    - name: Test fixed form Fortran
+      working-directory: ${{github.workspace}}/test
+      run: |
+        $HOME/mpitrampoline/bin/mpifc -c hello-world-f.c
+        $HOME/mpitrampoline/bin/mpifc -o hello-world-f hello-world-f.o
+        export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
+        case "${{matrix.mpi}}" in
+            mpich) mpiexec_options='';;
+            openmpi) mpiexec_options='--oversubscribe';;
+        esac
+        ./hello-world-f 1
+        mpiexec $mpiexec_options -n 4 ./hello-world-f 4
 
     - name: Test Fortran
       working-directory: ${{github.workspace}}/test
       run: |
-        $HOME/mpitrampoline/bin/mpifc -c hello-world-fortran.f90
-        $HOME/mpitrampoline/bin/mpifc -o hello-world-fortran hello-world-fortran.o
+        $HOME/mpitrampoline/bin/mpifc -c hello-world-f90.c
+        $HOME/mpitrampoline/bin/mpifc -o hello-world-f90 hello-world-f90.o
         export MPITRAMPOLINE_LIB=$HOME/mpiwrapper-${{matrix.mpi}}/lib/libmpiwrapper.so
         case "${{matrix.mpi}}" in
             mpich) mpiexec_options='';;
             openmpi) mpiexec_options='--oversubscribe';;
         esac
-        ./hello-world-fortran
-        mpiexec $mpiexec_options -n 4 ./hello-world-fortran
+        ./hello-world-f90 1
+        mpiexec $mpiexec_options -n 4 ./hello-world-f90 4
