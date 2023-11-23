@@ -545,9 +545,11 @@ static MPI_Errhandler abi2mpi_errhandler(MPIABI_Errhandler errhandler) {
     return MPI_ERRHANDLER_NULL;
   case (uintptr_t)MPIABI_ERRORS_ARE_FATAL:
     return MPI_ERRORS_ARE_FATAL;
-#if MPI_VERSION_NUMBER >= 400
   case (uintptr_t)MPIABI_ERRORS_ABORT:
+#if MPI_VERSION_NUMBER >= 400
     return MPI_ERRORS_ABORT;
+#else
+    assert(0);
 #endif
   case (uintptr_t)MPIABI_ERRORS_RETURN:
     return MPI_ERRORS_RETURN;
@@ -561,11 +563,9 @@ static MPIABI_Errhandler mpi2abi_errhandler(MPI_Errhandler errhandler) {
     return MPIABI_ERRHANDLER_NULL;
   if (errhandler == MPI_ERRORS_ARE_FATAL)
     return MPIABI_ERRORS_ARE_FATAL;
-  if (errhandler == MPI_ERRORS_ABORT)
 #if MPI_VERSION_NUMBER >= 400
+  if (errhandler == MPI_ERRORS_ABORT)
     return MPIABI_ERRORS_ABORT;
-#else
-    assert(0);
 #endif
   if (errhandler == MPI_ERRORS_RETURN)
     return MPIABI_ERRORS_RETURN;
