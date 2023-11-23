@@ -95,9 +95,9 @@ enum {
 
 // Buffer Address Constants
 
-#define MPIABI_BOTTOM ((void *)0) // arXiv:2308.11214
-#define MPIABI_BUFFER_AUTOMATIC ((void *))
-#define MPIABI_IN_PLACE ((void *)1) // arXiv:2308.11214
+#define MPIABI_BOTTOM ((void *)0)           // arXiv:2308.11214
+#define MPIABI_BUFFER_AUTOMATIC ((void *)2) // [nonstandard]
+#define MPIABI_IN_PLACE ((void *)1)         // arXiv:2308.11214
 
 // Assorted Constants
 
