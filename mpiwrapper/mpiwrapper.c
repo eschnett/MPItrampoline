@@ -27,15 +27,21 @@
 // #error "MPItrampoline requires at least MPI standard 4.0"
 // #endif
 
-#if MPI_VERSION_NUMBER < 400
 // Fake MPI 4 support, just enough to make the compiler happy
+
+#ifndef HAVE_MPI_BUFFER_AUTOMATIC
 #define MPI_BUFFER_AUTOMATIC MPIABI_BUFFER_AUTOMATIC
+#endif
+
 #ifndef HAVE_SIZEOF_MPI_SESSION
 #define MPI_Session MPI_Comm
 #define MPI_SESSION_NULL MPI_COMM_NULL
 #endif
+
+#ifndef HAVE_SIZEOF_MPI_USER_FUNCTION_C
 #define MPI_User_function_c MPI_User_function
 #endif
+
 
 ////////////////////////////////////////////////////////////////////////////////
 
