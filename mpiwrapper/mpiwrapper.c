@@ -311,7 +311,11 @@ static MPI_Datatype abi2mpi_datatype(MPIABI_Datatype datatype) {
     assert(0);
 #endif
   case (uintptr_t)MPIABI_UB:
+#ifdef HAVE_MPI_UB
     return MPI_UB;
+#else
+    assert(0);
+#endif
   default:
     return (MPI_Datatype)(uintptr_t)datatype;
   }
@@ -520,8 +524,10 @@ static MPIABI_Datatype mpi2abi_datatype(MPI_Datatype datatype) {
   if (datatype == MPI_LB)
     return MPIABI_LB;
 #endif
+#ifdef HAVE_MPI_UB
   if (datatype == MPI_UB)
     return MPIABI_UB;
+#endif
   return (MPIABI_Datatype)(uintptr_t)datatype;
 }
 
