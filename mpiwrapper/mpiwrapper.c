@@ -27,8 +27,10 @@
 
 #if MPI_VERSION_NUMBER < 400
 // Fake MPI 4 support, just enough to make the compiler happy
+#ifndef HAVE_SIZEOF_MPI_SESSION
 #define MPI_Session MPI_Comm
 #define MPI_SESSION_NULL MPI_COMM_NULL
+#endif
 #define MPI_User_function_c MPI_User_function
 #endif
 
@@ -56,7 +58,11 @@ const int mpiabi_version_patch = MPIABI_VERSION_PATCH;
 
 // Define MPIABI functions
 
+#define MAX_RESERVED_HANDLE 0b111111111111
+
 static MPI_Comm abi2mpi_comm(MPIABI_Comm comm) {
+  if ((uintptr_t)comm > MAX_RESERVED_HANDLE)
+    return (MPI_Comm)(uintptr_t)comm;
   switch ((uintptr_t)comm) {
   case (uintptr_t)MPIABI_COMM_NULL:
     return MPI_COMM_NULL;
@@ -65,7 +71,7 @@ static MPI_Comm abi2mpi_comm(MPIABI_Comm comm) {
   case (uintptr_t)MPIABI_COMM_WORLD:
     return MPI_COMM_WORLD;
   default:
-    return (MPI_Comm)(uintptr_t)comm;
+    assert(false);
   }
 }
 
@@ -76,10 +82,13 @@ static MPIABI_Comm mpi2abi_comm(MPI_Comm comm) {
     return MPIABI_COMM_SELF;
   if (comm == MPI_COMM_WORLD)
     return MPIABI_COMM_WORLD;
+  assert((uintptr_t)comm > MAX_RESERVED_HANDLE);
   return (MPIABI_Comm)(uintptr_t)comm;
 }
 
 static MPI_Datatype abi2mpi_datatype(MPIABI_Datatype datatype) {
+  if ((uintptr_t)datatype > MAX_RESERVED_HANDLE)
+    return (MPI_Datatype)(uintptr_t)datatype;
   switch ((uintptr_t)datatype) {
   case (uintptr_t)MPIABI_DATATYPE_NULL:
     return MPI_DATATYPE_NULL;
@@ -177,120 +186,82 @@ static MPI_Datatype abi2mpi_datatype(MPIABI_Datatype datatype) {
     // [Optional datatypes (Fortran)]
   case (uintptr_t)MPIABI_DOUBLE_COMPLEX:
     return MPI_DOUBLE_COMPLEX;
-  case (uintptr_t)MPIABI_INTEGER1:
 #ifdef HAVE_MPI_INTEGER1
+  case (uintptr_t)MPIABI_INTEGER1:
     return MPI_INTEGER1;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_INTEGER2:
 #ifdef HAVE_MPI_INTEGER2
+  case (uintptr_t)MPIABI_INTEGER2:
     return MPI_INTEGER2;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_INTEGER4:
 #ifdef HAVE_MPI_INTEGER4
+  case (uintptr_t)MPIABI_INTEGER4:
     return MPI_INTEGER4;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_INTEGER8:
 #ifdef HAVE_MPI_INTEGER8
+  case (uintptr_t)MPIABI_INTEGER8:
     return MPI_INTEGER8;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_INTEGER16:
 #ifdef HAVE_MPI_INTEGER16
+  case (uintptr_t)MPIABI_INTEGER16:
     return MPI_INTEGER16;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_REAL2:
 #ifdef HAVE_MPI_REAL2
+  case (uintptr_t)MPIABI_REAL2:
     return MPI_REAL2;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_REAL4:
 #ifdef HAVE_MPI_REAL4
+  case (uintptr_t)MPIABI_REAL4:
     return MPI_REAL4;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_REAL8:
 #ifdef HAVE_MPI_REAL8
-    return MPI_REAL8;
-#else
-    assert(0);
+  case (uintptr_t)MPIABI_REAL8:
+    assert(false);
 #endif
-  case (uintptr_t)MPIABI_REAL16:
 #ifdef HAVE_MPI_REAL16
+  case (uintptr_t)MPIABI_REAL16:
     return MPI_REAL16;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_COMPLEX2:
 #ifdef HAVE_MPI_COMPLEX2
+  case (uintptr_t)MPIABI_COMPLEX2:
     return MPI_COMPLEX2;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_COMPLEX4:
 #ifdef HAVE_MPI_COMPLEX4
+  case (uintptr_t)MPIABI_COMPLEX4:
     return MPI_COMPLEX4;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_COMPLEX8:
 #ifdef HAVE_MPI_COMPLEX8
+  case (uintptr_t)MPIABI_COMPLEX8:
     return MPI_COMPLEX8;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_COMPLEX16:
 #ifdef HAVE_MPI_COMPLEX16
+  case (uintptr_t)MPIABI_COMPLEX16:
     return MPI_COMPLEX16;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_COMPLEX32:
 #ifdef HAVE_MPI_COMPLEX32
+  case (uintptr_t)MPIABI_COMPLEX32:
     return MPI_COMPLEX32;
-#else
-    assert(0);
 #endif
     // [Extensions]
-  case (uintptr_t)MPIABI_REAL1:
 #ifdef HAVE_MPI_REAL1
+  case (uintptr_t)MPIABI_REAL1:
     return MPI_REAL1;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_LOGICAL1:
 #ifdef HAVE_MPI_LOGICAL1
+  case (uintptr_t)MPIABI_LOGICAL1:
     return MPI_LOGICAL1;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_LOGICAL2:
 #ifdef HAVE_MPI_LOGICAL2
+  case (uintptr_t)MPIABI_LOGICAL2:
     return MPI_LOGICAL2;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_LOGICAL4:
 #ifdef HAVE_MPI_LOGICAL4
+  case (uintptr_t)MPIABI_LOGICAL4:
     return MPI_LOGICAL4;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_LOGICAL8:
 #ifdef HAVE_MPI_LOGICAL8
+  case (uintptr_t)MPIABI_LOGICAL8:
     return MPI_LOGICAL8;
-#else
-    assert(0);
 #endif
     // [Datatypes for reduction functions (C)]
   case (uintptr_t)MPIABI_FLOAT_INT:
@@ -313,20 +284,16 @@ static MPI_Datatype abi2mpi_datatype(MPIABI_Datatype datatype) {
   case (uintptr_t)MPIABI_2INTEGER:
     return MPI_2INTEGER;
     // [Removed constructs]
-  case (uintptr_t)MPIABI_LB:
 #ifdef HAVE_MPI_LB
+  case (uintptr_t)MPIABI_LB:
     return MPI_LB;
-#else
-    assert(0);
 #endif
-  case (uintptr_t)MPIABI_UB:
 #ifdef HAVE_MPI_UB
+  case (uintptr_t)MPIABI_UB:
     return MPI_UB;
-#else
-    assert(0);
 #endif
   default:
-    return (MPI_Datatype)(uintptr_t)datatype;
+    assert(false);
   }
 }
 
@@ -537,25 +504,26 @@ static MPIABI_Datatype mpi2abi_datatype(MPI_Datatype datatype) {
   if (datatype == MPI_UB)
     return MPIABI_UB;
 #endif
+  assert((uintptr_t)datatype > MAX_RESERVED_HANDLE);
   return (MPIABI_Datatype)(uintptr_t)datatype;
 }
 
 static MPI_Errhandler abi2mpi_errhandler(MPIABI_Errhandler errhandler) {
+  if ((uintptr_t)errhandler > MAX_RESERVED_HANDLE)
+    return (MPI_Errhandler)(uintptr_t)errhandler;
   switch ((uintptr_t)errhandler) {
   case (uintptr_t)MPIABI_ERRHANDLER_NULL:
     return MPI_ERRHANDLER_NULL;
   case (uintptr_t)MPIABI_ERRORS_ARE_FATAL:
     return MPI_ERRORS_ARE_FATAL;
-  case (uintptr_t)MPIABI_ERRORS_ABORT:
 #if MPI_VERSION_NUMBER >= 400
+  case (uintptr_t)MPIABI_ERRORS_ABORT:
     return MPI_ERRORS_ABORT;
-#else
-    assert(0);
 #endif
   case (uintptr_t)MPIABI_ERRORS_RETURN:
     return MPI_ERRORS_RETURN;
   default:
-    return (MPI_Errhandler)(uintptr_t)errhandler;
+    assert(false);
   }
 }
 
@@ -570,32 +538,38 @@ static MPIABI_Errhandler mpi2abi_errhandler(MPI_Errhandler errhandler) {
 #endif
   if (errhandler == MPI_ERRORS_RETURN)
     return MPIABI_ERRORS_RETURN;
+  assert((uintptr_t)errhandler > MAX_RESERVED_HANDLE);
   return (MPIABI_Errhandler)(uintptr_t)errhandler;
 }
 
 static MPI_File abi2mpi_file(MPIABI_File file) {
+  if ((uintptr_t)file > MAX_RESERVED_HANDLE)
+    return (MPI_File)(uintptr_t)file;
   switch ((uintptr_t)file) {
   case (uintptr_t)MPIABI_FILE_NULL:
     return MPI_FILE_NULL;
   default:
-    return (MPI_File)(uintptr_t)file;
+    assert(false);
   }
 }
 
 static MPIABI_File mpi2abi_file(MPI_File file) {
   if (file == MPI_FILE_NULL)
     return MPIABI_FILE_NULL;
+  assert((uintptr_t)file > MAX_RESERVED_HANDLE);
   return (MPIABI_File)(uintptr_t)file;
 }
 
 static MPI_Group abi2mpi_group(MPIABI_Group group) {
+  if ((uintptr_t)group > MAX_RESERVED_HANDLE)
+    return (MPI_Group)(uintptr_t)group;
   switch ((uintptr_t)group) {
   case (uintptr_t)MPIABI_GROUP_EMPTY:
     return MPI_GROUP_EMPTY;
   case (uintptr_t)MPIABI_GROUP_NULL:
     return MPI_GROUP_NULL;
   default:
-    return (MPI_Group)(uintptr_t)group;
+    assert(false);
   }
 }
 
@@ -604,17 +578,20 @@ static MPIABI_Group mpi2abi_group(MPI_Group group) {
     return MPIABI_GROUP_EMPTY;
   if (group == MPI_GROUP_NULL)
     return MPIABI_GROUP_NULL;
+  assert((uintptr_t)group > MAX_RESERVED_HANDLE);
   return (MPIABI_Group)(uintptr_t)group;
 }
 
 static MPI_Info abi2mpi_info(MPIABI_Info info) {
+  if ((uintptr_t)info > MAX_RESERVED_HANDLE)
+    return (MPI_Info)(uintptr_t)info;
   switch ((uintptr_t)info) {
   case (uintptr_t)MPIABI_INFO_ENV:
     return MPI_INFO_ENV;
   case (uintptr_t)MPIABI_INFO_NULL:
     return MPI_INFO_NULL;
   default:
-    return (MPI_Info)(uintptr_t)info;
+    assert(false);
   }
 }
 
@@ -623,17 +600,20 @@ static MPIABI_Info mpi2abi_info(MPI_Info info) {
     return MPIABI_INFO_ENV;
   if (info == MPI_INFO_NULL)
     return MPIABI_INFO_NULL;
+  assert((uintptr_t)info > MAX_RESERVED_HANDLE);
   return (MPIABI_Info)(uintptr_t)info;
 }
 
 static MPI_Message abi2mpi_message(MPIABI_Message message) {
+  if ((uintptr_t)message > MAX_RESERVED_HANDLE)
+    return (MPI_Message)(uintptr_t)message;
   switch ((uintptr_t)message) {
   case (uintptr_t)MPIABI_MESSAGE_NO_PROC:
     return MPI_MESSAGE_NO_PROC;
   case (uintptr_t)MPIABI_MESSAGE_NULL:
     return MPI_MESSAGE_NULL;
   default:
-    return (MPI_Message)(uintptr_t)message;
+    assert(false);
   }
 }
 
@@ -642,10 +622,13 @@ static MPIABI_Message mpi2abi_message(MPI_Message message) {
     return MPIABI_MESSAGE_NO_PROC;
   if (message == MPI_MESSAGE_NULL)
     return MPIABI_MESSAGE_NULL;
+  assert((uintptr_t)message > MAX_RESERVED_HANDLE);
   return (MPIABI_Message)(uintptr_t)message;
 }
 
 static MPI_Op abi2mpi_op(MPIABI_Op op) {
+  if ((uintptr_t)op > MAX_RESERVED_HANDLE)
+    return (MPI_Op)(uintptr_t)op;
   switch ((uintptr_t)op) {
   case (uintptr_t)MPIABI_OP_NULL:
     return MPI_OP_NULL;
@@ -678,7 +661,7 @@ static MPI_Op abi2mpi_op(MPIABI_Op op) {
   case (uintptr_t)MPIABI_NO_OP:
     return MPI_NO_OP;
   default:
-    return (MPI_Op)(uintptr_t)op;
+    assert(false);
   }
 }
 
@@ -713,51 +696,61 @@ static MPIABI_Op mpi2abi_op(MPI_Op op) {
     return MPIABI_REPLACE;
   if (op == MPI_NO_OP)
     return MPIABI_NO_OP;
+  assert((uintptr_t)op > MAX_RESERVED_HANDLE);
   return (MPIABI_Op)(uintptr_t)op;
 }
 
 static MPI_Request abi2mpi_request(MPIABI_Request request) {
+  if ((uintptr_t)request > MAX_RESERVED_HANDLE)
+    return (MPI_Request)(uintptr_t)request;
   switch ((uintptr_t)request) {
   case (uintptr_t)MPIABI_REQUEST_NULL:
     return MPI_REQUEST_NULL;
   default:
-    return (MPI_Request)(uintptr_t)request;
+    assert(false);
   }
 }
 
 static MPIABI_Request mpi2abi_request(MPI_Request request) {
   if (request == MPI_REQUEST_NULL)
     return MPIABI_REQUEST_NULL;
+  assert((uintptr_t)request > MAX_RESERVED_HANDLE);
   return (MPIABI_Request)(uintptr_t)request;
 }
 
 static MPI_Session abi2mpi_session(MPIABI_Session session) {
+  if ((uintptr_t)session > MAX_RESERVED_HANDLE)
+    return (MPI_Session)(uintptr_t)session;
   switch ((uintptr_t)session) {
   case (uintptr_t)MPIABI_SESSION_NULL:
     return MPI_SESSION_NULL;
   default:
-    return (MPI_Session)(uintptr_t)session;
+    assert(false);
   }
 }
 
 static MPIABI_Session mpi2abi_session(MPI_Session session) {
   if (session == MPI_SESSION_NULL)
     return MPIABI_SESSION_NULL;
+  assert((uintptr_t)session > MAX_RESERVED_HANDLE);
   return (MPIABI_Session)(uintptr_t)session;
 }
 
 static MPI_Win abi2mpi_win(MPIABI_Win win) {
+  if ((uintptr_t)win > MAX_RESERVED_HANDLE)
+    return (MPI_Win)(uintptr_t)win;
   switch ((uintptr_t)win) {
   case (uintptr_t)MPIABI_WIN_NULL:
     return MPI_WIN_NULL;
   default:
-    return (MPI_Win)(uintptr_t)win;
+    assert(false);
   }
 }
 
 static MPIABI_Win mpi2abi_win(MPI_Win win) {
   if (win == MPI_WIN_NULL)
     return MPIABI_WIN_NULL;
+  assert((uintptr_t)win > MAX_RESERVED_HANDLE);
   return (MPIABI_Win)(uintptr_t)win;
 }
 
@@ -910,11 +903,9 @@ static int abi2mpi_errorcode(int errorcode) {
     return MPI_ERR_PENDING;
   case MPIABI_ERR_PORT:
     return MPI_ERR_PORT;
-  case MPIABI_ERR_PROC_ABORTED:
 #if MPI_VERSION_NUMBER >= 400
+  case MPIABI_ERR_PROC_ABORTED:
     return MPI_ERR_PROC_ABORTED;
-#else
-    assert(0);
 #endif
   case MPIABI_ERR_QUOTA:
     return MPI_ERR_QUOTA;
@@ -940,11 +931,9 @@ static int abi2mpi_errorcode(int errorcode) {
     return MPI_ERR_ROOT;
   case MPIABI_ERR_SERVICE:
     return MPI_ERR_SERVICE;
-  case MPIABI_ERR_SESSION:
 #if MPI_VERSION_NUMBER >= 400
+  case MPIABI_ERR_SESSION:
     return MPI_ERR_SESSION;
-#else
-    assert(0);
 #endif
   case MPIABI_ERR_SIZE:
     return MPI_ERR_SIZE;
@@ -964,17 +953,15 @@ static int abi2mpi_errorcode(int errorcode) {
     return MPI_ERR_UNSUPPORTED_DATAREP;
   case MPIABI_ERR_UNSUPPORTED_OPERATION:
     return MPI_ERR_UNSUPPORTED_OPERATION;
-  case MPIABI_ERR_VALUE_TOO_LARGE:
 #if MPI_VERSION_NUMBER >= 400
+  case MPIABI_ERR_VALUE_TOO_LARGE:
     return MPI_ERR_VALUE_TOO_LARGE;
-#else
-    assert(0);
 #endif
   case MPIABI_ERR_WIN:
     return MPI_ERR_WIN;
   default:
     // unknown error code
-    assert(0);
+    assert(false);
   }
 }
 
@@ -1111,7 +1098,7 @@ static int mpi2abi_errorcode(int errorcode) {
     return MPIABI_ERR_WIN;
   default:
     // unknown error code
-    assert(0);
+    assert(false);
   }
 }
 
@@ -5651,7 +5638,7 @@ int MPIABI_Comm_create_errhandler(
     MPIABI_Comm_errhandler_function *comm_errhandler_fn,
     MPIABI_Errhandler *errhandler) {
   // This is not possible; errhandler calls cannot be forwarded
-  assert(0);
+  assert(false);
 }
 
 int MPIABI_Comm_get_errhandler(MPIABI_Comm comm,
@@ -5694,7 +5681,7 @@ int MPIABI_File_create_errhandler(
     MPIABI_File_errhandler_function *file_errhandler_fn,
     MPIABI_Errhandler *errhandler) {
   // This is not possible; errhandler calls cannot be forwarded
-  assert(0);
+  assert(false);
 }
 
 int MPIABI_File_get_errhandler(MPIABI_File file,
@@ -5762,7 +5749,7 @@ int MPIABI_Session_create_errhandler(
     MPIABI_Session_errhandler_function *session_errhandler_fn,
     MPIABI_Errhandler *errhandler) {
   // This is not possible; errhandler calls cannot be forwarded
-  assert(0);
+  assert(false);
 }
 
 int MPIABI_Session_get_errhandler(MPIABI_Session session,
@@ -5790,7 +5777,7 @@ int MPIABI_Win_create_errhandler(
     MPIABI_Win_errhandler_function *win_errhandler_fn,
     MPIABI_Errhandler *errhandler) {
   // This is not possible; errhandler calls cannot be forwarded
-  assert(0);
+  assert(false);
 }
 
 int MPIABI_Win_get_errhandler(MPIABI_Win win, MPIABI_Errhandler *errhandler) {

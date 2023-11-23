@@ -48,4 +48,6 @@
 #cmakedefine HAVE_MPIX_QUERY_ROCM_SUPPORT
 #cmakedefine HAVE_MPIX_QUERY_ZE_SUPPORT
 
+#cmakedefine HAVE_SIZEOF_MPI_SESSION
+
 #endif // #ifndef MPIWRAPPER_H

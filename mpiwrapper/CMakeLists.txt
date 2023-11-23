@@ -107,6 +107,9 @@ check_function_exists(MPIX_Query_hip_support HAVE_MPIX_QUERY_HIP_SUPPORT)
 check_function_exists(MPIX_Query_rocm_support HAVE_MPIX_QUERY_ROCM_SUPPORT)
 check_function_exists(MPIX_Query_ze_support HAVE_MPIX_QUERY_ZE_SUPPORT)
 
+# Check level of MPI 4 support
+check_type_size(MPI_Session SIZEOF_MPI_SESSION)
+
 configure_file(mpiwrapper.h.in mpiwrapper.h @ONLY)
 
 add_library(mpiwrapper
