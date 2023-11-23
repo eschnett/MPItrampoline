@@ -17,11 +17,19 @@
 #include <stdlib.h>
 #include <string.h>
 
-// #if MPI_VERSION > 4 || (MPI_VERSION == 4 && MPI_SUBVERSION >= 0)
+#define MPI_VERSION_NUMBER (100 * MPI_VERSION + MPI_SUBVERSION)
+
+// #if MPI_VERSION_NUMBER >= 400
 // // All is fine
 // #else
 // #error "MPItrampoline requires at least MPI standard 4.0"
 // #endif
+
+#if MPI_VERSION_NUMBER < 400
+// Fake MPI 4 support, just enough to make the compiler happy
+#define MPI_Session MPI_Comm
+#define MPI_User_function_c MPI_User_function
+#endif
 
 #if SIZEOF_MPI_AINT == SIZEOF_PTRDIFF_T
 _Static_assert(sizeof(MPI_Aint) == sizeof(MPIABI_Aint), "");
@@ -537,8 +545,10 @@ static MPI_Errhandler abi2mpi_errhandler(MPIABI_Errhandler errhandler) {
     return MPI_ERRHANDLER_NULL;
   case (uintptr_t)MPIABI_ERRORS_ARE_FATAL:
     return MPI_ERRORS_ARE_FATAL;
+#if MPI_VERSION_NUMBER >= 400
   case (uintptr_t)MPIABI_ERRORS_ABORT:
     return MPI_ERRORS_ABORT;
+#endif
   case (uintptr_t)MPIABI_ERRORS_RETURN:
     return MPI_ERRORS_RETURN;
   default:
@@ -552,7 +562,11 @@ static MPIABI_Errhandler mpi2abi_errhandler(MPI_Errhandler errhandler) {
   if (errhandler == MPI_ERRORS_ARE_FATAL)
     return MPIABI_ERRORS_ARE_FATAL;
   if (errhandler == MPI_ERRORS_ABORT)
+#if MPI_VERSION_NUMBER >= 400
     return MPIABI_ERRORS_ABORT;
+#else
+    assert(0);
+#endif
   if (errhandler == MPI_ERRORS_RETURN)
     return MPIABI_ERRORS_RETURN;
   return (MPIABI_Errhandler)(uintptr_t)errhandler;
@@ -921,8 +935,10 @@ static int abi2mpi_errorcode(int errorcode) {
     return MPI_ERR_ROOT;
   case MPIABI_ERR_SERVICE:
     return MPI_ERR_SERVICE;
+#if MPI_VERSION_NUMBER >= 400
   case MPIABI_ERR_SESSION:
     return MPI_ERR_SESSION;
+#endif
   case MPIABI_ERR_SIZE:
     return MPI_ERR_SIZE;
   case MPIABI_ERR_SPAWN:
@@ -1053,7 +1069,11 @@ static int mpi2abi_errorcode(int errorcode) {
   case MPI_ERR_SERVICE:
     return MPIABI_ERR_SERVICE;
   case MPI_ERR_SESSION:
+#if MPI_VERSION_NUMBER >= 400
     return MPIABI_ERR_SESSION;
+#else
+    assert(0);
+#endif
   case MPI_ERR_SIZE:
     return MPIABI_ERR_SIZE;
   case MPI_ERR_SPAWN:
@@ -3872,37 +3892,19 @@ int MPIABI_Op_commutative(MPIABI_Op op, int *commute) {
 }
 
 #define MAX_NUM_OP_WRAPPERS 10
-
 static atomic_int num_op_wrappers = 0;
-static atomic_int num_op_wrappers_c = 0;
-
 static MPIABI_User_function *user_fns[MAX_NUM_OP_WRAPPERS] = {
     NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
 };
-static MPIABI_User_function_c *user_fns_c[MAX_NUM_OP_WRAPPERS] = {
-    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
-};
-
 static void wrap_user_fn_impl(int op_wrapper_num, void *invec, void *inoutvec,
                               int *len, MPI_Datatype *datatype) {
   MPIABI_Datatype abi_datatype = mpi2abi_datatype(*datatype);
   user_fns[op_wrapper_num](invec, inoutvec, len, &abi_datatype);
 }
-static void wrap_user_fn_c_impl(int op_wrapper_num, void *invec, void *inoutvec,
-                                MPI_Count *len, MPI_Datatype *datatype) {
-  MPIABI_Count abi_len = *len;
-  MPIABI_Datatype abi_datatype = mpi2abi_datatype(*datatype);
-  user_fns_c[op_wrapper_num](invec, inoutvec, &abi_len, &abi_datatype);
-}
-
 #define DEFINE_WRAP_USER_FN(N)                                                 \
   static void wrap_user_fn_##N(void *invec, void *inoutvec, int *len,          \
                                MPI_Datatype *datatype) {                       \
     wrap_user_fn_impl(N, invec, inoutvec, len, datatype);                      \
-  }                                                                            \
-  static void wrap_user_fn_c_##N(void *invec, void *inoutvec, MPI_Count *len,  \
-                                 MPI_Datatype *datatype) {                     \
-    wrap_user_fn_c_impl(N, invec, inoutvec, len, datatype);                    \
   }
 DEFINE_WRAP_USER_FN(0)
 DEFINE_WRAP_USER_FN(1)
@@ -3915,16 +3917,10 @@ DEFINE_WRAP_USER_FN(7)
 DEFINE_WRAP_USER_FN(8)
 DEFINE_WRAP_USER_FN(9)
 #undef DEFINE_WRAP_USER_FN
-
 static MPI_User_function *const wrap_user_fn[MAX_NUM_OP_WRAPPERS] = {
     wrap_user_fn_0, wrap_user_fn_1, wrap_user_fn_2, wrap_user_fn_3,
     wrap_user_fn_4, wrap_user_fn_5, wrap_user_fn_6, wrap_user_fn_7,
     wrap_user_fn_8, wrap_user_fn_9,
-};
-static MPI_User_function_c *const wrap_user_fn_c[MAX_NUM_OP_WRAPPERS] = {
-    wrap_user_fn_c_0, wrap_user_fn_c_1, wrap_user_fn_c_2, wrap_user_fn_c_3,
-    wrap_user_fn_c_4, wrap_user_fn_c_5, wrap_user_fn_c_6, wrap_user_fn_c_7,
-    wrap_user_fn_c_8, wrap_user_fn_c_9,
 };
 
 int MPIABI_Op_create(MPIABI_User_function *user_fn, int commute,
@@ -3938,11 +3934,44 @@ int MPIABI_Op_create(MPIABI_User_function *user_fn, int commute,
   return mpi2abi_errorcode(ierr);
 }
 
+#define MAX_NUM_OP_WRAPPERS_C 10
+static atomic_int num_op_wrappers_c = 0;
+static MPIABI_User_function_c *user_fns_c[MAX_NUM_OP_WRAPPERS_C] = {
+    NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL,
+};
+static void wrap_user_fn_c_impl(int op_wrapper_num, void *invec, void *inoutvec,
+                                MPI_Count *len, MPI_Datatype *datatype) {
+  MPIABI_Count abi_len = *len;
+  MPIABI_Datatype abi_datatype = mpi2abi_datatype(*datatype);
+  user_fns_c[op_wrapper_num](invec, inoutvec, &abi_len, &abi_datatype);
+}
+#define DEFINE_WRAP_USER_FN_C(N)                                               \
+  static void wrap_user_fn_c_##N(void *invec, void *inoutvec, MPI_Count *len,  \
+                                 MPI_Datatype *datatype) {                     \
+    wrap_user_fn_c_impl(N, invec, inoutvec, len, datatype);                    \
+  }
+DEFINE_WRAP_USER_FN_C(0)
+DEFINE_WRAP_USER_FN_C(1)
+DEFINE_WRAP_USER_FN_C(2)
+DEFINE_WRAP_USER_FN_C(3)
+DEFINE_WRAP_USER_FN_C(4)
+DEFINE_WRAP_USER_FN_C(5)
+DEFINE_WRAP_USER_FN_C(6)
+DEFINE_WRAP_USER_FN_C(7)
+DEFINE_WRAP_USER_FN_C(8)
+DEFINE_WRAP_USER_FN_C(9)
+#undef DEFINE_WRAP_USER_FN_C
+static MPI_User_function_c *const wrap_user_fn_c[MAX_NUM_OP_WRAPPERS] = {
+    wrap_user_fn_c_0, wrap_user_fn_c_1, wrap_user_fn_c_2, wrap_user_fn_c_3,
+    wrap_user_fn_c_4, wrap_user_fn_c_5, wrap_user_fn_c_6, wrap_user_fn_c_7,
+    wrap_user_fn_c_8, wrap_user_fn_c_9,
+};
+
 int MPIABI_Op_create_c(MPIABI_User_function_c *user_fn, int commute,
                        MPIABI_Op *op) {
   MPI_Op mpi_op;
   int op_wrapper_num = atomic_fetch_add(&num_op_wrappers_c, 1);
-  assert(op_wrapper_num < MAX_NUM_OP_WRAPPERS);
+  assert(op_wrapper_num < MAX_NUM_OP_WRAPPERS_C);
   user_fns_c[op_wrapper_num] = user_fn;
   int ierr = MPI_Op_create_c(wrap_user_fn_c[op_wrapper_num], commute, &mpi_op);
   *op = mpi2abi_op(mpi_op);

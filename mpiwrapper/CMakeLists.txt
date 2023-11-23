@@ -113,6 +113,7 @@ add_library(mpiwrapper
   MODULE
   mpiwrapper.h
   mpiwrapper.c
+  mpiwrapper-mpi3.c
   mpiwrapper.f90
   mpiwrapper_functions.f90
 )
@@ -124,9 +125,23 @@ target_include_directories(
   PRIVATE ../mpiabi
 )
 target_link_libraries(mpiwrapper PRIVATE MPI::MPI_C MPI::MPI_Fortran Threads::Threads)
-#TODO set_target_properties(mpiwrapper PROPERTIES
-#TODO   VERSION ${PROJECT_VERSION}
-#TODO   SOVERSION ${SOVERSION}
-#TODO )
+# This does not work on macOS with GCC
+# set_target_properties(mpiwrapper PROPERTIES
+#   VERSION ${PROJECT_VERSION}
+#   SOVERSION ${SOVERSION}
+# )
+
+if(APPLE)
+  # On macOS, check that the plugin `libmpiwrapper.so` is built with a
+  # two-level namespace. If not, it will use the MPI functions
+  # provided by MPItrampoline instead of the "real" MPI, which will
+  # recurse infinitely, leading to a stack overflow and segfault.
+  add_custom_command(
+    TARGET mpiwrapper POST_BUILD
+    COMMAND ${CMAKE_CURRENT_SOURCE_DIR}/check_twolevel.sh ${CMAKE_CURRENT_BINARY_DIR}/libmpiwrapper.so
+    COMMENT "Checking whether libmpiwrapper.so plugin uses a two-level namespace..."
+    VERBATIM
+    )
+endif()
 
 install(TARGETS mpiwrapper LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

@@ -10,6 +10,14 @@ int main(int argc, char **argv) {
   printf("Running with MPItrampoline %d.%d.%d\n", mpitrampoline_version_major,
          mpitrampoline_version_minor, mpitrampoline_version_patch);
 
+  int version, subversion;
+  MPI_Get_version(&version, &subversion);
+  printf("Running on MPI standard version %d.%d\n", version, subversion);
+  char library_version[MPI_MAX_LIBRARY_VERSION_STRING];
+  int resultlen;
+  MPI_Get_library_version(library_version, &resultlen);
+  printf("Running on %s\n", library_version);
+
   MPI_Init(&argc, &argv);
 
   int size, rank;
