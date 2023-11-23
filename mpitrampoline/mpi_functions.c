@@ -262,6 +262,8 @@ extern inline int MPI_Pack_external_size_c(const char datarep[],
                                            MPI_Count incount,
                                            MPI_Datatype datatype,
                                            MPI_Count *size);
+extern inline int MPI_Pack_size(int incount, MPI_Datatype datatype,
+                                MPI_Comm comm, int *size);
 extern inline int MPI_Pack_size_c(MPI_Count incount, MPI_Datatype datatype,
                                   MPI_Comm comm, MPI_Count *size);
 extern inline int MPI_Type_commit(MPI_Datatype *datatype);

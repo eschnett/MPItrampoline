@@ -305,6 +305,8 @@ extern int (*MPIABI_Pack_external_size_c_ptr)(const char datarep[],
                                               MPIABI_Count incount,
                                               MPIABI_Datatype datatype,
                                               MPIABI_Count *size);
+extern int (*MPIABI_Pack_size_ptr)(int incount, MPIABI_Datatype datatype,
+                                   MPIABI_Comm comm, int *size);
 extern int (*MPIABI_Pack_size_c_ptr)(MPIABI_Count incount,
                                      MPIABI_Datatype datatype, MPIABI_Comm comm,
                                      MPIABI_Count *size);

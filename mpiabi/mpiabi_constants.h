@@ -509,10 +509,9 @@ enum {
 #define MPIABI_F08_STATUS_IGNORE ((MPIABI_F08_status *))
 
 // C preprocessor Constants and Fortran Parameters
-enum {
-  MPIABI_SUBVERSION = 1,
-  MPIABI_VERSION = 4,
-};
+
+#define MPIABI_SUBVERSION 1
+#define MPIABI_VERSION 4
 
 // Null handles used in the MPI tool information interface
 

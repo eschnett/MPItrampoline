@@ -2225,6 +2225,13 @@ int MPIABI_Pack_external_size_c(const char datarep[], MPIABI_Count incount,
   return mpi2abi_errorcode(ierr);
 }
 
+int MPIABI_Pack_size(int incount, MPIABI_Datatype datatype, MPIABI_Comm comm,
+                     int *size) {
+  int ierr = MPI_Pack_size(incount, abi2mpi_datatype(datatype),
+                           abi2mpi_comm(comm), size);
+  return mpi2abi_errorcode(ierr);
+}
+
 int MPIABI_Pack_size_c(MPIABI_Count incount, MPIABI_Datatype datatype,
                        MPIABI_Comm comm, MPIABI_Count *size) {
 

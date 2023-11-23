@@ -583,6 +583,11 @@ inline int MPI_Pack_external_size_c(const char datarep[], MPI_Count incount,
   return (*MPIABI_Pack_external_size_c_ptr)(datarep, incount, datatype, size);
 }
 
+inline int MPI_Pack_size(int incount, MPI_Datatype datatype, MPI_Comm comm,
+                         int *size) {
+  return (*MPIABI_Pack_size_ptr)(incount, datatype, comm, size);
+}
+
 inline int MPI_Pack_size_c(MPI_Count incount, MPI_Datatype datatype,
                            MPI_Comm comm, MPI_Count *size) {
   return (*MPIABI_Pack_size_c_ptr)(incount, datatype, comm, size);

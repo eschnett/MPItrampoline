@@ -34,9 +34,18 @@ RUN case ${mpivendor} in \
 RUN mkdir /home/cactus
 WORKDIR /home/cactus
 
+# Download OpenMPI test suite
+
+WORKDIR /home/cactus
+ADD https://github.com/open-mpi/mpi-test-suite/archive/refs/tags/v1.1.1.tar.gz /home/cactus/mpi-test-suite-1.1.1.tar.gz
+RUN tar xzf mpi-test-suite-1.1.1.tar.gz
+WORKDIR /home/cactus/mpi-test-suite-1.1.1
+RUN ./autogen.sh
+
 # 2. Download MPItrampoline
 
 ARG githash
+WORKDIR /home/cactus
 RUN git clone -b eschnett/MPItrampoline6 https://github.com/eschnett/MPItrampoline && \
     cd MPItrampoline && \
     git checkout ${githash}
@@ -104,11 +113,11 @@ RUN case "${mpivendor}" in \
 
 # 6. Run OpenMPI test suite
 
-WORKDIR /home/cactus
-ADD https://github.com/open-mpi/mpi-test-suite/archive/refs/tags/v1.1.1.tar.gz /home/cactus/mpi-test-suite-1.1.1.tar.gz
-RUN tar xzf mpi-test-suite-1.1.1.tar.gz
 WORKDIR /home/cactus/mpi-test-suite-1.1.1
-RUN ./autogen.sh
 RUN ./configure CC=/usr/local/bin/mpicc
 RUN  make -j$(nproc)
-run mpiexec -n 1 ./mpi_test_suite -h
+RUN case "${mpivendor}" in \
+        mpich) mpiexec_options='';; \
+        openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
+    esac && \
+    mpiexec $mpiexec_options -n 1 ./mpi_test_suite -h

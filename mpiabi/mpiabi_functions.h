@@ -247,6 +247,8 @@ int MPIABI_Pack_external_size(const char datarep[], MPIABI_Count incount,
                               MPIABI_Datatype datatype, MPIABI_Aint *size);
 int MPIABI_Pack_external_size_c(const char datarep[], MPIABI_Count incount,
                                 MPIABI_Datatype datatype, MPIABI_Count *size);
+int MPIABI_Pack_size(int incount, MPIABI_Datatype datatype, MPIABI_Comm comm,
+                     int *size);
 int MPIABI_Pack_size_c(MPIABI_Count incount, MPIABI_Datatype datatype,
                        MPIABI_Comm comm, MPIABI_Count *size);
 int MPIABI_Type_commit(MPIABI_Datatype *datatype);

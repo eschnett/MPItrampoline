@@ -126,6 +126,7 @@ MPIABI_Pack_external_c_ptr = get_symbol(handle, "MPIABI_Pack_external_c");
 MPIABI_Pack_external_size_ptr = get_symbol(handle, "MPIABI_Pack_external_size");
 MPIABI_Pack_external_size_c_ptr =
     get_symbol(handle, "MPIABI_Pack_external_size_c");
+MPIABI_Pack_size_ptr = get_symbol(handle, "MPIABI_Pack_size");
 MPIABI_Pack_size_c_ptr = get_symbol(handle, "MPIABI_Pack_size_c");
 MPIABI_Type_commit_ptr = get_symbol(handle, "MPIABI_Type_commit");
 MPIABI_Type_contiguous_ptr = get_symbol(handle, "MPIABI_Type_contiguous");
