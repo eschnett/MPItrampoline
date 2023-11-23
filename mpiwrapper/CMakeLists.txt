@@ -109,6 +109,8 @@ check_function_exists(MPIX_Query_ze_support HAVE_MPIX_QUERY_ZE_SUPPORT)
 
 # Check level of MPI 4 support
 check_symbol_exists(MPI_BUFFER_AUTOMATIC mpi.h HAVE_MPI_BUFFER_AUTOMATIC)
+check_symbol_exists(MPI_COMM_TYPE_HW_GUIDED mpi.h HAVE_MPI_COMM_TYPE_HW_GUIDED)
+check_symbol_exists(MPI_COMM_TYPE_HW_UNGUIDED mpi.h HAVE_MPI_COMM_TYPE_HW_UNGUIDED)
 check_symbol_exists(MPI_COMM_TYPE_RESOURCE_GUIDED mpi.h HAVE_MPI_COMM_TYPE_RESOURCE_GUIDED)
 check_type_size(MPI_Session SIZEOF_MPI_SESSION)
 check_type_size(MPI_User_function_c SIZEOF_MPI_USER_FUNCTION_C)
