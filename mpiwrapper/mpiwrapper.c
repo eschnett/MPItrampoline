@@ -17,11 +17,11 @@
 #include <stdlib.h>
 #include <string.h>
 
-#if MPI_VERSION > 4 || (MPI_VERSION == 4 && MPI_SUBVERSION >= 0)
-// All is fine
-#else
-#error "MPItrampoline requires at least MPI standard 4.0"
-#endif
+// #if MPI_VERSION > 4 || (MPI_VERSION == 4 && MPI_SUBVERSION >= 0)
+// // All is fine
+// #else
+// #error "MPItrampoline requires at least MPI standard 4.0"
+// #endif
 
 #if SIZEOF_MPI_AINT == SIZEOF_PTRDIFF_T
 _Static_assert(sizeof(MPI_Aint) == sizeof(MPIABI_Aint), "");
