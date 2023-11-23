@@ -12,11 +12,11 @@ Supported MPI standard:
 - MPI 4.1, except:
   - MPI tool interface (planned)
   - MPI profiling interface (planned)
-  - `MPI_Comm_create_errhandler` (API does not allow forwarding)
-  - `MPI_File_create_errhandler` (API does not allow forwarding)
+  - `MPI_Comm_create_errhandler` (vararg functions cannot be forwarded)
+  - `MPI_File_create_errhandler` (vararg functions cannot be forwarded)
   - `MPI_Pcontrol` (vararg functions cannot be forwarded)
-  - `MPI_Session_create_errhandler` (API does not allow forwarding)
-  - `MPI_Win_create_errhandler` (API does not allow forwarding)
+  - `MPI_Session_create_errhandler` (vararg functions cannot be forwarded)
+  - `MPI_Win_create_errhandler` (vararg functions cannot be forwarded)
 
 Tested MPI implementations:
 - MPICH
@@ -40,3 +40,18 @@ Tested CPU architectures:
 
 Tested HPC systems:
 - none yet
+
+## Notes
+
+The MPI ABI reserves handles in the range 0...0x3fff (16383). The
+underlying MPI implementation might use this range as well. This case
+is currently detected but not yet handled.
+
+There is a hardcoded limit on the number of operators that can be
+created via `MPI_Op_create` (and `MPI_Op_create_c`). This limit can be
+increased if necessary.
+
+`MPI_Comm_idup` (and `MPI_Comm_idup_with_info`) are awkward -- they
+require attaching clean-up actions to these requests. Each completed
+request then needs to be checked whether it has a cleanup action
+attached to it. There is a fast-path; let's see how expensive this is.
