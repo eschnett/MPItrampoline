@@ -386,61 +386,61 @@
       integer MPI_DOUBLE_COMPLEX
       parameter (MPI_DOUBLE_COMPLEX = MPIABI_DOUBLE_COMPLEX)
       integer MPI_INTEGER1
-      parameter (MPI_INTEGER1 = MPIABI_INTEGER1) 
+      parameter (MPI_INTEGER1 = MPIABI_INTEGER1)
       integer MPI_INTEGER2
-      parameter (MPI_INTEGER2 = MPIABI_INTEGER2)  
+      parameter (MPI_INTEGER2 = MPIABI_INTEGER2)
       integer MPI_INTEGER4
-      parameter (MPI_INTEGER4 = MPIABI_INTEGER4)  
+      parameter (MPI_INTEGER4 = MPIABI_INTEGER4)
       integer MPI_INTEGER8
-      parameter (MPI_INTEGER8 = MPIABI_INTEGER8)  
+      parameter (MPI_INTEGER8 = MPIABI_INTEGER8)
       integer MPI_INTEGER16
-      parameter (MPI_INTEGER16 = MPIABI_INTEGER16) 
+      parameter (MPI_INTEGER16 = MPIABI_INTEGER16)
       integer MPI_REAL2
-      parameter (MPI_REAL2 = MPIABI_REAL2)     
+      parameter (MPI_REAL2 = MPIABI_REAL2)
       integer MPI_REAL4
-      parameter (MPI_REAL4 = MPIABI_REAL4)     
+      parameter (MPI_REAL4 = MPIABI_REAL4)
       integer MPI_REAL8
-      parameter (MPI_REAL8 = MPIABI_REAL8)     
+      parameter (MPI_REAL8 = MPIABI_REAL8)
       integer MPI_REAL16
-      parameter (MPI_REAL16 = MPIABI_REAL16)    
+      parameter (MPI_REAL16 = MPIABI_REAL16)
       integer MPI_COMPLEX4
-      parameter (MPI_COMPLEX4 = MPIABI_COMPLEX4)  
+      parameter (MPI_COMPLEX4 = MPIABI_COMPLEX4)
       integer MPI_COMPLEX8
-      parameter (MPI_COMPLEX8 = MPIABI_COMPLEX8)  
+      parameter (MPI_COMPLEX8 = MPIABI_COMPLEX8)
       integer MPI_COMPLEX16
-      parameter (MPI_COMPLEX16 = MPIABI_COMPLEX16) 
+      parameter (MPI_COMPLEX16 = MPIABI_COMPLEX16)
       integer MPI_COMPLEX32
-      parameter (MPI_COMPLEX32 = MPIABI_COMPLEX32) 
+      parameter (MPI_COMPLEX32 = MPIABI_COMPLEX32)
 
 !     [Extensions]
 
       integer MPI_REAL1
-      parameter (MPI_REAL1 = MPIABI_REAL1)     
+      parameter (MPI_REAL1 = MPIABI_REAL1)
       integer MPI_COMPLEX2
-      parameter (MPI_COMPLEX2 = MPIABI_COMPLEX2)  
+      parameter (MPI_COMPLEX2 = MPIABI_COMPLEX2)
       integer MPI_LOGICAL1
-      parameter (MPI_LOGICAL1 = MPIABI_LOGICAL1)  
+      parameter (MPI_LOGICAL1 = MPIABI_LOGICAL1)
       integer MPI_LOGICAL2
-      parameter (MPI_LOGICAL2 = MPIABI_LOGICAL2)  
+      parameter (MPI_LOGICAL2 = MPIABI_LOGICAL2)
       integer MPI_LOGICAL4
-      parameter (MPI_LOGICAL4 = MPIABI_LOGICAL4)  
+      parameter (MPI_LOGICAL4 = MPIABI_LOGICAL4)
       integer MPI_LOGICAL8
-      parameter (MPI_LOGICAL8 = MPIABI_LOGICAL8)  
+      parameter (MPI_LOGICAL8 = MPIABI_LOGICAL8)
       integer MPI_LOGICAL16
-      parameter (MPI_LOGICAL16 = MPIABI_LOGICAL16) 
+      parameter (MPI_LOGICAL16 = MPIABI_LOGICAL16)
 
 !     [Datatypes for reduction functions (C)]
 
       integer MPI_FLOAT_INT
-      parameter (MPI_FLOAT_INT = MPIABI_FLOAT_INT)  
+      parameter (MPI_FLOAT_INT = MPIABI_FLOAT_INT)
       integer MPI_DOUBLE_INT
-      parameter (MPI_DOUBLE_INT = MPIABI_DOUBLE_INT) 
+      parameter (MPI_DOUBLE_INT = MPIABI_DOUBLE_INT)
       integer MPI_LONG_INT
-      parameter (MPI_LONG_INT = MPIABI_LONG_INT)   
+      parameter (MPI_LONG_INT = MPIABI_LONG_INT)
       integer MPI_2INT
-      parameter (MPI_2INT = MPIABI_2INT)       
+      parameter (MPI_2INT = MPIABI_2INT)
       integer MPI_SHORT_INT
-      parameter (MPI_SHORT_INT = MPIABI_SHORT_INT)  
+      parameter (MPI_SHORT_INT = MPIABI_SHORT_INT)
       integer MPI_LONG_DOUBLE_INT
       parameter (MPI_LONG_DOUBLE_INT = MPIABI_LONG_DOUBLE_INT)
 
@@ -579,38 +579,28 @@
       integer MPI_DIST_GRAPH
       parameter (MPI_DIST_GRAPH = MPIABI_DIST_GRAPH)
 
-! // Predefined functions
+!     Predefined functions
+
+!     MPI_COMM_NULL_COPY_FN
+!     MPI_COMM_DUP_FN
+!     MPI_COMM_NULL_DELETE_FN
+
+!     MPIABI_WIN_NULL_COPY_FN
+!     MPIABI_WIN_DUP_FN
+!     MPIABI_WIN_NULL_DELETE_FN
 !
-! #define MPIABI_COMM_NULL_COPY_FN                                               \
-!   ((MPIABI_Comm_copy_attr_function)0) // arXiv:2308.11214
-! #define MPIABI_COMM_DUP_FN                                                     \
-!   ((MPIABI_Comm_copy_attr_function)1) // arXiv:2308.11214
-! #define MPIABI_COMM_NULL_DELETE_FN                                             \
-!   ((MPIABI_Comm_delete_attr_function)0) // arXiv:2308.11214
+!     MPIABI_TYPE_NULL_COPY_FN
+!     MPIABI_TYPE_DUP_FN
+!     MPIABI_TYPE_NULL_DELETE_FN
 !
-! #define MPIABI_WIN_NULL_COPY_FN                                                \
-!   ((MPIABI_Win_copy_attr_function)0)                         // arXiv:2308.11214
-! #define MPIABI_WIN_DUP_FN ((MPIABI_Win_copy_attr_function)1) // arXiv:2308.11214
-! #define MPIABI_WIN_NULL_DELETE_FN                                              \
-!   ((MPIABI_Win_delete_attr_function)0) // arXiv:2308.11214
+!     MPIABI_CONVERSION_FN_NULL
+!     MPIABI_CONVERSION_FN_NULL_C
+
+!     Deprecated predefined functions
 !
-! #define MPIABI_TYPE_NULL_COPY_FN                                               \
-!   ((MPIABI_Type_copy_attr_function)0) // arXiv:2308.11214
-! #define MPIABI_TYPE_DUP_FN                                                     \
-!   ((MPIABI_Type_copy_attr_function)1) // arXiv:2308.11214
-! #define MPIABI_TYPE_NULL_DELETE_FN                                             \
-!   ((MPIABI_Type_delete_attr_function)0) // arXiv:2308.11214
-!
-! #define MPIABI_CONVERSION_FN_NULL                                              \
-!   ((MPIABI_Datarep_conversion_function)0) // arXiv:2308.11214
-! #define MPIABI_CONVERSION_FN_NULL_C                                            \
-!   ((MPIABI_Datarep_conversion_function_c)0) // arXiv:2308.11214
-!
-! // Deprecated predefined functions
-!
-! #define MPIABI_NULL_COPY_FN ((MPIABI_Copy_function)0)
-! #define MPIABI_DUP_FN ((MPIABI_Copy_function)1)
-! #define MPIABI_NULL_DELETE_FN ((MPIABI_Delete_function)0)
+!     MPIABI_NULL_COPY_FN
+!     MPIABI_DUP_FN
+!     MPIABI_NULL_DELETE_FN
 
 !     Predefined Attribute Keys
 
@@ -780,13 +770,7 @@
       integer MPI_WEIGHTS_EMPTY
       pointer (MPIABI_WEIGHTS_EMPTY_PTR, MPI_WEIGHTS_EMPTY)
 
-! // C Constants Specifying Ignored Input (no Fortran)
-!
-! #define MPIABI_F_STATUSES_IGNORE ((MPIABI_Fint *))
-! #define MPIABI_F_STATUS_IGNORE ((MPIABI_Fint *))
-!
-! #define MPIABI_F08_STATUSES_IGNORE ((MPIABI_F08_status *))
-! #define MPIABI_F08_STATUS_IGNORE ((MPIABI_F08_status *))
+!     C Constants Specifying Ignored Input (no Fortran)
 
 !     C preprocessor Constants and Fortran Parameters
 

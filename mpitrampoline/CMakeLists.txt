@@ -106,6 +106,7 @@ add_library(mpitrampoline
   # Implementation
   mpitrampoline.c
   mpi_functions.c
+  mpif_functions.f90
   # mpiabi_function_pointers.c
 )
 target_compile_options(mpitrampoline PRIVATE -Wall -Wextra -Wpedantic)

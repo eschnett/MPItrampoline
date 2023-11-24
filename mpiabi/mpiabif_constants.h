@@ -575,38 +575,28 @@
       integer MPIABI_DIST_GRAPH
       parameter (MPIABI_DIST_GRAPH = -1802)
 
-! // Predefined functions
+!     Predefined functions
+
+!     MPIABI_COMM_NULL_COPY_FN
+!     MPIABI_COMM_DUP_FN
+!     MPIABI_COMM_NULL_DELETE_FN
+
+!     MPIABI_WIN_NULL_COPY_FN
+!     MPIABI_WIN_DUP_FN
+!     MPIABI_WIN_NULL_DELETE_FN
 !
-! #define MPIABI_COMM_NULL_COPY_FN                                               \
-!   ((MPIABI_Comm_copy_attr_function)0) // arXiv:2308.11214
-! #define MPIABI_COMM_DUP_FN                                                     \
-!   ((MPIABI_Comm_copy_attr_function)1) // arXiv:2308.11214
-! #define MPIABI_COMM_NULL_DELETE_FN                                             \
-!   ((MPIABI_Comm_delete_attr_function)0) // arXiv:2308.11214
+!     MPIABI_TYPE_NULL_COPY_FN
+!     MPIABI_TYPE_DUP_FN
+!     MPIABI_TYPE_NULL_DELETE_FN
 !
-! #define MPIABI_WIN_NULL_COPY_FN                                                \
-!   ((MPIABI_Win_copy_attr_function)0)                         // arXiv:2308.11214
-! #define MPIABI_WIN_DUP_FN ((MPIABI_Win_copy_attr_function)1) // arXiv:2308.11214
-! #define MPIABI_WIN_NULL_DELETE_FN                                              \
-!   ((MPIABI_Win_delete_attr_function)0) // arXiv:2308.11214
+!     MPIABI_CONVERSION_FN_NULL
+!     MPIABI_CONVERSION_FN_NULL_C
+
+!  Deprecated predefined functions
 !
-! #define MPIABI_TYPE_NULL_COPY_FN                                               \
-!   ((MPIABI_Type_copy_attr_function)0) // arXiv:2308.11214
-! #define MPIABI_TYPE_DUP_FN                                                     \
-!   ((MPIABI_Type_copy_attr_function)1) // arXiv:2308.11214
-! #define MPIABI_TYPE_NULL_DELETE_FN                                             \
-!   ((MPIABI_Type_delete_attr_function)0) // arXiv:2308.11214
-!
-! #define MPIABI_CONVERSION_FN_NULL                                              \
-!   ((MPIABI_Datarep_conversion_function)0) // arXiv:2308.11214
-! #define MPIABI_CONVERSION_FN_NULL_C                                            \
-!   ((MPIABI_Datarep_conversion_function_c)0) // arXiv:2308.11214
-!
-! // Deprecated predefined functions
-!
-! #define MPIABI_NULL_COPY_FN ((MPIABI_Copy_function)0)
-! #define MPIABI_DUP_FN ((MPIABI_Copy_function)1)
-! #define MPIABI_NULL_DELETE_FN ((MPIABI_Delete_function)0)
+!     MPIABI_NULL_COPY_FN
+!     MPIABI_DUP_FN
+!     MPIABI_NULL_DELETE_FN
 
 !     Predefined Attribute Keys
 
@@ -788,13 +778,7 @@
       pointer (MPIABI_WEIGHTS_EMPTY_PTR, MPIABI_WEIGHTS_EMPTY)
       common /MPIABI_WEIGHTS_EMPTY_PTR/ MPIABI_WEIGHTS_EMPTY_PTR
 
-! // C Constants Specifying Ignored Input (no Fortran)
-!
-! #define MPIABI_F_STATUSES_IGNORE ((MPIABI_Fint *))
-! #define MPIABI_F_STATUS_IGNORE ((MPIABI_Fint *))
-!
-! #define MPIABI_F08_STATUSES_IGNORE ((MPIABI_F08_status *))
-! #define MPIABI_F08_STATUS_IGNORE ((MPIABI_F08_status *))
+!     C Constants Specifying Ignored Input (no Fortran)
 
 !     C preprocessor Constants and Fortran Parameters
 
