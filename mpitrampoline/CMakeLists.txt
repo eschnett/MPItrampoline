@@ -39,6 +39,7 @@ if(NOT(CMAKE_Fortran_COMPILER))
 endif()
 enable_language(Fortran)
 
+set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
 include(GNUInstallDirs)
 
 # Check for Fortran features
@@ -107,6 +108,7 @@ add_library(mpitrampoline
   mpitrampoline.c
   mpi_functions.c
   mpif_functions.f90
+  mpi.f90
   # mpiabi_function_pointers.c
 )
 target_compile_options(mpitrampoline PRIVATE -Wall -Wextra -Wpedantic)
@@ -134,6 +136,7 @@ list(APPEND public_headers
   ../mpiabi/mpiabif_types.h
   ../mpiabi/mpiabif_constants.h
   ../mpiabi/mpiabif_functions.h
+  mpi.f90
 )
 set_target_properties(mpitrampoline PROPERTIES
   VERSION ${PROJECT_VERSION}
@@ -142,6 +145,8 @@ set_target_properties(mpitrampoline PROPERTIES
 )
 
 install(TARGETS mpitrampoline EXPORT MPItrampolineTargets)
+
+install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Install pkgconfig files
 

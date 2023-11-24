@@ -64,6 +64,9 @@ RUN /mpitrampoline/bin/mpifc -o hello-world-f hello-world-f.o
 RUN /mpitrampoline/bin/mpifc -c hello-world-f90.f90
 RUN /mpitrampoline/bin/mpifc -o hello-world-f90 hello-world-f90.o
 
+RUN /mpitrampoline/bin/mpifc -c hello-world-fortran.f90
+RUN /mpitrampoline/bin/mpifc -o hello-world-fortran hello-world-fortran.o
+
 # 2.3. Build OpenMPI test suite
 
 WORKDIR /home/cactus/mpi-test-suite-1.1.1
@@ -126,6 +129,13 @@ RUN case "${mpivendor}" in \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
     mpiexec $mpiexec_options -n 4 ./hello-world-f90 4
+
+RUN ./hello-world-fortran 1
+RUN case "${mpivendor}" in \
+        mpich) mpiexec_options='';; \
+        openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
+    esac && \
+    mpiexec $mpiexec_options -n 4 ./hello-world-fortran 4
 
 # 3.4. Run OpenMPI test suite
 
