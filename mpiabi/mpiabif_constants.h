@@ -184,6 +184,7 @@
 !     We use Cray pointers to handle sentinel values. Unfortunately
 !     these might not be supported everywhere, and if they are, they
 !     require special compiler options.
+
       integer MPIABI_BOTTOM(1)
       integer(MPIABI_ADDRESS_KIND) MPIABI_BOTTOM_PTR
       pointer (MPIABI_BOTTOM_PTR, MPIABI_BOTTOM)
@@ -382,61 +383,61 @@
       integer MPIABI_DOUBLE_COMPLEX
       parameter (MPIABI_DOUBLE_COMPLEX = int(b'001000011101'))
       integer MPIABI_INTEGER1
-      parameter (MPIABI_INTEGER1 = int(b'001011000000')) 
+      parameter (MPIABI_INTEGER1 = int(b'001011000000'))
       integer MPIABI_INTEGER2
-      parameter (MPIABI_INTEGER2 = int(b'001011001000'))  
+      parameter (MPIABI_INTEGER2 = int(b'001011001000'))
       integer MPIABI_INTEGER4
-      parameter (MPIABI_INTEGER4 = int(b'001011010000'))  
+      parameter (MPIABI_INTEGER4 = int(b'001011010000'))
       integer MPIABI_INTEGER8
-      parameter (MPIABI_INTEGER8 = int(b'001011011000'))  
+      parameter (MPIABI_INTEGER8 = int(b'001011011000'))
       integer MPIABI_INTEGER16
-      parameter (MPIABI_INTEGER16 = int(b'001011100000')) 
+      parameter (MPIABI_INTEGER16 = int(b'001011100000'))
       integer MPIABI_REAL2
-      parameter (MPIABI_REAL2 = int(b'001011001010'))     
+      parameter (MPIABI_REAL2 = int(b'001011001010'))
       integer MPIABI_REAL4
-      parameter (MPIABI_REAL4 = int(b'001011010010'))     
+      parameter (MPIABI_REAL4 = int(b'001011010010'))
       integer MPIABI_REAL8
-      parameter (MPIABI_REAL8 = int(b'001011011010'))     
+      parameter (MPIABI_REAL8 = int(b'001011011010'))
       integer MPIABI_REAL16
-      parameter (MPIABI_REAL16 = int(b'001000100010'))    
+      parameter (MPIABI_REAL16 = int(b'001000100010'))
       integer MPIABI_COMPLEX4
-      parameter (MPIABI_COMPLEX4 = int(b'001011010011'))  
+      parameter (MPIABI_COMPLEX4 = int(b'001011010011'))
       integer MPIABI_COMPLEX8
-      parameter (MPIABI_COMPLEX8 = int(b'001011011011'))  
+      parameter (MPIABI_COMPLEX8 = int(b'001011011011'))
       integer MPIABI_COMPLEX16
-      parameter (MPIABI_COMPLEX16 = int(b'001011100011')) 
+      parameter (MPIABI_COMPLEX16 = int(b'001011100011'))
       integer MPIABI_COMPLEX32
-      parameter (MPIABI_COMPLEX32 = int(b'001011101011')) 
+      parameter (MPIABI_COMPLEX32 = int(b'001011101011'))
 
 !     [Extensions]
 
       integer MPIABI_REAL1
-      parameter (MPIABI_REAL1 = int(b'001011000010'))     
+      parameter (MPIABI_REAL1 = int(b'001011000010'))
       integer MPIABI_COMPLEX2
-      parameter (MPIABI_COMPLEX2 = int(b'001011001011'))  
+      parameter (MPIABI_COMPLEX2 = int(b'001011001011'))
       integer MPIABI_LOGICAL1
-      parameter (MPIABI_LOGICAL1 = int(b'001011000001'))  
+      parameter (MPIABI_LOGICAL1 = int(b'001011000001'))
       integer MPIABI_LOGICAL2
-      parameter (MPIABI_LOGICAL2 = int(b'001011001001'))  
+      parameter (MPIABI_LOGICAL2 = int(b'001011001001'))
       integer MPIABI_LOGICAL4
-      parameter (MPIABI_LOGICAL4 = int(b'001011010001'))  
+      parameter (MPIABI_LOGICAL4 = int(b'001011010001'))
       integer MPIABI_LOGICAL8
-      parameter (MPIABI_LOGICAL8 = int(b'001011011001'))  
+      parameter (MPIABI_LOGICAL8 = int(b'001011011001'))
       integer MPIABI_LOGICAL16
-      parameter (MPIABI_LOGICAL16 = int(b'001011100001')) 
+      parameter (MPIABI_LOGICAL16 = int(b'001011100001'))
 
 !     [Datatypes for reduction functions (C)]
 
       integer MPIABI_FLOAT_INT
-      parameter (MPIABI_FLOAT_INT = int(b'001000101000'))  
+      parameter (MPIABI_FLOAT_INT = int(b'001000101000'))
       integer MPIABI_DOUBLE_INT
-      parameter (MPIABI_DOUBLE_INT = int(b'001000101001')) 
+      parameter (MPIABI_DOUBLE_INT = int(b'001000101001'))
       integer MPIABI_LONG_INT
-      parameter (MPIABI_LONG_INT = int(b'001000101010'))   
+      parameter (MPIABI_LONG_INT = int(b'001000101010'))
       integer MPIABI_2INT
-      parameter (MPIABI_2INT = int(b'001000101011'))       
+      parameter (MPIABI_2INT = int(b'001000101011'))
       integer MPIABI_SHORT_INT
-      parameter (MPIABI_SHORT_INT = int(b'001000101100'))  
+      parameter (MPIABI_SHORT_INT = int(b'001000101100'))
       integer MPIABI_LONG_DOUBLE_INT
       parameter (MPIABI_LONG_DOUBLE_INT = int(b'001000101101'))
 
@@ -465,52 +466,75 @@
       integer MPIABI_COMM_SELF
       parameter (MPIABI_COMM_SELF = int(b'000100000010'))
 
-! // Communicator split type constants
-! enum {
-!   MPIABI_COMM_TYPE_SHARED = -1001,          // arXiv:2308.11214
-!   MPIABI_COMM_TYPE_HW_UNGUIDED = -1002,     // arXiv:2308.11214
-!   MPIABI_COMM_TYPE_HW_GUIDED = -1003,       // arXiv:2308.11214
-!   MPIABI_COMM_TYPE_RESOURCE_GUIDED = -1004, // [nonstandard]
-! };
-!
-! // Results of communicator and group comparisons
-!
-! enum {
-!   MPIABI_IDENT = -701,     // arXiv:2308.11214
-!   MPIABI_CONGRUENT = -702, // arXiv:2308.11214
-!   MPIABI_SIMILAR = -703,   // arXiv:2308.11214
-!   MPIABI_UNEQUAL = -704,   // arXiv:2308.11214
-! };
-!
-! // Environmental inquiry info key
-!
-! #define MPIABI_INFO_ENV ((MPIABI_Info)0b000100110001) // [nonstandard]
-!
+!     Communicator split type constants
+
+      integer MPIABI_COMM_TYPE_SHARED
+      parameter (MPIABI_COMM_TYPE_SHARED = -1001)
+      integer MPIABI_COMM_TYPE_HW_UNGUIDED
+      parameter (MPIABI_COMM_TYPE_HW_UNGUIDED = -1002)
+      integer MPIABI_COMM_TYPE_HW_GUIDED
+      parameter (MPIABI_COMM_TYPE_HW_GUIDED = -1003)
+!     [nonstandard]
+      integer MPIABI_COMM_TYPE_RESOURCE_GUIDED
+      parameter (MPIABI_COMM_TYPE_RESOURCE_GUIDED = -1004)
+
+!     Results of communicator and group comparisons
+
+      integer MPIABI_IDENT
+      parameter (MPIABI_IDENT = -701)
+      integer MPIABI_CONGRUENT
+      parameter (MPIABI_CONGRUENT = -702)
+      integer MPIABI_SIMILAR
+      parameter (MPIABI_SIMILAR = -703)
+      integer MPIABI_UNEQUAL
+      parameter (MPIABI_UNEQUAL = -704)
+
+!     Environmental inquiry info key
+
+      integer MPIABI_INFO_ENV
+      parameter (MPIABI_INFO_ENV = int(b'000100110001'))
+
 ! // Environmental inquiry keys
-!
-! enum {
-!   MPIABI_TAG_UB = -201,          // arXiv:2308.11214
-!   MPIABI_IO = -202,              // arXiv:2308.11214
-!   MPIABI_HOST = -203,            // arXiv:2308.11214 [deprecated]
-!   MPIABI_WTIME_IS_GLOBAL = -204, // arXiv:2308.11214
-! };
-!
+
+      integer MPIABI_TAG_UB
+      parameter (MPIABI_TAG_UB = -201)
+      integer MPIABI_IO
+      parameter (MPIABI_IO = -202)
+      integer MPIABI_HOST
+      parameter (MPIABI_HOST = -203)
+      integer MPIABI_WTIME_IS_GLOBAL
+      parameter (MPIABI_WTIME_IS_GLOBAL = -204)
+
 ! // Collective Operations
-!
-! #define MPIABI_MAX ((MPIABI_Op)0b000000100011)     // arXiv:2308.11214
-! #define MPIABI_MIN ((MPIABI_Op)0b000000100010)     // arXiv:2308.11214
-! #define MPIABI_SUM ((MPIABI_Op)0b000000100001)     // arXiv:2308.11214
-! #define MPIABI_PROD ((MPIABI_Op)0b000000100100)    // arXiv:2308.11214
-! #define MPIABI_MAXLOC ((MPIABI_Op)0b000000111001)  // arXiv:2308.11214
-! #define MPIABI_MINLOC ((MPIABI_Op)0b000000111000)  // arXiv:2308.11214
-! #define MPIABI_BAND ((MPIABI_Op)0b000000101000)    // arXiv:2308.11214
-! #define MPIABI_BOR ((MPIABI_Op)0b000000101001)     // arXiv:2308.11214
-! #define MPIABI_BXOR ((MPIABI_Op)0b000000101010)    // arXiv:2308.11214
-! #define MPIABI_LAND ((MPIABI_Op)0b000000110000)    // arXiv:2308.11214
-! #define MPIABI_LOR ((MPIABI_Op)0b000000110001)     // arXiv:2308.11214
-! #define MPIABI_LXOR ((MPIABI_Op)0b000000110010)    // arXiv:2308.11214
-! #define MPIABI_REPLACE ((MPIABI_Op)0b000000111100) // arXiv:2308.11214
-! #define MPIABI_NO_OP ((MPIABI_Op)0b000000111101)   // arXiv:2308.11214
+
+      integer MPIABI_MAX
+      parameter (MPIABI_MAX = int(b'000000100011'))
+      integer MPIABI_MIN
+      parameter (MPIABI_MIN = int(b'000000100010'))
+      integer MPIABI_SUM
+      parameter (MPIABI_SUM = int(b'000000100001'))
+      integer MPIABI_PROD
+      parameter (MPIABI_PROD = int(b'000000100100'))
+      integer MPIABI_MAXLOC
+      parameter (MPIABI_MAXLOC = int(b'000000111001'))
+      integer MPIABI_MINLOC
+      parameter (MPIABI_MINLOC = int(b'000000111000'))
+      integer MPIABI_BAND
+      parameter (MPIABI_BAND = int(b'000000101000'))
+      integer MPIABI_BOR
+      parameter (MPIABI_BOR = int(b'000000101001'))
+      integer MPIABI_BXOR
+      parameter (MPIABI_BXOR = int(b'000000101010'))
+      integer MPIABI_LAND
+      parameter (MPIABI_LAND = int(b'000000110000'))
+      integer MPIABI_LOR
+      parameter (MPIABI_LOR = int(b'000000110001'))
+      integer MPIABI_LXOR
+      parameter (MPIABI_LXOR = int(b'000000110010'))
+      integer MPIABI_REPLACE
+      parameter (MPIABI_REPLACE = int(b'000000111100'))
+      integer MPIABI_NO_OP
+      parameter (MPIABI_NO_OP = int(b'000000111101'))
 
 !     Null Handles
 
@@ -542,14 +566,15 @@
       integer MPIABI_GROUP_EMPTY
       parameter (MPIABI_GROUP_EMPTY = int(b'000100000101'))
 
-! // Topologies
-!
-! enum {
-!   MPIABI_GRAPH = -1801,      // arXiv:2308.11214
-!   MPIABI_CART = -1803,       // arXiv:2308.11214
-!   MPIABI_DIST_GRAPH = -1802, // arXiv:2308.11214
-! };
-!
+!     Topologies
+
+      integer MPIABI_GRAPH
+      parameter (MPIABI_GRAPH = -1801)
+      integer MPIABI_CART
+      parameter (MPIABI_CART = -1803)
+      integer MPIABI_DIST_GRAPH
+      parameter (MPIABI_DIST_GRAPH = -1802)
+
 ! // Predefined functions
 !
 ! #define MPIABI_COMM_NULL_COPY_FN                                               \
@@ -582,110 +607,155 @@
 ! #define MPIABI_NULL_COPY_FN ((MPIABI_Copy_function)0)
 ! #define MPIABI_DUP_FN ((MPIABI_Copy_function)1)
 ! #define MPIABI_NULL_DELETE_FN ((MPIABI_Delete_function)0)
-!
-! // Predefined Attribute Keys
-!
-! enum {
-!   MPIABI_APPNUM = -205,            // arXiv:2308.11214
-!   MPIABI_LASTUSEDCODE = -206,      // arXiv:2308.11214
-!   MPIABI_UNIVERSE_SIZE = -207,     // arXiv:2308.11214
-!   MPIABI_WIN_BASE = -301,          // arXiv:2308.11214
-!   MPIABI_WIN_DISP_UNIT = -302,     // arXiv:2308.11214
-!   MPIABI_WIN_SIZE = -303,          // arXiv:2308.11214
-!   MPIABI_WIN_CREATE_FLAVOR = -304, // arXiv:2308.11214
-!   MPIABI_WIN_MODEL = -305,         // arXiv:2308.11214
-! };
-!
-! // MPI Window Create Flavors
-!
-! enum {
-!   MPIABI_WIN_FLAVOR_CREATE = -1102,   // arXiv:2308.11214
-!   MPIABI_WIN_FLAVOR_ALLOCATE = -1101, // arXiv:2308.11214
-!   MPIABI_WIN_FLAVOR_DYNAMIC = -1103,  // arXiv:2308.11214
-!   MPIABI_WIN_FLAVOR_SHARED = -1104,   // arXiv:2308.11214
-! };
-!
-! // MPI Window Models
-!
-! enum {
-!   MPIABI_WIN_SEPARATE = -1201, // arXiv:2308.11214
-!   MPIABI_WIN_UNIFIED = -1202,  // arXiv:2308.11214
-! };
-!
-! // Mode Constants
-!
-! enum {
-!   MPIABI_MODE_APPEND = 1,          // arXiv:2308.11214
-!   MPIABI_MODE_CREATE = 2,          // arXiv:2308.11214
-!   MPIABI_MODE_DELETE_ON_CLOSE = 4, // arXiv:2308.11214
-!   MPIABI_MODE_EXCL = 8,            // arXiv:2308.11214
-!   MPIABI_MODE_NOCHECK = 1024,      // arXiv:2308.11214
-!   MPIABI_MODE_NOPRECEDE = 2048,    // arXiv:2308.11214
-!   MPIABI_MODE_NOPUT = 4096,        // arXiv:2308.11214
-!   MPIABI_MODE_NOSTORE = 8192,      // arXiv:2308.11214
-!   MPIABI_MODE_NOSUCCEED = 16384,   // arXiv:2308.11214
-!   MPIABI_MODE_RDONLY = 16,         // arXiv:2308.11214
-!   MPIABI_MODE_RDWR = 32,           // arXiv:2308.11214
-!   MPIABI_MODE_SEQUENTIAL = 64,     // arXiv:2308.11214
-!   MPIABI_MODE_UNIQUE_OPEN = 128,   // arXiv:2308.11214
-!   MPIABI_MODE_WRONLY = 256,        // arXiv:2308.11214
-! };
-!
-! // Datatype Decoding Constants
-!
-! enum {
-!   MPIABI_COMBINER_CONTIGUOUS = -1303,     // arXiv:2308.11214
-!   MPIABI_COMBINER_DARRAY = -1312,         // arXiv:2308.11214
-!   MPIABI_COMBINER_DUP = -1302,            // arXiv:2308.11214
-!   MPIABI_COMBINER_F90_COMPLEX = -1314,    // arXiv:2308.11214
-!   MPIABI_COMBINER_F90_INTEGER = -1315,    // arXiv:2308.11214
-!   MPIABI_COMBINER_F90_REAL = -1313,       // arXiv:2308.11214
-!   MPIABI_COMBINER_HINDEXED = -1307,       // arXiv:2308.11214
-!   MPIABI_COMBINER_HVECTOR = -1305,        // arXiv:2308.11214
-!   MPIABI_COMBINER_INDEXED_BLOCK = -1308,  // arXiv:2308.11214
-!   MPIABI_COMBINER_HINDEXED_BLOCK = -1309, // arXiv:2308.11214
-!   MPIABI_COMBINER_INDEXED = -1306,        // arXiv:2308.11214
-!   MPIABI_COMBINER_NAMED = -1301,          // arXiv:2308.11214
-!   MPIABI_COMBINER_RESIZED = -1316,        // arXiv:2308.11214
-!   MPIABI_COMBINER_STRUCT = -1310,         // arXiv:2308.11214
-!   MPIABI_COMBINER_SUBARRAY = -1311,       // arXiv:2308.11214
-!   MPIABI_COMBINER_VECTOR = -1304,         // arXiv:2308.11214
-! };
-!
-! // Threads Constants
-!
-! enum {
-!   MPIABI_THREAD_FUNNELED = -803,   // arXiv:2308.11214
-!   MPIABI_THREAD_MULTIPLE = -801,   // arXiv:2308.11214
-!   MPIABI_THREAD_SERIALIZED = -802, // arXiv:2308.11214
-!   MPIABI_THREAD_SINGLE = -804,     // arXiv:2308.11214
-! };
-!
-! // File Operation Constants, Part 1
-!
-! #define MPIABI_DISPLACEMENT_CURRENT ((MPIABI_Offset)-501) // arXiv:2308.11214
-!
-! // File Operation Constants, Part 2
-!
-! enum {
-!   MPIABI_DISTRIBUTE_BLOCK = -1401,     // arXiv:2308.11214
-!   MPIABI_DISTRIBUTE_CYCLIC = -1402,    // arXiv:2308.11214
-!   MPIABI_DISTRIBUTE_DFLT_DARG = -1403, // arXiv:2308.11214
-!   MPIABI_DISTRIBUTE_NONE = -1404,      // arXiv:2308.11214
-!   MPIABI_ORDER_C = -1501,              // arXiv:2308.11214
-!   MPIABI_ORDER_FORTRAN = -1502,        // arXiv:2308.11214
-!   MPIABI_SEEK_CUR = -1601,             // arXiv:2308.11214
-!   MPIABI_SEEK_END = -1602,             // arXiv:2308.11214
-!   MPIABI_SEEK_SET = -1603,             // arXiv:2308.11214
-! };
-!
-! // F90 Datatype Matching Constants
-!
-! enum {
-!   MPIABI_TYPECLASS_COMPLEX = -1702, // arXiv:2308.11214
-!   MPIABI_TYPECLASS_INTEGER = -1703, // arXiv:2308.11214
-!   MPIABI_TYPECLASS_REAL = -1701,    // arXiv:2308.11214
-! };
+
+!     Predefined Attribute Keys
+
+      integer MPIABI_APPNUM
+      parameter (MPIABI_APPNUM = -205)
+      integer MPIABI_LASTUSEDCODE
+      parameter (MPIABI_LASTUSEDCODE = -206)
+      integer MPIABI_UNIVERSE_SIZE
+      parameter (MPIABI_UNIVERSE_SIZE = -207)
+      integer MPIABI_WIN_BASE
+      parameter (MPIABI_WIN_BASE = -301)
+      integer MPIABI_WIN_DISP_UNIT
+      parameter (MPIABI_WIN_DISP_UNIT = -302)
+      integer MPIABI_WIN_SIZE
+      parameter (MPIABI_WIN_SIZE = -303)
+      integer MPIABI_WIN_CREATE_FLAVOR
+      parameter (MPIABI_WIN_CREATE_FLAVOR = -304)
+      integer MPIABI_WIN_MODEL
+      parameter (MPIABI_WIN_MODEL = -305)
+
+!     MPI Window Create Flavors
+
+      integer MPIABI_WIN_FLAVOR_CREATE
+      parameter (MPIABI_WIN_FLAVOR_CREATE = -1102)
+      integer MPIABI_WIN_FLAVOR_ALLOCATE
+      parameter (MPIABI_WIN_FLAVOR_ALLOCATE = -1101)
+      integer MPIABI_WIN_FLAVOR_DYNAMIC
+      parameter (MPIABI_WIN_FLAVOR_DYNAMIC = -1103)
+      integer MPIABI_WIN_FLAVOR_SHARED
+      parameter (MPIABI_WIN_FLAVOR_SHARED = -1104)
+
+!     MPI Window Models
+
+      integer MPIABI_WIN_SEPARATE
+      parameter (MPIABI_WIN_SEPARATE = -1201)
+      integer MPIABI_WIN_UNIFIED
+      parameter (MPIABI_WIN_UNIFIED = -1202)
+
+!     Mode Constants
+
+      integer MPIABI_MODE_APPEND
+      parameter (MPIABI_MODE_APPEND = 1)
+      integer MPIABI_MODE_CREATE
+      parameter (MPIABI_MODE_CREATE = 2)
+      integer MPIABI_MODE_DELETE_ON_CLOSE
+      parameter (MPIABI_MODE_DELETE_ON_CLOSE = 4)
+      integer MPIABI_MODE_EXCL
+      parameter (MPIABI_MODE_EXCL = 8)
+      integer MPIABI_MODE_NOCHECK
+      parameter (MPIABI_MODE_NOCHECK = 1024)
+      integer MPIABI_MODE_NOPRECEDE
+      parameter (MPIABI_MODE_NOPRECEDE = 2048)
+      integer MPIABI_MODE_NOPUT
+      parameter (MPIABI_MODE_NOPUT = 4096)
+      integer MPIABI_MODE_NOSTORE
+      parameter (MPIABI_MODE_NOSTORE = 8192)
+      integer MPIABI_MODE_NOSUCCEED
+      parameter (MPIABI_MODE_NOSUCCEED = 16384)
+      integer MPIABI_MODE_RDONLY
+      parameter (MPIABI_MODE_RDONLY = 16)
+      integer MPIABI_MODE_RDWR
+      parameter (MPIABI_MODE_RDWR = 32)
+      integer MPIABI_MODE_SEQUENTIAL
+      parameter (MPIABI_MODE_SEQUENTIAL = 64)
+      integer MPIABI_MODE_UNIQUE_OPEN
+      parameter (MPIABI_MODE_UNIQUE_OPEN = 128)
+      integer MPIABI_MODE_WRONLY
+      parameter (MPIABI_MODE_WRONLY = 256)
+
+!     Datatype Decoding Constants
+
+      integer MPIABI_COMBINER_CONTIGUOUS
+      parameter (MPIABI_COMBINER_CONTIGUOUS = -1303)
+      integer MPIABI_COMBINER_DARRAY
+      parameter (MPIABI_COMBINER_DARRAY = -1312)
+      integer MPIABI_COMBINER_DUP
+      parameter (MPIABI_COMBINER_DUP = -1302)
+      integer MPIABI_COMBINER_F90_COMPLEX
+      parameter (MPIABI_COMBINER_F90_COMPLEX = -1314)
+      integer MPIABI_COMBINER_F90_INTEGER
+      parameter (MPIABI_COMBINER_F90_INTEGER = -1315)
+      integer MPIABI_COMBINER_F90_REAL
+      parameter (MPIABI_COMBINER_F90_REAL = -1313)
+      integer MPIABI_COMBINER_HINDEXED
+      parameter (MPIABI_COMBINER_HINDEXED = -1307)
+      integer MPIABI_COMBINER_HVECTOR
+      parameter (MPIABI_COMBINER_HVECTOR = -1305)
+      integer MPIABI_COMBINER_INDEXED_BLOCK
+      parameter (MPIABI_COMBINER_INDEXED_BLOCK = -1308)
+      integer MPIABI_COMBINER_HINDEXED_BLOCK
+      parameter (MPIABI_COMBINER_HINDEXED_BLOCK = -1309)
+      integer MPIABI_COMBINER_INDEXED
+      parameter (MPIABI_COMBINER_INDEXED = -1306)
+      integer MPIABI_COMBINER_NAMED
+      parameter (MPIABI_COMBINER_NAMED = -1301)
+      integer MPIABI_COMBINER_RESIZED
+      parameter (MPIABI_COMBINER_RESIZED = -1316)
+      integer MPIABI_COMBINER_STRUCT
+      parameter (MPIABI_COMBINER_STRUCT = -1310)
+      integer MPIABI_COMBINER_SUBARRAY
+      parameter (MPIABI_COMBINER_SUBARRAY = -1311)
+      integer MPIABI_COMBINER_VECTOR
+      parameter (MPIABI_COMBINER_VECTOR = -1304)
+
+!     Threads Constants
+
+      integer MPIABI_THREAD_FUNNELED
+      parameter (MPIABI_THREAD_FUNNELED = -803)
+      integer MPIABI_THREAD_MULTIPLE
+      parameter (MPIABI_THREAD_MULTIPLE = -801)
+      integer MPIABI_THREAD_SERIALIZED
+      parameter (MPIABI_THREAD_SERIALIZED = -802)
+      integer MPIABI_THREAD_SINGLE
+      parameter (MPIABI_THREAD_SINGLE = -804)
+
+!     File Operation Constants, Part 1
+
+      integer MPIABI_DISPLACEMENT_CURRENT
+      parameter (MPIABI_DISPLACEMENT_CURRENT = -501)
+
+!     File Operation Constants, Part 2
+
+      integer MPIABI_DISTRIBUTE_BLOCK
+      parameter (MPIABI_DISTRIBUTE_BLOCK = -1401)
+      integer MPIABI_DISTRIBUTE_CYCLIC
+      parameter (MPIABI_DISTRIBUTE_CYCLIC = -1402)
+      integer MPIABI_DISTRIBUTE_DFLT_DARG
+      parameter (MPIABI_DISTRIBUTE_DFLT_DARG = -1403)
+      integer MPIABI_DISTRIBUTE_NONE
+      parameter (MPIABI_DISTRIBUTE_NONE = -1404)
+      integer MPIABI_ORDER_C
+      parameter (MPIABI_ORDER_C = -1501)
+      integer MPIABI_ORDER_FORTRAN
+      parameter (MPIABI_ORDER_FORTRAN = -1502)
+      integer MPIABI_SEEK_CUR
+      parameter (MPIABI_SEEK_CUR = -1601)
+      integer MPIABI_SEEK_END
+      parameter (MPIABI_SEEK_END = -1602)
+      integer MPIABI_SEEK_SET
+      parameter (MPIABI_SEEK_SET = -1603)
+
+!     F90 Datatype Matching Constants
+
+      integer MPIABI_TYPECLASS_COMPLEX
+      parameter (MPIABI_TYPECLASS_COMPLEX = -1702)
+      integer MPIABI_TYPECLASS_INTEGER
+      parameter (MPIABI_TYPECLASS_INTEGER = -1703)
+      integer MPIABI_TYPECLASS_REAL
+      parameter (MPIABI_TYPECLASS_REAL = -1701)
 
 !     Constants Specifying Empty or Ignored Input
 
@@ -725,13 +795,14 @@
 !
 ! #define MPIABI_F08_STATUSES_IGNORE ((MPIABI_F08_status *))
 ! #define MPIABI_F08_STATUS_IGNORE ((MPIABI_F08_status *))
-!
-! // C preprocessor Constants and Fortran Parameters
-! enum {
-!   MPIABI_SUBVERSION = 1,
-!   MPIABI_VERSION = 4,
-! };
-!
+
+!     C preprocessor Constants and Fortran Parameters
+
+      integer MPIABI_SUBVERSION
+      parameter (MPIABI_SUBVERSION = 1)
+      integer MPIABI_VERSION
+      parameter (MPIABI_VERSION = 4)
+
 ! // Null handles used in the MPI tool information interface
 !
 ! #define MPIABI_T_ENUM_NULL ((MPIABI_T_enum))

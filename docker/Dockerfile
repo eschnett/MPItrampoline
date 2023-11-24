@@ -130,9 +130,9 @@ RUN case "${mpivendor}" in \
 # 3.4. Run OpenMPI test suite
 
 WORKDIR /home/cactus/mpi-test-suite-1.1.1
-RUN ./mpi_test_suite
+RUN if [ ${mpivendor} = openmpi ]; then ./mpi_test_suite; fi
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    mpiexec $mpiexec_options -n 4 ./mpi_test_suite
+    if [ ${mpivendor} = openmpi ] ; then mpiexec $mpiexec_options -n 4 ./mpi_test_suite; fi

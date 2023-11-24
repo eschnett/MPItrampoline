@@ -18,7 +18,7 @@ Supported MPI standard:
   - `MPI_Session_create_errhandler` (vararg functions cannot be forwarded)
   - `MPI_Win_create_errhandler` (vararg functions cannot be forwarded)
 
-Successfully tested MPI implementations:
+Tested MPI implementations:
 - MPICH
 - OpenMPI
 
@@ -28,7 +28,7 @@ Supported languages:
 - fixed-form Fortran (aka "Fortran 77"): nascent, via `mpif.h`
 - free-form Fortran (aka "Fortran 90"): nascent, via `mpif.h`
 
-Successfully tested CPU architectures:
+Tested CPU architectures:
 - amd64
 - arm32v5
 - arm32v7
