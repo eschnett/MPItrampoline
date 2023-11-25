@@ -1732,11 +1732,8 @@ int MPIABI_Type_ub(MPIABI_Datatype datatype, MPIABI_Aint *displacement);
 // MPIX
 
 int MPIXABI_Query_cuda_support(void);
-
 int MPIXABI_Query_hip_support(void);
-
 int MPIXABI_Query_rocm_support(void);
-
 int MPIXABI_Query_ze_support(void);
 
 #ifdef __cplusplus

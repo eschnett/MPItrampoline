@@ -2,12 +2,39 @@
 
 !     A.4 Fortran 2008 Bindings
 
+module mpiabi_f08_functions
+  implicit none
+  public
+  save
 
-!     A.4.1 Point-to-Point Communication Fortran 2008 Bindings
+  ! A.4.1 Point-to-Point Communication Fortran 2008 Bindings
 
-      external MPIABI_Bsend
-      external MPIABI_Bsend_c
+  interface
+     subroutine MPIABI_Bsend(buf, count, datatype, dest, tag, comm, ierror)
+       use mpiabi_f08_types
+       implicit none
+       type(*), dimension(..), intent(in) :: buf
+       integer, intent(in) :: count, dest, tag
+       type(MPIABI_Datatype), intent(in) :: datatype
+       type(MPIABI_Comm), intent(in) :: comm
+       integer, optional, intent(out) :: ierror
+     end subroutine MPIABI_Bsend
+     subroutine MPIABI_Bsend(buf, count, datatype, dest, tag, comm, ierror)
+       use mpiabi_f08_types
+       implicit none
+       type(*), dimension(..), intent(in) :: buf
+       integer(kind=MPIABI_COUNT_KIND), intent(in) :: count
+       type(MPIABI_Datatype), intent(in) :: datatype
+       integer, intent(in) :: dest, tag
+       type(MPIABI_Comm), intent(in) :: comm
+       integer, optional, intent(out) :: ierror
+     end subroutine MPIABI_Bsend
+  end interface
 
+end module mpiabi_f08_functions
+
+! int MPIABI_Bsend(const void *buf, int count, MPIABI_Datatype datatype, int dest, int tag, MPIABI_Comm comm);
+! int MPIABI_Bsend_c(const void *buf, MPIABI_Count count, MPIABI_Datatype datatype, int dest, int tag, MPIABI_Comm comm);
 ! int MPIABI_Bsend_init(const void *buf, int count, MPIABI_Datatype datatype, int dest, int tag, MPIABI_Comm comm, MPIABI_Request *request);
 ! int MPIABI_Bsend_init_c(const void *buf, MPIABI_Count count, MPIABI_Datatype datatype, int dest, int tag, MPIABI_Comm comm, MPIABI_Request *request);
 ! int MPIABI_Buffer_attach(void *buffer, int size);

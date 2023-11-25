@@ -107,11 +107,12 @@ add_library(mpitrampoline
   # Implementation
   mpitrampoline.c
   mpi_functions.c
+  mpi_functions_fortran.c
   mpif_functions.f90
   mpi.f90
   # mpiabi_function_pointers.c
 )
-target_compile_options(mpitrampoline PRIVATE -Wall -Wextra -Wpedantic)
+target_compile_options(mpitrampoline PRIVATE -Wall -Wextra -Wno-unused-dummy-argument -Wno-unused-parameter)
 target_include_directories(
   mpitrampoline
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
@@ -124,6 +125,7 @@ list(APPEND public_headers
   mpi_constants.h
   mpi_functions.h
   mpiabi_function_pointers.h
+  mpiabi_function_pointers_fortran.h
   ${CMAKE_CURRENT_BINARY_DIR}/mpitrampoline.h
   ../mpiabi/mpiabi_types.h
   ../mpiabi/mpiabi_constants.h
@@ -132,6 +134,7 @@ list(APPEND public_headers
   mpif_types.h
   mpif_constants.h
   mpif_functions.h
+  mpi_functions_fortran.c
   ${CMAKE_CURRENT_BINARY_DIR}/mpitrampolinef.h
   ../mpiabi/mpiabif_types.h
   ../mpiabi/mpiabif_constants.h

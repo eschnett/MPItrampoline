@@ -1,7 +1,7 @@
-#ifndef MPIABI_FUNCTIONS_H
-#define MPIABI_FUNCTIONS_H
+#ifndef MPIABI_FUNCTION_POINTERS_H
+#define MPIABI_FUNCTION_POINTERS_H
 
-#include "mpiabi_types.h"
+#include <mpiabi_types.h>
 
 // Declare pointers to MPIABI functions
 
@@ -2020,4 +2020,4 @@ extern int (*MPIXABI_Query_hip_support_ptr)(void);
 extern int (*MPIXABI_Query_rocm_support_ptr)(void);
 extern int (*MPIXABI_Query_ze_support_ptr)(void);
 
-#endif // #ifndef MPIABI_FUNCTIONS_H
+#endif // #ifndef MPIABI_FUNCTION_POINTERS_H

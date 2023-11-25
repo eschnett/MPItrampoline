@@ -182,4 +182,11 @@ void MPI_File_write_ordered_c() { assert(0); }
 void MPI_File_write_shared_c() { assert(0); }
 void MPI_Register_datarep_c() { assert(0); }
 
+void mpi_buffer_flush_() { assert(0); }
+void mpi_buffer_iflush_() { assert(0); }
+void mpi_comm_attach_buffer_() { assert(0); }
+void mpi_comm_detach_buffer_() { assert(0); }
+void mpi_comm_flush_buffer_() { assert(0); }
+void mpi_comm_iflush_buffer_() { assert(0); }
+
 #endif

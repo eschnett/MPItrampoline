@@ -1,9 +1,114 @@
 module mpiwrapper
+  ! use mpi
   implicit none
   include "mpif.h"
   include "mpiabif_constants.h"
   public
 contains
+
+  ! Error handling
+
+  subroutine assert(cond)
+    logical, intent(in) :: cond
+    if (.not.cond) stop
+  end subroutine assert
+
+  ! Translate (non-handle) integers
+
+  integer function mpi2abi_errorcode(ierror)
+    integer, intent(in) :: ierror
+    ! Fast path
+    if (ierror == MPI_SUCCESS) then
+       mpi2abi_errorcode = MPIABI_SUCCESS
+       return
+    end if
+    select case (ierror)
+    ! TODO: translate codes
+    case default
+       mpi2abi_errorcode = ierror
+    end select
+  end function mpi2abi_errorcode
+
+  integer function abi2mpi_proc(proc)
+    integer, intent(in) :: proc
+    select case (proc)
+    case (MPIABI_ANY_SOURCE)
+       abi2mpi_proc = MPI_ANY_SOURCE
+    case (MPIABI_PROC_NULL)
+       abi2mpi_proc = MPI_PROC_NULL
+    case default
+       call assert(proc >= 0)
+       abi2mpi_proc = proc
+    end select
+  end function abi2mpi_proc
+
+  integer function abi2mpi_root(root)
+    integer, intent(in) :: root
+    select case (root)
+    case (MPIABI_ROOT)
+       abi2mpi_root = MPI_ROOT
+    case default
+       abi2mpi_root = root
+    end select
+  end function abi2mpi_root
+
+  integer function abi2mpi_source(source)
+    integer, intent(in) :: source
+    select case (source)
+    case (MPIABI_ANY_SOURCE)
+       abi2mpi_source = MPI_ANY_SOURCE
+    case default
+       abi2mpi_source = source
+    end select
+  end function abi2mpi_source
+
+  integer function abi2mpi_tag(tag)
+    integer, intent(in) ::tag
+    select case (tag)
+    case (MPIABI_ANY_TAG)
+       abi2mpi_tag = MPI_ANY_TAG
+    case default
+       abi2mpi_tag = tag
+    end select
+  end function abi2mpi_tag
+
+  integer function abi2mpi_threadlevel(threadlevel)
+    integer, intent(in) ::threadlevel
+    select case (threadlevel)
+    case (MPIABI_THREAD_FUNNELED)
+       abi2mpi_threadlevel = MPI_THREAD_FUNNELED
+    case (MPIABI_THREAD_MULTIPLE)
+       abi2mpi_threadlevel = MPI_THREAD_MULTIPLE
+    case (MPIABI_THREAD_SERIALIZED)
+       abi2mpi_threadlevel = MPI_THREAD_SERIALIZED
+    case (MPIABI_THREAD_SINGLE)
+       abi2mpi_threadlevel = MPI_THREAD_SINGLE;
+    case default
+       call assert(.false.)
+    end select
+  end function abi2mpi_threadlevel
+
+  ! Translate addresses
+
+  integer(MPI_ADDRESS_KIND) function abi2mpi_buffer_ptr(buffer_ptr)
+    integer(MPIABI_ADDRESS_KIND), intent(in) :: buffer_ptr
+    if (buffer_ptr == loc(MPIABI_IN_PLACE)) then
+       abi2mpi_buffer_ptr = loc(MPI_IN_PLACE)
+       return
+    end if
+    abi2mpi_buffer_ptr = buffer_ptr
+  end function abi2mpi_buffer_ptr
+
+  integer(MPIABI_ADDRESS_KIND) function mpi2abi_buffer_ptr(buffer_ptr)
+    integer(MPI_ADDRESS_KIND), intent(in) :: buffer_ptr
+    if (buffer_ptr == loc(MPI_IN_PLACE)) then
+       mpi2abi_buffer_ptr = loc(MPIABI_IN_PLACE)
+       return
+    end if
+    mpi2abi_buffer_ptr = buffer_ptr
+  end function mpi2abi_buffer_ptr
+
+  ! Translate handles
 
   integer function abi2mpi_comm(comm)
     integer, intent(in) :: comm
@@ -32,6 +137,66 @@ contains
     end select
   end function abi2mpi_datatype
 
+  integer function abi2mpi_info(info)
+    integer, intent(in) :: info
+    select case (info)
+    case (MPIABI_INFO_ENV)
+       abi2mpi_info = MPI_INFO_ENV
+    case (MPIABI_INFO_NULL)
+       abi2mpi_info = MPI_INFO_NULL
+    case default
+       abi2mpi_info = info
+    end select
+  end function abi2mpi_info
+
+  integer function abi2mpi_message(message)
+    integer, intent(in) :: message
+    select case (message)
+    case (MPIABI_MESSAGE_NO_PROC)
+       abi2mpi_message = MPI_MESSAGE_NO_PROC
+    case (MPIABI_MESSAGE_NULL)
+       abi2mpi_message = MPI_MESSAGE_NULL
+    case default
+       abi2mpi_message = message
+    end select
+  end function abi2mpi_message
+
+  integer function abi2mpi_request(request)
+    integer, intent(in) :: request
+    if (request == MPI_REQUEST_NULL) then
+       abi2mpi_request = MPIABI_REQUEST_NULL
+       return
+    end if
+    abi2mpi_request = request
+  end function abi2mpi_request
+
+  integer function mpi2abi_request(request)
+    integer, intent(in) :: request
+    if (request == MPIABI_REQUEST_NULL) then
+       mpi2abi_request = MPI_REQUEST_NULL
+       return
+    end if
+    mpi2abi_request = request
+  end function mpi2abi_request
+
+  ! Translate statuses
+
+  subroutine abi2mpi_status(abi_status, mpi_status)
+    integer, intent(in) :: abi_status(MPIABI_STATUS_SIZE)
+    integer, intent(out) :: mpi_status(MPI_STATUS_SIZE)
+    integer :: src, dest
+    mpi_status(MPI_SOURCE) = abi_status(MPIABI_SOURCE)
+    mpi_status(MPI_TAG) = abi_status(MPIABI_TAG)
+    mpi_status(MPI_ERROR) = abi_status(MPIABI_ERROR)
+    src = 4
+    do dest = 1, MPI_STATUS_SIZE
+       if (src /= MPI_SOURCE .and. src /= MPI_TAG .and. src /= MPI_ERROR) then
+          mpi_status(dest) = abi_status(src)
+          src = src + 1
+       end if
+    end do
+  end subroutine abi2mpi_status
+
   subroutine mpi2abi_status(mpi_status, abi_status)
     integer, intent(in) :: mpi_status(MPI_STATUS_SIZE)
     integer, intent(out) :: abi_status(MPIABI_STATUS_SIZE)
@@ -48,55 +213,21 @@ contains
     end do
   end subroutine mpi2abi_status
 
-  integer(MPI_ADDRESS_KIND) function abi2mpi_statusptr_uninitialized(abi_status, mpi_status_storage)
+  integer(MPI_ADDRESS_KIND) function abi2mpi_status_ptr_uninitialized(abi_status, mpi_status_storage)
     integer, intent(in) :: abi_status(MPIABI_STATUS_SIZE)
     integer, intent(in) :: mpi_status_storage(MPI_STATUS_SIZE)
     if (loc(abi_status) == loc(MPIABI_STATUS_IGNORE)) then
-       abi2mpi_statusptr_uninitialized = loc(MPI_STATUS_IGNORE)
+       abi2mpi_status_ptr_uninitialized = loc(MPI_STATUS_IGNORE)
     else
-       abi2mpi_statusptr_uninitialized = loc(mpi_status_storage)
+       abi2mpi_status_ptr_uninitialized = loc(mpi_status_storage)
     end if
-  end function abi2mpi_statusptr_uninitialized
+  end function abi2mpi_status_ptr_uninitialized
 
-  subroutine mpi2abi_statusptr(mpi_status, abi_status)
+  subroutine mpi2abi_status_ptr(mpi_status, abi_status)
     integer, intent(in) :: mpi_status(MPI_STATUS_SIZE)
     integer, intent(out) :: abi_status(MPIABI_STATUS_SIZE)
     if (loc(abi_status) == loc(MPIABI_STATUS_IGNORE)) return
     call mpi2abi_status(mpi_status, abi_status)
-  end subroutine mpi2abi_statusptr
-
-  integer function mpi2abi_errorcode(ierror)
-    integer, intent(in) :: ierror
-    ! Fast path
-    if (ierror == MPI_SUCCESS) then
-       mpi2abi_errorcode = MPIABI_SUCCESS
-       return
-    end if
-    select case (ierror)
-    ! TODO: translate codes
-    case default
-       mpi2abi_errorcode = ierror
-    end select
-  end function mpi2abi_errorcode
-
-  integer function abi2mpi_source(source)
-    integer, intent(in) :: source
-    select case (source)
-    case (MPIABI_ANY_SOURCE)
-       abi2mpi_source = MPI_ANY_SOURCE
-    case default
-       abi2mpi_source = source
-    end select
-  end function abi2mpi_source
-
-  integer function abi2mpi_tag(tag)
-    integer, intent(in) ::tag
-    select case (tag)
-    case (MPIABI_ANY_TAG)
-       abi2mpi_tag = MPI_ANY_TAG
-    case default
-       abi2mpi_tag = tag
-    end select
-  end function abi2mpi_tag
+  end subroutine mpi2abi_status_ptr
 
 end module mpiwrapper
