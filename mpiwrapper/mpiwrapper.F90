@@ -141,11 +141,27 @@ contains
     case (MPIABI_THREAD_SERIALIZED)
        abi2mpi_threadlevel = MPI_THREAD_SERIALIZED
     case (MPIABI_THREAD_SINGLE)
-       abi2mpi_threadlevel = MPI_THREAD_SINGLE;
+       abi2mpi_threadlevel = MPI_THREAD_SINGLE
     case default
        call assert(.false.)
     end select
   end function abi2mpi_threadlevel
+
+  integer function mpi2abi_threadlevel(threadlevel)
+    integer, intent(in) ::threadlevel
+    select case (threadlevel)
+    case (MPI_THREAD_FUNNELED)
+       mpi2abi_threadlevel = MPIABI_THREAD_FUNNELED
+    case (MPI_THREAD_MULTIPLE)
+       mpi2abi_threadlevel = MPIABI_THREAD_MULTIPLE
+    case (MPI_THREAD_SERIALIZED)
+       mpi2abi_threadlevel = MPIABI_THREAD_SERIALIZED
+    case (MPI_THREAD_SINGLE)
+       mpi2abi_threadlevel = MPIABI_THREAD_SINGLE
+    case default
+       call assert(.false.)
+    end select
+  end function mpi2abi_threadlevel
 
   ! Translate addresses
 
@@ -169,8 +185,12 @@ contains
 
   ! Translate handles
 
-  elemental integer function abi2mpi_comm(comm)
+  integer function abi2mpi_comm(comm)
     integer, intent(in) :: comm
+    if (.not.handle_is_reserved(comm)) then
+       abi2mpi_comm = abi2mpi_unreserved(comm)
+       return
+    end if
     select case (comm)
     case (MPIABI_COMM_NULL)
        abi2mpi_comm = MPI_COMM_NULL
@@ -179,9 +199,23 @@ contains
     case (MPIABI_COMM_WORLD)
        abi2mpi_comm = MPI_COMM_WORLD
     case default
-       abi2mpi_comm = comm
+       call assert(.false.)
     end select
   end function abi2mpi_comm
+
+  integer function mpi2abi_comm(comm)
+    integer, intent(in) :: comm
+    select case (comm)
+    case (MPI_COMM_NULL)
+       mpi2abi_comm = MPIABI_COMM_NULL
+    case (MPI_COMM_SELF)
+       mpi2abi_comm = MPIABI_COMM_SELF
+    case (MPI_COMM_WORLD)
+       mpi2abi_comm = MPIABI_COMM_WORLD
+    case default
+       mpi2abi_comm = mpi2abi_unreserved(comm)
+    end select
+  end function mpi2abi_comm
 
   integer function abi2mpi_datatype(datatype)
     integer, intent(in) :: datatype
@@ -613,19 +647,47 @@ contains
     end select
   end function mpi2abi_datatype
 
-  elemental integer function abi2mpi_info(info)
+  integer function abi2mpi_file(file)
+    integer, intent(in) :: file
+    if (.not.handle_is_reserved(file)) then
+       abi2mpi_file = abi2mpi_unreserved(file)
+       return
+    end if
+    select case (file)
+    case (MPIABI_FILE_NULL)
+       abi2mpi_file = MPI_FILE_NULL
+    case default
+       call assert(.false.)
+    end select
+  end function abi2mpi_file
+
+  integer function mpi2abi_file(file)
+    integer, intent(in) :: file
+    select case (file)
+    case (MPI_FILE_NULL)
+       mpi2abi_file = MPIABI_FILE_NULL
+    case default
+       mpi2abi_file = mpi2abi_unreserved(file)
+    end select
+  end function mpi2abi_file
+
+  integer function abi2mpi_info(info)
     integer, intent(in) :: info
+    if (.not.handle_is_reserved(info)) then
+       abi2mpi_info = abi2mpi_unreserved(info)
+       return
+    end if
     select case (info)
     case (MPIABI_INFO_ENV)
        abi2mpi_info = MPI_INFO_ENV
     case (MPIABI_INFO_NULL)
        abi2mpi_info = MPI_INFO_NULL
     case default
-       abi2mpi_info = info
+       call assert(.false.)
     end select
   end function abi2mpi_info
 
-  elemental integer function abi2mpi_message(message)
+  integer function abi2mpi_message(message)
     integer, intent(in) :: message
     select case (message)
     case (MPIABI_MESSAGE_NO_PROC)
@@ -633,17 +695,22 @@ contains
     case (MPIABI_MESSAGE_NULL)
        abi2mpi_message = MPI_MESSAGE_NULL
     case default
-       abi2mpi_message = message
+       abi2mpi_message = mpi2abi_unreserved(message)
     end select
   end function abi2mpi_message
 
-  elemental integer function abi2mpi_request(request)
+  integer function abi2mpi_request(request)
     integer, intent(in) :: request
-    if (request == MPI_REQUEST_NULL) then
-       abi2mpi_request = MPIABI_REQUEST_NULL
+    if (.not.handle_is_reserved(request)) then
+       abi2mpi_request = abi2mpi_unreserved(request)
        return
     end if
-    abi2mpi_request = request
+    select case (request)
+    case (MPI_REQUEST_NULL)
+       abi2mpi_request = MPIABI_REQUEST_NULL
+    case default
+       call assert(.false.)
+    end select
   end function abi2mpi_request
 
   elemental integer function mpi2abi_request(request)
@@ -655,13 +722,17 @@ contains
     mpi2abi_request = request
   end function mpi2abi_request
 
-  elemental integer function abi2mpi_session(session)
+  integer function abi2mpi_session(session)
     integer, intent(in) :: session
+    if (.not.handle_is_reserved(session)) then
+       abi2mpi_session = abi2mpi_unreserved(session)
+       return
+    end if
     select case (session)
     case (MPIABI_SESSION_NULL)
        abi2mpi_session = MPI_SESSION_NULL
     case default
-       abi2mpi_session = session
+       call assert(.false.)
     end select
   end function abi2mpi_session
 

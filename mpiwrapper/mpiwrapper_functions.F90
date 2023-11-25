@@ -504,7 +504,9 @@ subroutine MPIABI_Request_get_status_all(count, array_of_requests, flag, array_o
   integer wrap_array_of_requests(count)
   integer wrap_array_of_statuses(MPI_STATUS_SIZE, count)
   integer n
-  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  do n = 1, count
+     wrap_array_of_requests(n) = abi2mpi_request(array_of_requests(n))
+  end do
   if (loc(array_of_statuses) == loc(MPIABI_STATUSES_IGNORE)) then
      call MPI_Request_get_status_all(count, wrap_array_of_requests, flag, MPI_STATUSES_IGNORE, ierror)
   else
@@ -527,7 +529,10 @@ subroutine MPIABI_Request_get_status_any(count, array_of_requests, index, flag, 
   integer, intent(out) :: ierror
   integer wrap_array_of_requests(count)
   integer wrap_status(MPI_STATUS_SIZE)
-  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  integer n
+  do n = 1, count
+     wrap_array_of_requests(n) = abi2mpi_request(array_of_requests(n))
+  end do
   call MPI_Request_get_status_any(count, wrap_array_of_requests, index, flag, wrap_status, ierror)
   call mpi2abi_status(wrap_status, status)
   ierror = mpi2abi_errorcode(ierror)
@@ -545,7 +550,9 @@ subroutine MPIABI_Request_get_status_some(incount, array_of_requests, outcount, 
   integer wrap_array_of_requests(incount)
   integer wrap_array_of_statuses(MPI_STATUS_SIZE, incount)
   integer n
-  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  do n = 1, incount
+     wrap_array_of_requests(n) = abi2mpi_request(array_of_requests(n))
+  end do
   call MPI_Request_get_status_some(incount, wrap_array_of_requests, outcount, array_of_indices, wrap_array_of_statuses, ierror)
   do n = 1, outcount
      call mpi2abi_status(wrap_array_of_statuses(:, n), array_of_statuses(:, n))
@@ -776,7 +783,10 @@ subroutine MPIABI_Startall(count, array_of_requests, ierror)
   integer, intent(in) :: array_of_requests(count)
   integer, intent(out) :: ierror
   integer :: wrap_array_of_requests(count)
-  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  integer n
+  do n = 1, count
+     wrap_array_of_requests(n) = abi2mpi_request(array_of_requests(n))
+  end do
   call MPI_Startall(count, wrap_array_of_requests, ierror)
   ierror = mpi2abi_errorcode(ierror)
 end subroutine MPIABI_Startall
@@ -865,7 +875,9 @@ subroutine MPIABI_Testall(count, array_of_requests, flag, array_of_statuses, ier
   integer wrap_array_of_requests(count)
   integer wrap_array_of_statuses(MPI_STATUS_SIZE, count)
   integer n
-  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  do n = 1, count
+     wrap_array_of_requests(n) = abi2mpi_request(array_of_requests(n))
+  end do
   if (loc(array_of_statuses) == loc(MPIABI_STATUSES_IGNORE)) then
      call MPI_Testall(count, wrap_array_of_requests, flag, MPI_STATUSES_IGNORE, ierror)
      if (flag) then
@@ -897,7 +909,10 @@ subroutine MPIABI_Testany(count, array_of_requests, index, flag, status, ierror)
   integer(MPIABI_ADDRESS_KIND) wrap_status_ptr
   integer wrap_status(MPI_STATUS_SIZE)
   pointer (wrap_status_ptr, wrap_status)
-  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  integer n
+  do n = 1, count
+     wrap_array_of_requests(n) = abi2mpi_request(array_of_requests(n))
+  end do
   wrap_status_ptr = abi2mpi_status_ptr_uninitialized(status, wrap_status_storage)
   call MPI_Testany(count, wrap_array_of_requests, index, flag, wrap_status, ierror)
   if (flag) then
@@ -919,7 +934,9 @@ subroutine MPIABI_Testsome(incount, array_of_requests, outcount, array_of_indice
   integer wrap_array_of_requests(incount)
   integer wrap_array_of_statuses(MPI_STATUS_SIZE, incount)
   integer n
-  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  do n = 1, incount
+     wrap_array_of_requests(n) = abi2mpi_request(array_of_requests(n))
+  end do
   if (loc(array_of_statuses) == loc(MPIABI_STATUSES_IGNORE)) then
      call MPI_Testsome(incount, wrap_array_of_requests, outcount, array_of_indices, MPI_STATUSES_IGNORE, ierror)
   else
@@ -961,7 +978,9 @@ subroutine MPIABI_Waitall(count, array_of_requests, array_of_statuses, ierror)
   integer wrap_array_of_requests(count)
   integer wrap_array_of_statuses(MPI_STATUS_SIZE, count)
   integer n
-  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  do n = 1, count
+     wrap_array_of_requests(n) = abi2mpi_request(array_of_requests(n))
+  end do
   if (loc(array_of_statuses) == loc(MPIABI_STATUSES_IGNORE)) then
      call MPI_Waitall(count, wrap_array_of_requests, MPI_STATUSES_IGNORE, ierror)
      array_of_requests = mpi2abi_request(wrap_array_of_requests)
@@ -988,7 +1007,10 @@ subroutine MPIABI_Waitany(count, array_of_requests, index, status, ierror)
   integer(MPIABI_ADDRESS_KIND) wrap_status_ptr
   integer wrap_status(MPI_STATUS_SIZE)
   pointer (wrap_status_ptr, wrap_status)
-  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  integer n
+  do n = 1, count
+     wrap_array_of_requests(n) = abi2mpi_request(array_of_requests(n))
+  end do
   wrap_status_ptr = abi2mpi_status_ptr_uninitialized(status, wrap_status_storage)
   call MPI_Waitany(count, wrap_array_of_requests, index, wrap_status, ierror)
   array_of_requests(index) = mpi2abi_request(wrap_array_of_requests(index))
@@ -1008,7 +1030,9 @@ subroutine MPIABI_Waitsome(incount, array_of_requests, outcount, array_of_indice
   integer wrap_array_of_requests(incount)
   integer wrap_array_of_statuses(MPI_STATUS_SIZE, incount)
   integer n
-  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  do n = 1, incount
+     wrap_array_of_requests(n) = abi2mpi_request(array_of_requests(n))
+  end do
   if (loc(array_of_statuses) == loc(MPIABI_STATUSES_IGNORE)) then
      call MPI_Waitsome(incount, wrap_array_of_requests, outcount, array_of_indices, MPI_STATUSES_IGNORE, ierror)
   else
@@ -1312,21 +1336,31 @@ end subroutine MPIABI_Type_contiguous
 !   call MPI_Type_create_subarray_c(ndims, array_of_sizes, array_of_subsizes, array_of_starts, order, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_subarray_c
-! 
-! subroutine MPIABI_Type_dup(oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_dup(oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_dup
-! 
-! subroutine MPIABI_Type_free(datatype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_free(datatype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_free
-! 
+
+subroutine MPIABI_Type_dup(oldtype, newtype, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: oldtype
+  integer, intent(out) :: newtype
+  integer, intent(out) :: ierror
+  integer wrap_newtype
+  call MPI_Type_dup(abi2mpi_datatype(oldtype), wrap_newtype, ierror)
+  newtype = mpi2abi_datatype(wrap_newtype)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_dup
+
+subroutine MPIABI_Type_free(datatype, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(inout) :: datatype
+  integer, intent(out) :: ierror
+  integer wrap_datatype
+  wrap_datatype = abi2mpi_datatype(datatype)
+  call MPI_Type_free(wrap_datatype, ierror)
+  datatype = mpi2abi_datatype(wrap_datatype)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_free
+
 ! subroutine MPIABI_Type_get_contents(datatype, max_integers, max_addresses, max_datatypes, array_of_integers, array_of_addresses, array_of_datatypes, ierror)
 !   use mpiwrapper
 !   implicit none
@@ -1452,37 +1486,51 @@ end subroutine MPIABI_Type_contiguous
 !   call MPI_Unpack_external_c(datarep, inbuf, insize, position, outbuf, outcount, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Unpack_external_c
-! 
-! ! A.3.4 Collective Communication C Bindings
-! 
-! subroutine MPIABI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Allgather
-! 
-! subroutine MPIABI_Allgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Allgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Allgather_c
-! 
-! subroutine MPIABI_Allgather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Allgather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Allgather_init
-! 
-! subroutine MPIABI_Allgather_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Allgather_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Allgather_init_c
-! 
+ 
+! A.3.4 Collective Communication C Bindings
+
+subroutine MPIABI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  integer, intent(in) :: sendtype
+  integer, intent(out) :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  integer, intent(in) :: recvtype
+  integer, intent(in) :: comm
+  integer, intent(out) :: ierror
+  integer wrap_sendbuf(1)
+  integer(MPI_ADDRESS_KIND) wrap_sendbuf_ptr
+  wrap_sendbuf_ptr = abi2mpi_buffer_ptr(loc(sendbuf))
+  call MPI_Allgather(wrap_sendbuf, sendcount, abi2mpi_datatype(sendtype), recvbuf, recvcount, abi2mpi_datatype(recvtype), &
+       abi2mpi_comm(comm), ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Allgather
+
+subroutine MPIABI_Allgather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  integer, intent(in) :: sendtype
+  integer, intent(out) :: recvbuf(*)
+  integer, intent(in) :: recvcount
+  integer, intent(in) :: recvtype
+  integer, intent(in) :: comm
+  integer, intent(in) :: info
+  integer, intent(out) :: request
+  integer, intent(out) :: ierror
+  integer wrap_sendbuf(1)
+  integer(MPI_ADDRESS_KIND) wrap_sendbuf_ptr
+  integer wrap_request
+  wrap_sendbuf_ptr = abi2mpi_buffer_ptr(loc(sendbuf))
+  call MPI_Allgather_init(wrap_sendbuf, sendcount, abi2mpi_datatype(sendtype), recvbuf, recvcount, abi2mpi_datatype(recvtype), &
+       abi2mpi_comm(comm), abi2mpi_info(info), wrap_request, ierror)
+  request = mpi2abi_request(wrap_request)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Allgather_init
+
 ! subroutine MPIABI_Allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
@@ -2381,13 +2429,20 @@ subroutine MPIABI_Comm_size(comm, size, ierror)
   ierror = mpi2abi_errorcode(ierror)
 end subroutine MPIABI_Comm_size
 
-! subroutine MPIABI_Comm_split(comm, color, key, newcomm, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Comm_split(comm, color, key, newcomm, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Comm_split
-! 
+subroutine MPIABI_Comm_split(comm, color, key, newcomm, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: comm
+  integer, intent(in) :: color
+  integer, intent(in) :: key
+  integer, intent(out) :: newcomm
+  integer, intent(out) :: ierror
+  integer wrap_newcomm
+  call MPI_Comm_split(abi2mpi_comm(comm), color, key, wrap_newcomm, ierror)
+  newcomm = mpi2abi_comm(wrap_newcomm)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Comm_split
+
 ! subroutine MPIABI_Group_free(group, ierror)
 !   use mpiwrapper
 !   implicit none
@@ -3259,16 +3314,19 @@ end function MPIABI_Wtime
 !   call MPI_Info_set(info, key, value, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Info_set
-! 
-! ! A.3.9 Process Creation and Management C Bindings
-! 
-! subroutine MPIABI_Abort(comm, errorcode, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Abort(comm, errorcode, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Abort
-! 
+
+! A.3.9 Process Creation and Management C Bindings
+
+subroutine MPIABI_Abort(comm, errorcode, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: comm
+  integer, intent(in) :: errorcode
+  integer, intent(out) :: ierror
+  call MPI_Abort(abi2mpi_comm(comm), errorcode, ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Abort
+
 ! subroutine MPIABI_Close_port(port_name, ierror)
 !   use mpiwrapper
 !   implicit none
@@ -3398,14 +3456,18 @@ end subroutine MPIABI_Is_thread_main
 !   call MPI_Publish_name(service_name, info, port_name, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Publish_name
-! 
-! subroutine MPIABI_Query_thread(provided, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Query_thread(provided, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Query_thread
-! 
+
+subroutine MPIABI_Query_thread(provided, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(out) :: provided
+  integer, intent(out) :: ierror
+  integer wrap_provided
+  call MPI_Query_thread(wrap_provided, ierror)
+  provided = mpi2abi_threadlevel(wrap_provided)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Query_thread
+
 ! subroutine MPIABI_Session_finalize(session, ierror)
 !   use mpiwrapper
 !   implicit none
@@ -3850,16 +3912,21 @@ end subroutine MPIABI_Is_thread_main
 !   call MPI_Status_set_tag(status, tag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Status_set_tag
-! 
-! ! A.3.12 I/O C Bindings
-! 
-! subroutine MPIABI_File_close(fh, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_File_close(fh, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_File_close
-! 
+
+! A.3.12 I/O C Bindings
+
+subroutine MPIABI_File_close(fh, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(inout) :: fh
+  integer, intent(out) :: ierror
+  integer wrap_fh
+  wrap_fh = abi2mpi_file(fh)
+  call MPI_File_close(wrap_fh, ierror)
+  fh = mpi2abi_file(wrap_fh)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_File_close
+
 ! subroutine MPIABI_File_delete(filename, info, ierror)
 !   use mpiwrapper
 !   implicit none
