@@ -45,6 +45,7 @@ include(CheckIncludeFile)
 include(CheckIncludeFiles)
 include(CheckSymbolExists)
 include(CheckTypeSize)
+include(CheckFortranSourceCompiles)
 
 check_include_file(mpi.h HAVE_MPI_H)
 # OpenMPI 5.0.0 does not allow including `mpi-ext.h` without first
@@ -106,6 +107,27 @@ check_function_exists(MPIX_Query_cuda_support HAVE_MPIX_QUERY_CUDA_SUPPORT)
 check_function_exists(MPIX_Query_hip_support HAVE_MPIX_QUERY_HIP_SUPPORT)
 check_function_exists(MPIX_Query_rocm_support HAVE_MPIX_QUERY_ROCM_SUPPORT)
 check_function_exists(MPIX_Query_ze_support HAVE_MPIX_QUERY_ZE_SUPPORT)
+
+check_fortran_source_compiles(
+  "
+  implicit none
+  include 'mpif.h'
+  end
+  "
+  HAVE_FORTRAN_MPIF_H
+  SRC_EXT .f90
+)
+check_fortran_source_compiles(
+  "
+  implicit none
+  include 'mpif.h'
+  integer session
+  session = MPI_SESSION_NULL
+  end
+  "
+  HAVE_FORTRAN_MPI_SESSION_NULL
+  SRC_EXT .f90
+)
 
 # Check level of MPI 4 support
 check_symbol_exists(MPI_BUFFER_AUTOMATIC mpi.h HAVE_MPI_BUFFER_AUTOMATIC)

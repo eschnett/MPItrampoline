@@ -55,4 +55,6 @@
 #cmakedefine HAVE_SIZEOF_MPI_SESSION
 #cmakedefine HAVE_SIZEOF_MPI_USER_FUNCTION_C
 
+#cmakedefine HAVE_FORTRAN_MPI_SESSION_NULL
+
 #endif // #ifndef MPIWRAPPER_H

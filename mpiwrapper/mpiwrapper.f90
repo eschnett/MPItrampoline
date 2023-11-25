@@ -1,3 +1,11 @@
+#include "mpiwrapper.h"
+  
+! Work around a bug in MPICH 4.1.4 <https://github.com/pmodels/mpich/issues/6807>
+#ifndef HAVE_FORTRAN_MPI_SESSION_NULL
+! This is only valid for MPICH
+#define MPI_SESSION_NULL 939524096
+#endif
+
 module mpiwrapper
   ! use mpi
   implicit none
