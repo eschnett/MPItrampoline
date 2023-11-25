@@ -1,5 +1,6 @@
 *.o
 hello-world-c
 hello-world-cxx
-hello-world-f90
 hello-world-f
+hello-world-f90
+hello-world-fortran

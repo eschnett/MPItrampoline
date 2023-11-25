@@ -194,10 +194,6 @@ void mpi_psend_init_(const void *buf, MPIABI_Fint *partitions, MPIABI_Count *cou
 
 // A.3.3 Datatypes C Bindings
 
-MPI_Aint mpi_aint_add_(MPIABI_Aint *base, MPIABI_Aint *disp) { return (*mpiabi_aint_add_ptr)(base, disp); }
-
-MPI_Aint mpi_aint_diff_(MPIABI_Aint *addr1, MPIABI_Aint *addr2) { return (*mpiabi_aint_diff_ptr)(addr1, addr2); }
-
 void mpi_get_address_(const void *location, MPIABI_Aint *address, MPIABI_Fint *ierror) { (*mpiabi_get_address_ptr)(location, address, ierror); }
 
 void mpi_get_elements_(const MPIABI_Fint *status, MPIABI_Fint *datatype, MPIABI_Fint *count, MPIABI_Fint *ierror) { (*mpiabi_get_elements_ptr)(status, datatype, count, ierror); }

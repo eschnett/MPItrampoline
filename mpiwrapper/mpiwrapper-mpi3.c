@@ -4,6 +4,8 @@
 
 // Fake MPI 4 support, just enough to make the linker happy
 
+// C functions
+
 void MPI_Accumulate_c() { assert(0); }
 void MPI_Allgather_c() { assert(0); }
 void MPI_Allgather_init_c() { assert(0); }
@@ -182,11 +184,23 @@ void MPI_File_write_ordered_c() { assert(0); }
 void MPI_File_write_shared_c() { assert(0); }
 void MPI_Register_datarep_c() { assert(0); }
 
+// Fortran functions
+
 void mpi_buffer_flush_() { assert(0); }
 void mpi_buffer_iflush_() { assert(0); }
 void mpi_comm_attach_buffer_() { assert(0); }
 void mpi_comm_detach_buffer_() { assert(0); }
 void mpi_comm_flush_buffer_() { assert(0); }
 void mpi_comm_iflush_buffer_() { assert(0); }
+void mpi_request_get_status_all_() { assert(0); }
+void mpi_request_get_status_any_() { assert(0); }
+void mpi_request_get_status_some_() { assert(0); }
+void mpi_session_attach_buffer_() { assert(0); }
+void mpi_session_detach_buffer_() { assert(0); }
+void mpi_session_flush_buffer_() { assert(0); }
+void mpi_session_iflush_buffer_() { assert(0); }
+void mpi_status_get_error_() { assert(0); }
+void mpi_status_get_source_() { assert(0); }
+void mpi_status_get_tag_() { assert(0); }
 
 #endif

@@ -476,61 +476,114 @@ subroutine MPIABI_Request_free(request, ierror)
   ierror = mpi2abi_errorcode(ierror)
 end subroutine MPIABI_Request_free
 
-! subroutine MPIABI_Request_get_status(request, flag, status)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Request_get_status(request, flag, status)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Request_get_status
-! 
-! subroutine MPIABI_Request_get_status_all(count, array_of_requests, flag, array_of_statuses)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Request_get_status_all(count, array_of_requests, flag, array_of_statuses)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Request_get_status_all
-! 
-! subroutine MPIABI_Request_get_status_any(count, array_of_requests, index, flag, status)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Request_get_status_any(count, array_of_requests, index, flag, status)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Request_get_status_any
-! 
-! subroutine MPIABI_Request_get_status_some(incount, array_of_requests, outcount, array_of_indices, array_of_statuses)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Request_get_status_some(incount, array_of_requests, outcount, array_of_indices, array_of_statuses)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Request_get_status_some
-! 
-! subroutine MPIABI_Rsend(buf, count, datatype, dest, tag, comm)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Rsend(buf, count, datatype, dest, tag, comm)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Rsend
-! 
-! subroutine MPIABI_Rsend_c(buf, count, datatype, dest, tag, comm)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Rsend_c(buf, count, datatype, dest, tag, comm)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Rsend_c
-! 
-! subroutine MPIABI_Rsend_init(buf, count, datatype, dest, tag, comm, request)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Rsend_init(buf, count, datatype, dest, tag, comm, request)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Rsend_init
-! 
-! subroutine MPIABI_Rsend_init_c(buf, count, datatype, dest, tag, comm, request)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Rsend_init_c(buf, count, datatype, dest, tag, comm, request)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Rsend_init_c
+subroutine MPIABI_Request_get_status(request, flag, status, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: request
+  logical, intent(out) :: flag
+  integer, intent(out) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(out) :: ierror
+  integer wrap_status_storage(MPI_STATUS_SIZE)
+  integer(MPIABI_ADDRESS_KIND) wrap_status_ptr
+  integer wrap_status(MPI_STATUS_SIZE)
+  pointer (wrap_status_ptr, wrap_status)
+  wrap_status_ptr = abi2mpi_status_ptr_uninitialized(status, wrap_status_storage)
+  call MPI_Request_get_status(abi2mpi_request(request), flag, wrap_status, ierror)
+  call mpi2abi_status_ptr(wrap_status, status)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Request_get_status
+
+subroutine MPIABI_Request_get_status_all(count, array_of_requests, flag, array_of_statuses, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: array_of_requests(count)
+  logical, intent(out) :: flag
+  integer, intent(out) :: array_of_statuses(MPIABI_STATUS_SIZE, count)
+  integer, intent(out) :: ierror
+  integer wrap_array_of_requests(count)
+  integer wrap_array_of_statuses(MPI_STATUS_SIZE, count)
+  integer n
+  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  if (loc(array_of_statuses) == loc(MPIABI_STATUSES_IGNORE)) then
+     call MPI_Request_get_status_all(count, wrap_array_of_requests, flag, MPI_STATUSES_IGNORE, ierror)
+  else
+     call MPI_Request_get_status_all(count, wrap_array_of_requests, flag, wrap_array_of_statuses, ierror)
+     do n = 1, count
+        call mpi2abi_status(wrap_array_of_statuses(:, n), array_of_statuses(:, n))
+     end do
+  end if
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Request_get_status_all
+
+subroutine MPIABI_Request_get_status_any(count, array_of_requests, index, flag, status, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: array_of_requests(count)
+  integer, intent(out) :: index
+  logical, intent(out) :: flag
+  integer, intent(out) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(out) :: ierror
+  integer wrap_array_of_requests(count)
+  integer wrap_status(MPI_STATUS_SIZE)
+  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  call MPI_Request_get_status_any(count, wrap_array_of_requests, index, flag, wrap_status, ierror)
+  call mpi2abi_status(wrap_status, status)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Request_get_status_any
+
+subroutine MPIABI_Request_get_status_some(incount, array_of_requests, outcount, array_of_indices, array_of_statuses, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: incount
+  integer, intent(in) :: array_of_requests(incount)
+  integer, intent(out) :: outcount
+  integer, intent(out) :: array_of_indices(incount)
+  integer, intent(out) :: array_of_statuses(MPIABI_STATUS_SIZE, incount)
+  integer, intent(out) :: ierror
+  integer wrap_array_of_requests(incount)
+  integer wrap_array_of_statuses(MPI_STATUS_SIZE, incount)
+  integer n
+  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  call MPI_Request_get_status_some(incount, wrap_array_of_requests, outcount, array_of_indices, wrap_array_of_statuses, ierror)
+  do n = 1, outcount
+     call mpi2abi_status(wrap_array_of_statuses(:, n), array_of_statuses(:, n))
+  end do
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Request_get_status_some
+
+subroutine MPIABI_Rsend(buf, count, datatype, dest, tag, comm, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: buf(*)
+  integer, intent(in) :: count
+  integer, intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  integer, intent(in) :: comm
+  integer, intent(out) :: ierror
+  call MPI_Rsend(buf, count, abi2mpi_datatype(datatype), abi2mpi_proc(dest), abi2mpi_tag(tag), abi2mpi_comm(comm), ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Rsend
+
+subroutine MPIABI_Rsend_init(buf, count, datatype, dest, tag, comm, request, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: buf(*)
+  integer, intent(in) :: count
+  integer, intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  integer, intent(in) :: comm
+  integer, intent(out) :: request
+  integer, intent(out) :: ierror
+  integer wrap_request
+  call MPI_Rsend_init(buf, count, abi2mpi_datatype(datatype), abi2mpi_proc(dest), abi2mpi_tag(tag), abi2mpi_comm(comm), &
+       wrap_request, ierror)
+  request = mpi2abi_request(wrap_request)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Rsend_init
 
 subroutine MPIABI_Send(buf, count, datatype, dest, tag, comm, ierror)
   use mpiwrapper
@@ -564,777 +617,973 @@ subroutine MPIABI_Send_init(buf, count, datatype, dest, tag, comm, request, ierr
   ierror = mpi2abi_errorcode(ierror)
 end subroutine MPIABI_Send_init
 
-! subroutine MPIABI_Sendrecv(sendbuf, sendcount, sendtype, dest, sendtag, recvbuf, recvcount, recvtype, source, recvtag, comm, status)
+subroutine MPIABI_Sendrecv(sendbuf, sendcount, sendtype, dest, sendtag, recvbuf, recvcount, recvtype, source, recvtag, comm, &
+     status, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: sendbuf(*)
+  integer, intent(in) :: sendcount
+  integer, intent(in) :: sendtype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(out) :: recvbuf
+  integer, intent(in) :: recvcount
+  integer, intent(in) :: recvtype
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  integer, intent(in) :: comm
+  integer, intent(out) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(out) :: ierror
+  integer wrap_status_storage(MPI_STATUS_SIZE)
+  integer(MPIABI_ADDRESS_KIND) wrap_status_ptr
+  integer wrap_status(MPI_STATUS_SIZE)
+  pointer (wrap_status_ptr, wrap_status)
+  wrap_status_ptr = abi2mpi_status_ptr_uninitialized(status, wrap_status_storage)
+  call MPI_Sendrecv(sendbuf, sendcount, abi2mpi_datatype(sendtype), abi2mpi_proc(dest), abi2mpi_tag(sendtag), recvbuf, recvcount, &
+       abi2mpi_datatype(recvtype), abi2mpi_proc(source), abi2mpi_tag(recvtag), abi2mpi_comm(comm), wrap_status, ierror)
+  call mpi2abi_status_ptr(wrap_status, status)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Sendrecv
+
+subroutine MPIABI_Sendrecv_replace(buf, count, datatype, dest, sendtag, source, recvtag, comm, status, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(inout) :: buf(*)
+  integer, intent(in) :: count
+  integer, intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: sendtag
+  integer, intent(in) :: source
+  integer, intent(in) :: recvtag
+  integer, intent(in) :: comm
+  integer, intent(out) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(out) :: ierror
+  integer wrap_status_storage(MPI_STATUS_SIZE)
+  integer(MPIABI_ADDRESS_KIND) wrap_status_ptr
+  integer wrap_status(MPI_STATUS_SIZE)
+  pointer (wrap_status_ptr, wrap_status)
+  wrap_status_ptr = abi2mpi_status_ptr_uninitialized(status, wrap_status_storage)
+  call MPI_Sendrecv_replace(buf, count, abi2mpi_datatype(datatype), abi2mpi_proc(dest), abi2mpi_tag(sendtag), &
+       abi2mpi_proc(source), abi2mpi_tag(recvtag), abi2mpi_comm(comm), wrap_status, ierror)
+  call mpi2abi_status_ptr(wrap_status, status)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Sendrecv_replace
+
+subroutine MPIABI_Session_attach_buffer(session, buffer, size, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: session
+  integer, intent(in) :: buffer(*)
+  integer, intent(in) :: size
+  integer, intent(out) :: ierror
+  integer(MPIABI_ADDRESS_KIND) buffer_addr
+  integer(MPI_ADDRESS_KIND) wrap_buffer_addr
+  integer wrap_buffer(*)
+  pointer (wrap_buffer_addr, wrap_buffer)
+  buffer_addr = loc(buffer)
+  if (buffer_addr == loc(MPIABI_BUFFER_AUTOMATIC)) then
+     wrap_buffer_addr = loc(MPI_BUFFER_AUTOMATIC)
+  else
+     wrap_buffer_addr = buffer_addr
+  end if
+  call MPI_Session_attach_buffer(abi2mpi_session(session), wrap_buffer, size, ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Session_attach_buffer
+
+subroutine MPIABI_Session_detach_buffer(session, buffer_addr, size, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: session
+  integer(MPIABI_ADDRESS_KIND), intent(out) :: buffer_addr
+  integer, intent(out) :: size
+  integer, intent(out) :: ierror
+  integer(MPI_ADDRESS_KIND) wrap_buffer_addr
+  call MPI_Session_detach_buffer(abi2mpi_session(session), wrap_buffer_addr, size, ierror)
+  if (wrap_buffer_addr == loc(MPI_BUFFER_AUTOMATIC)) then
+     buffer_addr = loc(MPIABI_BUFFER_AUTOMATIC)
+  else
+     buffer_addr = wrap_buffer_addr
+  end if
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Session_detach_buffer
+
+subroutine MPIABI_Session_flush_buffer(session, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: session
+  integer, intent(out) :: ierror
+  call MPI_Session_flush_buffer(abi2mpi_session(session), ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Session_flush_buffer
+
+subroutine MPIABI_Session_iflush_buffer(session, request, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: session
+  integer, intent(out) :: request
+  integer, intent(out) :: ierror
+  integer wrap_request
+  call MPI_Session_iflush_buffer(abi2mpi_session(session), wrap_request, ierror)
+  request = mpi2abi_request(wrap_request)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Session_iflush_buffer
+
+subroutine MPIABI_Ssend(buf, count, datatype, dest, tag, comm, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: buf(*)
+  integer, intent(in) :: count
+  integer, intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  integer, intent(in) :: comm
+  integer, intent(out) :: ierror
+  call MPI_Ssend(buf, count, abi2mpi_datatype(datatype), abi2mpi_proc(dest), abi2mpi_tag(tag), abi2mpi_comm(comm), ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Ssend
+
+subroutine MPIABI_Ssend_init(buf, count, datatype, dest, tag, comm, request, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: buf(*)
+  integer, intent(in) :: count
+  integer, intent(in) :: datatype
+  integer, intent(in) :: dest
+  integer, intent(in) :: tag
+  integer, intent(in) :: comm
+  integer, intent(out) :: request
+  integer, intent(out) :: ierror
+  integer wrap_request
+  call MPI_Ssend_init(buf, count, abi2mpi_datatype(datatype), abi2mpi_proc(dest), abi2mpi_tag(tag), abi2mpi_comm(comm), &
+       wrap_request, ierror)
+  request = mpi2abi_request(wrap_request)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Ssend_init
+
+subroutine MPIABI_Start(request, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: request
+  integer, intent(out) :: ierror
+  call MPI_Start(abi2mpi_request(request), ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Start
+
+subroutine MPIABI_Startall(count, array_of_requests, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: array_of_requests(count)
+  integer, intent(out) :: ierror
+  integer :: wrap_array_of_requests(count)
+  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  call MPI_Startall(count, wrap_array_of_requests, ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Startall
+
+subroutine MPIABI_Status_get_error(status, err, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(out) :: err
+  integer, intent(out) :: ierror
+  integer wrap_status(MPI_STATUS_SIZE)
+  call abi2mpi_status(status, wrap_status)
+  call MPI_Status_get_error(wrap_status, err, ierror)
+  err = mpi2abi_errorcode(err)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Status_get_error
+
+subroutine MPIABI_Status_get_source(status, source, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(out) :: source
+  integer, intent(out) :: ierror
+  integer wrap_status(MPI_STATUS_SIZE)
+  call abi2mpi_status(status, wrap_status)
+  call MPI_Status_get_source(wrap_status, source, ierror)
+  source = mpi2abi_proc(source)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Status_get_source
+
+subroutine MPIABI_Status_get_tag(status, tag, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(out) :: tag
+  integer, intent(out) :: ierror
+  integer wrap_status(MPI_STATUS_SIZE)
+  call abi2mpi_status(status, wrap_status)
+  call MPI_Status_get_tag(wrap_status, tag, ierror)
+  tag = mpi2abi_proc(tag)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Status_get_tag
+
+subroutine MPIABI_Test(request, flag, status, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(inout) :: request
+  logical, intent(out) :: flag
+  integer, intent(out) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(out) :: ierror
+  integer wrap_request
+  integer wrap_status_storage(MPI_STATUS_SIZE)
+  integer(MPIABI_ADDRESS_KIND) wrap_status_ptr
+  integer wrap_status(MPI_STATUS_SIZE)
+  pointer (wrap_status_ptr, wrap_status)
+  wrap_request = abi2mpi_request(request)
+  wrap_status_ptr = abi2mpi_status_ptr_uninitialized(status, wrap_status_storage)
+  call MPI_Test(wrap_request, flag, wrap_status, ierror)
+  if (flag) then
+     request = mpi2abi_request(wrap_request)
+     call mpi2abi_status_ptr(wrap_status, status)
+  end if
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Test
+
+subroutine MPIABI_Test_cancelled(status, flag, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: status(MPIABI_STATUS_SIZE)
+  logical, intent(out) :: flag
+  integer, intent(out) :: ierror
+  integer wrap_status(MPI_STATUS_SIZE)
+  call abi2mpi_status(status, wrap_status)
+  call MPI_Test_cancelled(wrap_status, flag, ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Test_cancelled
+
+subroutine MPIABI_Testall(count, array_of_requests, flag, array_of_statuses, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(inout) :: array_of_requests(count)
+  logical, intent(out) :: flag
+  integer, intent(out) :: array_of_statuses(MPIABI_STATUS_SIZE, count)
+  integer, intent(out) :: ierror
+  integer wrap_array_of_requests(count)
+  integer wrap_array_of_statuses(MPI_STATUS_SIZE, count)
+  integer n
+  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  if (loc(array_of_statuses) == loc(MPIABI_STATUSES_IGNORE)) then
+     call MPI_Testall(count, wrap_array_of_requests, flag, MPI_STATUSES_IGNORE, ierror)
+     if (flag) then
+        array_of_requests = mpi2abi_request(wrap_array_of_requests)
+     end if
+  else
+     call MPI_Testall(count, wrap_array_of_requests, flag, wrap_array_of_statuses, ierror)
+     if (flag) then
+        array_of_requests = mpi2abi_request(wrap_array_of_requests)
+        do n = 1, count
+           call mpi2abi_status(wrap_array_of_statuses(:, n), array_of_statuses(:, n))
+        end do
+     end if
+  end if
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Testall
+
+subroutine MPIABI_Testany(count, array_of_requests, index, flag, status, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(inout) :: array_of_requests(count)
+  integer, intent(out) :: index
+  logical, intent(out) :: flag
+  integer, intent(out) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(out) :: ierror
+  integer wrap_array_of_requests(count)
+  integer wrap_status_storage(MPI_STATUS_SIZE)
+  integer(MPIABI_ADDRESS_KIND) wrap_status_ptr
+  integer wrap_status(MPI_STATUS_SIZE)
+  pointer (wrap_status_ptr, wrap_status)
+  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  wrap_status_ptr = abi2mpi_status_ptr_uninitialized(status, wrap_status_storage)
+  call MPI_Testany(count, wrap_array_of_requests, index, flag, wrap_status, ierror)
+  if (flag) then
+     array_of_requests(index) = mpi2abi_request(wrap_array_of_requests(index))
+     call mpi2abi_status_ptr(wrap_status, status)
+  end if
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Testany
+
+subroutine MPIABI_Testsome(incount, array_of_requests, outcount, array_of_indices, array_of_statuses, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: incount
+  integer, intent(inout) :: array_of_requests(incount)
+  integer, intent(out) :: outcount
+  integer, intent(out) :: array_of_indices(incount)
+  integer, intent(out) :: array_of_statuses(MPIABI_STATUS_SIZE, incount)
+  integer, intent(out) :: ierror
+  integer wrap_array_of_requests(incount)
+  integer wrap_array_of_statuses(MPI_STATUS_SIZE, incount)
+  integer n
+  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  if (loc(array_of_statuses) == loc(MPIABI_STATUSES_IGNORE)) then
+     call MPI_Testsome(incount, wrap_array_of_requests, outcount, array_of_indices, MPI_STATUSES_IGNORE, ierror)
+  else
+     call MPI_Testsome(incount, wrap_array_of_requests, outcount, array_of_indices, wrap_array_of_statuses, ierror)
+     do n = 1, outcount
+        array_of_requests(array_of_indices(n)) = mpi2abi_request(wrap_array_of_requests(array_of_indices(n)))
+        call mpi2abi_status(wrap_array_of_statuses(:, n), array_of_statuses(:, n))
+     end do
+  end if
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Testsome
+
+subroutine MPIABI_Wait(request, status, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(inout) :: request
+  integer, intent(out) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(out) :: ierror
+  integer wrap_request
+  integer wrap_status_storage(MPI_STATUS_SIZE)
+  integer(MPIABI_ADDRESS_KIND) wrap_status_ptr
+  integer wrap_status(MPI_STATUS_SIZE)
+  pointer (wrap_status_ptr, wrap_status)
+  wrap_request = abi2mpi_request(request)
+  wrap_status_ptr = abi2mpi_status_ptr_uninitialized(status, wrap_status_storage)
+  call MPI_Wait(wrap_request, wrap_status, ierror)
+  request = mpi2abi_request(wrap_request)
+  call mpi2abi_status_ptr(wrap_status, status)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Wait
+
+subroutine MPIABI_Waitall(count, array_of_requests, array_of_statuses, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(inout) :: array_of_requests(count)
+  integer, intent(out) :: array_of_statuses(MPIABI_STATUS_SIZE, count)
+  integer, intent(out) :: ierror
+  integer wrap_array_of_requests(count)
+  integer wrap_array_of_statuses(MPI_STATUS_SIZE, count)
+  integer n
+  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  if (loc(array_of_statuses) == loc(MPIABI_STATUSES_IGNORE)) then
+     call MPI_Waitall(count, wrap_array_of_requests, MPI_STATUSES_IGNORE, ierror)
+     array_of_requests = mpi2abi_request(wrap_array_of_requests)
+  else
+     call MPI_Waitall(count, wrap_array_of_requests, wrap_array_of_statuses, ierror)
+     array_of_requests = mpi2abi_request(wrap_array_of_requests)
+     do n = 1, count
+        call mpi2abi_status(wrap_array_of_statuses(:, n), array_of_statuses(:, n))
+     end do
+  end if
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Waitall
+
+subroutine MPIABI_Waitany(count, array_of_requests, index, status, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(inout) :: array_of_requests(count)
+  integer, intent(out) :: index
+  integer, intent(out) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(out) :: ierror
+  integer wrap_array_of_requests(count)
+  integer wrap_status_storage(MPI_STATUS_SIZE)
+  integer(MPIABI_ADDRESS_KIND) wrap_status_ptr
+  integer wrap_status(MPI_STATUS_SIZE)
+  pointer (wrap_status_ptr, wrap_status)
+  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  wrap_status_ptr = abi2mpi_status_ptr_uninitialized(status, wrap_status_storage)
+  call MPI_Waitany(count, wrap_array_of_requests, index, wrap_status, ierror)
+  array_of_requests(index) = mpi2abi_request(wrap_array_of_requests(index))
+  call mpi2abi_status_ptr(wrap_status, status)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Waitany
+
+subroutine MPIABI_Waitsome(incount, array_of_requests, outcount, array_of_indices, array_of_statuses, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: incount
+  integer, intent(inout) :: array_of_requests(incount)
+  integer, intent(out) :: outcount
+  integer, intent(out) :: array_of_indices(incount)
+  integer, intent(out) :: array_of_statuses(MPIABI_STATUS_SIZE, incount)
+  integer, intent(out) :: ierror
+  integer wrap_array_of_requests(incount)
+  integer wrap_array_of_statuses(MPI_STATUS_SIZE, incount)
+  integer n
+  wrap_array_of_requests = abi2mpi_request(array_of_requests)
+  if (loc(array_of_statuses) == loc(MPIABI_STATUSES_IGNORE)) then
+     call MPI_Waitsome(incount, wrap_array_of_requests, outcount, array_of_indices, MPI_STATUSES_IGNORE, ierror)
+  else
+     call MPI_Waitsome(incount, wrap_array_of_requests, outcount, array_of_indices, wrap_array_of_statuses, ierror)
+     do n = 1, outcount
+        array_of_requests(array_of_indices(n)) = mpi2abi_request(wrap_array_of_requests(array_of_indices(n)))
+        call mpi2abi_status(wrap_array_of_statuses(:, n), array_of_statuses(:, n))
+     end do
+  end if
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Waitsome
+
+! A.3.2 Partitioned Communication C Bindings
+ 
+! subroutine MPIABI_Parrived(request, partition, flag, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Sendrecv(sendbuf, sendcount, sendtype, dest, sendtag, recvbuf, recvcount, recvtype, source, recvtag, comm, status)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Sendrecv
-! 
-! subroutine MPIABI_Sendrecv_c(sendbuf, sendcount, sendtype, dest, sendtag, recvbuf, recvcount, recvtype, source, recvtag, comm, status)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Sendrecv_c(sendbuf, sendcount, sendtype, dest, sendtag, recvbuf, recvcount, recvtype, source, recvtag, comm, status)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Sendrecv_c
-! 
-! subroutine MPIABI_Sendrecv_replace(buf, count, datatype, dest, sendtag, source, recvtag, comm, status)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Sendrecv_replace(buf, count, datatype, dest, sendtag, source, recvtag, comm, status)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Sendrecv_replace
-! 
-! subroutine MPIABI_Sendrecv_replace_c(buf, count, datatype, dest, sendtag, source, recvtag, comm, status)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Sendrecv_replace_c(buf, count, datatype, dest, sendtag, source, recvtag, comm, status)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Sendrecv_replace_c
-! 
-! subroutine MPIABI_Session_attach_buffer(session, buffer, size)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Session_attach_buffer(session, buffer, size)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Session_attach_buffer
-! 
-! subroutine MPIABI_Session_attach_buffer_c(session, buffer, size)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Session_attach_buffer_c(session, buffer, size)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Session_attach_buffer_c
-! 
-! subroutine MPIABI_Session_detach_buffer(session, buffer_addr, size)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Session_detach_buffer(session, buffer_addr, size)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Session_detach_buffer
-! 
-! subroutine MPIABI_Session_detach_buffer_c(session, buffer_addr, size)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Session_detach_buffer_c(session, buffer_addr, size)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Session_detach_buffer_c
-! 
-! subroutine MPIABI_Session_flush_buffer(session)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Session_flush_buffer(session)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Session_flush_buffer
-! 
-! subroutine MPIABI_Session_iflush_buffer(session, request)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Session_iflush_buffer(session, request)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Session_iflush_buffer
-! 
-! subroutine MPIABI_Ssend(buf, count, datatype, dest, tag, comm)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Ssend(buf, count, datatype, dest, tag, comm)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Ssend
-! 
-! subroutine MPIABI_Ssend_c(buf, count, datatype, dest, tag, comm)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Ssend_c(buf, count, datatype, dest, tag, comm)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Ssend_c
-! 
-! subroutine MPIABI_Ssend_init(buf, count, datatype, dest, tag, comm, request)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Ssend_init(buf, count, datatype, dest, tag, comm, request)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Ssend_init
-! 
-! subroutine MPIABI_Ssend_init_c(buf, count, datatype, dest, tag, comm, request)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Ssend_init_c(buf, count, datatype, dest, tag, comm, request)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Ssend_init_c
-! 
-! subroutine MPIABI_Start(request)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Start(request)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Start
-! 
-! subroutine MPIABI_Startall(count, array_of_requests)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Startall(count, array_of_requests)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Startall
-! 
-! subroutine MPIABI_Status_get_error(status, err)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Status_get_error(status, err)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Status_get_error
-! 
-! subroutine MPIABI_Status_get_source(status, source)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Status_get_source(status, source)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Status_get_source
-! 
-! subroutine MPIABI_Status_get_tag(status, tag)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Status_get_tag(status, tag)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Status_get_tag
-! 
-! subroutine MPIABI_Test(request, flag, status)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Test(request, flag, status)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Test
-! 
-! subroutine MPIABI_Test_cancelled(status, flag)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Test_cancelled(status, flag)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Test_cancelled
-! 
-! subroutine MPIABI_Testall(count, array_of_requests, flag, array_of_statuses)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Testall(count, array_of_requests, flag, array_of_statuses)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Testall
-! 
-! subroutine MPIABI_Testany(count, array_of_requests, index, flag, status)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Testany(count, array_of_requests, index, flag, status)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Testany
-! 
-! subroutine MPIABI_Testsome(incount, array_of_requests, outcount, array_of_indices, array_of_statuses)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Testsome(incount, array_of_requests, outcount, array_of_indices, array_of_statuses)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Testsome
-! 
-! subroutine MPIABI_Wait(request, status)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Wait(request, status)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Wait
-! 
-! subroutine MPIABI_Waitall(count, array_of_requests, array_of_statuses)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Waitall(count, array_of_requests, array_of_statuses)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Waitall
-! 
-! subroutine MPIABI_Waitany(count, array_of_requests, index, status)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Waitany(count, array_of_requests, index, status)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Waitany
-! 
-! subroutine MPIABI_Waitsome(incount, array_of_requests, outcount, array_of_indices, array_of_statuses)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Waitsome(incount, array_of_requests, outcount, array_of_indices, array_of_statuses)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Waitsome
-! 
-! ! A.3.2 Partitioned Communication C Bindings
-! 
-! subroutine MPIABI_Parrived(request, partition, flag)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Parrived(request, partition, flag)
+!   call MPI_Parrived(request, partition, flag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Parrived
 ! 
-! subroutine MPIABI_Pready(partition, request)
+! subroutine MPIABI_Pready(partition, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Pready(partition, request)
+!   call MPI_Pready(partition, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Pready
 ! 
-! subroutine MPIABI_Pready_list(length, array_of_partitions, request)
+! subroutine MPIABI_Pready_list(length, array_of_partitions, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Pready_list(length, array_of_partitions, request)
+!   call MPI_Pready_list(length, array_of_partitions, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Pready_list
 ! 
-! subroutine MPIABI_Pready_range(partition_low, partition_high, request)
+! subroutine MPIABI_Pready_range(partition_low, partition_high, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Pready_range(partition_low, partition_high, request)
+!   call MPI_Pready_range(partition_low, partition_high, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Pready_range
 ! 
-! subroutine MPIABI_Precv_init(buf, partitions, count, datatype, source, tag, comm, info, request)
+! subroutine MPIABI_Precv_init(buf, partitions, count, datatype, source, tag, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Precv_init(buf, partitions, count, datatype, source, tag, comm, info, request)
+!   call MPI_Precv_init(buf, partitions, count, datatype, source, tag, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Precv_init
 ! 
-! subroutine MPIABI_Psend_init(buf, partitions, count, datatype, dest, tag, comm, info, request)
+! subroutine MPIABI_Psend_init(buf, partitions, count, datatype, dest, tag, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Psend_init(buf, partitions, count, datatype, dest, tag, comm, info, request)
+!   call MPI_Psend_init(buf, partitions, count, datatype, dest, tag, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Psend_init
-! 
-! ! A.3.3 Datatypes C Bindings
-! 
-! integer(MPIABI_ADDRESS_SIZE) function MPIABI_Aint_add(base, disp)
+
+! A.3.3 Datatypes C Bindings
+
+! subroutine MPIABI_Get_address(location, address, ierror)
 !   use mpiwrapper
 !   implicit none
-!   MPIABI_Aint_add= MPI_Aint_add(base, disp)
-! end function MPIABI_Aint_add
-! 
-! integer(MPIABI_ADDRESS_SIZE) function MPIABI_Aint_diff(addr1, addr2)
-!   use mpiwrapper
-!   implicit none
-!   MPIABI_Aint_diff = MPI_Aint_diff(addr1, addr2)
-! end function MPIABI_Aint_diff
-! 
-! subroutine MPIABI_Get_address(location, address)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Get_address(location, address)
+!   call MPI_Get_address(location, address, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Get_address
 ! 
-! subroutine MPIABI_Get_elements(status, datatype, count)
+! subroutine MPIABI_Get_elements(status, datatype, count, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Get_elements(status, datatype, count)
+!   call MPI_Get_elements(status, datatype, count, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Get_elements
 ! 
-! subroutine MPIABI_Get_elements_c(status, datatype, count)
+! subroutine MPIABI_Get_elements_c(status, datatype, count, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Get_elements_c(status, datatype, count)
+!   call MPI_Get_elements_c(status, datatype, count, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Get_elements_c
 ! 
-! subroutine MPIABI_Pack(inbuf, incount, datatype, outbuf, outsize, position, comm)
+! subroutine MPIABI_Pack(inbuf, incount, datatype, outbuf, outsize, position, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Pack(inbuf, incount, datatype, outbuf, outsize, position, comm)
+!   call MPI_Pack(inbuf, incount, datatype, outbuf, outsize, position, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Pack
 ! 
-! subroutine MPIABI_Pack_c(inbuf, incount, datatype, outbuf, outsize, position, comm)
+! subroutine MPIABI_Pack_c(inbuf, incount, datatype, outbuf, outsize, position, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Pack_c(inbuf, incount, datatype, outbuf, outsize, position, comm)
+!   call MPI_Pack_c(inbuf, incount, datatype, outbuf, outsize, position, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Pack_c
 ! 
-! subroutine MPIABI_Pack_external(datarep, inbuf, incount, datatype, outbuf, outsize, position)
+! subroutine MPIABI_Pack_external(datarep, inbuf, incount, datatype, outbuf, outsize, position, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Pack_external(datarep, inbuf, incount, datatype, outbuf, outsize, position)
+!   call MPI_Pack_external(datarep, inbuf, incount, datatype, outbuf, outsize, position, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Pack_external
 ! 
-! subroutine MPIABI_Pack_external_c(datarep, inbuf, incount, datatype, outbuf, outsize, position)
+! subroutine MPIABI_Pack_external_c(datarep, inbuf, incount, datatype, outbuf, outsize, position, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Pack_external_c(datarep, inbuf, incount, datatype, outbuf, outsize, position)
+!   call MPI_Pack_external_c(datarep, inbuf, incount, datatype, outbuf, outsize, position, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Pack_external_c
 ! 
-! subroutine MPIABI_Pack_external_size(datarep, incount, datatype, size)
+! subroutine MPIABI_Pack_external_size(datarep, incount, datatype, size, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Pack_external_size(datarep, incount, datatype, size)
+!   call MPI_Pack_external_size(datarep, incount, datatype, size, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Pack_external_size
 ! 
-! subroutine MPIABI_Pack_external_size_c(datarep, incount, datatype, size)
+! subroutine MPIABI_Pack_external_size_c(datarep, incount, datatype, size, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Pack_external_size_c(datarep, incount, datatype, size)
+!   call MPI_Pack_external_size_c(datarep, incount, datatype, size, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Pack_external_size_c
 ! 
-! subroutine MPIABI_Pack_size(incount, datatype, comm, size)
+! subroutine MPIABI_Pack_size(incount, datatype, comm, size, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Pack_size(incount, datatype, comm, size)
+!   call MPI_Pack_size(incount, datatype, comm, size, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Pack_size
 ! 
-! subroutine MPIABI_Pack_size_c(incount, datatype, comm, size)
+! subroutine MPIABI_Pack_size_c(incount, datatype, comm, size, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Pack_size_c(incount, datatype, comm, size)
+!   call MPI_Pack_size_c(incount, datatype, comm, size, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Pack_size_c
 ! 
-! subroutine MPIABI_Type_commit(datatype)
+! subroutine MPIABI_Type_commit(datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_commit(datatype)
+!   call MPI_Type_commit(datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_commit
 ! 
-! subroutine MPIABI_Type_contiguous(count, oldtype, newtype)
+! subroutine MPIABI_Type_contiguous(count, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_contiguous(count, oldtype, newtype)
+!   call MPI_Type_contiguous(count, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_contiguous
 ! 
-! subroutine MPIABI_Type_contiguous_c(count, oldtype, newtype)
+! subroutine MPIABI_Type_contiguous_c(count, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_contiguous_c(count, oldtype, newtype)
+!   call MPI_Type_contiguous_c(count, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_contiguous_c
 ! 
-! subroutine MPIABI_Type_create_darray(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, order, oldtype, newtype)
+! subroutine MPIABI_Type_create_darray(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, order, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_darray(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, order, oldtype, newtype)
+!   call MPI_Type_create_darray(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, order, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_darray
 ! 
-! subroutine MPIABI_Type_create_darray_c(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, order, oldtype, newtype)
+! subroutine MPIABI_Type_create_darray_c(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, order, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_darray_c(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, order, oldtype, newtype)
+!   call MPI_Type_create_darray_c(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, order, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_darray_c
 ! 
-! subroutine MPIABI_Type_create_hindexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype)
+! subroutine MPIABI_Type_create_hindexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_hindexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype)
+!   call MPI_Type_create_hindexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_hindexed
 ! 
-! subroutine MPIABI_Type_create_hindexed_block(count, blocklength, array_of_displacements, oldtype, newtype)
+! subroutine MPIABI_Type_create_hindexed_block(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_hindexed_block(count, blocklength, array_of_displacements, oldtype, newtype)
+!   call MPI_Type_create_hindexed_block(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_hindexed_block
 ! 
-! subroutine MPIABI_Type_create_hindexed_block_c(count, blocklength, array_of_displacements, oldtype, newtype)
+! subroutine MPIABI_Type_create_hindexed_block_c(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_hindexed_block_c(count, blocklength, array_of_displacements, oldtype, newtype)
+!   call MPI_Type_create_hindexed_block_c(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_hindexed_block_c
 ! 
-! subroutine MPIABI_Type_create_hindexed_c(count, array_of_blocklengths, array_of_displacements, oldtype, newtype)
+! subroutine MPIABI_Type_create_hindexed_c(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_hindexed_c(count, array_of_blocklengths, array_of_displacements, oldtype, newtype)
+!   call MPI_Type_create_hindexed_c(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_hindexed_c
 ! 
-! subroutine MPIABI_Type_create_hvector(count, blocklength, stride, oldtype, newtype)
+! subroutine MPIABI_Type_create_hvector(count, blocklength, stride, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_hvector(count, blocklength, stride, oldtype, newtype)
+!   call MPI_Type_create_hvector(count, blocklength, stride, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_hvector
 ! 
-! subroutine MPIABI_Type_create_hvector_c(count, blocklength, stride, oldtype, newtype)
+! subroutine MPIABI_Type_create_hvector_c(count, blocklength, stride, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_hvector_c(count, blocklength, stride, oldtype, newtype)
+!   call MPI_Type_create_hvector_c(count, blocklength, stride, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_hvector_c
 ! 
-! subroutine MPIABI_Type_create_indexed_block(count, blocklength, array_of_displacements, oldtype, newtype)
+! subroutine MPIABI_Type_create_indexed_block(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_indexed_block(count, blocklength, array_of_displacements, oldtype, newtype)
+!   call MPI_Type_create_indexed_block(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_indexed_block
 ! 
-! subroutine MPIABI_Type_create_indexed_block_c(count, blocklength, array_of_displacements, oldtype, newtype)
+! subroutine MPIABI_Type_create_indexed_block_c(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_indexed_block_c(count, blocklength, array_of_displacements, oldtype, newtype)
+!   call MPI_Type_create_indexed_block_c(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_indexed_block_c
 ! 
-! subroutine MPIABI_Type_create_resized(oldtype, lb, extent, newtype)
+! subroutine MPIABI_Type_create_resized(oldtype, lb, extent, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_resized(oldtype, lb, extent, newtype)
+!   call MPI_Type_create_resized(oldtype, lb, extent, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_resized
 ! 
-! subroutine MPIABI_Type_create_resized_c(oldtype, lb, extent, newtype)
+! subroutine MPIABI_Type_create_resized_c(oldtype, lb, extent, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_resized_c(oldtype, lb, extent, newtype)
+!   call MPI_Type_create_resized_c(oldtype, lb, extent, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_resized_c
 ! 
-! subroutine MPIABI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype)
+! subroutine MPIABI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype)
+!   call MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_struct
 ! 
-! subroutine MPIABI_Type_create_struct_c(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype)
+! subroutine MPIABI_Type_create_struct_c(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_struct_c(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype)
+!   call MPI_Type_create_struct_c(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_struct_c
 ! 
-! subroutine MPIABI_Type_create_subarray(ndims, array_of_sizes, array_of_subsizes, array_of_starts, order, oldtype, newtype)
+! subroutine MPIABI_Type_create_subarray(ndims, array_of_sizes, array_of_subsizes, array_of_starts, order, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_subarray(ndims, array_of_sizes, array_of_subsizes, array_of_starts, order, oldtype, newtype)
+!   call MPI_Type_create_subarray(ndims, array_of_sizes, array_of_subsizes, array_of_starts, order, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_subarray
 ! 
-! subroutine MPIABI_Type_create_subarray_c(ndims, array_of_sizes, array_of_subsizes, array_of_starts, order, oldtype, newtype)
+! subroutine MPIABI_Type_create_subarray_c(ndims, array_of_sizes, array_of_subsizes, array_of_starts, order, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_subarray_c(ndims, array_of_sizes, array_of_subsizes, array_of_starts, order, oldtype, newtype)
+!   call MPI_Type_create_subarray_c(ndims, array_of_sizes, array_of_subsizes, array_of_starts, order, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_subarray_c
 ! 
-! subroutine MPIABI_Type_dup(oldtype, newtype)
+! subroutine MPIABI_Type_dup(oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_dup(oldtype, newtype)
+!   call MPI_Type_dup(oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_dup
 ! 
-! subroutine MPIABI_Type_free(datatype)
+! subroutine MPIABI_Type_free(datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_free(datatype)
+!   call MPI_Type_free(datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_free
 ! 
-! subroutine MPIABI_Type_get_contents(datatype, max_integers, max_addresses, max_datatypes, array_of_integers, array_of_addresses, array_of_datatypes)
+! subroutine MPIABI_Type_get_contents(datatype, max_integers, max_addresses, max_datatypes, array_of_integers, array_of_addresses, array_of_datatypes, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_get_contents(datatype, max_integers, max_addresses, max_datatypes, array_of_integers, array_of_addresses, array_of_datatypes)
+!   call MPI_Type_get_contents(datatype, max_integers, max_addresses, max_datatypes, array_of_integers, array_of_addresses, array_of_datatypes, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_get_contents
 ! 
-! subroutine MPIABI_Type_get_contents_c(datatype, max_integers, max_addresses, max_large_counts, max_datatypes, array_of_integers, array_of_addresses, array_of_large_counts, array_of_datatypes)
+! subroutine MPIABI_Type_get_contents_c(datatype, max_integers, max_addresses, max_large_counts, max_datatypes, array_of_integers, array_of_addresses, array_of_large_counts, array_of_datatypes, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_get_contents_c(datatype, max_integers, max_addresses, max_large_counts, max_datatypes, array_of_integers, array_of_addresses, array_of_large_counts, array_of_datatypes)
+!   call MPI_Type_get_contents_c(datatype, max_integers, max_addresses, max_large_counts, max_datatypes, array_of_integers, array_of_addresses, array_of_large_counts, array_of_datatypes, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_get_contents_c
 ! 
-! subroutine MPIABI_Type_get_envelope(datatype, num_integers, num_addresses, num_datatypes, combiner)
+! subroutine MPIABI_Type_get_envelope(datatype, num_integers, num_addresses, num_datatypes, combiner, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_get_envelope(datatype, num_integers, num_addresses, num_datatypes, combiner)
+!   call MPI_Type_get_envelope(datatype, num_integers, num_addresses, num_datatypes, combiner, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_get_envelope
 ! 
-! subroutine MPIABI_Type_get_envelope_c(datatype, num_integers, num_addresses, num_large_counts, num_datatypes, combiner)
+! subroutine MPIABI_Type_get_envelope_c(datatype, num_integers, num_addresses, num_large_counts, num_datatypes, combiner, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_get_envelope_c(datatype, num_integers, num_addresses, num_large_counts, num_datatypes, combiner)
+!   call MPI_Type_get_envelope_c(datatype, num_integers, num_addresses, num_large_counts, num_datatypes, combiner, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_get_envelope_c
 ! 
-! subroutine MPIABI_Type_get_extent(datatype, lb, extent)
+! subroutine MPIABI_Type_get_extent(datatype, lb, extent, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_get_extent(datatype, lb, extent)
+!   call MPI_Type_get_extent(datatype, lb, extent, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_get_extent
 ! 
-! subroutine MPIABI_Type_get_extent_c(datatype, lb, extent)
+! subroutine MPIABI_Type_get_extent_c(datatype, lb, extent, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_get_extent_c(datatype, lb, extent)
+!   call MPI_Type_get_extent_c(datatype, lb, extent, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_get_extent_c
 ! 
-! subroutine MPIABI_Type_get_true_extent(datatype, true_lb, true_extent)
+! subroutine MPIABI_Type_get_true_extent(datatype, true_lb, true_extent, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_get_true_extent(datatype, true_lb, true_extent)
+!   call MPI_Type_get_true_extent(datatype, true_lb, true_extent, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_get_true_extent
 ! 
-! subroutine MPIABI_Type_get_true_extent_c(datatype, true_lb, true_extent)
+! subroutine MPIABI_Type_get_true_extent_c(datatype, true_lb, true_extent, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_get_true_extent_c(datatype, true_lb, true_extent)
+!   call MPI_Type_get_true_extent_c(datatype, true_lb, true_extent, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_get_true_extent_c
 ! 
-! subroutine MPIABI_Type_indexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype)
+! subroutine MPIABI_Type_indexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_indexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype)
+!   call MPI_Type_indexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_indexed
 ! 
-! subroutine MPIABI_Type_indexed_c(count, array_of_blocklengths, array_of_displacements, oldtype, newtype)
+! subroutine MPIABI_Type_indexed_c(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_indexed_c(count, array_of_blocklengths, array_of_displacements, oldtype, newtype)
+!   call MPI_Type_indexed_c(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_indexed_c
 ! 
-! subroutine MPIABI_Type_size(datatype, size)
+! subroutine MPIABI_Type_size(datatype, size, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_size(datatype, size)
+!   call MPI_Type_size(datatype, size, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_size
 ! 
-! subroutine MPIABI_Type_size_c(datatype, size)
+! subroutine MPIABI_Type_size_c(datatype, size, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_size_c(datatype, size)
+!   call MPI_Type_size_c(datatype, size, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_size_c
 ! 
-! subroutine MPIABI_Type_vector(count, blocklength, stride, oldtype, newtype)
+! subroutine MPIABI_Type_vector(count, blocklength, stride, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_vector(count, blocklength, stride, oldtype, newtype)
+!   call MPI_Type_vector(count, blocklength, stride, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_vector
 ! 
-! subroutine MPIABI_Type_vector_c(count, blocklength, stride, oldtype, newtype)
+! subroutine MPIABI_Type_vector_c(count, blocklength, stride, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_vector_c(count, blocklength, stride, oldtype, newtype)
+!   call MPI_Type_vector_c(count, blocklength, stride, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_vector_c
 ! 
-! subroutine MPIABI_Unpack(inbuf, insize, position, outbuf, outcount, datatype, comm)
+! subroutine MPIABI_Unpack(inbuf, insize, position, outbuf, outcount, datatype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Unpack(inbuf, insize, position, outbuf, outcount, datatype, comm)
+!   call MPI_Unpack(inbuf, insize, position, outbuf, outcount, datatype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Unpack
 ! 
-! subroutine MPIABI_Unpack_c(inbuf, insize, position, outbuf, outcount, datatype, comm)
+! subroutine MPIABI_Unpack_c(inbuf, insize, position, outbuf, outcount, datatype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Unpack_c(inbuf, insize, position, outbuf, outcount, datatype, comm)
+!   call MPI_Unpack_c(inbuf, insize, position, outbuf, outcount, datatype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Unpack_c
 ! 
-! subroutine MPIABI_Unpack_external(datarep, inbuf, insize, position, outbuf, outcount, datatype)
+! subroutine MPIABI_Unpack_external(datarep, inbuf, insize, position, outbuf, outcount, datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Unpack_external(datarep, inbuf, insize, position, outbuf, outcount, datatype)
+!   call MPI_Unpack_external(datarep, inbuf, insize, position, outbuf, outcount, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Unpack_external
 ! 
-! subroutine MPIABI_Unpack_external_c(datarep, inbuf, insize, position, outbuf, outcount, datatype)
+! subroutine MPIABI_Unpack_external_c(datarep, inbuf, insize, position, outbuf, outcount, datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Unpack_external_c(datarep, inbuf, insize, position, outbuf, outcount, datatype)
+!   call MPI_Unpack_external_c(datarep, inbuf, insize, position, outbuf, outcount, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Unpack_external_c
 ! 
 ! ! A.3.4 Collective Communication C Bindings
 ! 
-! subroutine MPIABI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+! subroutine MPIABI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+!   call MPI_Allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Allgather
 ! 
-! subroutine MPIABI_Allgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+! subroutine MPIABI_Allgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Allgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+!   call MPI_Allgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Allgather_c
 ! 
-! subroutine MPIABI_Allgather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+! subroutine MPIABI_Allgather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Allgather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+!   call MPI_Allgather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Allgather_init
 ! 
-! subroutine MPIABI_Allgather_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+! subroutine MPIABI_Allgather_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Allgather_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+!   call MPI_Allgather_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Allgather_init_c
 ! 
-! subroutine MPIABI_Allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm)
+! subroutine MPIABI_Allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm)
+!   call MPI_Allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Allgatherv
 ! 
-! subroutine MPIABI_Allgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm)
+! subroutine MPIABI_Allgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Allgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm)
+!   call MPI_Allgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Allgatherv_c
 ! 
-! subroutine MPIABI_Allgatherv_init(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request)
+! subroutine MPIABI_Allgatherv_init(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Allgatherv_init(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request)
+!   call MPI_Allgatherv_init(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Allgatherv_init
 ! 
-! subroutine MPIABI_Allgatherv_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request)
+! subroutine MPIABI_Allgatherv_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Allgatherv_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request)
+!   call MPI_Allgatherv_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Allgatherv_init_c
 ! 
-! subroutine MPIABI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm)
+! subroutine MPIABI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm)
+!   call MPI_Allreduce(sendbuf, recvbuf, count, datatype, op, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Allreduce
 ! 
-! subroutine MPIABI_Allreduce_c(sendbuf, recvbuf, count, datatype, op, comm)
+! subroutine MPIABI_Allreduce_c(sendbuf, recvbuf, count, datatype, op, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Allreduce_c(sendbuf, recvbuf, count, datatype, op, comm)
+!   call MPI_Allreduce_c(sendbuf, recvbuf, count, datatype, op, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Allreduce_c
 ! 
-! subroutine MPIABI_Allreduce_init(sendbuf, recvbuf, count, datatype, op, comm, info, request)
+! subroutine MPIABI_Allreduce_init(sendbuf, recvbuf, count, datatype, op, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Allreduce_init(sendbuf, recvbuf, count, datatype, op, comm, info, request)
+!   call MPI_Allreduce_init(sendbuf, recvbuf, count, datatype, op, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Allreduce_init
 ! 
-! subroutine MPIABI_Allreduce_init_c(sendbuf, recvbuf, count, datatype, op, comm, info, request)
+! subroutine MPIABI_Allreduce_init_c(sendbuf, recvbuf, count, datatype, op, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Allreduce_init_c(sendbuf, recvbuf, count, datatype, op, comm, info, request)
+!   call MPI_Allreduce_init_c(sendbuf, recvbuf, count, datatype, op, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Allreduce_init_c
 ! 
-! subroutine MPIABI_Alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+! subroutine MPIABI_Alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+!   call MPI_Alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Alltoall
 ! 
-! subroutine MPIABI_Alltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+! subroutine MPIABI_Alltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Alltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+!   call MPI_Alltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Alltoall_c
 ! 
-! subroutine MPIABI_Alltoall_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+! subroutine MPIABI_Alltoall_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Alltoall_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+!   call MPI_Alltoall_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Alltoall_init
 ! 
-! subroutine MPIABI_Alltoall_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+! subroutine MPIABI_Alltoall_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Alltoall_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+!   call MPI_Alltoall_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Alltoall_init_c
 ! 
-! subroutine MPIABI_Alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm)
+! subroutine MPIABI_Alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm)
+!   call MPI_Alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Alltoallv
 ! 
-! subroutine MPIABI_Alltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm)
+! subroutine MPIABI_Alltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Alltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm)
+!   call MPI_Alltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Alltoallv_c
 ! 
-! subroutine MPIABI_Alltoallv_init(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request)
+! subroutine MPIABI_Alltoallv_init(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Alltoallv_init(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request)
+!   call MPI_Alltoallv_init(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Alltoallv_init
 ! 
-! subroutine MPIABI_Alltoallv_init_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request)
+! subroutine MPIABI_Alltoallv_init_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Alltoallv_init_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request)
+!   call MPI_Alltoallv_init_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Alltoallv_init_c
 ! 
-! subroutine MPIABI_Alltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm)
+! subroutine MPIABI_Alltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Alltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm)
+!   call MPI_Alltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Alltoallw
 ! 
-! subroutine MPIABI_Alltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm)
+! subroutine MPIABI_Alltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Alltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm)
+!   call MPI_Alltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Alltoallw_c
 ! 
-! subroutine MPIABI_Alltoallw_init(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request)
+! subroutine MPIABI_Alltoallw_init(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Alltoallw_init(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request)
+!   call MPI_Alltoallw_init(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Alltoallw_init
 ! 
-! subroutine MPIABI_Alltoallw_init_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request)
+! subroutine MPIABI_Alltoallw_init_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Alltoallw_init_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request)
+!   call MPI_Alltoallw_init_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Alltoallw_init_c
 
@@ -1391,649 +1640,649 @@ subroutine MPIABI_Bcast_init(buffer, count, datatype, root, comm, info, request,
   ierror = mpi2abi_errorcode(ierror)
 end subroutine MPIABI_Bcast_init
 
-! subroutine MPIABI_Exscan(sendbuf, recvbuf, count, datatype, op, comm)
+! subroutine MPIABI_Exscan(sendbuf, recvbuf, count, datatype, op, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Exscan(sendbuf, recvbuf, count, datatype, op, comm)
+!   call MPI_Exscan(sendbuf, recvbuf, count, datatype, op, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Exscan
 ! 
-! subroutine MPIABI_Exscan_c(sendbuf, recvbuf, count, datatype, op, comm)
+! subroutine MPIABI_Exscan_c(sendbuf, recvbuf, count, datatype, op, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Exscan_c(sendbuf, recvbuf, count, datatype, op, comm)
+!   call MPI_Exscan_c(sendbuf, recvbuf, count, datatype, op, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Exscan_c
 ! 
-! subroutine MPIABI_Exscan_init(sendbuf, recvbuf, count, datatype, op, comm, info, request)
+! subroutine MPIABI_Exscan_init(sendbuf, recvbuf, count, datatype, op, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Exscan_init(sendbuf, recvbuf, count, datatype, op, comm, info, request)
+!   call MPI_Exscan_init(sendbuf, recvbuf, count, datatype, op, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Exscan_init
 ! 
-! subroutine MPIABI_Exscan_init_c(sendbuf, recvbuf, count, datatype, op, comm, info, request)
+! subroutine MPIABI_Exscan_init_c(sendbuf, recvbuf, count, datatype, op, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Exscan_init_c(sendbuf, recvbuf, count, datatype, op, comm, info, request)
+!   call MPI_Exscan_init_c(sendbuf, recvbuf, count, datatype, op, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Exscan_init_c
 ! 
-! subroutine MPIABI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
+! subroutine MPIABI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
+!   call MPI_Gather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Gather
 ! 
-! subroutine MPIABI_Gather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
+! subroutine MPIABI_Gather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Gather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
+!   call MPI_Gather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Gather_c
 ! 
-! subroutine MPIABI_Gather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request)
+! subroutine MPIABI_Gather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Gather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request)
+!   call MPI_Gather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Gather_init
 ! 
-! subroutine MPIABI_Gather_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request)
+! subroutine MPIABI_Gather_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Gather_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request)
+!   call MPI_Gather_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Gather_init_c
 ! 
-! subroutine MPIABI_Gatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm)
+! subroutine MPIABI_Gatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Gatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm)
+!   call MPI_Gatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Gatherv
 ! 
-! subroutine MPIABI_Gatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm)
+! subroutine MPIABI_Gatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Gatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm)
+!   call MPI_Gatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Gatherv_c
 ! 
-! subroutine MPIABI_Gatherv_init(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, info, request)
+! subroutine MPIABI_Gatherv_init(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Gatherv_init(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, info, request)
+!   call MPI_Gatherv_init(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Gatherv_init
 ! 
-! subroutine MPIABI_Gatherv_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, info, request)
+! subroutine MPIABI_Gatherv_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Gatherv_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, info, request)
+!   call MPI_Gatherv_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Gatherv_init_c
 ! 
-! subroutine MPIABI_Iallgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+! subroutine MPIABI_Iallgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Iallgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+!   call MPI_Iallgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Iallgather
 ! 
-! subroutine MPIABI_Iallgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+! subroutine MPIABI_Iallgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Iallgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+!   call MPI_Iallgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Iallgather_c
 ! 
-! subroutine MPIABI_Iallgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request)
+! subroutine MPIABI_Iallgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Iallgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request)
+!   call MPI_Iallgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Iallgatherv
 ! 
-! subroutine MPIABI_Iallgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request)
+! subroutine MPIABI_Iallgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Iallgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request)
+!   call MPI_Iallgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Iallgatherv_c
 ! 
-! subroutine MPIABI_Iallreduce(sendbuf, recvbuf, count, datatype, op, comm, request)
+! subroutine MPIABI_Iallreduce(sendbuf, recvbuf, count, datatype, op, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Iallreduce(sendbuf, recvbuf, count, datatype, op, comm, request)
+!   call MPI_Iallreduce(sendbuf, recvbuf, count, datatype, op, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Iallreduce
 ! 
-! subroutine MPIABI_Iallreduce_c(sendbuf, recvbuf, count, datatype, op, comm, request)
+! subroutine MPIABI_Iallreduce_c(sendbuf, recvbuf, count, datatype, op, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Iallreduce_c(sendbuf, recvbuf, count, datatype, op, comm, request)
+!   call MPI_Iallreduce_c(sendbuf, recvbuf, count, datatype, op, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Iallreduce_c
 ! 
-! subroutine MPIABI_Ialltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+! subroutine MPIABI_Ialltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ialltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+!   call MPI_Ialltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ialltoall
 ! 
-! subroutine MPIABI_Ialltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+! subroutine MPIABI_Ialltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ialltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+!   call MPI_Ialltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ialltoall_c
 ! 
-! subroutine MPIABI_Ialltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request)
+! subroutine MPIABI_Ialltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ialltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request)
+!   call MPI_Ialltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ialltoallv
 ! 
-! subroutine MPIABI_Ialltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request)
+! subroutine MPIABI_Ialltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ialltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request)
+!   call MPI_Ialltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ialltoallv_c
 ! 
-! subroutine MPIABI_Ialltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request)
+! subroutine MPIABI_Ialltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ialltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request)
+!   call MPI_Ialltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ialltoallw
 ! 
-! subroutine MPIABI_Ialltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request)
+! subroutine MPIABI_Ialltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ialltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request)
+!   call MPI_Ialltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ialltoallw_c
 ! 
-! subroutine MPIABI_Ibarrier(comm, request)
+! subroutine MPIABI_Ibarrier(comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ibarrier(comm, request)
+!   call MPI_Ibarrier(comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ibarrier
 ! 
-! subroutine MPIABI_Ibcast(buffer, count, datatype, root, comm, request)
+! subroutine MPIABI_Ibcast(buffer, count, datatype, root, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ibcast(buffer, count, datatype, root, comm, request)
+!   call MPI_Ibcast(buffer, count, datatype, root, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ibcast
 ! 
-! subroutine MPIABI_Ibcast_c(buffer, count, datatype, root, comm, request)
+! subroutine MPIABI_Ibcast_c(buffer, count, datatype, root, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ibcast_c(buffer, count, datatype, root, comm, request)
+!   call MPI_Ibcast_c(buffer, count, datatype, root, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ibcast_c
 ! 
-! subroutine MPIABI_Iexscan(sendbuf, recvbuf, count, datatype, op, comm, request)
+! subroutine MPIABI_Iexscan(sendbuf, recvbuf, count, datatype, op, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Iexscan(sendbuf, recvbuf, count, datatype, op, comm, request)
+!   call MPI_Iexscan(sendbuf, recvbuf, count, datatype, op, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Iexscan
 ! 
-! subroutine MPIABI_Iexscan_c(sendbuf, recvbuf, count, datatype, op, comm, request)
+! subroutine MPIABI_Iexscan_c(sendbuf, recvbuf, count, datatype, op, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Iexscan_c(sendbuf, recvbuf, count, datatype, op, comm, request)
+!   call MPI_Iexscan_c(sendbuf, recvbuf, count, datatype, op, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Iexscan_c
 ! 
-! subroutine MPIABI_Igather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request)
+! subroutine MPIABI_Igather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Igather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request)
+!   call MPI_Igather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Igather
 ! 
-! subroutine MPIABI_Igather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request)
+! subroutine MPIABI_Igather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Igather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request)
+!   call MPI_Igather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Igather_c
 ! 
-! subroutine MPIABI_Igatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, request)
+! subroutine MPIABI_Igatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Igatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, request)
+!   call MPI_Igatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Igatherv
 ! 
-! subroutine MPIABI_Igatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, request)
+! subroutine MPIABI_Igatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Igatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, request)
+!   call MPI_Igatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, root, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Igatherv_c
 ! 
-! subroutine MPIABI_Ireduce(sendbuf, recvbuf, count, datatype, op, root, comm, request)
+! subroutine MPIABI_Ireduce(sendbuf, recvbuf, count, datatype, op, root, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ireduce(sendbuf, recvbuf, count, datatype, op, root, comm, request)
+!   call MPI_Ireduce(sendbuf, recvbuf, count, datatype, op, root, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ireduce
 ! 
-! subroutine MPIABI_Ireduce_c(sendbuf, recvbuf, count, datatype, op, root, comm, request)
+! subroutine MPIABI_Ireduce_c(sendbuf, recvbuf, count, datatype, op, root, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ireduce_c(sendbuf, recvbuf, count, datatype, op, root, comm, request)
+!   call MPI_Ireduce_c(sendbuf, recvbuf, count, datatype, op, root, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ireduce_c
 ! 
-! subroutine MPIABI_Ireduce_scatter(sendbuf, recvbuf, recvcounts, datatype, op, comm, request)
+! subroutine MPIABI_Ireduce_scatter(sendbuf, recvbuf, recvcounts, datatype, op, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ireduce_scatter(sendbuf, recvbuf, recvcounts, datatype, op, comm, request)
+!   call MPI_Ireduce_scatter(sendbuf, recvbuf, recvcounts, datatype, op, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ireduce_scatter
 ! 
-! subroutine MPIABI_Ireduce_scatter_block(sendbuf, recvbuf, recvcount, datatype, op, comm, request)
+! subroutine MPIABI_Ireduce_scatter_block(sendbuf, recvbuf, recvcount, datatype, op, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ireduce_scatter_block(sendbuf, recvbuf, recvcount, datatype, op, comm, request)
+!   call MPI_Ireduce_scatter_block(sendbuf, recvbuf, recvcount, datatype, op, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ireduce_scatter_block
 ! 
-! subroutine MPIABI_Ireduce_scatter_block_c(sendbuf, recvbuf, recvcount, datatype, op, comm, request)
+! subroutine MPIABI_Ireduce_scatter_block_c(sendbuf, recvbuf, recvcount, datatype, op, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ireduce_scatter_block_c(sendbuf, recvbuf, recvcount, datatype, op, comm, request)
+!   call MPI_Ireduce_scatter_block_c(sendbuf, recvbuf, recvcount, datatype, op, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ireduce_scatter_block_c
 ! 
-! subroutine MPIABI_Ireduce_scatter_c(sendbuf, recvbuf, recvcounts, datatype, op, comm, request)
+! subroutine MPIABI_Ireduce_scatter_c(sendbuf, recvbuf, recvcounts, datatype, op, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ireduce_scatter_c(sendbuf, recvbuf, recvcounts, datatype, op, comm, request)
+!   call MPI_Ireduce_scatter_c(sendbuf, recvbuf, recvcounts, datatype, op, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ireduce_scatter_c
 ! 
-! subroutine MPIABI_Iscan(sendbuf, recvbuf, count, datatype, op, comm, request)
+! subroutine MPIABI_Iscan(sendbuf, recvbuf, count, datatype, op, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Iscan(sendbuf, recvbuf, count, datatype, op, comm, request)
+!   call MPI_Iscan(sendbuf, recvbuf, count, datatype, op, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Iscan
 ! 
-! subroutine MPIABI_Iscan_c(sendbuf, recvbuf, count, datatype, op, comm, request)
+! subroutine MPIABI_Iscan_c(sendbuf, recvbuf, count, datatype, op, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Iscan_c(sendbuf, recvbuf, count, datatype, op, comm, request)
+!   call MPI_Iscan_c(sendbuf, recvbuf, count, datatype, op, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Iscan_c
 ! 
-! subroutine MPIABI_Iscatter(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request)
+! subroutine MPIABI_Iscatter(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Iscatter(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request)
+!   call MPI_Iscatter(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Iscatter
 ! 
-! subroutine MPIABI_Iscatter_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request)
+! subroutine MPIABI_Iscatter_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Iscatter_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request)
+!   call MPI_Iscatter_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Iscatter_c
 ! 
-! subroutine MPIABI_Iscatterv(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, request)
+! subroutine MPIABI_Iscatterv(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Iscatterv(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, request)
+!   call MPI_Iscatterv(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Iscatterv
 ! 
-! subroutine MPIABI_Iscatterv_c(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, request)
+! subroutine MPIABI_Iscatterv_c(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Iscatterv_c(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, request)
+!   call MPI_Iscatterv_c(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Iscatterv_c
 ! 
-! subroutine MPIABI_Op_commutative(op, commute)
+! subroutine MPIABI_Op_commutative(op, commute, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Op_commutative(op, commute)
+!   call MPI_Op_commutative(op, commute, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Op_commutative
 ! 
-! subroutine MPIABI_Op_create(user_fn, commute, op)
+! subroutine MPIABI_Op_create(user_fn, commute, op, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Op_create(user_fn, commute, op)
+!   call MPI_Op_create(user_fn, commute, op, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Op_create
 ! 
-! subroutine MPIABI_Op_create_c(user_fn, commute, op)
+! subroutine MPIABI_Op_create_c(user_fn, commute, op, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Op_create_c(user_fn, commute, op)
+!   call MPI_Op_create_c(user_fn, commute, op, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Op_create_c
 ! 
-! subroutine MPIABI_Op_free(op)
+! subroutine MPIABI_Op_free(op, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Op_free(op)
+!   call MPI_Op_free(op, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Op_free
 ! 
-! subroutine MPIABI_Reduce(sendbuf, recvbuf, count, datatype, op, root, comm)
+! subroutine MPIABI_Reduce(sendbuf, recvbuf, count, datatype, op, root, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Reduce(sendbuf, recvbuf, count, datatype, op, root, comm)
+!   call MPI_Reduce(sendbuf, recvbuf, count, datatype, op, root, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Reduce
 ! 
-! subroutine MPIABI_Reduce_c(sendbuf, recvbuf, count, datatype, op, root, comm)
+! subroutine MPIABI_Reduce_c(sendbuf, recvbuf, count, datatype, op, root, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Reduce_c(sendbuf, recvbuf, count, datatype, op, root, comm)
+!   call MPI_Reduce_c(sendbuf, recvbuf, count, datatype, op, root, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Reduce_c
 ! 
-! subroutine MPIABI_Reduce_init(sendbuf, recvbuf, count, datatype, op, root, comm, info, request)
+! subroutine MPIABI_Reduce_init(sendbuf, recvbuf, count, datatype, op, root, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Reduce_init(sendbuf, recvbuf, count, datatype, op, root, comm, info, request)
+!   call MPI_Reduce_init(sendbuf, recvbuf, count, datatype, op, root, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Reduce_init
 ! 
-! subroutine MPIABI_Reduce_init_c(sendbuf, recvbuf, count, datatype, op, root, comm, info, request)
+! subroutine MPIABI_Reduce_init_c(sendbuf, recvbuf, count, datatype, op, root, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Reduce_init_c(sendbuf, recvbuf, count, datatype, op, root, comm, info, request)
+!   call MPI_Reduce_init_c(sendbuf, recvbuf, count, datatype, op, root, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Reduce_init_c
 ! 
-! subroutine MPIABI_Reduce_local(inbuf, inoutbuf, count, datatype, op)
+! subroutine MPIABI_Reduce_local(inbuf, inoutbuf, count, datatype, op, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Reduce_local(inbuf, inoutbuf, count, datatype, op)
+!   call MPI_Reduce_local(inbuf, inoutbuf, count, datatype, op, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Reduce_local
 ! 
-! subroutine MPIABI_Reduce_local_c(inbuf, inoutbuf, count, datatype, op)
+! subroutine MPIABI_Reduce_local_c(inbuf, inoutbuf, count, datatype, op, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Reduce_local_c(inbuf, inoutbuf, count, datatype, op)
+!   call MPI_Reduce_local_c(inbuf, inoutbuf, count, datatype, op, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Reduce_local_c
 ! 
-! subroutine MPIABI_Reduce_scatter(sendbuf, recvbuf, recvcounts, datatype, op, comm)
+! subroutine MPIABI_Reduce_scatter(sendbuf, recvbuf, recvcounts, datatype, op, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Reduce_scatter(sendbuf, recvbuf, recvcounts, datatype, op, comm)
+!   call MPI_Reduce_scatter(sendbuf, recvbuf, recvcounts, datatype, op, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Reduce_scatter
 ! 
-! subroutine MPIABI_Reduce_scatter_block(sendbuf, recvbuf, recvcount, datatype, op, comm)
+! subroutine MPIABI_Reduce_scatter_block(sendbuf, recvbuf, recvcount, datatype, op, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Reduce_scatter_block(sendbuf, recvbuf, recvcount, datatype, op, comm)
+!   call MPI_Reduce_scatter_block(sendbuf, recvbuf, recvcount, datatype, op, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Reduce_scatter_block
 ! 
-! subroutine MPIABI_Reduce_scatter_block_c(sendbuf, recvbuf, recvcount, datatype, op, comm)
+! subroutine MPIABI_Reduce_scatter_block_c(sendbuf, recvbuf, recvcount, datatype, op, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Reduce_scatter_block_c(sendbuf, recvbuf, recvcount, datatype, op, comm)
+!   call MPI_Reduce_scatter_block_c(sendbuf, recvbuf, recvcount, datatype, op, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Reduce_scatter_block_c
 ! 
-! subroutine MPIABI_Reduce_scatter_block_init(sendbuf, recvbuf, recvcount, datatype, op, comm, info, request)
+! subroutine MPIABI_Reduce_scatter_block_init(sendbuf, recvbuf, recvcount, datatype, op, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Reduce_scatter_block_init(sendbuf, recvbuf, recvcount, datatype, op, comm, info, request)
+!   call MPI_Reduce_scatter_block_init(sendbuf, recvbuf, recvcount, datatype, op, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Reduce_scatter_block_init
 ! 
-! subroutine MPIABI_Reduce_scatter_block_init_c(sendbuf, recvbuf, recvcount, datatype, op, comm, info, request)
+! subroutine MPIABI_Reduce_scatter_block_init_c(sendbuf, recvbuf, recvcount, datatype, op, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Reduce_scatter_block_init_c(sendbuf, recvbuf, recvcount, datatype, op, comm, info, request)
+!   call MPI_Reduce_scatter_block_init_c(sendbuf, recvbuf, recvcount, datatype, op, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Reduce_scatter_block_init_c
 ! 
-! subroutine MPIABI_Reduce_scatter_c(sendbuf, recvbuf, recvcounts, datatype, op, comm)
+! subroutine MPIABI_Reduce_scatter_c(sendbuf, recvbuf, recvcounts, datatype, op, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Reduce_scatter_c(sendbuf, recvbuf, recvcounts, datatype, op, comm)
+!   call MPI_Reduce_scatter_c(sendbuf, recvbuf, recvcounts, datatype, op, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Reduce_scatter_c
 ! 
-! subroutine MPIABI_Reduce_scatter_init(sendbuf, recvbuf, recvcounts, datatype, op, comm, info, request)
+! subroutine MPIABI_Reduce_scatter_init(sendbuf, recvbuf, recvcounts, datatype, op, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Reduce_scatter_init(sendbuf, recvbuf, recvcounts, datatype, op, comm, info, request)
+!   call MPI_Reduce_scatter_init(sendbuf, recvbuf, recvcounts, datatype, op, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Reduce_scatter_init
 ! 
-! subroutine MPIABI_Reduce_scatter_init_c(sendbuf, recvbuf, recvcounts, datatype, op, comm, info, request)
+! subroutine MPIABI_Reduce_scatter_init_c(sendbuf, recvbuf, recvcounts, datatype, op, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Reduce_scatter_init_c(sendbuf, recvbuf, recvcounts, datatype, op, comm, info, request)
+!   call MPI_Reduce_scatter_init_c(sendbuf, recvbuf, recvcounts, datatype, op, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Reduce_scatter_init_c
 ! 
-! subroutine MPIABI_Scan(sendbuf, recvbuf, count, datatype, op, comm)
+! subroutine MPIABI_Scan(sendbuf, recvbuf, count, datatype, op, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Scan(sendbuf, recvbuf, count, datatype, op, comm)
+!   call MPI_Scan(sendbuf, recvbuf, count, datatype, op, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Scan
 ! 
-! subroutine MPIABI_Scan_c(sendbuf, recvbuf, count, datatype, op, comm)
+! subroutine MPIABI_Scan_c(sendbuf, recvbuf, count, datatype, op, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Scan_c(sendbuf, recvbuf, count, datatype, op, comm)
+!   call MPI_Scan_c(sendbuf, recvbuf, count, datatype, op, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Scan_c
 ! 
-! subroutine MPIABI_Scan_init(sendbuf, recvbuf, count, datatype, op, comm, info, request)
+! subroutine MPIABI_Scan_init(sendbuf, recvbuf, count, datatype, op, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Scan_init(sendbuf, recvbuf, count, datatype, op, comm, info, request)
+!   call MPI_Scan_init(sendbuf, recvbuf, count, datatype, op, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Scan_init
 ! 
-! subroutine MPIABI_Scan_init_c(sendbuf, recvbuf, count, datatype, op, comm, info, request)
+! subroutine MPIABI_Scan_init_c(sendbuf, recvbuf, count, datatype, op, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Scan_init_c(sendbuf, recvbuf, count, datatype, op, comm, info, request)
+!   call MPI_Scan_init_c(sendbuf, recvbuf, count, datatype, op, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Scan_init_c
 ! 
-! subroutine MPIABI_Scatter(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
+! subroutine MPIABI_Scatter(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Scatter(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
+!   call MPI_Scatter(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Scatter
 ! 
-! subroutine MPIABI_Scatter_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
+! subroutine MPIABI_Scatter_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Scatter_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm)
+!   call MPI_Scatter_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Scatter_c
 ! 
-! subroutine MPIABI_Scatter_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request)
+! subroutine MPIABI_Scatter_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Scatter_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request)
+!   call MPI_Scatter_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Scatter_init
 ! 
-! subroutine MPIABI_Scatter_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request)
+! subroutine MPIABI_Scatter_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Scatter_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request)
+!   call MPI_Scatter_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Scatter_init_c
 ! 
-! subroutine MPIABI_Scatterv(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm)
+! subroutine MPIABI_Scatterv(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Scatterv(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm)
+!   call MPI_Scatterv(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Scatterv
 ! 
-! subroutine MPIABI_Scatterv_c(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm)
+! subroutine MPIABI_Scatterv_c(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Scatterv_c(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm)
+!   call MPI_Scatterv_c(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Scatterv_c
 ! 
-! subroutine MPIABI_Scatterv_init(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request)
+! subroutine MPIABI_Scatterv_init(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Scatterv_init(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request)
+!   call MPI_Scatterv_init(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Scatterv_init
 ! 
-! subroutine MPIABI_Scatterv_init_c(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request)
+! subroutine MPIABI_Scatterv_init_c(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Scatterv_init_c(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request)
+!   call MPI_Scatterv_init_c(sendbuf, sendcounts, displs, sendtype, recvbuf, recvcount, recvtype, root, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Scatterv_init_c
 ! 
-! subroutine MPIABI_Type_get_value_index(value_type, index_type, pair_type)
+! subroutine MPIABI_Type_get_value_index(value_type, index_type, pair_type, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_get_value_index(value_type, index_type, pair_type)
+!   call MPI_Type_get_value_index(value_type, index_type, pair_type, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_get_value_index
 ! 
 ! ! A.3.5 Groups,  Contexts,  Communicators,  and Caching C Bindings
 ! 
-! subroutine MPIABI_Comm_compare(comm1, comm2, result)
+! subroutine MPIABI_Comm_compare(comm1, comm2, result, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_compare(comm1, comm2, result)
+!   call MPI_Comm_compare(comm1, comm2, result, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_compare
 ! 
-! subroutine MPIABI_Comm_create(comm, group, newcomm)
+! subroutine MPIABI_Comm_create(comm, group, newcomm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_create(comm, group, newcomm)
+!   call MPI_Comm_create(comm, group, newcomm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_create
 ! 
-! subroutine MPIABI_Comm_create_from_group(group, stringtag, info, errhandler, newcomm)
+! subroutine MPIABI_Comm_create_from_group(group, stringtag, info, errhandler, newcomm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_create_from_group(group, stringtag, info, errhandler, newcomm)
+!   call MPI_Comm_create_from_group(group, stringtag, info, errhandler, newcomm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_create_from_group
 ! 
-! subroutine MPIABI_Comm_create_group(comm, group, tag, newcomm)
+! subroutine MPIABI_Comm_create_group(comm, group, tag, newcomm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_create_group(comm, group, tag, newcomm)
+!   call MPI_Comm_create_group(comm, group, tag, newcomm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_create_group
 ! 
-! subroutine MPIABI_Comm_create_keyval(comm_copy_attr_fn, comm_delete_attr_fn, comm_keyval, extra_state)
+! subroutine MPIABI_Comm_create_keyval(comm_copy_attr_fn, comm_delete_attr_fn, comm_keyval, extra_state, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_create_keyval(comm_copy_attr_fn, comm_delete_attr_fn, comm_keyval, extra_state)
+!   call MPI_Comm_create_keyval(comm_copy_attr_fn, comm_delete_attr_fn, comm_keyval, extra_state, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_create_keyval
 ! 
-! subroutine MPIABI_Comm_delete_attr(comm, comm_keyval)
+! subroutine MPIABI_Comm_delete_attr(comm, comm_keyval, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_delete_attr(comm, comm_keyval)
+!   call MPI_Comm_delete_attr(comm, comm_keyval, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_delete_attr
 ! 
-! subroutine MPIABI_Comm_dup(comm, newcomm)
+! subroutine MPIABI_Comm_dup(comm, newcomm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_dup(comm, newcomm)
+!   call MPI_Comm_dup(comm, newcomm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_dup
 ! 
-! subroutine MPIABI_Comm_dup_with_info(comm, info, newcomm)
+! subroutine MPIABI_Comm_dup_with_info(comm, info, newcomm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_dup_with_info(comm, info, newcomm)
+!   call MPI_Comm_dup_with_info(comm, info, newcomm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_dup_with_info
 ! 
-! subroutine MPIABI_Comm_free(comm)
+! subroutine MPIABI_Comm_free(comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_free(comm)
+!   call MPI_Comm_free(comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_free
 ! 
-! subroutine MPIABI_Comm_get_name(comm, comm_name, resultlen)
+! subroutine MPIABI_Comm_get_name(comm, comm_name, resultlen, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_get_name(comm, comm_name, resultlen)
+!   call MPI_Comm_get_name(comm, comm_name, resultlen, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_get_name
 ! 
-! subroutine MPIABI_Comm_free_keyval(comm_keyval)
+! subroutine MPIABI_Comm_free_keyval(comm_keyval, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_free_keyval(comm_keyval)
+!   call MPI_Comm_free_keyval(comm_keyval, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_free_keyval
 ! 
-! subroutine MPIABI_Comm_get_attr(comm, comm_keyval, attribute_val, flag)
+! subroutine MPIABI_Comm_get_attr(comm, comm_keyval, attribute_val, flag, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_get_attr(comm, comm_keyval, attribute_val, flag)
+!   call MPI_Comm_get_attr(comm, comm_keyval, attribute_val, flag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_get_attr
 ! 
-! subroutine MPIABI_Comm_get_info(comm, info_used)
+! subroutine MPIABI_Comm_get_info(comm, info_used, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_get_info(comm, info_used)
+!   call MPI_Comm_get_info(comm, info_used, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_get_info
 ! 
-! subroutine MPIABI_Comm_group(comm, group)
+! subroutine MPIABI_Comm_group(comm, group, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_group(comm, group)
+!   call MPI_Comm_group(comm, group, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_group
 ! 
-! subroutine MPIABI_Comm_idup(comm, newcomm, request)
+! subroutine MPIABI_Comm_idup(comm, newcomm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_idup(comm, newcomm, request)
+!   call MPI_Comm_idup(comm, newcomm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_idup
 ! 
-! subroutine MPIABI_Comm_idup_with_info(comm, info, newcomm, request)
+! subroutine MPIABI_Comm_idup_with_info(comm, info, newcomm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_idup_with_info(comm, info, newcomm, request)
+!   call MPI_Comm_idup_with_info(comm, info, newcomm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_idup_with_info
 
@@ -2049,38 +2298,38 @@ subroutine MPIABI_Comm_rank(comm, rank, ierror)
   ierror = mpi2abi_errorcode(ierror)
 end subroutine MPIABI_Comm_rank
 
-! subroutine MPIABI_Comm_remote_group(comm, group)
+! subroutine MPIABI_Comm_remote_group(comm, group, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_remote_group(comm, group)
+!   call MPI_Comm_remote_group(comm, group, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_remote_group
 ! 
-! subroutine MPIABI_Comm_remote_size(comm, size)
+! subroutine MPIABI_Comm_remote_size(comm, size, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_remote_size(comm, size)
+!   call MPI_Comm_remote_size(comm, size, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_remote_size
 ! 
-! subroutine MPIABI_Comm_set_attr(comm, comm_keyval, attribute_val)
+! subroutine MPIABI_Comm_set_attr(comm, comm_keyval, attribute_val, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_set_attr(comm, comm_keyval, attribute_val)
+!   call MPI_Comm_set_attr(comm, comm_keyval, attribute_val, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_set_attr
 ! 
-! subroutine MPIABI_Comm_set_info(comm, info)
+! subroutine MPIABI_Comm_set_info(comm, info, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_set_info(comm, info)
+!   call MPI_Comm_set_info(comm, info, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_set_info
 ! 
-! subroutine MPIABI_Comm_set_name(comm, comm_name)
+! subroutine MPIABI_Comm_set_name(comm, comm_name, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_set_name(comm, comm_name)
+!   call MPI_Comm_set_name(comm, comm_name, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_set_name
 
@@ -2096,947 +2345,947 @@ subroutine MPIABI_Comm_size(comm, size, ierror)
   ierror = mpi2abi_errorcode(ierror)
 end subroutine MPIABI_Comm_size
 
-! subroutine MPIABI_Comm_split(comm, color, key, newcomm)
+! subroutine MPIABI_Comm_split(comm, color, key, newcomm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_split(comm, color, key, newcomm)
+!   call MPI_Comm_split(comm, color, key, newcomm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_split
 ! 
-! subroutine MPIABI_Group_free(group)
+! subroutine MPIABI_Group_free(group, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Group_free(group)
+!   call MPI_Group_free(group, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Group_free
 ! 
-! subroutine MPIABI_Comm_split_type(comm, split_type, key, info, newcomm)
+! subroutine MPIABI_Comm_split_type(comm, split_type, key, info, newcomm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_split_type(comm, split_type, key, info, newcomm)
+!   call MPI_Comm_split_type(comm, split_type, key, info, newcomm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_split_type
 ! 
-! subroutine MPIABI_Comm_test_inter(comm, flag)
+! subroutine MPIABI_Comm_test_inter(comm, flag, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_test_inter(comm, flag)
+!   call MPI_Comm_test_inter(comm, flag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_test_inter
 ! 
-! subroutine MPIABI_Group_compare(group1, group2, result)
+! subroutine MPIABI_Group_compare(group1, group2, result, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Group_compare(group1, group2, result)
+!   call MPI_Group_compare(group1, group2, result, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Group_compare
 ! 
-! subroutine MPIABI_Group_difference(group1, group2, newgroup)
+! subroutine MPIABI_Group_difference(group1, group2, newgroup, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Group_difference(group1, group2, newgroup)
+!   call MPI_Group_difference(group1, group2, newgroup, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Group_difference
 ! 
-! subroutine MPIABI_Group_excl(group, n, ranks, newgroup)
+! subroutine MPIABI_Group_excl(group, n, ranks, newgroup, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Group_excl(group, n, ranks, newgroup)
+!   call MPI_Group_excl(group, n, ranks, newgroup, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Group_excl
 ! 
-! subroutine MPIABI_Group_from_session_pset(session, pset_name, newgroup)
+! subroutine MPIABI_Group_from_session_pset(session, pset_name, newgroup, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Group_from_session_pset(session, pset_name, newgroup)
+!   call MPI_Group_from_session_pset(session, pset_name, newgroup, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Group_from_session_pset
 ! 
-! subroutine MPIABI_Group_incl(group, n, ranks, newgroup)
+! subroutine MPIABI_Group_incl(group, n, ranks, newgroup, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Group_incl(group, n, ranks, newgroup)
+!   call MPI_Group_incl(group, n, ranks, newgroup, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Group_incl
 ! 
-! subroutine MPIABI_Group_intersection(group1, group2, newgroup)
+! subroutine MPIABI_Group_intersection(group1, group2, newgroup, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Group_intersection(group1, group2, newgroup)
+!   call MPI_Group_intersection(group1, group2, newgroup, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Group_intersection
 ! 
-! subroutine MPIABI_Group_range_excl(group, n, ranges, newgroup)
+! subroutine MPIABI_Group_range_excl(group, n, ranges, newgroup, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Group_range_excl(group, n, ranges, newgroup)
+!   call MPI_Group_range_excl(group, n, ranges, newgroup, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Group_range_excl
 ! 
-! subroutine MPIABI_Group_range_incl(group, n, ranges, newgroup)
+! subroutine MPIABI_Group_range_incl(group, n, ranges, newgroup, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Group_range_incl(group, n, ranges, newgroup)
+!   call MPI_Group_range_incl(group, n, ranges, newgroup, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Group_range_incl
 ! 
-! subroutine MPIABI_Group_rank(group, rank)
+! subroutine MPIABI_Group_rank(group, rank, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Group_rank(group, rank)
+!   call MPI_Group_rank(group, rank, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Group_rank
 ! 
-! subroutine MPIABI_Group_size(group, size)
+! subroutine MPIABI_Group_size(group, size, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Group_size(group, size)
+!   call MPI_Group_size(group, size, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Group_size
 ! 
-! subroutine MPIABI_Group_translate_ranks(group1, n, ranks1, group2, ranks2)
+! subroutine MPIABI_Group_translate_ranks(group1, n, ranks1, group2, ranks2, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Group_translate_ranks(group1, n, ranks1, group2, ranks2)
+!   call MPI_Group_translate_ranks(group1, n, ranks1, group2, ranks2, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Group_translate_ranks
 ! 
-! subroutine MPIABI_Group_union(group1, group2, newgroup)
+! subroutine MPIABI_Group_union(group1, group2, newgroup, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Group_union(group1, group2, newgroup)
+!   call MPI_Group_union(group1, group2, newgroup, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Group_union
 ! 
-! subroutine MPIABI_Intercomm_create(local_comm, local_leader, peer_comm, remote_leader, tag, newintercomm)
+! subroutine MPIABI_Intercomm_create(local_comm, local_leader, peer_comm, remote_leader, tag, newintercomm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Intercomm_create(local_comm, local_leader, peer_comm, remote_leader, tag, newintercomm)
+!   call MPI_Intercomm_create(local_comm, local_leader, peer_comm, remote_leader, tag, newintercomm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Intercomm_create
 ! 
-! subroutine MPIABI_Intercomm_create_from_groups(local_group, local_leader, remote_group, remote_leader, stringtag, info, errhandler, newintercomm)
+! subroutine MPIABI_Intercomm_create_from_groups(local_group, local_leader, remote_group, remote_leader, stringtag, info, errhandler, newintercomm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Intercomm_create_from_groups(local_group, local_leader, remote_group, remote_leader, stringtag, info, errhandler, newintercomm)
+!   call MPI_Intercomm_create_from_groups(local_group, local_leader, remote_group, remote_leader, stringtag, info, errhandler, newintercomm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Intercomm_create_from_groups
 ! 
-! subroutine MPIABI_Intercomm_merge(intercomm, high, newintracomm)
+! subroutine MPIABI_Intercomm_merge(intercomm, high, newintracomm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Intercomm_merge(intercomm, high, newintracomm)
+!   call MPI_Intercomm_merge(intercomm, high, newintracomm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Intercomm_merge
 ! 
-! subroutine MPIABI_Type_create_keyval(type_copy_attr_fn, type_delete_attr_fn, type_keyval, extra_state)
+! subroutine MPIABI_Type_create_keyval(type_copy_attr_fn, type_delete_attr_fn, type_keyval, extra_state, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_create_keyval(type_copy_attr_fn, type_delete_attr_fn, type_keyval, extra_state)
+!   call MPI_Type_create_keyval(type_copy_attr_fn, type_delete_attr_fn, type_keyval, extra_state, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_create_keyval
 ! 
-! subroutine MPIABI_Type_delete_attr(datatype, type_keyval)
+! subroutine MPIABI_Type_delete_attr(datatype, type_keyval, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_delete_attr(datatype, type_keyval)
+!   call MPI_Type_delete_attr(datatype, type_keyval, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_delete_attr
 ! 
-! subroutine MPIABI_Type_free_keyval(type_keyval)
+! subroutine MPIABI_Type_free_keyval(type_keyval, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_free_keyval(type_keyval)
+!   call MPI_Type_free_keyval(type_keyval, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_free_keyval
 ! 
-! subroutine MPIABI_Type_get_attr(datatype, type_keyval, attribute_val, flag)
+! subroutine MPIABI_Type_get_attr(datatype, type_keyval, attribute_val, flag, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_get_attr(datatype, type_keyval, attribute_val, flag)
+!   call MPI_Type_get_attr(datatype, type_keyval, attribute_val, flag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_get_attr
 ! 
-! subroutine MPIABI_Type_get_name(datatype, type_name, resultlen)
+! subroutine MPIABI_Type_get_name(datatype, type_name, resultlen, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_get_name(datatype, type_name, resultlen)
+!   call MPI_Type_get_name(datatype, type_name, resultlen, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_get_name
 ! 
-! subroutine MPIABI_Type_set_attr(datatype, type_keyval, attribute_val)
+! subroutine MPIABI_Type_set_attr(datatype, type_keyval, attribute_val, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_set_attr(datatype, type_keyval, attribute_val)
+!   call MPI_Type_set_attr(datatype, type_keyval, attribute_val, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_set_attr
 ! 
-! subroutine MPIABI_Type_set_name(datatype, type_name)
+! subroutine MPIABI_Type_set_name(datatype, type_name, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_set_name(datatype, type_name)
+!   call MPI_Type_set_name(datatype, type_name, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_set_name
 ! 
-! subroutine MPIABI_Win_create_keyval(win_copy_attr_fn, win_delete_attr_fn, win_keyval, extra_state)
+! subroutine MPIABI_Win_create_keyval(win_copy_attr_fn, win_delete_attr_fn, win_keyval, extra_state, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_create_keyval(win_copy_attr_fn, win_delete_attr_fn, win_keyval, extra_state)
+!   call MPI_Win_create_keyval(win_copy_attr_fn, win_delete_attr_fn, win_keyval, extra_state, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_create_keyval
 ! 
-! subroutine MPIABI_Win_delete_attr(win, win_keyval)
+! subroutine MPIABI_Win_delete_attr(win, win_keyval, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_delete_attr(win, win_keyval)
+!   call MPI_Win_delete_attr(win, win_keyval, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_delete_attr
 ! 
-! subroutine MPIABI_Win_free_keyval(win_keyval)
+! subroutine MPIABI_Win_free_keyval(win_keyval, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_free_keyval(win_keyval)
+!   call MPI_Win_free_keyval(win_keyval, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_free_keyval
 ! 
-! subroutine MPIABI_Win_get_attr(win, win_keyval, attribute_val, flag)
+! subroutine MPIABI_Win_get_attr(win, win_keyval, attribute_val, flag, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_get_attr(win, win_keyval, attribute_val, flag)
+!   call MPI_Win_get_attr(win, win_keyval, attribute_val, flag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_get_attr
 ! 
-! subroutine MPIABI_Win_get_name(win, win_name, resultlen)
+! subroutine MPIABI_Win_get_name(win, win_name, resultlen, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_get_name(win, win_name, resultlen)
+!   call MPI_Win_get_name(win, win_name, resultlen, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_get_name
 ! 
-! subroutine MPIABI_Win_set_attr(win, win_keyval, attribute_val)
+! subroutine MPIABI_Win_set_attr(win, win_keyval, attribute_val, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_set_attr(win, win_keyval, attribute_val)
+!   call MPI_Win_set_attr(win, win_keyval, attribute_val, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_set_attr
 ! 
-! subroutine MPIABI_Win_set_name(win, win_name)
+! subroutine MPIABI_Win_set_name(win, win_name, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_set_name(win, win_name)
+!   call MPI_Win_set_name(win, win_name, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_set_name
 ! 
 ! ! A.3.6 Virtual Topologies for MPI Processes C Bindings
 ! 
-! subroutine MPIABI_Cart_coords(comm, rank, maxdims, coords)
+! subroutine MPIABI_Cart_coords(comm, rank, maxdims, coords, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Cart_coords(comm, rank, maxdims, coords)
+!   call MPI_Cart_coords(comm, rank, maxdims, coords, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Cart_coords
 ! 
-! subroutine MPIABI_Cart_create(comm_old, ndims, dims, periods, reorder, comm_cart)
+! subroutine MPIABI_Cart_create(comm_old, ndims, dims, periods, reorder, comm_cart, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Cart_create(comm_old, ndims, dims, periods, reorder, comm_cart)
+!   call MPI_Cart_create(comm_old, ndims, dims, periods, reorder, comm_cart, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Cart_create
 ! 
-! subroutine MPIABI_Cart_get(comm, maxdims, dims, periods, coords)
+! subroutine MPIABI_Cart_get(comm, maxdims, dims, periods, coords, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Cart_get(comm, maxdims, dims, periods, coords)
+!   call MPI_Cart_get(comm, maxdims, dims, periods, coords, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Cart_get
 ! 
-! subroutine MPIABI_Cart_map(comm, ndims, dims, periods, newrank)
+! subroutine MPIABI_Cart_map(comm, ndims, dims, periods, newrank, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Cart_map(comm, ndims, dims, periods, newrank)
+!   call MPI_Cart_map(comm, ndims, dims, periods, newrank, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Cart_map
 ! 
-! subroutine MPIABI_Cart_rank(comm, coords, rank)
+! subroutine MPIABI_Cart_rank(comm, coords, rank, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Cart_rank(comm, coords, rank)
+!   call MPI_Cart_rank(comm, coords, rank, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Cart_rank
 ! 
-! subroutine MPIABI_Cart_shift(comm, direction, disp, rank_source, rank_dest)
+! subroutine MPIABI_Cart_shift(comm, direction, disp, rank_source, rank_dest, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Cart_shift(comm, direction, disp, rank_source, rank_dest)
+!   call MPI_Cart_shift(comm, direction, disp, rank_source, rank_dest, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Cart_shift
 ! 
-! subroutine MPIABI_Cart_sub(comm, remain_dims, newcomm)
+! subroutine MPIABI_Cart_sub(comm, remain_dims, newcomm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Cart_sub(comm, remain_dims, newcomm)
+!   call MPI_Cart_sub(comm, remain_dims, newcomm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Cart_Sub
 ! 
-! subroutine MPIABI_Cartdim_get(comm, ndims)
+! subroutine MPIABI_Cartdim_get(comm, ndims, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Cartdim_get(comm, ndims)
+!   call MPI_Cartdim_get(comm, ndims, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Cartdim_get
 ! 
-! subroutine MPIABI_Dims_create(nnodes, ndims, dims)
+! subroutine MPIABI_Dims_create(nnodes, ndims, dims, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Dims_create(nnodes, ndims, dims)
+!   call MPI_Dims_create(nnodes, ndims, dims, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Dims_create
 ! 
-! subroutine MPIABI_Dist_graph_create(comm_old, n, sources, degrees, destinations, weights, info, reorder, comm_dist_graph)
+! subroutine MPIABI_Dist_graph_create(comm_old, n, sources, degrees, destinations, weights, info, reorder, comm_dist_graph, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Dist_graph_create(comm_old, n, sources, degrees, destinations, weights, info, reorder, comm_dist_graph)
+!   call MPI_Dist_graph_create(comm_old, n, sources, degrees, destinations, weights, info, reorder, comm_dist_graph, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Dist_graph_create
 ! 
-! subroutine MPIABI_Dist_graph_create_adjacent(comm_old, indegree, sources, sourceweights, outdegree, destinations, destweights, info, reorder, comm_dist_graph)
+! subroutine MPIABI_Dist_graph_create_adjacent(comm_old, indegree, sources, sourceweights, outdegree, destinations, destweights, info, reorder, comm_dist_graph, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Dist_graph_create_adjacent(comm_old, indegree, sources, sourceweights, outdegree, destinations, destweights, info, reorder, comm_dist_graph)
+!   call MPI_Dist_graph_create_adjacent(comm_old, indegree, sources, sourceweights, outdegree, destinations, destweights, info, reorder, comm_dist_graph, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Dist_graph_create_adjacent
 ! 
-! subroutine MPIABI_Dist_graph_neighbors(comm, maxindegree, sources, sourceweights, maxoutdegree, destinations, destweights)
+! subroutine MPIABI_Dist_graph_neighbors(comm, maxindegree, sources, sourceweights, maxoutdegree, destinations, destweights, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Dist_graph_neighbors(comm, maxindegree, sources, sourceweights, maxoutdegree, destinations, destweights)
+!   call MPI_Dist_graph_neighbors(comm, maxindegree, sources, sourceweights, maxoutdegree, destinations, destweights, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Dist_graph_neighbors
 ! 
-! subroutine MPIABI_Dist_graph_neighbors_count(comm, indegree, outdegree, weighted)
+! subroutine MPIABI_Dist_graph_neighbors_count(comm, indegree, outdegree, weighted, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Dist_graph_neighbors_count(comm, indegree, outdegree, weighted)
+!   call MPI_Dist_graph_neighbors_count(comm, indegree, outdegree, weighted, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Dist_graph_neighbors_count
 ! 
-! subroutine MPIABI_Graph_create(comm_old, nnodes, index, edges, reorder, comm_graph)
+! subroutine MPIABI_Graph_create(comm_old, nnodes, index, edges, reorder, comm_graph, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Graph_create(comm_old, nnodes, index, edges, reorder, comm_graph)
+!   call MPI_Graph_create(comm_old, nnodes, index, edges, reorder, comm_graph, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Graph_create
 ! 
-! subroutine MPIABI_Graph_get(comm, maxindex, maxedges, index, edges)
+! subroutine MPIABI_Graph_get(comm, maxindex, maxedges, index, edges, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Graph_get(comm, maxindex, maxedges, index, edges)
+!   call MPI_Graph_get(comm, maxindex, maxedges, index, edges, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Graph_get
 ! 
-! subroutine MPIABI_Graph_map(comm, nnodes, index, edges, newrank)
+! subroutine MPIABI_Graph_map(comm, nnodes, index, edges, newrank, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Graph_map(comm, nnodes, index, edges, newrank)
+!   call MPI_Graph_map(comm, nnodes, index, edges, newrank, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Graph_map
 ! 
-! subroutine MPIABI_Graph_neighbors(comm, rank, maxneighbors, neighbors)
+! subroutine MPIABI_Graph_neighbors(comm, rank, maxneighbors, neighbors, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Graph_neighbors(comm, rank, maxneighbors, neighbors)
+!   call MPI_Graph_neighbors(comm, rank, maxneighbors, neighbors, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Graph_neighbors
 ! 
-! subroutine MPIABI_Graph_neighbors_count(comm, rank, nneighbors)
+! subroutine MPIABI_Graph_neighbors_count(comm, rank, nneighbors, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Graph_neighbors_count(comm, rank, nneighbors)
+!   call MPI_Graph_neighbors_count(comm, rank, nneighbors, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Graph_neighbors_count
 ! 
-! subroutine MPIABI_Graphdims_get(comm, nnodes, nedges)
+! subroutine MPIABI_Graphdims_get(comm, nnodes, nedges, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Graphdims_get(comm, nnodes, nedges)
+!   call MPI_Graphdims_get(comm, nnodes, nedges, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Graphdims_get
 ! 
-! subroutine MPIABI_Ineighbor_allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+! subroutine MPIABI_Ineighbor_allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ineighbor_allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+!   call MPI_Ineighbor_allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ineighbor_allgather
 ! 
-! subroutine MPIABI_Ineighbor_allgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+! subroutine MPIABI_Ineighbor_allgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ineighbor_allgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+!   call MPI_Ineighbor_allgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ineighbor_allgather_c
 ! 
-! subroutine MPIABI_Ineighbor_allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request)
+! subroutine MPIABI_Ineighbor_allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ineighbor_allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request)
+!   call MPI_Ineighbor_allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ineighbor_allgatherv
 ! 
-! subroutine MPIABI_Ineighbor_allgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request)
+! subroutine MPIABI_Ineighbor_allgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ineighbor_allgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request)
+!   call MPI_Ineighbor_allgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ineighbor_allgatherv_c
 ! 
-! subroutine MPIABI_Ineighbor_alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+! subroutine MPIABI_Ineighbor_alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ineighbor_alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+!   call MPI_Ineighbor_alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ineighbor_alltoall
 ! 
-! subroutine MPIABI_Ineighbor_alltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+! subroutine MPIABI_Ineighbor_alltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ineighbor_alltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request)
+!   call MPI_Ineighbor_alltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ineighbor_alltoall_c
 ! 
-! subroutine MPIABI_Ineighbor_alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request)
+! subroutine MPIABI_Ineighbor_alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ineighbor_alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request)
+!   call MPI_Ineighbor_alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ineighbor_alltoallv
 ! 
-! subroutine MPIABI_Ineighbor_alltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request)
+! subroutine MPIABI_Ineighbor_alltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ineighbor_alltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request)
+!   call MPI_Ineighbor_alltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ineighbor_alltoallv_c
 ! 
-! subroutine MPIABI_Ineighbor_alltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request)
+! subroutine MPIABI_Ineighbor_alltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ineighbor_alltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request)
+!   call MPI_Ineighbor_alltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ineighbor_alltoallw
 ! 
-! subroutine MPIABI_Ineighbor_alltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request)
+! subroutine MPIABI_Ineighbor_alltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Ineighbor_alltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request)
+!   call MPI_Ineighbor_alltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Ineighbor_alltoallw_c
 ! 
-! subroutine MPIABI_Neighbor_allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+! subroutine MPIABI_Neighbor_allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+!   call MPI_Neighbor_allgather(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_allgather
 ! 
-! subroutine MPIABI_Neighbor_allgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+! subroutine MPIABI_Neighbor_allgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_allgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+!   call MPI_Neighbor_allgather_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_allgather_c
 ! 
-! subroutine MPIABI_Neighbor_allgather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+! subroutine MPIABI_Neighbor_allgather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_allgather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+!   call MPI_Neighbor_allgather_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_allgather_init
 ! 
-! subroutine MPIABI_Neighbor_allgather_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+! subroutine MPIABI_Neighbor_allgather_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_allgather_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+!   call MPI_Neighbor_allgather_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_allgather_init_c
 ! 
-! subroutine MPIABI_Neighbor_allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm)
+! subroutine MPIABI_Neighbor_allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm)
+!   call MPI_Neighbor_allgatherv(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_allgatherv
 ! 
-! subroutine MPIABI_Neighbor_allgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm)
+! subroutine MPIABI_Neighbor_allgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_allgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm)
+!   call MPI_Neighbor_allgatherv_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_allgatherv_c
 ! 
-! subroutine MPIABI_Neighbor_allgatherv_init(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request)
+! subroutine MPIABI_Neighbor_allgatherv_init(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_allgatherv_init(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request)
+!   call MPI_Neighbor_allgatherv_init(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_allgatherv_init
 ! 
-! subroutine MPIABI_Neighbor_allgatherv_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request)
+! subroutine MPIABI_Neighbor_allgatherv_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_allgatherv_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request)
+!   call MPI_Neighbor_allgatherv_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcounts, displs, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_allgatherv_init_c
 ! 
-! subroutine MPIABI_Neighbor_alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+! subroutine MPIABI_Neighbor_alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+!   call MPI_Neighbor_alltoall(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_alltoall
 ! 
-! subroutine MPIABI_Neighbor_alltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+! subroutine MPIABI_Neighbor_alltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_alltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm)
+!   call MPI_Neighbor_alltoall_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_alltoall_c
 ! 
-! subroutine MPIABI_Neighbor_alltoall_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+! subroutine MPIABI_Neighbor_alltoall_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_alltoall_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+!   call MPI_Neighbor_alltoall_init(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_alltoall_init
 ! 
-! subroutine MPIABI_Neighbor_alltoall_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+! subroutine MPIABI_Neighbor_alltoall_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_alltoall_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request)
+!   call MPI_Neighbor_alltoall_init_c(sendbuf, sendcount, sendtype, recvbuf, recvcount, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_alltoall_init_c
 ! 
-! subroutine MPIABI_Neighbor_alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm)
+! subroutine MPIABI_Neighbor_alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm)
+!   call MPI_Neighbor_alltoallv(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_alltoallv
 ! 
-! subroutine MPIABI_Neighbor_alltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm)
+! subroutine MPIABI_Neighbor_alltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_alltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm)
+!   call MPI_Neighbor_alltoallv_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_alltoallv_c
 ! 
-! subroutine MPIABI_Neighbor_alltoallv_init(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request)
+! subroutine MPIABI_Neighbor_alltoallv_init(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_alltoallv_init(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request)
+!   call MPI_Neighbor_alltoallv_init(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_alltoallv_init
 ! 
-! subroutine MPIABI_Neighbor_alltoallv_init_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request)
+! subroutine MPIABI_Neighbor_alltoallv_init_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_alltoallv_init_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request)
+!   call MPI_Neighbor_alltoallv_init_c(sendbuf, sendcounts, sdispls, sendtype, recvbuf, recvcounts, rdispls, recvtype, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_alltoallv_init_c
 ! 
-! subroutine MPIABI_Neighbor_alltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm)
+! subroutine MPIABI_Neighbor_alltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_alltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm)
+!   call MPI_Neighbor_alltoallw(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_alltoallw
 ! 
-! subroutine MPIABI_Neighbor_alltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm)
+! subroutine MPIABI_Neighbor_alltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_alltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm)
+!   call MPI_Neighbor_alltoallw_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_alltoallw_c
 ! 
-! subroutine MPIABI_Neighbor_alltoallw_init(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request)
+! subroutine MPIABI_Neighbor_alltoallw_init(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_alltoallw_init(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request)
+!   call MPI_Neighbor_alltoallw_init(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_alltoallw_init
 ! 
-! subroutine MPIABI_Neighbor_alltoallw_init_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request)
+! subroutine MPIABI_Neighbor_alltoallw_init_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Neighbor_alltoallw_init_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request)
+!   call MPI_Neighbor_alltoallw_init_c(sendbuf, sendcounts, sdispls, sendtypes, recvbuf, recvcounts, rdispls, recvtypes, comm, info, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Neighbor_alltoallw_init_c
 ! 
-! subroutine MPIABI_Topo_test(comm, status)
+! subroutine MPIABI_Topo_test(comm, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Topo_test(comm, status)
+!   call MPI_Topo_test(comm, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Topo_test
 ! 
 ! ! A.3.7 MPI Environmental Management C Bindings
 ! 
-! subroutine MPIABI_Add_error_class(errorclass)
+! subroutine MPIABI_Add_error_class(errorclass, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Add_error_class(errorclass)
+!   call MPI_Add_error_class(errorclass, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Add_error_class
 ! 
-! subroutine MPIABI_Add_error_code(errorclass, errorcode)
+! subroutine MPIABI_Add_error_code(errorclass, errorcode, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Add_error_code(errorclass, errorcode)
+!   call MPI_Add_error_code(errorclass, errorcode, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Add_error_code
 ! 
-! subroutine MPIABI_Add_error_string(errorcode, string)
+! subroutine MPIABI_Add_error_string(errorcode, string, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Add_error_string(errorcode, string)
+!   call MPI_Add_error_string(errorcode, string, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Add_error_string
 ! 
-! subroutine MPIABI_Alloc_mem(size, info, baseptr)
+! subroutine MPIABI_Alloc_mem(size, info, baseptr, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Alloc_mem(size, info, baseptr)
+!   call MPI_Alloc_mem(size, info, baseptr, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Alloc_mem
 ! 
-! subroutine MPIABI_Comm_call_errhandler(comm, errorcode)
+! subroutine MPIABI_Comm_call_errhandler(comm, errorcode, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_call_errhandler(comm, errorcode)
+!   call MPI_Comm_call_errhandler(comm, errorcode, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_call_errhandler
 ! 
-! subroutine MPIABI_Comm_create_errhandler(comm_errhandler_fn, errhandler)
+! subroutine MPIABI_Comm_create_errhandler(comm_errhandler_fn, errhandler, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_create_errhandler(comm_errhandler_fn, errhandler)
+!   call MPI_Comm_create_errhandler(comm_errhandler_fn, errhandler, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_create_errhandler
 ! 
-! subroutine MPIABI_Comm_get_errhandler(comm, errhandler)
+! subroutine MPIABI_Comm_get_errhandler(comm, errhandler, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_get_errhandler(comm, errhandler)
+!   call MPI_Comm_get_errhandler(comm, errhandler, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_get_errhandler
 ! 
-! subroutine MPIABI_Comm_set_errhandler(comm, errhandler)
+! subroutine MPIABI_Comm_set_errhandler(comm, errhandler, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_set_errhandler(comm, errhandler)
+!   call MPI_Comm_set_errhandler(comm, errhandler, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_set_errhandler
 ! 
-! subroutine MPIABI_Errhandler_free(errhandler)
+! subroutine MPIABI_Errhandler_free(errhandler, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Errhandler_free(errhandler)
+!   call MPI_Errhandler_free(errhandler, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Errhandler_free
 ! 
-! subroutine MPIABI_Error_class(errorcode, errorclass)
+! subroutine MPIABI_Error_class(errorcode, errorclass, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Error_class(errorcode, errorclass)
+!   call MPI_Error_class(errorcode, errorclass, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Error_class
 ! 
-! subroutine MPIABI_Error_string(errorcode, string, resultlen)
+! subroutine MPIABI_Error_string(errorcode, string, resultlen, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Error_string(errorcode, string, resultlen)
+!   call MPI_Error_string(errorcode, string, resultlen, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Error_string
 ! 
-! subroutine MPIABI_File_call_errhandler(fh, errorcode)
+! subroutine MPIABI_File_call_errhandler(fh, errorcode, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_call_errhandler(fh, errorcode)
+!   call MPI_File_call_errhandler(fh, errorcode, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_call_errhandler
 ! 
-! subroutine MPIABI_File_create_errhandler(file_errhandler_fn, errhandler)
+! subroutine MPIABI_File_create_errhandler(file_errhandler_fn, errhandler, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_create_errhandler(file_errhandler_fn, errhandler)
+!   call MPI_File_create_errhandler(file_errhandler_fn, errhandler, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_create_errhandler
 ! 
-! subroutine MPIABI_File_get_errhandler(file, errhandler)
+! subroutine MPIABI_File_get_errhandler(file, errhandler, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_get_errhandler(file, errhandler)
+!   call MPI_File_get_errhandler(file, errhandler, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_get_errhandler
 ! 
-! subroutine MPIABI_File_set_errhandler(file, errhandler)
+! subroutine MPIABI_File_set_errhandler(file, errhandler, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_set_errhandler(file, errhandler)
+!   call MPI_File_set_errhandler(file, errhandler, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_set_errhandler
 ! 
-! subroutine MPIABI_Free_mem(base)
+! subroutine MPIABI_Free_mem(base, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Free_mem(base)
+!   call MPI_Free_mem(base, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Free_mem
 ! 
-! subroutine MPIABI_Get_hw_resource_info(hw_info)
+! subroutine MPIABI_Get_hw_resource_info(hw_info, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Get_hw_resource_info(hw_info)
+!   call MPI_Get_hw_resource_info(hw_info, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Get_hw_resource_info
 ! 
-! subroutine MPIABI_Get_library_version(version, resultlen)
+! subroutine MPIABI_Get_library_version(version, resultlen, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Get_library_version(version, resultlen)
+!   call MPI_Get_library_version(version, resultlen, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Get_library_version
 ! 
-! subroutine MPIABI_Get_processor_name(name, resultlen)
+! subroutine MPIABI_Get_processor_name(name, resultlen, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Get_processor_name(name, resultlen)
+!   call MPI_Get_processor_name(name, resultlen, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Get_processor_name
 ! 
-! subroutine MPIABI_Get_version(version, subversion)
+! subroutine MPIABI_Get_version(version, subversion, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Get_version(version, subversion)
+!   call MPI_Get_version(version, subversion, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Get_version
 ! 
-! subroutine MPIABI_Remove_error_class(errorclass)
+! subroutine MPIABI_Remove_error_class(errorclass, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Remove_error_class(errorclass)
+!   call MPI_Remove_error_class(errorclass, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Remove_error_class
 ! 
-! subroutine MPIABI_Remove_error_code(errorcode)
+! subroutine MPIABI_Remove_error_code(errorcode, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Remove_error_code(errorcode)
+!   call MPI_Remove_error_code(errorcode, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Remove_error_code
 ! 
-! subroutine MPIABI_Remove_error_string(errorcode)
+! subroutine MPIABI_Remove_error_string(errorcode, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Remove_error_string(errorcode)
+!   call MPI_Remove_error_string(errorcode, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Remove_error_string
 ! 
-! subroutine MPIABI_Session_call_errhandler(session, errorcode)
+! subroutine MPIABI_Session_call_errhandler(session, errorcode, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Session_call_errhandler(session, errorcode)
+!   call MPI_Session_call_errhandler(session, errorcode, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Session_call_errhandler
 ! 
-! subroutine MPIABI_Session_create_errhandler(session_errhandler_fn, errhandler)
+! subroutine MPIABI_Session_create_errhandler(session_errhandler_fn, errhandler, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Session_create_errhandler(session_errhandler_fn, errhandler)
+!   call MPI_Session_create_errhandler(session_errhandler_fn, errhandler, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Session_create_errhandler
 ! 
-! subroutine MPIABI_Session_get_errhandler(session, errhandler)
+! subroutine MPIABI_Session_get_errhandler(session, errhandler, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Session_get_errhandler(session, errhandler)
+!   call MPI_Session_get_errhandler(session, errhandler, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Session_get_errhandler
 ! 
-! subroutine MPIABI_Session_set_errhandler(session, errhandler)
+! subroutine MPIABI_Session_set_errhandler(session, errhandler, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Session_set_errhandler(session, errhandler)
+!   call MPI_Session_set_errhandler(session, errhandler, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Session_set_errhandler
 ! 
-! subroutine MPIABI_Win_call_errhandler(win, errorcode)
+! subroutine MPIABI_Win_call_errhandler(win, errorcode, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_call_errhandler(win, errorcode)
+!   call MPI_Win_call_errhandler(win, errorcode, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_call_errhandler
 ! 
-! subroutine MPIABI_Win_create_errhandler(win_errhandler_fn, errhandler)
+! subroutine MPIABI_Win_create_errhandler(win_errhandler_fn, errhandler, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_create_errhandler(win_errhandler_fn, errhandler)
+!   call MPI_Win_create_errhandler(win_errhandler_fn, errhandler, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_create_errhandler
 ! 
-! subroutine MPIABI_Win_get_errhandler(win, errhandler)
+! subroutine MPIABI_Win_get_errhandler(win, errhandler, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_get_errhandler(win, errhandler)
+!   call MPI_Win_get_errhandler(win, errhandler, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_get_errhandler
 ! 
-! subroutine MPIABI_Win_set_errhandler(win, errhandler)
+! subroutine MPIABI_Win_set_errhandler(win, errhandler, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_set_errhandler(win, errhandler)
+!   call MPI_Win_set_errhandler(win, errhandler, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_set_errhandler
-! 
-! double precision function MPIABI_Wtick()
+
+double precision function MPIABI_Wtick()
+  use mpiwrapper
+  implicit none
+  MPIABI_Wtick = MPI_Wtick()
+end function MPIABI_Wtick
+
+double precision function MPIABI_Wtime()
+  use mpiwrapper
+  implicit none
+  MPIABI_Wtime = MPI_Wtime()
+end function MPIABI_Wtime
+
+! A.3.8 The Info Object C Bindings
+
+! subroutine MPIABI_Info_create(info, ierror)
 !   use mpiwrapper
 !   implicit none
-!   MPIABI_Wtick = MPI_Wtick()
-! end function MPIABI_Wtick
-! 
-! double precision subroutine MPIABI_Wtime() double
-!   use mpiwrapper
-!   implicit none double
-!   MPIABI_Wtime = MPI_Wtime()
-! end subroutine MPIABI_Wtime
-! 
-! ! A.3.8 The Info Object C Bindings
-! 
-! subroutine MPIABI_Info_create(info)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Info_create(info)
+!   call MPI_Info_create(info, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Info_create
 ! 
-! subroutine MPIABI_Info_create_env(argc, argv, info)
+! subroutine MPIABI_Info_create_env(argc, argv, info, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Info_create_env(argc, argv, info)
+!   call MPI_Info_create_env(argc, argv, info, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Info_create_env
 ! 
-! subroutine MPIABI_Info_delete(info, key)
+! subroutine MPIABI_Info_delete(info, key, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Info_delete(info, key)
+!   call MPI_Info_delete(info, key, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Info_delete
 ! 
-! subroutine MPIABI_Info_dup(info, newinfo)
+! subroutine MPIABI_Info_dup(info, newinfo, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Info_dup(info, newinfo)
+!   call MPI_Info_dup(info, newinfo, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Info_dup
 ! 
-! subroutine MPIABI_Info_free(info)
+! subroutine MPIABI_Info_free(info, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Info_free(info)
+!   call MPI_Info_free(info, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Info_free
 ! 
-! subroutine MPIABI_Info_get_nkeys(info, nkeys)
+! subroutine MPIABI_Info_get_nkeys(info, nkeys, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Info_get_nkeys(info, nkeys)
+!   call MPI_Info_get_nkeys(info, nkeys, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Info_get_nkeys
 ! 
-! subroutine MPIABI_Info_get_nthkey(info, n, key)
+! subroutine MPIABI_Info_get_nthkey(info, n, key, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Info_get_nthkey(info, n, key)
+!   call MPI_Info_get_nthkey(info, n, key, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Info_get_nthkey
 ! 
-! subroutine MPIABI_Info_get_string(info, key, buflen, value, flag)
+! subroutine MPIABI_Info_get_string(info, key, buflen, value, flag, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Info_get_string(info, key, buflen, value, flag)
+!   call MPI_Info_get_string(info, key, buflen, value, flag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Info_get_string
 ! 
-! subroutine MPIABI_Info_set(info, key, value)
+! subroutine MPIABI_Info_set(info, key, value, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Info_set(info, key, value)
+!   call MPI_Info_set(info, key, value, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Info_set
 ! 
 ! ! A.3.9 Process Creation and Management C Bindings
 ! 
-! subroutine MPIABI_Abort(comm, errorcode)
+! subroutine MPIABI_Abort(comm, errorcode, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Abort(comm, errorcode)
+!   call MPI_Abort(comm, errorcode, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Abort
 ! 
-! subroutine MPIABI_Close_port(port_name)
+! subroutine MPIABI_Close_port(port_name, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Close_port(port_name)
+!   call MPI_Close_port(port_name, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Close_port
 ! 
-! subroutine MPIABI_Comm_accept(port_name, info, root, comm, newcomm)
+! subroutine MPIABI_Comm_accept(port_name, info, root, comm, newcomm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_accept(port_name, info, root, comm, newcomm)
+!   call MPI_Comm_accept(port_name, info, root, comm, newcomm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_accept
 ! 
-! subroutine MPIABI_Comm_connect(port_name, info, root, comm, newcomm)
+! subroutine MPIABI_Comm_connect(port_name, info, root, comm, newcomm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_connect(port_name, info, root, comm, newcomm)
+!   call MPI_Comm_connect(port_name, info, root, comm, newcomm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_connect
 ! 
-! subroutine MPIABI_Comm_disconnect(comm)
+! subroutine MPIABI_Comm_disconnect(comm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_disconnect(comm)
+!   call MPI_Comm_disconnect(comm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_disconnect
 ! 
-! subroutine MPIABI_Comm_get_parent(parent)
+! subroutine MPIABI_Comm_get_parent(parent, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_get_parent(parent)
+!   call MPI_Comm_get_parent(parent, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_get_parent
 ! 
-! subroutine MPIABI_Comm_join(fd, intercomm)
+! subroutine MPIABI_Comm_join(fd, intercomm, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_join(fd, intercomm)
+!   call MPI_Comm_join(fd, intercomm, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_join
 ! 
-! subroutine MPIABI_Comm_spawn(command, argv, maxprocs, info, root, comm, intercomm, array_of_errcodes)
+! subroutine MPIABI_Comm_spawn(command, argv, maxprocs, info, root, comm, intercomm, array_of_errcodes, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_spawn(command, argv, maxprocs, info, root, comm, intercomm, array_of_errcodes)
+!   call MPI_Comm_spawn(command, argv, maxprocs, info, root, comm, intercomm, array_of_errcodes, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_spawn
 ! 
-! subroutine MPIABI_Comm_spawn_multiple(count, array_of_commands, array_of_argv, array_of_maxprocs, array_of_info, root, comm, intercomm, array_of_errcodes)
+! subroutine MPIABI_Comm_spawn_multiple(count, array_of_commands, array_of_argv, array_of_maxprocs, array_of_info, root, comm, intercomm, array_of_errcodes, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Comm_spawn_multiple(count, array_of_commands, array_of_argv, array_of_maxprocs, array_of_info, root, comm, intercomm, array_of_errcodes)
+!   call MPI_Comm_spawn_multiple(count, array_of_commands, array_of_argv, array_of_maxprocs, array_of_info, root, comm, intercomm, array_of_errcodes, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Comm_spawn_multiple
 
@@ -3071,7 +3320,7 @@ subroutine MPIABI_Init_thread(required, provided, ierror)
   integer, intent(in) :: required
   integer, intent(out) :: provided
   integer, intent(out) :: ierror
-  call MPI_Init_thread(abi2mpi_threadlevel(required), abi2mpi_threadlevel(provided))
+  call MPI_Init_thread(abi2mpi_threadlevel(required), abi2mpi_threadlevel(provided), ierror)
   ierror = mpi2abi_errorcode(ierror)
 end subroutine MPIABI_Init_thread
 
@@ -3093,80 +3342,80 @@ subroutine MPIABI_Is_thread_main(flag, ierror)
   ierror = mpi2abi_errorcode(ierror)
 end subroutine MPIABI_Is_thread_main
 
-! subroutine MPIABI_Lookup_name(service_name, info, port_name)
+! subroutine MPIABI_Lookup_name(service_name, info, port_name, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Lookup_name(service_name, info, port_name)
+!   call MPI_Lookup_name(service_name, info, port_name, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Lookup_name
 ! 
-! subroutine MPIABI_Open_port(info, port_name)
+! subroutine MPIABI_Open_port(info, port_name, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Open_port(info, port_name)
+!   call MPI_Open_port(info, port_name, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Open_port
 ! 
-! subroutine MPIABI_Publish_name(service_name, info, port_name)
+! subroutine MPIABI_Publish_name(service_name, info, port_name, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Publish_name(service_name, info, port_name)
+!   call MPI_Publish_name(service_name, info, port_name, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Publish_name
 ! 
-! subroutine MPIABI_Query_thread(provided)
+! subroutine MPIABI_Query_thread(provided, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Query_thread(provided)
+!   call MPI_Query_thread(provided, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Query_thread
 ! 
-! subroutine MPIABI_Session_finalize(session)
+! subroutine MPIABI_Session_finalize(session, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Session_finalize(session)
+!   call MPI_Session_finalize(session, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Session_finalize
 ! 
-! subroutine MPIABI_Session_get_info(session, info_used)
+! subroutine MPIABI_Session_get_info(session, info_used, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Session_get_info(session, info_used)
+!   call MPI_Session_get_info(session, info_used, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Session_get_info
 ! 
-! subroutine MPIABI_Session_get_nth_pset(session, info, n, pset_len, pset_name)
+! subroutine MPIABI_Session_get_nth_pset(session, info, n, pset_len, pset_name, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Session_get_nth_pset(session, info, n, pset_len, pset_name)
+!   call MPI_Session_get_nth_pset(session, info, n, pset_len, pset_name, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Session_get_nth_pset
 ! 
-! subroutine MPIABI_Session_get_num_psets(session, info, npset_names)
+! subroutine MPIABI_Session_get_num_psets(session, info, npset_names, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Session_get_num_psets(session, info, npset_names)
+!   call MPI_Session_get_num_psets(session, info, npset_names, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Session_get_num_psets
 ! 
-! subroutine MPIABI_Session_get_pset_info(session, pset_name, info)
+! subroutine MPIABI_Session_get_pset_info(session, pset_name, info, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Session_get_pset_info(session, pset_name, info)
+!   call MPI_Session_get_pset_info(session, pset_name, info, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Session_get_pset_info
 ! 
-! subroutine MPIABI_Session_init(info, errhandler, session)
+! subroutine MPIABI_Session_init(info, errhandler, session, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Session_init(info, errhandler, session)
+!   call MPI_Session_init(info, errhandler, session, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Session_init
 ! 
-! subroutine MPIABI_Unpublish_name(service_name, info, port_name)
+! subroutine MPIABI_Unpublish_name(service_name, info, port_name, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Unpublish_name(service_name, info, port_name)
+!   call MPI_Unpublish_name(service_name, info, port_name, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Unpublish_name
 ! 
@@ -3242,59 +3491,59 @@ end subroutine MPIABI_Is_thread_main
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Put_c
 ! 
-! subroutine MPIABI_Raccumulate(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request)
+! subroutine MPIABI_Raccumulate(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Raccumulate(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request)
+!   call MPI_Raccumulate(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Raccumulate
 ! 
-! subroutine MPIABI_Raccumulate_c(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request)
+! subroutine MPIABI_Raccumulate_c(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Raccumulate_c(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request)
+!   call MPI_Raccumulate_c(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Raccumulate_c
 ! 
-! subroutine MPIABI_Rget(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request)
+! subroutine MPIABI_Rget(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Rget(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request)
+!   call MPI_Rget(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Rget
 ! 
-! subroutine MPIABI_Rget_accumulate(origin_addr, origin_count, origin_datatype, result_addr, result_count, result_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request)
+! subroutine MPIABI_Rget_accumulate(origin_addr, origin_count, origin_datatype, result_addr, result_count, result_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Rget_accumulate(origin_addr, origin_count, origin_datatype, result_addr, result_count, result_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request)
+!   call MPI_Rget_accumulate(origin_addr, origin_count, origin_datatype, result_addr, result_count, result_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Rget_accumulate
 ! 
-! subroutine MPIABI_Rget_accumulate_c(origin_addr, origin_count, origin_datatype, result_addr, result_count, result_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request)
+! subroutine MPIABI_Rget_accumulate_c(origin_addr, origin_count, origin_datatype, result_addr, result_count, result_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Rget_accumulate_c(origin_addr, origin_count, origin_datatype, result_addr, result_count, result_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request)
+!   call MPI_Rget_accumulate_c(origin_addr, origin_count, origin_datatype, result_addr, result_count, result_datatype, target_rank, target_disp, target_count, target_datatype, op, win, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Rget_accumulate_c
 ! 
-! subroutine MPIABI_Rget_c(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request)
+! subroutine MPIABI_Rget_c(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Rget_c(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request)
+!   call MPI_Rget_c(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Rget_c
 ! 
-! subroutine MPIABI_Rput(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request)
+! subroutine MPIABI_Rput(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Rput(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request)
+!   call MPI_Rput(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Rput
 ! 
-! subroutine MPIABI_Rput_c(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request)
+! subroutine MPIABI_Rput_c(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Rput_c(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request)
+!   call MPI_Rput_c(origin_addr, origin_count, origin_datatype, target_rank, target_disp, target_count, target_datatype, win, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Rput_c
 ! 
@@ -3326,10 +3575,10 @@ end subroutine MPIABI_Is_thread_main
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_allocate_shared_c
 ! 
-! subroutine MPIABI_Win_attach(win, base, size)
+! subroutine MPIABI_Win_attach(win, base, size, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_attach(win, base, size)
+!   call MPI_Win_attach(win, base, size, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_attach
 ! 
@@ -3361,10 +3610,10 @@ end subroutine MPIABI_Is_thread_main
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_create_dynamic
 ! 
-! subroutine MPIABI_Win_detach(win, base)
+! subroutine MPIABI_Win_detach(win, base, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_detach(win, base)
+!   call MPI_Win_detach(win, base, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_detach
 ! 
@@ -3410,17 +3659,17 @@ end subroutine MPIABI_Is_thread_main
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_free
 ! 
-! subroutine MPIABI_Win_get_group(win, group)
+! subroutine MPIABI_Win_get_group(win, group, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_get_group(win, group)
+!   call MPI_Win_get_group(win, group, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_get_group
 ! 
-! subroutine MPIABI_Win_get_info(win, info_used)
+! subroutine MPIABI_Win_get_info(win, info_used, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_get_info(win, info_used)
+!   call MPI_Win_get_info(win, info_used, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_get_info
 ! 
@@ -3445,24 +3694,24 @@ end subroutine MPIABI_Is_thread_main
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_post
 ! 
-! subroutine MPIABI_Win_set_info(win, info)
+! subroutine MPIABI_Win_set_info(win, info, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_set_info(win, info)
+!   call MPI_Win_set_info(win, info, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_set_info
 ! 
-! subroutine MPIABI_Win_shared_query(win, rank, size, disp_unit, baseptr)
+! subroutine MPIABI_Win_shared_query(win, rank, size, disp_unit, baseptr, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_shared_query(win, rank, size, disp_unit, baseptr)
+!   call MPI_Win_shared_query(win, rank, size, disp_unit, baseptr, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_shared_query
 ! 
-! subroutine MPIABI_Win_shared_query_c(win, rank, size, disp_unit, baseptr)
+! subroutine MPIABI_Win_shared_query_c(win, rank, size, disp_unit, baseptr, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_shared_query_c(win, rank, size, disp_unit, baseptr)
+!   call MPI_Win_shared_query_c(win, rank, size, disp_unit, baseptr, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_shared_query_c
 ! 
@@ -3480,10 +3729,10 @@ end subroutine MPIABI_Is_thread_main
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_sync
 ! 
-! subroutine MPIABI_Win_test(win, flag)
+! subroutine MPIABI_Win_test(win, flag, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Win_test(win, flag)
+!   call MPI_Win_test(win, flag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Win_test
 ! 
@@ -3510,663 +3759,663 @@ end subroutine MPIABI_Is_thread_main
 ! 
 ! ! A.3.11 External Interfaces C Bindings
 ! 
-! subroutine MPIABI_Grequest_complete(request)
+! subroutine MPIABI_Grequest_complete(request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Grequest_complete(request)
+!   call MPI_Grequest_complete(request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Grequest_complete
 ! 
-! subroutine MPIABI_Grequest_start(query_fn, free_fn, cancel_fn, extra_state, request)
+! subroutine MPIABI_Grequest_start(query_fn, free_fn, cancel_fn, extra_state, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Grequest_start(query_fn, free_fn, cancel_fn, extra_state, request)
+!   call MPI_Grequest_start(query_fn, free_fn, cancel_fn, extra_state, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Grequest_start
 ! 
-! subroutine MPIABI_Status_set_cancelled(status, flag)
+! subroutine MPIABI_Status_set_cancelled(status, flag, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Status_set_cancelled(status, flag)
+!   call MPI_Status_set_cancelled(status, flag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Status_set_cancelled
 ! 
-! subroutine MPIABI_Status_set_elements(status, datatype, count)
+! subroutine MPIABI_Status_set_elements(status, datatype, count, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Status_set_elements(status, datatype, count)
+!   call MPI_Status_set_elements(status, datatype, count, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Status_set_elements
 ! 
-! subroutine MPIABI_Status_set_elements_c(status, datatype, count)
+! subroutine MPIABI_Status_set_elements_c(status, datatype, count, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Status_set_elements_c(status, datatype, count)
+!   call MPI_Status_set_elements_c(status, datatype, count, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Status_set_elements_c
 ! 
-! subroutine MPIABI_Status_set_error(status, err)
+! subroutine MPIABI_Status_set_error(status, err, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Status_set_error(status, err)
+!   call MPI_Status_set_error(status, err, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Status_set_error
 ! 
-! subroutine MPIABI_Status_set_source(status, source)
+! subroutine MPIABI_Status_set_source(status, source, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Status_set_source(status, source)
+!   call MPI_Status_set_source(status, source, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Status_set_source
 ! 
-! subroutine MPIABI_Status_set_tag(status, tag)
+! subroutine MPIABI_Status_set_tag(status, tag, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Status_set_tag(status, tag)
+!   call MPI_Status_set_tag(status, tag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Status_set_tag
 ! 
 ! ! A.3.12 I/O C Bindings
 ! 
-! subroutine MPIABI_File_close(fh)
+! subroutine MPIABI_File_close(fh, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_close(fh)
+!   call MPI_File_close(fh, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_close
 ! 
-! subroutine MPIABI_File_delete(filename, info)
+! subroutine MPIABI_File_delete(filename, info, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_delete(filename, info)
+!   call MPI_File_delete(filename, info, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_delete
 ! 
-! subroutine MPIABI_File_get_amode(fh, amode)
+! subroutine MPIABI_File_get_amode(fh, amode, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_get_amode(fh, amode)
+!   call MPI_File_get_amode(fh, amode, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_get_amode
 ! 
-! subroutine MPIABI_File_get_atomicity(fh, flag)
+! subroutine MPIABI_File_get_atomicity(fh, flag, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_get_atomicity(fh, flag)
+!   call MPI_File_get_atomicity(fh, flag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_get_atomicity
 ! 
-! subroutine MPIABI_File_get_byte_offset(fh, offset, disp)
+! subroutine MPIABI_File_get_byte_offset(fh, offset, disp, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_get_byte_offset(fh, offset, disp)
+!   call MPI_File_get_byte_offset(fh, offset, disp, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_get_byte_offset
 ! 
-! subroutine MPIABI_File_get_group(fh, group)
+! subroutine MPIABI_File_get_group(fh, group, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_get_group(fh, group)
+!   call MPI_File_get_group(fh, group, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_get_group
 ! 
-! subroutine MPIABI_File_get_info(fh, info_used)
+! subroutine MPIABI_File_get_info(fh, info_used, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_get_info(fh, info_used)
+!   call MPI_File_get_info(fh, info_used, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_get_info
 ! 
-! subroutine MPIABI_File_get_position(fh, offset)
+! subroutine MPIABI_File_get_position(fh, offset, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_get_position(fh, offset)
+!   call MPI_File_get_position(fh, offset, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_get_position
 ! 
-! subroutine MPIABI_File_get_position_shared(fh, offset)
+! subroutine MPIABI_File_get_position_shared(fh, offset, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_get_position_shared(fh, offset)
+!   call MPI_File_get_position_shared(fh, offset, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_get_position_shared
 ! 
-! subroutine MPIABI_File_get_size(fh, size)
+! subroutine MPIABI_File_get_size(fh, size, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_get_size(fh, size)
+!   call MPI_File_get_size(fh, size, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_get_size
 ! 
-! subroutine MPIABI_File_get_type_extent(fh, datatype, extent)
+! subroutine MPIABI_File_get_type_extent(fh, datatype, extent, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_get_type_extent(fh, datatype, extent)
+!   call MPI_File_get_type_extent(fh, datatype, extent, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_get_type_extent
 ! 
-! subroutine MPIABI_File_get_type_extent_c(fh, datatype, extent)
+! subroutine MPIABI_File_get_type_extent_c(fh, datatype, extent, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_get_type_extent_c(fh, datatype, extent)
+!   call MPI_File_get_type_extent_c(fh, datatype, extent, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_get_type_extent_c
 ! 
-! subroutine MPIABI_File_get_view(fh, disp, etype, filetype, datarep)
+! subroutine MPIABI_File_get_view(fh, disp, etype, filetype, datarep, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_get_view(fh, disp, etype, filetype, datarep)
+!   call MPI_File_get_view(fh, disp, etype, filetype, datarep, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_get_view
 ! 
-! subroutine MPIABI_File_iread(fh, buf, count, datatype, request)
+! subroutine MPIABI_File_iread(fh, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iread(fh, buf, count, datatype, request)
+!   call MPI_File_iread(fh, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iread
 ! 
-! subroutine MPIABI_File_iread_all(fh, buf, count, datatype, request)
+! subroutine MPIABI_File_iread_all(fh, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iread_all(fh, buf, count, datatype, request)
+!   call MPI_File_iread_all(fh, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iread_all
 ! 
-! subroutine MPIABI_File_iread_all_c(fh, buf, count, datatype, request)
+! subroutine MPIABI_File_iread_all_c(fh, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iread_all_c(fh, buf, count, datatype, request)
+!   call MPI_File_iread_all_c(fh, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iread_all_c
 ! 
-! subroutine MPIABI_File_iread_at(fh, offset, buf, count, datatype, request)
+! subroutine MPIABI_File_iread_at(fh, offset, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iread_at(fh, offset, buf, count, datatype, request)
+!   call MPI_File_iread_at(fh, offset, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iread_at
 ! 
-! subroutine MPIABI_File_iread_at_all(fh, offset, buf, count, datatype, request)
+! subroutine MPIABI_File_iread_at_all(fh, offset, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iread_at_all(fh, offset, buf, count, datatype, request)
+!   call MPI_File_iread_at_all(fh, offset, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iread_at_all
 ! 
-! subroutine MPIABI_File_iread_at_all_c(fh, offset, buf, count, datatype, request)
+! subroutine MPIABI_File_iread_at_all_c(fh, offset, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iread_at_all_c(fh, offset, buf, count, datatype, request)
+!   call MPI_File_iread_at_all_c(fh, offset, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iread_at_all_c
 ! 
-! subroutine MPIABI_File_iread_at_c(fh, offset, buf, count, datatype, request)
+! subroutine MPIABI_File_iread_at_c(fh, offset, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iread_at_c(fh, offset, buf, count, datatype, request)
+!   call MPI_File_iread_at_c(fh, offset, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iread_at_c
 ! 
-! subroutine MPIABI_File_iread_c(fh, buf, count, datatype, request)
+! subroutine MPIABI_File_iread_c(fh, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iread_c(fh, buf, count, datatype, request)
+!   call MPI_File_iread_c(fh, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iread_c
 ! 
-! subroutine MPIABI_File_iread_shared(fh, buf, count, datatype, request)
+! subroutine MPIABI_File_iread_shared(fh, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iread_shared(fh, buf, count, datatype, request)
+!   call MPI_File_iread_shared(fh, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iread_shared
 ! 
-! subroutine MPIABI_File_iread_shared_c(fh, buf, count, datatype, request)
+! subroutine MPIABI_File_iread_shared_c(fh, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iread_shared_c(fh, buf, count, datatype, request)
+!   call MPI_File_iread_shared_c(fh, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iread_shared_c
 ! 
-! subroutine MPIABI_File_iwrite(fh, buf, count, datatype, request)
+! subroutine MPIABI_File_iwrite(fh, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iwrite(fh, buf, count, datatype, request)
+!   call MPI_File_iwrite(fh, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iwrite
 ! 
-! subroutine MPIABI_File_iwrite_all(fh, buf, count, datatype, request)
+! subroutine MPIABI_File_iwrite_all(fh, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iwrite_all(fh, buf, count, datatype, request)
+!   call MPI_File_iwrite_all(fh, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iwrite_all
 ! 
-! subroutine MPIABI_File_iwrite_all_c(fh, buf, count, datatype, request)
+! subroutine MPIABI_File_iwrite_all_c(fh, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iwrite_all_c(fh, buf, count, datatype, request)
+!   call MPI_File_iwrite_all_c(fh, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iwrite_all_c
 ! 
-! subroutine MPIABI_File_iwrite_at(fh, offset, buf, count, datatype, request)
+! subroutine MPIABI_File_iwrite_at(fh, offset, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iwrite_at(fh, offset, buf, count, datatype, request)
+!   call MPI_File_iwrite_at(fh, offset, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iwrite_at
 ! 
-! subroutine MPIABI_File_iwrite_at_all(fh, offset, buf, count, datatype, request)
+! subroutine MPIABI_File_iwrite_at_all(fh, offset, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iwrite_at_all(fh, offset, buf, count, datatype, request)
+!   call MPI_File_iwrite_at_all(fh, offset, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iwrite_at_all
 ! 
-! subroutine MPIABI_File_iwrite_at_all_c(fh, offset, buf, count, datatype, request)
+! subroutine MPIABI_File_iwrite_at_all_c(fh, offset, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iwrite_at_all_c(fh, offset, buf, count, datatype, request)
+!   call MPI_File_iwrite_at_all_c(fh, offset, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iwrite_at_all_c
 ! 
-! subroutine MPIABI_File_iwrite_at_c(fh, offset, buf, count, datatype, request)
+! subroutine MPIABI_File_iwrite_at_c(fh, offset, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iwrite_at_c(fh, offset, buf, count, datatype, request)
+!   call MPI_File_iwrite_at_c(fh, offset, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iwrite_at_c
 ! 
-! subroutine MPIABI_File_iwrite_c(fh, buf, count, datatype, request)
+! subroutine MPIABI_File_iwrite_c(fh, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iwrite_c(fh, buf, count, datatype, request)
+!   call MPI_File_iwrite_c(fh, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iwrite_c
 ! 
-! subroutine MPIABI_File_iwrite_shared(fh, buf, count, datatype, request)
+! subroutine MPIABI_File_iwrite_shared(fh, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iwrite_shared(fh, buf, count, datatype, request)
+!   call MPI_File_iwrite_shared(fh, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iwrite_shared
 ! 
-! subroutine MPIABI_File_iwrite_shared_c(fh, buf, count, datatype, request)
+! subroutine MPIABI_File_iwrite_shared_c(fh, buf, count, datatype, request, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_iwrite_shared_c(fh, buf, count, datatype, request)
+!   call MPI_File_iwrite_shared_c(fh, buf, count, datatype, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_iwrite_shared_c
 ! 
-! subroutine MPIABI_File_open(comm, filename, amode, info, fh)
+! subroutine MPIABI_File_open(comm, filename, amode, info, fh, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_open(comm, filename, amode, info, fh)
+!   call MPI_File_open(comm, filename, amode, info, fh, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_open
 ! 
-! subroutine MPIABI_File_preallocate(fh, size)
+! subroutine MPIABI_File_preallocate(fh, size, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_preallocate(fh, size)
+!   call MPI_File_preallocate(fh, size, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_preallocate
 ! 
-! subroutine MPIABI_File_read(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_read(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read(fh, buf, count, datatype, status)
+!   call MPI_File_read(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read
 ! 
-! subroutine MPIABI_File_read_all(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_read_all(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_all(fh, buf, count, datatype, status)
+!   call MPI_File_read_all(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_all
 ! 
-! subroutine MPIABI_File_read_all_begin(fh, buf, count, datatype)
+! subroutine MPIABI_File_read_all_begin(fh, buf, count, datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_all_begin(fh, buf, count, datatype)
+!   call MPI_File_read_all_begin(fh, buf, count, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_all_begin
 ! 
-! subroutine MPIABI_File_read_all_begin_c(fh, buf, count, datatype)
+! subroutine MPIABI_File_read_all_begin_c(fh, buf, count, datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_all_begin_c(fh, buf, count, datatype)
+!   call MPI_File_read_all_begin_c(fh, buf, count, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_all_begin_c
 ! 
-! subroutine MPIABI_File_read_all_c(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_read_all_c(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_all_c(fh, buf, count, datatype, status)
+!   call MPI_File_read_all_c(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_all_c
 ! 
-! subroutine MPIABI_File_read_all_end(fh, buf, status)
+! subroutine MPIABI_File_read_all_end(fh, buf, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_all_end(fh, buf, status)
+!   call MPI_File_read_all_end(fh, buf, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_all_end
 ! 
-! subroutine MPIABI_File_read_at(fh, offset, buf, count, datatype, status)
+! subroutine MPIABI_File_read_at(fh, offset, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_at(fh, offset, buf, count, datatype, status)
+!   call MPI_File_read_at(fh, offset, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_at
 ! 
-! subroutine MPIABI_File_read_at_all(fh, offset, buf, count, datatype, status)
+! subroutine MPIABI_File_read_at_all(fh, offset, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_at_all(fh, offset, buf, count, datatype, status)
+!   call MPI_File_read_at_all(fh, offset, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_at_all
 ! 
-! subroutine MPIABI_File_read_at_all_begin(fh, offset, buf, count, datatype)
+! subroutine MPIABI_File_read_at_all_begin(fh, offset, buf, count, datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_at_all_begin(fh, offset, buf, count, datatype)
+!   call MPI_File_read_at_all_begin(fh, offset, buf, count, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_at_all_begin
 ! 
-! subroutine MPIABI_File_read_at_all_begin_c(fh, offset, buf, count, datatype)
+! subroutine MPIABI_File_read_at_all_begin_c(fh, offset, buf, count, datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_at_all_begin_c(fh, offset, buf, count, datatype)
+!   call MPI_File_read_at_all_begin_c(fh, offset, buf, count, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_at_all_begin_c
 ! 
-! subroutine MPIABI_File_read_at_all_c(fh, offset, buf, count, datatype, status)
+! subroutine MPIABI_File_read_at_all_c(fh, offset, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_at_all_c(fh, offset, buf, count, datatype, status)
+!   call MPI_File_read_at_all_c(fh, offset, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_at_all_c
 ! 
-! subroutine MPIABI_File_read_at_all_end(fh, buf, status)
+! subroutine MPIABI_File_read_at_all_end(fh, buf, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_at_all_end(fh, buf, status)
+!   call MPI_File_read_at_all_end(fh, buf, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_at_all_end
 ! 
-! subroutine MPIABI_File_read_at_c(fh, offset, buf, count, datatype, status)
+! subroutine MPIABI_File_read_at_c(fh, offset, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_at_c(fh, offset, buf, count, datatype, status)
+!   call MPI_File_read_at_c(fh, offset, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_at_c
 ! 
-! subroutine MPIABI_File_read_c(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_read_c(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_c(fh, buf, count, datatype, status)
+!   call MPI_File_read_c(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_c
 ! 
-! subroutine MPIABI_File_read_ordered(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_read_ordered(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_ordered(fh, buf, count, datatype, status)
+!   call MPI_File_read_ordered(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_ordered
 ! 
-! subroutine MPIABI_File_read_ordered_begin(fh, buf, count, datatype)
+! subroutine MPIABI_File_read_ordered_begin(fh, buf, count, datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_ordered_begin(fh, buf, count, datatype)
+!   call MPI_File_read_ordered_begin(fh, buf, count, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_ordered_begin
 ! 
-! subroutine MPIABI_File_read_ordered_begin_c(fh, buf, count, datatype)
+! subroutine MPIABI_File_read_ordered_begin_c(fh, buf, count, datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_ordered_begin_c(fh, buf, count, datatype)
+!   call MPI_File_read_ordered_begin_c(fh, buf, count, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_ordered_begin_c
 ! 
-! subroutine MPIABI_File_read_ordered_c(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_read_ordered_c(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_ordered_c(fh, buf, count, datatype, status)
+!   call MPI_File_read_ordered_c(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_ordered_c
 ! 
-! subroutine MPIABI_File_read_ordered_end(fh, buf, status)
+! subroutine MPIABI_File_read_ordered_end(fh, buf, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_ordered_end(fh, buf, status)
+!   call MPI_File_read_ordered_end(fh, buf, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_ordered_end
 ! 
-! subroutine MPIABI_File_read_shared(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_read_shared(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_shared(fh, buf, count, datatype, status)
+!   call MPI_File_read_shared(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_shared
 ! 
-! subroutine MPIABI_File_read_shared_c(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_read_shared_c(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_read_shared_c(fh, buf, count, datatype, status)
+!   call MPI_File_read_shared_c(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_read_shared_c
 ! 
-! subroutine MPIABI_File_seek(fh, offset, whence)
+! subroutine MPIABI_File_seek(fh, offset, whence, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_seek(fh, offset, whence)
+!   call MPI_File_seek(fh, offset, whence, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_seek
 ! 
-! subroutine MPIABI_File_seek_shared(fh, offset, whence)
+! subroutine MPIABI_File_seek_shared(fh, offset, whence, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_seek_shared(fh, offset, whence)
+!   call MPI_File_seek_shared(fh, offset, whence, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_seek_shared
 ! 
-! subroutine MPIABI_File_set_atomicity(fh, flag)
+! subroutine MPIABI_File_set_atomicity(fh, flag, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_set_atomicity(fh, flag)
+!   call MPI_File_set_atomicity(fh, flag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_set_atomicity
 ! 
-! subroutine MPIABI_File_set_info(fh, info)
+! subroutine MPIABI_File_set_info(fh, info, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_set_info(fh, info)
+!   call MPI_File_set_info(fh, info, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_set_info
 ! 
-! subroutine MPIABI_File_set_size(fh, size)
+! subroutine MPIABI_File_set_size(fh, size, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_set_size(fh, size)
+!   call MPI_File_set_size(fh, size, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_set_size
 ! 
-! subroutine MPIABI_File_set_view(fh, disp, etype, filetype, datarep, info)
+! subroutine MPIABI_File_set_view(fh, disp, etype, filetype, datarep, info, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_set_view(fh, disp, etype, filetype, datarep, info)
+!   call MPI_File_set_view(fh, disp, etype, filetype, datarep, info, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_set_view
 ! 
-! subroutine MPIABI_File_sync(fh)
+! subroutine MPIABI_File_sync(fh, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_sync(fh)
+!   call MPI_File_sync(fh, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_sync
 ! 
-! subroutine MPIABI_File_write(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_write(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write(fh, buf, count, datatype, status)
+!   call MPI_File_write(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write
 ! 
-! subroutine MPIABI_File_write_all(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_write_all(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_all(fh, buf, count, datatype, status)
+!   call MPI_File_write_all(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_all
 ! 
-! subroutine MPIABI_File_write_all_begin(fh, buf, count, datatype)
+! subroutine MPIABI_File_write_all_begin(fh, buf, count, datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_all_begin(fh, buf, count, datatype)
+!   call MPI_File_write_all_begin(fh, buf, count, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_all_begin
 ! 
-! subroutine MPIABI_File_write_all_begin_c(fh, buf, count, datatype)
+! subroutine MPIABI_File_write_all_begin_c(fh, buf, count, datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_all_begin_c(fh, buf, count, datatype)
+!   call MPI_File_write_all_begin_c(fh, buf, count, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_all_begin_c
 ! 
-! subroutine MPIABI_File_write_all_c(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_write_all_c(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_all_c(fh, buf, count, datatype, status)
+!   call MPI_File_write_all_c(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_all_c
 ! 
-! subroutine MPIABI_File_write_all_end(fh, buf, status)
+! subroutine MPIABI_File_write_all_end(fh, buf, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_all_end(fh, buf, status)
+!   call MPI_File_write_all_end(fh, buf, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_all_end
 ! 
-! subroutine MPIABI_File_write_at(fh, offset, buf, count, datatype, status)
+! subroutine MPIABI_File_write_at(fh, offset, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_at(fh, offset, buf, count, datatype, status)
+!   call MPI_File_write_at(fh, offset, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_at
 ! 
-! subroutine MPIABI_File_write_at_all(fh, offset, buf, count, datatype, status)
+! subroutine MPIABI_File_write_at_all(fh, offset, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_at_all(fh, offset, buf, count, datatype, status)
+!   call MPI_File_write_at_all(fh, offset, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_at_all
 ! 
-! subroutine MPIABI_File_write_at_all_begin(fh, offset, buf, count, datatype)
+! subroutine MPIABI_File_write_at_all_begin(fh, offset, buf, count, datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_at_all_begin(fh, offset, buf, count, datatype)
+!   call MPI_File_write_at_all_begin(fh, offset, buf, count, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_at_all_begin
 ! 
-! subroutine MPIABI_File_write_at_all_begin_c(fh, offset, buf, count, datatype)
+! subroutine MPIABI_File_write_at_all_begin_c(fh, offset, buf, count, datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_at_all_begin_c(fh, offset, buf, count, datatype)
+!   call MPI_File_write_at_all_begin_c(fh, offset, buf, count, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_at_all_begin_c
 ! 
-! subroutine MPIABI_File_write_at_all_c(fh, offset, buf, count, datatype, status)
+! subroutine MPIABI_File_write_at_all_c(fh, offset, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_at_all_c(fh, offset, buf, count, datatype, status)
+!   call MPI_File_write_at_all_c(fh, offset, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_at_all_c
 ! 
-! subroutine MPIABI_File_write_at_all_end(fh, buf, status)
+! subroutine MPIABI_File_write_at_all_end(fh, buf, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_at_all_end(fh, buf, status)
+!   call MPI_File_write_at_all_end(fh, buf, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_at_all_end
 ! 
-! subroutine MPIABI_File_write_at_c(fh, offset, buf, count, datatype, status)
+! subroutine MPIABI_File_write_at_c(fh, offset, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_at_c(fh, offset, buf, count, datatype, status)
+!   call MPI_File_write_at_c(fh, offset, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_at_c
 ! 
-! subroutine MPIABI_File_write_c(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_write_c(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_c(fh, buf, count, datatype, status)
+!   call MPI_File_write_c(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_c
 ! 
-! subroutine MPIABI_File_write_ordered(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_write_ordered(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_ordered(fh, buf, count, datatype, status)
+!   call MPI_File_write_ordered(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_ordered
 ! 
-! subroutine MPIABI_File_write_ordered_begin(fh, buf, count, datatype)
+! subroutine MPIABI_File_write_ordered_begin(fh, buf, count, datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_ordered_begin(fh, buf, count, datatype)
+!   call MPI_File_write_ordered_begin(fh, buf, count, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_ordered_begin
 ! 
-! subroutine MPIABI_File_write_ordered_begin_c(fh, buf, count, datatype)
+! subroutine MPIABI_File_write_ordered_begin_c(fh, buf, count, datatype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_ordered_begin_c(fh, buf, count, datatype)
+!   call MPI_File_write_ordered_begin_c(fh, buf, count, datatype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_ordered_begin_c
 ! 
-! subroutine MPIABI_File_write_ordered_c(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_write_ordered_c(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_ordered_c(fh, buf, count, datatype, status)
+!   call MPI_File_write_ordered_c(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_ordered_c
 ! 
-! subroutine MPIABI_File_write_ordered_end(fh, buf, status)
+! subroutine MPIABI_File_write_ordered_end(fh, buf, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_ordered_end(fh, buf, status)
+!   call MPI_File_write_ordered_end(fh, buf, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_ordered_end
 ! 
-! subroutine MPIABI_File_write_shared(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_write_shared(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_shared(fh, buf, count, datatype, status)
+!   call MPI_File_write_shared(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_shared
 ! 
-! subroutine MPIABI_File_write_shared_c(fh, buf, count, datatype, status)
+! subroutine MPIABI_File_write_shared_c(fh, buf, count, datatype, status, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_File_write_shared_c(fh, buf, count, datatype, status)
+!   call MPI_File_write_shared_c(fh, buf, count, datatype, status, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_File_write_shared_c
 ! 
-! subroutine MPIABI_Register_datarep(datarep, read_conversion_fn, write_conversion_fn, dtype_file_extent_fn, extra_state)
+! subroutine MPIABI_Register_datarep(datarep, read_conversion_fn, write_conversion_fn, dtype_file_extent_fn, extra_state, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Register_datarep(datarep, read_conversion_fn, write_conversion_fn, dtype_file_extent_fn, extra_state)
+!   call MPI_Register_datarep(datarep, read_conversion_fn, write_conversion_fn, dtype_file_extent_fn, extra_state, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Register_datarep
 ! 
-! subroutine MPIABI_Register_datarep_c(datarep, read_conversion_fn, write_conversion_fn, dtype_file_extent_fn, extra_state)
+! subroutine MPIABI_Register_datarep_c(datarep, read_conversion_fn, write_conversion_fn, dtype_file_extent_fn, extra_state, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Register_datarep_c(datarep, read_conversion_fn, write_conversion_fn, dtype_file_extent_fn, extra_state)
+!   call MPI_Register_datarep_c(datarep, read_conversion_fn, write_conversion_fn, dtype_file_extent_fn, extra_state, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Register_datarep_c
 ! 
@@ -4174,146 +4423,146 @@ end subroutine MPIABI_Is_thread_main
 ! 
 ! ! A.3.14 Tools / Profiling Interface C Bindings
 ! 
-! subroutine MPIABI_Pcontrol(level)
+! subroutine MPIABI_Pcontrol(level, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Pcontrol(level)
+!   call MPI_Pcontrol(level, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Pcontrol
 ! 
 ! ! A.3.16 Deprecated C Bindings
 ! 
-! subroutine MPIABI_Attr_delete(comm, keyval)
+! subroutine MPIABI_Attr_delete(comm, keyval, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Attr_delete(comm, keyval)
+!   call MPI_Attr_delete(comm, keyval, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Attr_delete
 ! 
-! subroutine MPIABI_Attr_get(comm, keyval, attribute_val, flag)
+! subroutine MPIABI_Attr_get(comm, keyval, attribute_val, flag, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Attr_get(comm, keyval, attribute_val, flag)
+!   call MPI_Attr_get(comm, keyval, attribute_val, flag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Attr_get
 ! 
-! subroutine MPIABI_Attr_put(comm, keyval, attribute_val)
+! subroutine MPIABI_Attr_put(comm, keyval, attribute_val, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Attr_put(comm, keyval, attribute_val)
+!   call MPI_Attr_put(comm, keyval, attribute_val, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Attr_put
 ! 
-! subroutine MPIABI_Get_elements_x(status, datatype, count)
+! subroutine MPIABI_Get_elements_x(status, datatype, count, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Get_elements_x(status, datatype, count)
+!   call MPI_Get_elements_x(status, datatype, count, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Get_elements_x
 ! 
-! subroutine MPIABI_Info_get(info, key, valuelen, value, flag)
+! subroutine MPIABI_Info_get(info, key, valuelen, value, flag, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Info_get(info, key, valuelen, value, flag)
+!   call MPI_Info_get(info, key, valuelen, value, flag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Info_get
 ! 
-! subroutine MPIABI_Info_get_valuelen(info, key, valuelen, flag)
+! subroutine MPIABI_Info_get_valuelen(info, key, valuelen, flag, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Info_get_valuelen(info, key, valuelen, flag)
+!   call MPI_Info_get_valuelen(info, key, valuelen, flag, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Info_get_valuelen
 ! 
-! subroutine MPIABI_Keyval_create(copy_fn, delete_fn, keyval, extra_state)
+! subroutine MPIABI_Keyval_create(copy_fn, delete_fn, keyval, extra_state, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Keyval_create(copy_fn, delete_fn, keyval, extra_state)
+!   call MPI_Keyval_create(copy_fn, delete_fn, keyval, extra_state, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Keyval_create
 ! 
-! subroutine MPIABI_Keyval_free(keyval)
+! subroutine MPIABI_Keyval_free(keyval, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Keyval_free(keyval)
+!   call MPI_Keyval_free(keyval, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Keyval_free
 ! 
-! subroutine MPIABI_Status_set_elements_x(status, datatype, count)
+! subroutine MPIABI_Status_set_elements_x(status, datatype, count, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Status_set_elements_x(status, datatype, count)
+!   call MPI_Status_set_elements_x(status, datatype, count, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Status_set_elements_x
 ! 
-! subroutine MPIABI_Type_get_extent_x(datatype, lb, extent)
+! subroutine MPIABI_Type_get_extent_x(datatype, lb, extent, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_get_extent_x(datatype, lb, extent)
+!   call MPI_Type_get_extent_x(datatype, lb, extent, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_get_extent_x
 ! 
-! subroutine MPIABI_Type_get_true_extent_x(datatype, true_lb, true_extent)
+! subroutine MPIABI_Type_get_true_extent_x(datatype, true_lb, true_extent, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_get_true_extent_x(datatype, true_lb, true_extent)
+!   call MPI_Type_get_true_extent_x(datatype, true_lb, true_extent, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_get_true_extent_x
 ! 
-! subroutine MPIABI_Type_size_x(datatype, size)
+! subroutine MPIABI_Type_size_x(datatype, size, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_size_x(datatype, size)
+!   call MPI_Type_size_x(datatype, size, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_size_x
 ! 
 ! ! Removed C Bindings
 ! 
-! subroutine MPIABI_Address(location, address)
+! subroutine MPIABI_Address(location, address, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Address(location, address)
+!   call MPI_Address(location, address, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Address
 ! 
-! subroutine MPIABI_Type_hindexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype)
+! subroutine MPIABI_Type_hindexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_hindexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype)
+!   call MPI_Type_hindexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_hindexed
 ! 
-! subroutine MPIABI_Type_hvector(count, blocklength, stride, oldtype, newtype)
+! subroutine MPIABI_Type_hvector(count, blocklength, stride, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_hvector(count, blocklength, stride, oldtype, newtype)
+!   call MPI_Type_hvector(count, blocklength, stride, oldtype, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_hvector
 ! 
-! subroutine MPIABI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype)
+! subroutine MPIABI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype)
+!   call MPI_Type_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_struct
 ! 
-! subroutine MPIABI_Type_extent(datatype, extent)
+! subroutine MPIABI_Type_extent(datatype, extent, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_extent(datatype, extent)
+!   call MPI_Type_extent(datatype, extent, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_extent
 ! 
-! subroutine MPIABI_Type_lb(datatype, displacement)
+! subroutine MPIABI_Type_lb(datatype, displacement, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_lb(datatype, displacement)
+!   call MPI_Type_lb(datatype, displacement, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_lb
 ! 
-! subroutine MPIABI_Type_ub(datatype, displacement)
+! subroutine MPIABI_Type_ub(datatype, displacement, ierror)
 !   use mpiwrapper
 !   implicit none
-!   call MPI_Type_ub(datatype, displacement)
+!   call MPI_Type_ub(datatype, displacement, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Type_ub

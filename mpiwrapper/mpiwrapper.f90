@@ -10,12 +10,16 @@ contains
 
   subroutine assert(cond)
     logical, intent(in) :: cond
-    if (.not.cond) stop
+    integer ierror
+    if (cond) return
+    write(0, '("Assertion failure")')
+    call MPI_Abort(MPI_COMM_SELF, 1, ierror)
+    stop
   end subroutine assert
 
   ! Translate (non-handle) integers
 
-  integer function mpi2abi_errorcode(ierror)
+  elemental integer function mpi2abi_errorcode(ierror)
     integer, intent(in) :: ierror
     ! Fast path
     if (ierror == MPI_SUCCESS) then
@@ -42,7 +46,20 @@ contains
     end select
   end function abi2mpi_proc
 
-  integer function abi2mpi_root(root)
+  integer function mpi2abi_proc(proc)
+    integer, intent(in) :: proc
+    select case (proc)
+    case (MPI_ANY_SOURCE)
+       mpi2abi_proc = MPIABI_ANY_SOURCE
+    case (MPI_PROC_NULL)
+       mpi2abi_proc = MPIABI_PROC_NULL
+    case default
+       call assert(proc >= 0)
+       mpi2abi_proc = proc
+    end select
+  end function mpi2abi_proc
+
+  elemental integer function abi2mpi_root(root)
     integer, intent(in) :: root
     select case (root)
     case (MPIABI_ROOT)
@@ -52,7 +69,7 @@ contains
     end select
   end function abi2mpi_root
 
-  integer function abi2mpi_source(source)
+  elemental integer function abi2mpi_source(source)
     integer, intent(in) :: source
     select case (source)
     case (MPIABI_ANY_SOURCE)
@@ -62,7 +79,7 @@ contains
     end select
   end function abi2mpi_source
 
-  integer function abi2mpi_tag(tag)
+  elemental integer function abi2mpi_tag(tag)
     integer, intent(in) ::tag
     select case (tag)
     case (MPIABI_ANY_TAG)
@@ -71,6 +88,16 @@ contains
        abi2mpi_tag = tag
     end select
   end function abi2mpi_tag
+
+  elemental integer function mpi2abi_tag(tag)
+    integer, intent(in) ::tag
+    select case (tag)
+    case (MPI_ANY_TAG)
+       mpi2abi_tag = MPIABI_ANY_TAG
+    case default
+       mpi2abi_tag = tag
+    end select
+  end function mpi2abi_tag
 
   integer function abi2mpi_threadlevel(threadlevel)
     integer, intent(in) ::threadlevel
@@ -110,7 +137,7 @@ contains
 
   ! Translate handles
 
-  integer function abi2mpi_comm(comm)
+  elemental integer function abi2mpi_comm(comm)
     integer, intent(in) :: comm
     select case (comm)
     case (MPIABI_COMM_NULL)
@@ -124,7 +151,7 @@ contains
     end select
   end function abi2mpi_comm
 
-  integer function abi2mpi_datatype(datatype)
+  elemental integer function abi2mpi_datatype(datatype)
     integer, intent(in) :: datatype
     select case (datatype)
     case (MPIABI_DATATYPE_NULL)
@@ -137,7 +164,7 @@ contains
     end select
   end function abi2mpi_datatype
 
-  integer function abi2mpi_info(info)
+  elemental integer function abi2mpi_info(info)
     integer, intent(in) :: info
     select case (info)
     case (MPIABI_INFO_ENV)
@@ -149,7 +176,7 @@ contains
     end select
   end function abi2mpi_info
 
-  integer function abi2mpi_message(message)
+  elemental integer function abi2mpi_message(message)
     integer, intent(in) :: message
     select case (message)
     case (MPIABI_MESSAGE_NO_PROC)
@@ -161,7 +188,7 @@ contains
     end select
   end function abi2mpi_message
 
-  integer function abi2mpi_request(request)
+  elemental integer function abi2mpi_request(request)
     integer, intent(in) :: request
     if (request == MPI_REQUEST_NULL) then
        abi2mpi_request = MPIABI_REQUEST_NULL
@@ -170,7 +197,7 @@ contains
     abi2mpi_request = request
   end function abi2mpi_request
 
-  integer function mpi2abi_request(request)
+  elemental integer function mpi2abi_request(request)
     integer, intent(in) :: request
     if (request == MPIABI_REQUEST_NULL) then
        mpi2abi_request = MPI_REQUEST_NULL
@@ -178,6 +205,16 @@ contains
     end if
     mpi2abi_request = request
   end function mpi2abi_request
+
+  elemental integer function abi2mpi_session(session)
+    integer, intent(in) :: session
+    select case (session)
+    case (MPIABI_SESSION_NULL)
+       abi2mpi_session = MPI_SESSION_NULL
+    case default
+       abi2mpi_session = session
+    end select
+  end function abi2mpi_session
 
   ! Translate statuses
 
