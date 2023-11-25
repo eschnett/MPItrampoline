@@ -144,8 +144,8 @@ add_library(mpiwrapper
   mpiwrapper.h
   mpiwrapper.c
   mpiwrapper-mpi3.c
-  mpiwrapper.f90
-  mpiwrapper_functions.f90
+  mpiwrapper.F90
+  mpiwrapper_functions.F90
 )
 target_compile_options(mpiwrapper PRIVATE -Wall -Wextra -fdiagnostics-show-option)
 target_compile_options(mpiwrapper PUBLIC -fcray-pointer)
