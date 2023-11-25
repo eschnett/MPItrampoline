@@ -105,6 +105,8 @@ extern void (*mpiabi_psend_init_ptr)(const void *buf, MPIABI_Fint *partitions, M
 
 // A.3.3 Datatypes C Bindings
 
+extern MPI_Aint (*mpiabi_aint_add_ptr)(MPIABI_Aint *base, MPIABI_Aint *disp);
+extern MPI_Aint (*mpiabi_aint_diff_ptr)(MPIABI_Aint *addr1, MPIABI_Aint *addr2);
 extern void (*mpiabi_get_address_ptr)(const void *location, MPIABI_Aint *address, MPIABI_Fint *ierror);
 extern void (*mpiabi_get_elements_ptr)(const MPIABI_Fint *status, MPIABI_Fint *datatype, MPIABI_Fint *count, MPIABI_Fint *ierror);
 // extern void (*mpiabi_get_elements_c_ptr)(const MPIABI_Fint *status, MPIABI_Fint *datatype, MPIABI_Count *count, MPIABI_Fint *ierror);

@@ -100,20 +100,22 @@ mpiabi_waitsome_ptr = get_symbol(handle, "mpiabi_waitsome_");
 
 // A.3.3 Datatypes C Bindings
 
-//TODO mpiabi_get_address_ptr = get_symbol(handle, "mpiabi_get_address_");
-//TODO mpiabi_get_elements_ptr = get_symbol(handle, "mpiabi_get_elements_");
-//TODO // mpiabi_get_elements_c_ptr = get_symbol(handle, "mpiabi_get_elements_c_");
-//TODO mpiabi_pack_ptr = get_symbol(handle, "mpiabi_pack_");
-//TODO // mpiabi_pack_c_ptr = get_symbol(handle, "mpiabi_pack_c_");
-//TODO mpiabi_pack_external_ptr = get_symbol(handle, "mpiabi_pack_external_");
-//TODO // mpiabi_pack_external_c_ptr = get_symbol(handle, "mpiabi_pack_external_c_");
-//TODO mpiabi_pack_external_size_ptr = get_symbol(handle, "mpiabi_pack_external_size_");
-//TODO // mpiabi_pack_external_size_c_ptr = get_symbol(handle, "mpiabi_pack_external_size_c_");
-//TODO mpiabi_pack_size_ptr = get_symbol(handle, "mpiabi_pack_size_");
-//TODO // mpiabi_pack_size_c_ptr = get_symbol(handle, "mpiabi_pack_size_c_");
-//TODO mpiabi_type_commit_ptr = get_symbol(handle, "mpiabi_type_commit_");
-//TODO mpiabi_type_contiguous_ptr = get_symbol(handle, "mpiabi_type_contiguous_");
-//TODO // mpiabi_type_contiguous_c_ptr =    get_symbol(handle, "mpiabi_type_contiguous_c_");
+mpiabi_aint_add_ptr = get_symbol(handle, "mpiabi_aint_add_");
+mpiabi_aint_diff_ptr = get_symbol(handle, "mpiabi_aint_diff_");
+mpiabi_get_address_ptr = get_symbol(handle, "mpiabi_get_address_");
+mpiabi_get_elements_ptr = get_symbol(handle, "mpiabi_get_elements_");
+// mpiabi_get_elements_c_ptr = get_symbol(handle, "mpiabi_get_elements_c_");
+mpiabi_pack_ptr = get_symbol(handle, "mpiabi_pack_");
+// mpiabi_pack_c_ptr = get_symbol(handle, "mpiabi_pack_c_");
+mpiabi_pack_external_ptr = get_symbol(handle, "mpiabi_pack_external_");
+// mpiabi_pack_external_c_ptr = get_symbol(handle, "mpiabi_pack_external_c_");
+mpiabi_pack_external_size_ptr = get_symbol(handle, "mpiabi_pack_external_size_");
+// mpiabi_pack_external_size_c_ptr = get_symbol(handle, "mpiabi_pack_external_size_c_");
+mpiabi_pack_size_ptr = get_symbol(handle, "mpiabi_pack_size_");
+// mpiabi_pack_size_c_ptr = get_symbol(handle, "mpiabi_pack_size_c_");
+mpiabi_type_commit_ptr = get_symbol(handle, "mpiabi_type_commit_");
+mpiabi_type_contiguous_ptr = get_symbol(handle, "mpiabi_type_contiguous_");
+// mpiabi_type_contiguous_c_ptr =    get_symbol(handle, "mpiabi_type_contiguous_c_");
 //TODO mpiabi_type_create_darray_ptr =    get_symbol(handle, "mpiabi_type_create_darray_");
 //TODO // mpiabi_type_create_darray_c_ptr =    get_symbol(handle, "mpiabi_type_create_darray_c_");
 //TODO mpiabi_type_create_hindexed_ptr =    get_symbol(handle, "mpiabi_type_create_hindexed_");

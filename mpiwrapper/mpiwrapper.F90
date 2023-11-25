@@ -12,6 +12,9 @@ module mpiwrapper
   include "mpif.h"
   include "mpiabif_constants.h"
   public
+
+  integer, parameter :: MAX_RESERVED_HANDLE = int(b'111111111111')
+
 contains
 
   ! Error handling
@@ -24,6 +27,27 @@ contains
     call MPI_Abort(MPI_COMM_SELF, 1, ierror)
     stop
   end subroutine assert
+
+  ! Conversions between MPI and MPIABI
+
+  logical function handle_is_reserved(abi_handle)
+    integer, intent(in) :: abi_handle
+    handle_is_reserved = abi_handle <= MAX_RESERVED_HANDLE
+  end function handle_is_reserved
+  integer function abi2mpi_unreserved(abi_handle)
+    integer, intent(in) :: abi_handle
+    integer mpi_handle
+    call assert(.not.handle_is_reserved(abi_handle))
+    mpi_handle = abi_handle - (MAX_RESERVED_HANDLE + 1)
+    abi2mpi_unreserved = mpi_handle
+  end function abi2mpi_unreserved
+  integer function mpi2abi_unreserved(mpi_handle)
+    integer, intent(in) :: mpi_handle
+    integer abi_handle
+    abi_handle = mpi_handle + (MAX_RESERVED_HANDLE + 1)
+    call assert(.not.handle_is_reserved(abi_handle))
+    mpi2abi_unreserved = abi_handle
+  end function mpi2abi_unreserved
 
   ! Translate (non-handle) integers
 
@@ -159,18 +183,435 @@ contains
     end select
   end function abi2mpi_comm
 
-  elemental integer function abi2mpi_datatype(datatype)
+  integer function abi2mpi_datatype(datatype)
     integer, intent(in) :: datatype
+    if (.not.handle_is_reserved(datatype)) then
+       abi2mpi_datatype = abi2mpi_unreserved(datatype)
+       return
+    end if
     select case (datatype)
     case (MPIABI_DATATYPE_NULL)
        abi2mpi_datatype = MPI_DATATYPE_NULL
+       ! [C types]
+    case (MPIABI_CHAR)
+       abi2mpi_datatype = MPI_CHAR
+    case (MPIABI_SHORT)
+       abi2mpi_datatype = MPI_SHORT
+    case (MPIABI_INT)
+       abi2mpi_datatype = MPI_INT
+    case (MPIABI_LONG)
+       abi2mpi_datatype = MPI_LONG
+    case (MPIABI_LONG_LONG_INT)
+       abi2mpi_datatype = MPI_LONG_LONG_INT
+       ! case (MPIABI_LONG_LONG)
+       !   abi2mpi_datatype = MPI_LONG_LONG
+    case (MPIABI_SIGNED_CHAR)
+       abi2mpi_datatype = MPI_SIGNED_CHAR
+    case (MPIABI_UNSIGNED_CHAR)
+       abi2mpi_datatype = MPI_UNSIGNED_CHAR
+    case (MPIABI_UNSIGNED_SHORT)
+       abi2mpi_datatype = MPI_UNSIGNED_SHORT
+    case (MPIABI_UNSIGNED)
+       abi2mpi_datatype = MPI_UNSIGNED
+    case (MPIABI_UNSIGNED_LONG)
+       abi2mpi_datatype = MPI_UNSIGNED_LONG
+    case (MPIABI_UNSIGNED_LONG_LONG)
+       abi2mpi_datatype = MPI_UNSIGNED_LONG_LONG
+    case (MPIABI_FLOAT)
+       abi2mpi_datatype = MPI_FLOAT
+    case (MPIABI_DOUBLE)
+       abi2mpi_datatype = MPI_DOUBLE
+    case (MPIABI_LONG_DOUBLE)
+       abi2mpi_datatype = MPI_LONG_DOUBLE
+    case (MPIABI_WCHAR)
+       abi2mpi_datatype = MPI_WCHAR
+    case (MPIABI_C_BOOL)
+       abi2mpi_datatype = MPI_C_BOOL
+    case (MPIABI_INT8_T)
+       abi2mpi_datatype = MPI_INT8_T
+    case (MPIABI_INT16_T)
+       abi2mpi_datatype = MPI_INT16_T
+    case (MPIABI_INT32_T)
+       abi2mpi_datatype = MPI_INT32_T
+    case (MPIABI_INT64_T)
+       abi2mpi_datatype = MPI_INT64_T
+    case (MPIABI_UINT8_T)
+       abi2mpi_datatype = MPI_UINT8_T
+    case (MPIABI_UINT16_T)
+       abi2mpi_datatype = MPI_UINT16_T
+    case (MPIABI_UINT32_T)
+       abi2mpi_datatype = MPI_UINT32_T
+    case (MPIABI_UINT64_T)
+       abi2mpi_datatype = MPI_UINT64_T
+    case (MPIABI_AINT)
+       abi2mpi_datatype = MPI_AINT
+    case (MPIABI_COUNT)
+       abi2mpi_datatype = MPI_COUNT
+    case (MPIABI_OFFSET)
+       abi2mpi_datatype = MPI_OFFSET
+    case (MPIABI_C_COMPLEX)
+       abi2mpi_datatype = MPI_C_COMPLEX
+       ! case (MPIABI_C_FLOAT_COMPLEX)
+       !   abi2mpi_datatype = MPI_C_FLOAT_COMPLEX
+    case (MPIABI_C_DOUBLE_COMPLEX)
+       abi2mpi_datatype = MPI_C_DOUBLE_COMPLEX
+    case (MPIABI_C_LONG_DOUBLE_COMPLEX)
+       abi2mpi_datatype = MPI_C_LONG_DOUBLE_COMPLEX
+    case (MPIABI_BYTE)
+       abi2mpi_datatype = MPI_BYTE
+    case (MPIABI_PACKED)
+       abi2mpi_datatype = MPI_PACKED
+       ! [Fortran types]
     case (MPIABI_INTEGER)
        abi2mpi_datatype = MPI_INTEGER
-       ! TODO: more types
+    case (MPIABI_REAL)
+       abi2mpi_datatype = MPI_REAL
+    case (MPIABI_DOUBLE_PRECISION)
+       abi2mpi_datatype = MPI_DOUBLE_PRECISION
+    case (MPIABI_COMPLEX)
+       abi2mpi_datatype = MPI_COMPLEX
+    case (MPIABI_LOGICAL)
+       abi2mpi_datatype = MPI_LOGICAL
+    case (MPIABI_CHARACTER)
+       abi2mpi_datatype = MPI_CHARACTER
+       ! [C++ types]
+    case (MPIABI_CXX_BOOL)
+       abi2mpi_datatype = MPI_CXX_BOOL
+    case (MPIABI_CXX_FLOAT_COMPLEX)
+       abi2mpi_datatype = MPI_CXX_FLOAT_COMPLEX
+    case (MPIABI_CXX_DOUBLE_COMPLEX)
+       abi2mpi_datatype = MPI_CXX_DOUBLE_COMPLEX
+    case (MPIABI_CXX_LONG_DOUBLE_COMPLEX)
+       abi2mpi_datatype = MPI_CXX_LONG_DOUBLE_COMPLEX
+       ! [Optional datatypes (Fortran)]
+    case (MPIABI_DOUBLE_COMPLEX)
+       abi2mpi_datatype = MPI_DOUBLE_COMPLEX
+#ifdef HAVE_MPI_INTEGER1
+    case (MPIABI_INTEGER1)
+       abi2mpi_datatype = MPI_INTEGER1
+#endif
+#ifdef HAVE_MPI_INTEGER2
+    case (MPIABI_INTEGER2)
+       abi2mpi_datatype = MPI_INTEGER2
+#endif
+#ifdef HAVE_MPI_INTEGER4
+    case (MPIABI_INTEGER4)
+       abi2mpi_datatype = MPI_INTEGER4
+#endif
+#ifdef HAVE_MPI_INTEGER8
+    case (MPIABI_INTEGER8)
+       abi2mpi_datatype = MPI_INTEGER8
+#endif
+#ifdef HAVE_MPI_INTEGER16
+    case (MPIABI_INTEGER16)
+       abi2mpi_datatype = MPI_INTEGER16
+#endif
+#ifdef HAVE_MPI_REAL2
+    case (MPIABI_REAL2)
+       abi2mpi_datatype = MPI_REAL2
+#endif
+#ifdef HAVE_MPI_REAL4
+    case (MPIABI_REAL4)
+       abi2mpi_datatype = MPI_REAL4
+#endif
+#ifdef HAVE_MPI_REAL8
+    case (MPIABI_REAL8)
+       abi2mpi_datatype = MPI_REAL8
+#endif
+#ifdef HAVE_MPI_REAL16
+    case (MPIABI_REAL16)
+       abi2mpi_datatype = MPI_REAL16
+#endif
+#ifdef HAVE_MPI_COMPLEX2
+    case (MPIABI_COMPLEX2)
+       abi2mpi_datatype = MPI_COMPLEX2
+#endif
+#ifdef HAVE_MPI_COMPLEX4
+    case (MPIABI_COMPLEX4)
+       abi2mpi_datatype = MPI_COMPLEX4
+#endif
+#ifdef HAVE_MPI_COMPLEX8
+    case (MPIABI_COMPLEX8)
+       abi2mpi_datatype = MPI_COMPLEX8
+#endif
+#ifdef HAVE_MPI_COMPLEX16
+    case (MPIABI_COMPLEX16)
+       abi2mpi_datatype = MPI_COMPLEX16
+#endif
+#ifdef HAVE_MPI_COMPLEX32
+    case (MPIABI_COMPLEX32)
+       abi2mpi_datatype = MPI_COMPLEX32
+#endif
+       ! [Extensions]
+#ifdef HAVE_MPI_REAL1
+    case (MPIABI_REAL1)
+       abi2mpi_datatype = MPI_REAL1
+#endif
+#ifdef HAVE_MPI_LOGICAL1
+    case (MPIABI_LOGICAL1)
+       abi2mpi_datatype = MPI_LOGICAL1
+#endif
+#ifdef HAVE_MPI_LOGICAL2
+    case (MPIABI_LOGICAL2)
+       abi2mpi_datatype = MPI_LOGICAL2
+#endif
+#ifdef HAVE_MPI_LOGICAL4
+    case (MPIABI_LOGICAL4)
+       abi2mpi_datatype = MPI_LOGICAL4
+#endif
+#ifdef HAVE_MPI_LOGICAL8
+    case (MPIABI_LOGICAL8)
+       abi2mpi_datatype = MPI_LOGICAL8
+#endif
+       ! [Datatypes for reduction functions (C)]
+    case (MPIABI_FLOAT_INT)
+       abi2mpi_datatype = MPI_FLOAT_INT
+    case (MPIABI_DOUBLE_INT)
+       abi2mpi_datatype = MPI_DOUBLE_INT
+    case (MPIABI_LONG_INT)
+       abi2mpi_datatype = MPI_LONG_INT
+    case (MPIABI_2INT)
+       abi2mpi_datatype = MPI_2INT
+    case (MPIABI_SHORT_INT)
+       abi2mpi_datatype = MPI_SHORT_INT
+    case (MPIABI_LONG_DOUBLE_INT)
+       abi2mpi_datatype = MPI_LONG_DOUBLE_INT
+       ! [Datatypes for reduction functions (Fortran)]
+    case (MPIABI_2REAL)
+       abi2mpi_datatype = MPI_2REAL
+    case (MPIABI_2DOUBLE_PRECISION)
+       abi2mpi_datatype = MPI_2DOUBLE_PRECISION
+    case (MPIABI_2INTEGER)
+       abi2mpi_datatype = MPI_2INTEGER
+       ! [Removed constructs]
+#ifdef HAVE_MPI_LB
+    case (MPIABI_LB)
+       abi2mpi_datatype = MPI_LB
+#endif
+#ifdef HAVE_MPI_UB
+    case (MPIABI_UB)
+       abi2mpi_datatype = MPI_UB
+#endif
     case default
-       abi2mpi_datatype = datatype
+       call assert(.false.)
     end select
   end function abi2mpi_datatype
+
+  integer function mpi2abi_datatype(datatype)
+    integer, intent(in) :: datatype
+    ! MPICH defines `MPI_INTEGER16` to be `MPI_DATATYPE_NULL`, and this doesn't work with a `select case` statement
+    ! <https://github.com/pmodels/mpich/issues/6809>
+    if (datatype == MPI_DATATYPE_NULL) then
+       mpi2abi_datatype = MPIABI_DATATYPE_NULL
+       return
+    end if
+    select case (datatype)
+    ! case (MPI_DATATYPE_NULL)
+    !    mpi2abi_datatype = MPIABI_DATATYPE_NULL
+       ! [C types]
+    case (MPI_CHAR)
+       mpi2abi_datatype = MPIABI_CHAR
+    case (MPI_SHORT)
+       mpi2abi_datatype = MPIABI_SHORT
+    case (MPI_INT)
+       mpi2abi_datatype = MPIABI_INT
+    case (MPI_LONG)
+       mpi2abi_datatype = MPIABI_LONG
+    case (MPI_LONG_LONG_INT)
+       mpi2abi_datatype = MPIABI_LONG_LONG_INT
+       ! case (MPI_LONG_LONG)
+       !   mpi2abi_datatype = MPIABI_LONG_LONG
+    case (MPI_SIGNED_CHAR)
+       mpi2abi_datatype = MPIABI_SIGNED_CHAR
+    case (MPI_UNSIGNED_CHAR)
+       mpi2abi_datatype = MPIABI_UNSIGNED_CHAR
+    case (MPI_UNSIGNED_SHORT)
+       mpi2abi_datatype = MPIABI_UNSIGNED_SHORT
+    case (MPI_UNSIGNED)
+       mpi2abi_datatype = MPIABI_UNSIGNED
+    case (MPI_UNSIGNED_LONG)
+       mpi2abi_datatype = MPIABI_UNSIGNED_LONG
+    case (MPI_UNSIGNED_LONG_LONG)
+       mpi2abi_datatype = MPIABI_UNSIGNED_LONG_LONG
+    case (MPI_FLOAT)
+       mpi2abi_datatype = MPIABI_FLOAT
+    case (MPI_DOUBLE)
+       mpi2abi_datatype = MPIABI_DOUBLE
+    case (MPI_LONG_DOUBLE)
+       mpi2abi_datatype = MPIABI_LONG_DOUBLE
+    case (MPI_WCHAR)
+       mpi2abi_datatype = MPIABI_WCHAR
+    case (MPI_C_BOOL)
+       mpi2abi_datatype = MPIABI_C_BOOL
+    case (MPI_INT8_T)
+       mpi2abi_datatype = MPIABI_INT8_T
+    case (MPI_INT16_T)
+       mpi2abi_datatype = MPIABI_INT16_T
+    case (MPI_INT32_T)
+       mpi2abi_datatype = MPIABI_INT32_T
+    case (MPI_INT64_T)
+       mpi2abi_datatype = MPIABI_INT64_T
+    case (MPI_UINT8_T)
+       mpi2abi_datatype = MPIABI_UINT8_T
+    case (MPI_UINT16_T)
+       mpi2abi_datatype = MPIABI_UINT16_T
+    case (MPI_UINT32_T)
+       mpi2abi_datatype = MPIABI_UINT32_T
+    case (MPI_UINT64_T)
+       mpi2abi_datatype = MPIABI_UINT64_T
+    case (MPI_AINT)
+       mpi2abi_datatype = MPIABI_AINT
+    case (MPI_COUNT)
+       mpi2abi_datatype = MPIABI_COUNT
+    case (MPI_OFFSET)
+       mpi2abi_datatype = MPIABI_OFFSET
+    case (MPI_C_COMPLEX)
+       mpi2abi_datatype = MPIABI_C_COMPLEX
+       ! case (MPI_C_FLOAT_COMPLEX)
+       !   mpi2abi_datatype = MPIABI_C_FLOAT_COMPLEX
+    case (MPI_C_DOUBLE_COMPLEX)
+       mpi2abi_datatype = MPIABI_C_DOUBLE_COMPLEX
+    case (MPI_C_LONG_DOUBLE_COMPLEX)
+       mpi2abi_datatype = MPIABI_C_LONG_DOUBLE_COMPLEX
+    case (MPI_BYTE)
+       mpi2abi_datatype = MPIABI_BYTE
+    case (MPI_PACKED)
+       mpi2abi_datatype = MPIABI_PACKED
+       ! [Fortran types]
+    case (MPI_INTEGER)
+       mpi2abi_datatype = MPIABI_INTEGER
+    case (MPI_REAL)
+       mpi2abi_datatype = MPIABI_REAL
+    case (MPI_DOUBLE_PRECISION)
+       mpi2abi_datatype = MPIABI_DOUBLE_PRECISION
+    case (MPI_COMPLEX)
+       mpi2abi_datatype = MPIABI_COMPLEX
+    case (MPI_LOGICAL)
+       mpi2abi_datatype = MPIABI_LOGICAL
+    case (MPI_CHARACTER)
+       mpi2abi_datatype = MPIABI_CHARACTER
+       ! [C++ types]
+    case (MPI_CXX_BOOL)
+       mpi2abi_datatype = MPIABI_CXX_BOOL
+    case (MPI_CXX_FLOAT_COMPLEX)
+       mpi2abi_datatype = MPIABI_CXX_FLOAT_COMPLEX
+    case (MPI_CXX_DOUBLE_COMPLEX)
+       mpi2abi_datatype = MPIABI_CXX_DOUBLE_COMPLEX
+    case (MPI_CXX_LONG_DOUBLE_COMPLEX)
+       mpi2abi_datatype = MPIABI_CXX_LONG_DOUBLE_COMPLEX
+       ! [Optional datatypes (Fortran)]
+    case (MPI_DOUBLE_COMPLEX)
+       mpi2abi_datatype = MPIABI_DOUBLE_COMPLEX
+#ifdef HAVE_MPI_INTEGER1
+    case (MPI_INTEGER1)
+       mpi2abi_datatype = MPIABI_INTEGER1
+#endif
+#ifdef HAVE_MPI_INTEGER2
+    case (MPI_INTEGER2)
+       mpi2abi_datatype = MPIABI_INTEGER2
+#endif
+#ifdef HAVE_MPI_INTEGER4
+    case (MPI_INTEGER4)
+       mpi2abi_datatype = MPIABI_INTEGER4
+#endif
+#ifdef HAVE_MPI_INTEGER8
+    case (MPI_INTEGER8)
+       mpi2abi_datatype = MPIABI_INTEGER8
+#endif
+#ifdef HAVE_MPI_INTEGER16
+    case (MPI_INTEGER16)
+       mpi2abi_datatype = MPIABI_INTEGER16
+#endif
+#ifdef HAVE_MPI_REAL2
+    case (MPI_REAL2)
+       mpi2abi_datatype = MPIABI_REAL2
+#endif
+#ifdef HAVE_MPI_REAL4
+    case (MPI_REAL4)
+       mpi2abi_datatype = MPIABI_REAL4
+#endif
+#ifdef HAVE_MPI_REAL8
+    case (MPI_REAL8)
+       mpi2abi_datatype = MPIABI_REAL8
+#endif
+#ifdef HAVE_MPI_REAL16
+    case (MPI_REAL16)
+       mpi2abi_datatype = MPIABI_REAL16
+#endif
+#ifdef HAVE_MPI_COMPLEX2
+    case (MPI_COMPLEX2)
+       mpi2abi_datatype = MPIABI_COMPLEX2
+#endif
+#ifdef HAVE_MPI_COMPLEX4
+    case (MPI_COMPLEX4)
+       mpi2abi_datatype = MPIABI_COMPLEX4
+#endif
+#ifdef HAVE_MPI_COMPLEX8
+    case (MPI_COMPLEX8)
+       mpi2abi_datatype = MPIABI_COMPLEX8
+#endif
+#ifdef HAVE_MPI_COMPLEX16
+    case (MPI_COMPLEX16)
+       mpi2abi_datatype = MPIABI_COMPLEX16
+#endif
+#ifdef HAVE_MPI_COMPLEX32
+    case (MPI_COMPLEX32)
+       mpi2abi_datatype = MPIABI_COMPLEX32
+#endif
+       ! [Extensions]
+#ifdef HAVE_MPI_REAL1
+    case (MPI_REAL1)
+       mpi2abi_datatype = MPIABI_REAL1
+#endif
+#ifdef HAVE_MPI_LOGICAL1
+    case (MPI_LOGICAL1)
+       mpi2abi_datatype = MPIABI_LOGICAL1
+#endif
+#ifdef HAVE_MPI_LOGICAL2
+    case (MPI_LOGICAL2)
+       mpi2abi_datatype = MPIABI_LOGICAL2
+#endif
+#ifdef HAVE_MPI_LOGICAL4
+    case (MPI_LOGICAL4)
+       mpi2abi_datatype = MPIABI_LOGICAL4
+#endif
+#ifdef HAVE_MPI_LOGICAL8
+    case (MPI_LOGICAL8)
+       mpi2abi_datatype = MPIABI_LOGICAL8
+#endif
+       ! [Datatypes for reduction functions (C)]
+    case (MPI_FLOAT_INT)
+       mpi2abi_datatype = MPIABI_FLOAT_INT
+    case (MPI_DOUBLE_INT)
+       mpi2abi_datatype = MPIABI_DOUBLE_INT
+    case (MPI_LONG_INT)
+       mpi2abi_datatype = MPIABI_LONG_INT
+    case (MPI_2INT)
+       mpi2abi_datatype = MPIABI_2INT
+    case (MPI_SHORT_INT)
+       mpi2abi_datatype = MPIABI_SHORT_INT
+    case (MPI_LONG_DOUBLE_INT)
+       mpi2abi_datatype = MPIABI_LONG_DOUBLE_INT
+       ! [Datatypes for reduction functions (Fortran)]
+    case (MPI_2REAL)
+       mpi2abi_datatype = MPIABI_2REAL
+    case (MPI_2DOUBLE_PRECISION)
+       mpi2abi_datatype = MPIABI_2DOUBLE_PRECISION
+    case (MPI_2INTEGER)
+       mpi2abi_datatype = MPIABI_2INTEGER
+       ! [Removed constructs]
+#ifdef HAVE_MPI_LB
+    case (MPI_LB)
+       mpi2abi_datatype = MPIABI_LB
+#endif
+#ifdef HAVE_MPI_UB
+    case (MPI_UB)
+       mpi2abi_datatype = MPIABI_UB
+#endif
+    case default
+       mpi2abi_datatype = mpi2abi_unreserved(datatype)
+    end select
+  end function mpi2abi_datatype
 
   elemental integer function abi2mpi_info(info)
     integer, intent(in) :: info

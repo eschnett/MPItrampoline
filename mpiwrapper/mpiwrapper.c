@@ -812,7 +812,7 @@ static MPI_Datatype abi2mpi_datatype(MPIABI_Datatype datatype) {
 #endif
 #ifdef HAVE_MPI_REAL8
   case (uintptr_t)MPIABI_REAL8:
-    assert(false);
+    return MPI_REAL8;
 #endif
 #ifdef HAVE_MPI_REAL16
   case (uintptr_t)MPIABI_REAL16:

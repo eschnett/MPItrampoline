@@ -1067,104 +1067,140 @@ end subroutine MPIABI_Waitsome
 
 ! A.3.3 Datatypes C Bindings
 
-! subroutine MPIABI_Get_address(location, address, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Get_address(location, address, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Get_address
-! 
-! subroutine MPIABI_Get_elements(status, datatype, count, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Get_elements(status, datatype, count, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Get_elements
-! 
-! subroutine MPIABI_Get_elements_c(status, datatype, count, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Get_elements_c(status, datatype, count, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Get_elements_c
-! 
-! subroutine MPIABI_Pack(inbuf, incount, datatype, outbuf, outsize, position, comm, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Pack(inbuf, incount, datatype, outbuf, outsize, position, comm, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Pack
-! 
-! subroutine MPIABI_Pack_c(inbuf, incount, datatype, outbuf, outsize, position, comm, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Pack_c(inbuf, incount, datatype, outbuf, outsize, position, comm, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Pack_c
-! 
-! subroutine MPIABI_Pack_external(datarep, inbuf, incount, datatype, outbuf, outsize, position, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Pack_external(datarep, inbuf, incount, datatype, outbuf, outsize, position, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Pack_external
-! 
-! subroutine MPIABI_Pack_external_c(datarep, inbuf, incount, datatype, outbuf, outsize, position, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Pack_external_c(datarep, inbuf, incount, datatype, outbuf, outsize, position, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Pack_external_c
-! 
-! subroutine MPIABI_Pack_external_size(datarep, incount, datatype, size, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Pack_external_size(datarep, incount, datatype, size, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Pack_external_size
-! 
-! subroutine MPIABI_Pack_external_size_c(datarep, incount, datatype, size, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Pack_external_size_c(datarep, incount, datatype, size, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Pack_external_size_c
-! 
-! subroutine MPIABI_Pack_size(incount, datatype, comm, size, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Pack_size(incount, datatype, comm, size, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Pack_size
-! 
-! subroutine MPIABI_Pack_size_c(incount, datatype, comm, size, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Pack_size_c(incount, datatype, comm, size, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Pack_size_c
-! 
-! subroutine MPIABI_Type_commit(datatype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_commit(datatype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_commit
-! 
-! subroutine MPIABI_Type_contiguous(count, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_contiguous(count, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_contiguous
-! 
-! subroutine MPIABI_Type_contiguous_c(count, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_contiguous_c(count, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_contiguous_c
-! 
+integer(MPIABI_ADDRESS_KIND) function MPIABI_Aint_add(base, disp)
+  use mpiwrapper
+  implicit none
+  integer(MPIABI_ADDRESS_KIND), intent(in) :: base
+  integer(MPIABI_ADDRESS_KIND), intent(in) :: disp
+  ! This function is not defined by MPICH so we implement it ourselves
+  MPIABI_Aint_add = base + disp
+end function MPIABI_Aint_add
+
+integer(MPIABI_ADDRESS_KIND) function MPIABI_Aint_diff(addr1, addr2)
+  use mpiwrapper
+  implicit none
+  integer(MPIABI_ADDRESS_KIND), intent(in) :: addr1
+  integer(MPIABI_ADDRESS_KIND), intent(in) :: addr2
+  ! This function is not defined by MPICH so we implement it ourselves
+  MPIABI_Aint_diff = addr1 - addr2
+end function MPIABI_Aint_diff
+
+subroutine MPIABI_Get_address(location, address, ierror)
+  use mpiwrapper
+  implicit none
+  integer :: location(*)
+  integer(MPIABI_ADDRESS_KIND), intent(out) :: address
+  integer, intent(out) :: ierror
+  integer(MPI_ADDRESS_KIND) wrap_address
+  call MPI_Get_address(location, wrap_address, ierror)
+  address = wrap_address
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Get_address
+
+subroutine MPIABI_Get_elements(status, datatype, count, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(in) :: datatype
+  integer, intent(out) :: count
+  integer, intent(out) :: ierror
+  integer wrap_status(MPI_STATUS_SIZE)
+  call abi2mpi_status(status, wrap_status)
+  call MPI_Get_elements(wrap_status, abi2mpi_datatype(datatype), count, ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Get_elements
+
+subroutine MPIABI_Pack(inbuf, incount, datatype, outbuf, outsize, position, comm, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: inbuf(*)
+  integer, intent(in) :: incount
+  integer, intent(in) :: datatype
+  integer outbuf(*)
+  integer(MPIABI_ADDRESS_KIND), intent(in) :: outsize
+  integer(MPIABI_ADDRESS_KIND), intent(inout) :: position
+  integer, intent(in) :: comm
+  integer, intent(out) :: ierror
+  integer(MPI_ADDRESS_KIND) wrap_outsize
+  integer(MPI_ADDRESS_KIND) wrap_position
+  wrap_outsize = outsize
+  wrap_position = position
+  call MPI_Pack(inbuf, incount, abi2mpi_datatype(datatype), outbuf, wrap_outsize, wrap_position, abi2mpi_comm(comm), ierror)
+  position = wrap_position
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Pack
+
+subroutine MPIABI_Pack_external(datarep, inbuf, incount, datatype, outbuf, outsize, position, ierror)
+  use mpiwrapper
+  implicit none
+  character(*), intent(in) :: datarep
+  integer, intent(in) :: inbuf(*)
+  integer, intent(in) :: incount
+  integer, intent(in) :: datatype
+  integer outbuf(*)
+  integer(MPIABI_ADDRESS_KIND), intent(in) :: outsize
+  integer(MPIABI_ADDRESS_KIND), intent(inout) :: position
+  integer, intent(out) :: ierror
+  integer(MPI_ADDRESS_KIND) wrap_outsize
+  integer(MPI_ADDRESS_KIND) wrap_position
+  wrap_outsize = outsize
+  wrap_position = position
+  call MPI_Pack_external(datarep, inbuf, incount, abi2mpi_datatype(datatype), outbuf, wrap_outsize, wrap_position, ierror)
+  position = wrap_position
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Pack_external
+
+subroutine MPIABI_Pack_external_size(datarep, incount, datatype, size, ierror)
+  use mpiwrapper
+  implicit none
+  character(*), intent(in) :: datarep
+  integer, intent(in) :: incount
+  integer, intent(in) :: datatype
+  integer(MPIABI_ADDRESS_KIND), intent(out) :: size
+  integer, intent(out) :: ierror
+  integer(MPI_ADDRESS_KIND) wrap_size
+  call MPI_Pack_external_size(datarep, incount, abi2mpi_datatype(datatype), wrap_size, ierror)
+  size = wrap_size
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Pack_external_size
+
+subroutine MPIABI_Pack_size(incount, datatype, comm, size, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: incount
+  integer, intent(in) :: datatype
+  integer, intent(in) :: comm
+  integer, intent(out) :: size
+  integer, intent(out) :: ierror
+  call MPI_Pack_size(incount, abi2mpi_datatype(datatype), abi2mpi_comm(comm), size, ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Pack_size
+
+subroutine MPIABI_Type_commit(datatype, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(inout) :: datatype
+  integer, intent(out) :: ierror
+  integer wrap_datatype
+  wrap_datatype = abi2mpi_datatype(datatype)
+  call MPI_Type_commit(wrap_datatype, ierror)
+  datatype = mpi2abi_datatype(wrap_datatype)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_commit
+
+subroutine MPIABI_Type_contiguous(count, oldtype, newtype, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: oldtype
+  integer, intent(out) :: newtype
+  integer, intent(out) :: ierror
+  integer wrap_newtype
+  call MPI_Type_contiguous(count, abi2mpi_datatype(oldtype), wrap_newtype, ierror)
+  newtype = mpi2abi_datatype(wrap_newtype)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_contiguous
+
 ! subroutine MPIABI_Type_create_darray(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, order, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
