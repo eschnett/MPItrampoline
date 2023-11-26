@@ -51,17 +51,285 @@ contains
 
   ! Translate (non-handle) integers
 
-  elemental integer function mpi2abi_errorcode(ierror)
-    integer, intent(in) :: ierror
+  elemental integer function abi2mpi_errorcode(errorcode)
+    integer, intent(in) :: errorcode
     ! Fast path
-    if (ierror == MPI_SUCCESS) then
+    if (errorcode == MPIABI_SUCCESS) then
+       abi2mpi_errorcode = MPIABI_SUCCESS
+       return
+    end if
+    select case (errorcode)
+    case (MPI_ERR_ACCESS)
+       abi2mpi_errorcode = MPIABI_ERR_ACCESS
+    case (MPI_ERR_AMODE)
+       abi2mpi_errorcode = MPIABI_ERR_AMODE
+    case (MPI_ERR_ARG)
+       abi2mpi_errorcode = MPIABI_ERR_ARG
+    case (MPI_ERR_ASSERT)
+       abi2mpi_errorcode = MPIABI_ERR_ASSERT
+    case (MPI_ERR_BAD_FILE)
+       abi2mpi_errorcode = MPIABI_ERR_BAD_FILE
+    case (MPI_ERR_BASE)
+       abi2mpi_errorcode = MPIABI_ERR_BASE
+    case (MPI_ERR_BUFFER)
+       abi2mpi_errorcode = MPIABI_ERR_BUFFER
+    case (MPI_ERR_COMM)
+       abi2mpi_errorcode = MPIABI_ERR_COMM
+    case (MPI_ERR_CONVERSION)
+       abi2mpi_errorcode = MPIABI_ERR_CONVERSION
+    case (MPI_ERR_COUNT)
+       abi2mpi_errorcode = MPIABI_ERR_COUNT
+    case (MPI_ERR_DIMS)
+       abi2mpi_errorcode = MPIABI_ERR_DIMS
+    case (MPI_ERR_DISP)
+       abi2mpi_errorcode = MPIABI_ERR_DISP
+    case (MPI_ERR_DUP_DATAREP)
+       abi2mpi_errorcode = MPIABI_ERR_DUP_DATAREP
+    case (MPI_ERR_FILE)
+       abi2mpi_errorcode = MPIABI_ERR_FILE
+    case (MPI_ERR_FILE_EXISTS)
+       abi2mpi_errorcode = MPIABI_ERR_FILE_EXISTS
+    case (MPI_ERR_FILE_IN_USE)
+       abi2mpi_errorcode = MPIABI_ERR_FILE_IN_USE
+    case (MPI_ERR_GROUP)
+       abi2mpi_errorcode = MPIABI_ERR_GROUP
+    case (MPI_ERR_INFO)
+       abi2mpi_errorcode = MPIABI_ERR_INFO
+    case (MPI_ERR_INFO_KEY)
+       abi2mpi_errorcode = MPIABI_ERR_INFO_KEY
+    case (MPI_ERR_INFO_NOKEY)
+       abi2mpi_errorcode = MPIABI_ERR_INFO_NOKEY
+    case (MPI_ERR_INFO_VALUE)
+       abi2mpi_errorcode = MPIABI_ERR_INFO_VALUE
+    case (MPI_ERR_INTERN)
+       abi2mpi_errorcode = MPIABI_ERR_INTERN
+    case (MPI_ERR_IN_STATUS)
+       abi2mpi_errorcode = MPIABI_ERR_IN_STATUS
+    case (MPI_ERR_IO)
+       abi2mpi_errorcode = MPIABI_ERR_IO
+    case (MPI_ERR_KEYVAL)
+       abi2mpi_errorcode = MPIABI_ERR_KEYVAL
+    case (MPI_ERR_LOCKTYPE)
+       abi2mpi_errorcode = MPIABI_ERR_LOCKTYPE
+    case (MPI_ERR_NAME)
+       abi2mpi_errorcode = MPIABI_ERR_NAME
+    case (MPI_ERR_NOT_SAME)
+       abi2mpi_errorcode = MPIABI_ERR_NOT_SAME
+    case (MPI_ERR_NO_MEM)
+       abi2mpi_errorcode = MPIABI_ERR_NO_MEM
+    case (MPI_ERR_NO_SPACE)
+       abi2mpi_errorcode = MPIABI_ERR_NO_SPACE
+    case (MPI_ERR_NO_SUCH_FILE)
+       abi2mpi_errorcode = MPIABI_ERR_NO_SUCH_FILE
+    case (MPI_ERR_OP)
+       abi2mpi_errorcode = MPIABI_ERR_OP
+    case (MPI_ERR_OTHER)
+       abi2mpi_errorcode = MPIABI_ERR_OTHER
+    case (MPI_ERR_PENDING)
+       abi2mpi_errorcode = MPIABI_ERR_PENDING
+    case (MPI_ERR_PORT)
+       abi2mpi_errorcode = MPIABI_ERR_PORT
+#if MPI_VERSION_NUMBER >= 400
+    case (MPI_ERR_PROC_ABORTED)
+       abi2mpi_errorcode = MPIABI_ERR_PROC_ABORTED
+#endif
+    case (MPI_ERR_QUOTA)
+       abi2mpi_errorcode = MPIABI_ERR_QUOTA
+    case (MPI_ERR_RANK)
+       abi2mpi_errorcode = MPIABI_ERR_RANK
+    case (MPI_ERR_READ_ONLY)
+       abi2mpi_errorcode = MPIABI_ERR_READ_ONLY
+    case (MPI_ERR_REQUEST)
+       abi2mpi_errorcode = MPIABI_ERR_REQUEST
+    case (MPI_ERR_RMA_ATTACH)
+       abi2mpi_errorcode = MPIABI_ERR_RMA_ATTACH
+    case (MPI_ERR_RMA_CONFLICT)
+       abi2mpi_errorcode = MPIABI_ERR_RMA_CONFLICT
+    case (MPI_ERR_RMA_FLAVOR)
+       abi2mpi_errorcode = MPIABI_ERR_RMA_FLAVOR
+    case (MPI_ERR_RMA_RANGE)
+       abi2mpi_errorcode = MPIABI_ERR_RMA_RANGE
+    case (MPI_ERR_RMA_SHARED)
+       abi2mpi_errorcode = MPIABI_ERR_RMA_SHARED
+    case (MPI_ERR_RMA_SYNC)
+       abi2mpi_errorcode = MPIABI_ERR_RMA_SYNC
+    case (MPI_ERR_ROOT)
+       abi2mpi_errorcode = MPIABI_ERR_ROOT
+    case (MPI_ERR_SERVICE)
+       abi2mpi_errorcode = MPIABI_ERR_SERVICE
+#if MPI_VERSION_NUMBER >= 400
+    case (MPI_ERR_SESSION)
+       abi2mpi_errorcode = MPIABI_ERR_SESSION
+#endif
+    case (MPI_ERR_SIZE)
+       abi2mpi_errorcode = MPIABI_ERR_SIZE
+    case (MPI_ERR_SPAWN)
+       abi2mpi_errorcode = MPIABI_ERR_SPAWN
+    case (MPI_ERR_TAG)
+       abi2mpi_errorcode = MPIABI_ERR_TAG
+    case (MPI_ERR_TOPOLOGY)
+       abi2mpi_errorcode = MPIABI_ERR_TOPOLOGY
+    case (MPI_ERR_TRUNCATE)
+       abi2mpi_errorcode = MPIABI_ERR_TRUNCATE
+    case (MPI_ERR_TYPE)
+       abi2mpi_errorcode = MPIABI_ERR_TYPE
+    case (MPI_ERR_UNKNOWN)
+       abi2mpi_errorcode = MPIABI_ERR_UNKNOWN
+    case (MPI_ERR_UNSUPPORTED_DATAREP)
+       abi2mpi_errorcode = MPIABI_ERR_UNSUPPORTED_DATAREP
+    case (MPI_ERR_UNSUPPORTED_OPERATION)
+       abi2mpi_errorcode = MPIABI_ERR_UNSUPPORTED_OPERATION
+#if MPI_VERSION_NUMBER >= 400
+    case (MPI_ERR_VALUE_TOO_LARGE)
+       abi2mpi_errorcode = MPIABI_ERR_VALUE_TOO_LARGE
+#endif
+    case (MPI_ERR_WIN)
+       abi2mpi_errorcode = MPIABI_ERR_WIN
+    case default
+       !/ unknown error code
+       ! call assert(.false.)
+       abi2mpi_errorcode =  errorcode
+    end select
+  end function abi2mpi_errorcode
+
+  elemental integer function mpi2abi_errorcode(errorcode)
+    integer, intent(in) :: errorcode
+    ! Fast path
+    if (errorcode == MPI_SUCCESS) then
        mpi2abi_errorcode = MPIABI_SUCCESS
        return
     end if
-    select case (ierror)
-    ! TODO: translate codes
+    select case (errorcode)
+    case (MPIABI_ERR_ACCESS)
+       mpi2abi_errorcode = MPI_ERR_ACCESS
+    case (MPIABI_ERR_AMODE)
+       mpi2abi_errorcode = MPI_ERR_AMODE
+    case (MPIABI_ERR_ARG)
+       mpi2abi_errorcode = MPI_ERR_ARG
+    case (MPIABI_ERR_ASSERT)
+       mpi2abi_errorcode = MPI_ERR_ASSERT
+    case (MPIABI_ERR_BAD_FILE)
+       mpi2abi_errorcode = MPI_ERR_BAD_FILE
+    case (MPIABI_ERR_BASE)
+       mpi2abi_errorcode = MPI_ERR_BASE
+    case (MPIABI_ERR_BUFFER)
+       mpi2abi_errorcode = MPI_ERR_BUFFER
+    case (MPIABI_ERR_COMM)
+       mpi2abi_errorcode = MPI_ERR_COMM
+    case (MPIABI_ERR_CONVERSION)
+       mpi2abi_errorcode = MPI_ERR_CONVERSION
+    case (MPIABI_ERR_COUNT)
+       mpi2abi_errorcode = MPI_ERR_COUNT
+    case (MPIABI_ERR_DIMS)
+       mpi2abi_errorcode = MPI_ERR_DIMS
+    case (MPIABI_ERR_DISP)
+       mpi2abi_errorcode = MPI_ERR_DISP
+    case (MPIABI_ERR_DUP_DATAREP)
+       mpi2abi_errorcode = MPI_ERR_DUP_DATAREP
+    case (MPIABI_ERR_FILE)
+       mpi2abi_errorcode = MPI_ERR_FILE
+    case (MPIABI_ERR_FILE_EXISTS)
+       mpi2abi_errorcode = MPI_ERR_FILE_EXISTS
+    case (MPIABI_ERR_FILE_IN_USE)
+       mpi2abi_errorcode = MPI_ERR_FILE_IN_USE
+    case (MPIABI_ERR_GROUP)
+       mpi2abi_errorcode = MPI_ERR_GROUP
+    case (MPIABI_ERR_INFO)
+       mpi2abi_errorcode = MPI_ERR_INFO
+    case (MPIABI_ERR_INFO_KEY)
+       mpi2abi_errorcode = MPI_ERR_INFO_KEY
+    case (MPIABI_ERR_INFO_NOKEY)
+       mpi2abi_errorcode = MPI_ERR_INFO_NOKEY
+    case (MPIABI_ERR_INFO_VALUE)
+       mpi2abi_errorcode = MPI_ERR_INFO_VALUE
+    case (MPIABI_ERR_INTERN)
+       mpi2abi_errorcode = MPI_ERR_INTERN
+    case (MPIABI_ERR_IN_STATUS)
+       mpi2abi_errorcode = MPI_ERR_IN_STATUS
+    case (MPIABI_ERR_IO)
+       mpi2abi_errorcode = MPI_ERR_IO
+    case (MPIABI_ERR_KEYVAL)
+       mpi2abi_errorcode = MPI_ERR_KEYVAL
+    case (MPIABI_ERR_LOCKTYPE)
+       mpi2abi_errorcode = MPI_ERR_LOCKTYPE
+    case (MPIABI_ERR_NAME)
+       mpi2abi_errorcode = MPI_ERR_NAME
+    case (MPIABI_ERR_NOT_SAME)
+       mpi2abi_errorcode = MPI_ERR_NOT_SAME
+    case (MPIABI_ERR_NO_MEM)
+       mpi2abi_errorcode = MPI_ERR_NO_MEM
+    case (MPIABI_ERR_NO_SPACE)
+       mpi2abi_errorcode = MPI_ERR_NO_SPACE
+    case (MPIABI_ERR_NO_SUCH_FILE)
+       mpi2abi_errorcode = MPI_ERR_NO_SUCH_FILE
+    case (MPIABI_ERR_OP)
+       mpi2abi_errorcode = MPI_ERR_OP
+    case (MPIABI_ERR_OTHER)
+       mpi2abi_errorcode = MPI_ERR_OTHER
+    case (MPIABI_ERR_PENDING)
+       mpi2abi_errorcode = MPI_ERR_PENDING
+    case (MPIABI_ERR_PORT)
+       mpi2abi_errorcode = MPI_ERR_PORT
+#if MPI_VERSION_NUMBER >= 400
+    case (MPIABI_ERR_PROC_ABORTED)
+       mpi2abi_errorcode = MPI_ERR_PROC_ABORTED
+#endif
+    case (MPIABI_ERR_QUOTA)
+       mpi2abi_errorcode = MPI_ERR_QUOTA
+    case (MPIABI_ERR_RANK)
+       mpi2abi_errorcode = MPI_ERR_RANK
+    case (MPIABI_ERR_READ_ONLY)
+       mpi2abi_errorcode = MPI_ERR_READ_ONLY
+    case (MPIABI_ERR_REQUEST)
+       mpi2abi_errorcode = MPI_ERR_REQUEST
+    case (MPIABI_ERR_RMA_ATTACH)
+       mpi2abi_errorcode = MPI_ERR_RMA_ATTACH
+    case (MPIABI_ERR_RMA_CONFLICT)
+       mpi2abi_errorcode = MPI_ERR_RMA_CONFLICT
+    case (MPIABI_ERR_RMA_FLAVOR)
+       mpi2abi_errorcode = MPI_ERR_RMA_FLAVOR
+    case (MPIABI_ERR_RMA_RANGE)
+       mpi2abi_errorcode = MPI_ERR_RMA_RANGE
+    case (MPIABI_ERR_RMA_SHARED)
+       mpi2abi_errorcode = MPI_ERR_RMA_SHARED
+    case (MPIABI_ERR_RMA_SYNC)
+       mpi2abi_errorcode = MPI_ERR_RMA_SYNC
+    case (MPIABI_ERR_ROOT)
+       mpi2abi_errorcode = MPI_ERR_ROOT
+    case (MPIABI_ERR_SERVICE)
+       mpi2abi_errorcode = MPI_ERR_SERVICE
+#if MPI_VERSION_NUMBER >= 400
+    case (MPIABI_ERR_SESSION)
+       mpi2abi_errorcode = MPI_ERR_SESSION
+#endif
+    case (MPIABI_ERR_SIZE)
+       mpi2abi_errorcode = MPI_ERR_SIZE
+    case (MPIABI_ERR_SPAWN)
+       mpi2abi_errorcode = MPI_ERR_SPAWN
+    case (MPIABI_ERR_TAG)
+       mpi2abi_errorcode = MPI_ERR_TAG
+    case (MPIABI_ERR_TOPOLOGY)
+       mpi2abi_errorcode = MPI_ERR_TOPOLOGY
+    case (MPIABI_ERR_TRUNCATE)
+       mpi2abi_errorcode = MPI_ERR_TRUNCATE
+    case (MPIABI_ERR_TYPE)
+       mpi2abi_errorcode = MPI_ERR_TYPE
+    case (MPIABI_ERR_UNKNOWN)
+       mpi2abi_errorcode = MPI_ERR_UNKNOWN
+    case (MPIABI_ERR_UNSUPPORTED_DATAREP)
+       mpi2abi_errorcode = MPI_ERR_UNSUPPORTED_DATAREP
+    case (MPIABI_ERR_UNSUPPORTED_OPERATION)
+       mpi2abi_errorcode = MPI_ERR_UNSUPPORTED_OPERATION
+#if MPI_VERSION_NUMBER >= 400
+    case (MPIABI_ERR_VALUE_TOO_LARGE)
+       mpi2abi_errorcode = MPI_ERR_VALUE_TOO_LARGE
+#endif
+    case (MPIABI_ERR_WIN)
+       mpi2abi_errorcode = MPI_ERR_WIN
     case default
-       mpi2abi_errorcode = ierror
+       !/ unknown error code
+       ! call assert(.false.)
+       mpi2abi_errorcode = errorcode
     end select
   end function mpi2abi_errorcode
 

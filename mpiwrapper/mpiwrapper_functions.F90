@@ -3870,48 +3870,72 @@ end subroutine MPIABI_Query_thread
 !   call MPI_Grequest_start(query_fn, free_fn, cancel_fn, extra_state, request, ierror)
 !   ierror = mpi2abi_errorcode(ierror)
 ! end subroutine MPIABI_Grequest_start
-! 
-! subroutine MPIABI_Status_set_cancelled(status, flag, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Status_set_cancelled(status, flag, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Status_set_cancelled
-! 
-! subroutine MPIABI_Status_set_elements(status, datatype, count, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Status_set_elements(status, datatype, count, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Status_set_elements
-! 
-! subroutine MPIABI_Status_set_elements_c(status, datatype, count, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Status_set_elements_c(status, datatype, count, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Status_set_elements_c
-! 
-! subroutine MPIABI_Status_set_error(status, err, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Status_set_error(status, err, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Status_set_error
-! 
-! subroutine MPIABI_Status_set_source(status, source, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Status_set_source(status, source, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Status_set_source
-! 
-! subroutine MPIABI_Status_set_tag(status, tag, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Status_set_tag(status, tag, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Status_set_tag
+
+subroutine MPIABI_Status_set_cancelled(status, flag, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(inout) :: status(MPIABI_STATUS_SIZE)
+  logical, intent(in) :: flag
+  integer, intent(out) :: ierror
+  integer wrap_status(MPI_STATUS_SIZE)
+  call abi2mpi_status(status, wrap_status)
+  call MPI_Status_set_cancelled(wrap_status, flag, ierror)
+  call mpi2abi_status(wrap_status, status)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Status_set_cancelled
+
+subroutine MPIABI_Status_set_elements(status, datatype, count, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(inout) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(in) :: datatype
+  integer, intent(in) :: count
+  integer, intent(out) :: ierror
+  integer wrap_status(MPI_STATUS_SIZE)
+  call abi2mpi_status(status, wrap_status)
+  call MPI_Status_set_elements(wrap_status, abi2mpi_datatype(datatype), count, ierror)
+  call mpi2abi_status(wrap_status, status)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Status_set_elements
+
+subroutine MPIABI_Status_set_error(status, err, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(inout) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(in) :: err
+  integer, intent(out) :: ierror
+  integer wrap_status(MPI_STATUS_SIZE)
+  call abi2mpi_status(status, wrap_status)
+  call MPI_Status_set_error(wrap_status, abi2mpi_errorcode(err), ierror)
+  call mpi2abi_status(wrap_status, status)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Status_set_error
+
+subroutine MPIABI_Status_set_source(status, source, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(inout) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(in) :: source
+  integer, intent(out) :: ierror
+  integer wrap_status(MPI_STATUS_SIZE)
+  call abi2mpi_status(status, wrap_status)
+  call MPI_Status_set_source(wrap_status, source, ierror)
+  call mpi2abi_status(wrap_status, status)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Status_set_source
+
+subroutine MPIABI_Status_set_tag(status, tag, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(inout) :: status(MPIABI_STATUS_SIZE)
+  integer, intent(in) :: tag
+  integer, intent(out) :: ierror
+  integer wrap_status(MPI_STATUS_SIZE)
+  call abi2mpi_status(status, wrap_status)
+  call MPI_Status_set_tag(wrap_status, tag, ierror)
+  call mpi2abi_status(wrap_status, status)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Status_set_tag
 
 ! A.3.12 I/O C Bindings
 
