@@ -1225,13 +1225,33 @@ subroutine MPIABI_Type_contiguous(count, oldtype, newtype, ierror)
   ierror = mpi2abi_errorcode(ierror)
 end subroutine MPIABI_Type_contiguous
 
-! subroutine MPIABI_Type_create_darray(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, order, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_darray(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, order, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_darray
-! 
+subroutine MPIABI_Type_create_darray(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, &
+     order, oldtype, newtype, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: size
+  integer, intent(in) :: rank
+  integer, intent(in) :: ndims
+  integer, intent(in) :: array_of_gsizes(ndims)
+  integer, intent(in) :: array_of_distribs(ndims)
+  integer, intent(in) :: array_of_dargs(ndims)
+  integer, intent(in) :: array_of_psizes(ndims)
+  integer, intent(in) :: order
+  integer, intent(in) :: oldtype
+  integer, intent(out) :: newtype
+  integer, intent(out) :: ierror
+  integer wrap_array_of_distribs(ndims)
+  integer wrap_newtype
+  integer n
+  do n = 1, ndims
+     wrap_array_of_distribs(n) = abi2mpi_distrib(array_of_distribs(n))
+  end do
+  call MPI_Type_create_darray(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, &
+       abi2mpi_order(order), abi2mpi_datatype(oldtype), wrap_newtype, ierror)
+  newtype = mpi2abi_datatype(newtype)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_create_darray
+
 ! subroutine MPIABI_Type_create_darray_c(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, order, oldtype, newtype, ierror)
 !   use mpiwrapper
 !   implicit none
@@ -3951,13 +3971,16 @@ subroutine MPIABI_File_close(fh, ierror)
   ierror = mpi2abi_errorcode(ierror)
 end subroutine MPIABI_File_close
 
-! subroutine MPIABI_File_delete(filename, info, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_File_delete(filename, info, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_File_delete
-! 
+subroutine MPIABI_File_delete(filename, info, ierror)
+  use mpiwrapper
+  implicit none
+  character(*), intent(in) :: filename
+  integer, intent(in) :: info
+  integer, intent(out) :: ierror
+  call MPI_File_delete(filename, abi2mpi_info(info), ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_File_delete
+
 ! subroutine MPIABI_File_get_amode(fh, amode, ierror)
 !   use mpiwrapper
 !   implicit none

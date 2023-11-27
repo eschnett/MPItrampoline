@@ -51,6 +51,20 @@ contains
 
   ! Translate (non-handle) integers
 
+  integer function abi2mpi_distrib(distrib)
+    integer, intent(in) :: distrib
+    select case (distrib)
+    case (MPIABI_DISTRIBUTE_BLOCK)
+       abi2mpi_distrib = MPI_DISTRIBUTE_BLOCK
+    case (MPIABI_DISTRIBUTE_CYCLIC)
+       abi2mpi_distrib = MPI_DISTRIBUTE_CYCLIC
+    case (MPIABI_DISTRIBUTE_NONE)
+       abi2mpi_distrib = MPI_DISTRIBUTE_NONE
+    case default
+       call assert(.false.)
+    end select
+  end function abi2mpi_distrib
+
   elemental integer function abi2mpi_errorcode(errorcode)
     integer, intent(in) :: errorcode
     ! Fast path
@@ -332,6 +346,30 @@ contains
        mpi2abi_errorcode = errorcode
     end select
   end function mpi2abi_errorcode
+
+  integer function abi2mpi_order(order)
+    integer, intent(in) :: order
+    select case (order)
+    case (MPIABI_ORDER_C)
+       abi2mpi_order = MPI_ORDER_C
+    case (MPIABI_ORDER_Fortran)
+       abi2mpi_order = MPI_ORDER_Fortran
+    case default
+       call assert(.false.)
+    end select
+  end function abi2mpi_order
+
+  integer function mpi2abi_order(order)
+    integer, intent(in) :: order
+    select case (order)
+    case (MPI_ORDER_C)
+       mpi2abi_order = MPIABI_ORDER_C
+    case (MPI_ORDER_Fortran)
+       mpi2abi_order = MPIABI_ORDER_Fortran
+    case default
+       call assert(.false.)
+    end select
+  end function mpi2abi_order
 
   integer function abi2mpi_proc(proc)
     integer, intent(in) :: proc
