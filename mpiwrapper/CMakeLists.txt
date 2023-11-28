@@ -35,9 +35,9 @@ enable_language(Fortran)
 
 include(GNUInstallDirs)
 
-include(FindMPI)
+find_package(MPI REQUIRED COMPONENTS C Fortran)
 # include(FindOpenMP)
-include(FindThreads)
+find_package(Threads REQUIRED)
 
 # include(CheckCSourceCompiles)
 include(CheckFunctionExists)
@@ -47,6 +47,8 @@ include(CheckSymbolExists)
 include(CheckTypeSize)
 include(CheckFortranSourceCompiles)
 
+list(APPEND CMAKE_REQUIRED_INCLUDES "${MPI_C_INCLUDE_DIRS}")
+list(APPEND CMAKE_REQUIRED_LIBRARIES "${MPI_C_LIBRARIES}")
 check_include_file(mpi.h HAVE_MPI_H)
 # OpenMPI 5.0.0 does not allow including `mpi-ext.h` without first
 # including `mpi.h` <https://github.com/open-mpi/ompi/issues/12111>
@@ -108,6 +110,8 @@ check_function_exists(MPIX_Query_hip_support HAVE_MPIX_QUERY_HIP_SUPPORT)
 check_function_exists(MPIX_Query_rocm_support HAVE_MPIX_QUERY_ROCM_SUPPORT)
 check_function_exists(MPIX_Query_ze_support HAVE_MPIX_QUERY_ZE_SUPPORT)
 
+list(APPEND CMAKE_REQUIRED_INCLUDES "${MPI_Fortran_INCLUDE_DIRS}")
+list(APPEND CMAKE_REQUIRED_LIBRARIES "${MPI_Fortran_LIBRARIES}")
 check_fortran_source_compiles(
   "
   implicit none
