@@ -112,7 +112,7 @@ add_library(mpitrampoline
   mpi.f90
   # mpiabi_function_pointers.c
 )
-target_compile_options(mpitrampoline PRIVATE -Wall -Wextra -Wno-unused-dummy-argument -Wno-unused-parameter)
+# target_compile_options(mpitrampoline PRIVATE -Wall -Wextra -Wno-unused-dummy-argument -Wno-unused-parameter)
 target_include_directories(
   mpitrampoline
   PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
