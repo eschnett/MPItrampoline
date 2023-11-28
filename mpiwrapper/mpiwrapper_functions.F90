@@ -1252,110 +1252,124 @@ subroutine MPIABI_Type_create_darray(size, rank, ndims, array_of_gsizes, array_o
   ierror = mpi2abi_errorcode(ierror)
 end subroutine MPIABI_Type_create_darray
 
-! subroutine MPIABI_Type_create_darray_c(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, order, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_darray_c(size, rank, ndims, array_of_gsizes, array_of_distribs, array_of_dargs, array_of_psizes, order, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_darray_c
-! 
-! subroutine MPIABI_Type_create_hindexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_hindexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_hindexed
-! 
-! subroutine MPIABI_Type_create_hindexed_block(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_hindexed_block(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_hindexed_block
-! 
-! subroutine MPIABI_Type_create_hindexed_block_c(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_hindexed_block_c(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_hindexed_block_c
-! 
-! subroutine MPIABI_Type_create_hindexed_c(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_hindexed_c(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_hindexed_c
-! 
-! subroutine MPIABI_Type_create_hvector(count, blocklength, stride, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_hvector(count, blocklength, stride, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_hvector
-! 
-! subroutine MPIABI_Type_create_hvector_c(count, blocklength, stride, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_hvector_c(count, blocklength, stride, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_hvector_c
-! 
-! subroutine MPIABI_Type_create_indexed_block(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_indexed_block(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_indexed_block
-! 
-! subroutine MPIABI_Type_create_indexed_block_c(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_indexed_block_c(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_indexed_block_c
-! 
-! subroutine MPIABI_Type_create_resized(oldtype, lb, extent, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_resized(oldtype, lb, extent, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_resized
-! 
-! subroutine MPIABI_Type_create_resized_c(oldtype, lb, extent, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_resized_c(oldtype, lb, extent, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_resized_c
-! 
-! subroutine MPIABI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_struct
-! 
-! subroutine MPIABI_Type_create_struct_c(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_struct_c(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_struct_c
-! 
-! subroutine MPIABI_Type_create_subarray(ndims, array_of_sizes, array_of_subsizes, array_of_starts, order, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_subarray(ndims, array_of_sizes, array_of_subsizes, array_of_starts, order, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_subarray
-! 
-! subroutine MPIABI_Type_create_subarray_c(ndims, array_of_sizes, array_of_subsizes, array_of_starts, order, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_create_subarray_c(ndims, array_of_sizes, array_of_subsizes, array_of_starts, order, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_create_subarray_c
+subroutine MPIABI_Type_create_hindexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: array_of_blocklengths(count)
+  integer, intent(in) :: array_of_displacements(count)
+  integer, intent(in) :: oldtype
+  integer, intent(out) :: newtype
+  integer, intent(out) :: ierror
+  integer wrap_newtype
+  call MPI_Type_create_hindexed(count, array_of_blocklengths, array_of_displacements, abi2mpi_datatype(oldtype), wrap_newtype, &
+       ierror)
+  newtype = mpi2abi_datatype(wrap_newtype)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_create_hindexed
+
+subroutine MPIABI_Type_create_hindexed_block(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) ::count
+  integer, intent(in) ::blocklength
+  integer, intent(in) ::array_of_displacements
+  integer, intent(in) ::oldtype
+  integer, intent(out) ::newtype
+  integer, intent(out) ::ierror
+  integer wrap_newtype
+  call MPI_Type_create_hindexed_block(count, blocklength, array_of_displacements, abi2mpi_datatype(oldtype), wrap_newtype, ierror)
+  newtype = mpi2abi_datatype(wrap_newtype)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_create_hindexed_block
+
+subroutine MPIABI_Type_create_hvector(count, blocklength, stride, oldtype, newtype, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: blocklength
+  integer, intent(in) :: stride
+  integer, intent(in) :: oldtype
+  integer, intent(out) :: newtype
+  integer, intent(out) :: ierror
+  integer wrap_newtype
+  call MPI_Type_create_hvector(count, blocklength, stride, abi2mpi_datatype(oldtype), wrap_newtype, ierror)
+  newtype = mpi2abi_datatype(wrap_newtype)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_create_hvector
+
+subroutine MPIABI_Type_create_indexed_block(count, blocklength, array_of_displacements, oldtype, newtype, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: blocklength
+  integer, intent(in) :: array_of_displacements
+  integer, intent(in) :: oldtype
+  integer, intent(out) :: newtype
+  integer, intent(out) :: ierror
+  integer wrap_newtype
+  call MPI_Type_create_indexed_block(count, blocklength, array_of_displacements, abi2mpi_datatype(oldtype), wrap_newtype, ierror)
+  newtype = mpi2abi_datatype(wrap_newtype)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_create_indexed_block
+
+subroutine MPIABI_Type_create_resized(oldtype, lb, extent, newtype, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: oldtype
+  integer(MPIABI_ADDRESS_KIND), intent(in) :: lb
+  integer(MPIABI_ADDRESS_KIND), intent(in) :: extent
+  integer, intent(out) :: newtype
+  integer, intent(out) :: ierror
+  integer(MPI_ADDRESS_KIND) wrap_lb
+  integer(MPI_ADDRESS_KIND) wrap_extent
+  integer wrap_newtype
+  wrap_lb = lb
+  wrap_extent = extent
+  call MPI_Type_create_resized(abi2mpi_datatype(oldtype), wrap_lb, wrap_extent, wrap_newtype, ierror)
+  newtype = mpi2abi_datatype(wrap_newtype)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_create_resized
+
+subroutine MPIABI_Type_create_struct(count, array_of_blocklengths, array_of_displacements, array_of_types, newtype, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: array_of_blocklengths(count)
+  integer(MPIABI_ADDRESS_KIND), intent(in) :: array_of_displacements(count)
+  integer, intent(in) :: array_of_types(count)
+  integer, intent(out) :: newtype
+  integer, intent(out) :: ierror
+  integer(MPI_ADDRESS_KIND) wrap_array_of_displacements(count)
+  integer wrap_array_of_types(count)
+  integer wrap_newtype
+  integer n
+  do n = 1, count
+     wrap_array_of_displacements(n) = array_of_displacements(n)
+     wrap_array_of_types(n) = abi2mpi_datatype(array_of_types(n))
+  end do
+  call MPI_Type_create_struct(count, array_of_blocklengths, wrap_array_of_displacements, wrap_array_of_types, wrap_newtype, ierror)
+  newtype = mpi2abi_datatype(wrap_newtype)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_create_struct
+
+subroutine MPIABI_Type_create_subarray(ndims, array_of_sizes, array_of_subsizes, array_of_starts, order, oldtype, newtype, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: ndims
+  integer, intent(in) :: array_of_sizes(ndims)
+  integer, intent(in) :: array_of_subsizes(ndims)
+  integer, intent(in) :: array_of_starts(ndims)
+  integer, intent(in) :: order
+  integer, intent(in) :: oldtype
+  integer, intent(out) :: newtype
+  integer, intent(out) :: ierror
+  integer wrap_newtype
+  call MPI_Type_create_subarray(ndims, array_of_sizes, array_of_subsizes, array_of_starts, abi2mpi_order(order), &
+       abi2mpi_datatype(oldtype), wrap_newtype, ierror)
+  newtype = mpi2abi_datatype(wrap_newtype)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_create_subarray
 
 subroutine MPIABI_Type_dup(oldtype, newtype, ierror)
   use mpiwrapper
@@ -3924,11 +3938,14 @@ subroutine MPIABI_Status_set_error(status, err, ierror)
   integer, intent(inout) :: status(MPIABI_STATUS_SIZE)
   integer, intent(in) :: err
   integer, intent(out) :: ierror
-  integer wrap_status(MPI_STATUS_SIZE)
-  call abi2mpi_status(status, wrap_status)
-  call MPI_Status_set_error(wrap_status, abi2mpi_errorcode(err), ierror)
-  call mpi2abi_status(wrap_status, status)
-  ierror = mpi2abi_errorcode(ierror)
+  ! This function is not defined by OpenMPI so we implement it ourselves
+  ! integer wrap_status(MPI_STATUS_SIZE)
+  ! call abi2mpi_status(status, wrap_status)
+  ! call MPI_Status_set_error(wrap_status, abi2mpi_errorcode(err), ierror)
+  ! call mpi2abi_status(wrap_status, status)
+  ! ierror = mpi2abi_errorcode(ierror)
+  status(MPIABI_ERROR) = err
+  ierror = MPIABI_SUCCESS
 end subroutine MPIABI_Status_set_error
 
 subroutine MPIABI_Status_set_source(status, source, ierror)
@@ -3937,11 +3954,14 @@ subroutine MPIABI_Status_set_source(status, source, ierror)
   integer, intent(inout) :: status(MPIABI_STATUS_SIZE)
   integer, intent(in) :: source
   integer, intent(out) :: ierror
-  integer wrap_status(MPI_STATUS_SIZE)
-  call abi2mpi_status(status, wrap_status)
-  call MPI_Status_set_source(wrap_status, source, ierror)
-  call mpi2abi_status(wrap_status, status)
-  ierror = mpi2abi_errorcode(ierror)
+  ! This function is not defined by OpenMPI so we implement it ourselves
+  ! integer wrap_status(MPI_STATUS_SIZE)
+  ! call abi2mpi_status(status, wrap_status)
+  ! call MPI_Status_set_source(wrap_status, abi2mpi_proc(source), ierror)
+  ! call mpi2abi_status(wrap_status, status)
+  ! ierror = mpi2abi_errorcode(ierror)
+  status(MPIABI_SOURCE) = source
+  ierror = MPIABI_SUCCESS
 end subroutine MPIABI_Status_set_source
 
 subroutine MPIABI_Status_set_tag(status, tag, ierror)
@@ -3950,11 +3970,14 @@ subroutine MPIABI_Status_set_tag(status, tag, ierror)
   integer, intent(inout) :: status(MPIABI_STATUS_SIZE)
   integer, intent(in) :: tag
   integer, intent(out) :: ierror
-  integer wrap_status(MPI_STATUS_SIZE)
-  call abi2mpi_status(status, wrap_status)
-  call MPI_Status_set_tag(wrap_status, tag, ierror)
-  call mpi2abi_status(wrap_status, status)
-  ierror = mpi2abi_errorcode(ierror)
+  ! This function is not defined by OpenMPI so we implement it ourselves
+  ! integer wrap_status(MPI_STATUS_SIZE)
+  ! call abi2mpi_status(status, wrap_status)
+  ! call MPI_Status_set_tag(wrap_status, abi2mpi_tag(tag), ierror)
+  ! call mpi2abi_status(wrap_status, status)
+  ! ierror = mpi2abi_errorcode(ierror)
+  status(MPIABI_TAG) = tag
+  ierror = MPIABI_SUCCESS
 end subroutine MPIABI_Status_set_tag
 
 ! A.3.12 I/O C Bindings
