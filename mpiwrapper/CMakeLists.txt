@@ -20,7 +20,7 @@ set(SOVERSION 3)
 include(CheckLanguage)
 
 check_language(C)
-if(NOT ${CMAKE_C_COMPILER})
+if(NOT CMAKE_C_COMPILER)
   message(FATAL_ERROR "No C language compiler")
 endif()
 # set(CMAKE_C_STANDARD 99)
@@ -28,7 +28,7 @@ set(CMAKE_C_STANDARD 11)        # for atomics and mutexes; could use OpenMP inst
 enable_language(C)
 
 check_language(Fortran)
-if(NOT ${CMAKE_Fortran_COMPILER})
+if(NOT CMAKE_Fortran_COMPILER)
   message(FATAL_ERROR "No Fortran language compiler")
 endif()
 enable_language(Fortran)
@@ -302,16 +302,16 @@ check_c_source_compiles(
   HAVE_USABLE_MPI_LOGICAL16
 )
 
-if(NOT ${HAVE_USABLE_MPI_INTEGER})
+if(NOT(${HAVE_USABLE_MPI_INTEGER}))
   message(FATAL_ERROR "MPI Fortran datatype `MPI_INTEGER` is not usable")
 endif()
-if(NOT ${HAVE_USABLE_MPI_REAL})
+if(NOT(${HAVE_USABLE_MPI_REAL}))
   message(FATAL_ERROR "MPI Fortran datatype `MPI_REAL` is not usable")
 endif()
-if(NOT ${HAVE_USABLE_MPI_COMPLEX})
+if(NOT(${HAVE_USABLE_MPI_COMPLEX}))
   message(FATAL_ERROR "MPI Fortran datatype `MPI_COMPLEX` is not usable")
 endif()
-if(NOT ${HAVE_USABLE_MPI_LOGICAL})
+if(NOT(${HAVE_USABLE_MPI_LOGICAL}))
   message(FATAL_ERROR "MPI Fortran datatype `MPI_LOGICAL` is not usable")
 endif()
 
