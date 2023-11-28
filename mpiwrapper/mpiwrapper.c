@@ -1612,6 +1612,9 @@ int MPIABI_Comm_attach_buffer(MPIABI_Comm comm, void *buffer, int size) {
     buffer = MPI_BUFFER_AUTOMATIC;
   int ierr = MPI_Comm_attach_buffer(abi2mpi_comm(comm), buffer, size);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Comm_attach_buffer_c(MPIABI_Comm comm, void *buffer,
