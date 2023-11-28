@@ -80,6 +80,7 @@
 #cmakedefine HAVE_MPIX_QUERY_ROCM_SUPPORT
 #cmakedefine HAVE_MPIX_QUERY_ZE_SUPPORT
 
+/* MPI 4 support */
 #cmakedefine HAVE_MPI_BUFFER_AUTOMATIC
 #cmakedefine HAVE_MPI_COMM_TYPE_HW_GUIDED
 #cmakedefine HAVE_MPI_COMM_TYPE_HW_UNGUIDED
@@ -89,4 +90,4 @@
 
 #cmakedefine HAVE_FORTRAN_MPI_SESSION_NULL
 
-#endif // #ifndef MPIWRAPPER_H
+#endif /* #ifndef MPIWRAPPER_H */

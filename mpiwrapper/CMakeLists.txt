@@ -20,16 +20,16 @@ set(SOVERSION 3)
 include(CheckLanguage)
 
 check_language(C)
-if(NOT(CMAKE_C_COMPILER))
-  message(FATAL_ERROR "No C support")
+if(NOT ${CMAKE_C_COMPILER})
+  message(FATAL_ERROR "No C language compiler")
 endif()
 # set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD 11)        # for atomics and mutexes; could use OpenMP instead
 enable_language(C)
 
 check_language(Fortran)
-if(NOT(CMAKE_Fortran_COMPILER))
-  message(FATAL_ERROR "No Fortran support")
+if(NOT ${CMAKE_Fortran_COMPILER})
+  message(FATAL_ERROR "No Fortran language compiler")
 endif()
 enable_language(Fortran)
 
@@ -302,6 +302,20 @@ check_c_source_compiles(
   HAVE_USABLE_MPI_LOGICAL16
 )
 
+if(NOT ${HAVE_USABLE_MPI_INTEGER})
+  message(FATAL_ERROR "MPI Fortran datatype `MPI_INTEGER` is not usable")
+endif()
+if(NOT ${HAVE_USABLE_MPI_REAL})
+  message(FATAL_ERROR "MPI Fortran datatype `MPI_REAL` is not usable")
+endif()
+if(NOT ${HAVE_USABLE_MPI_COMPLEX})
+  message(FATAL_ERROR "MPI Fortran datatype `MPI_COMPLEX` is not usable")
+endif()
+if(NOT ${HAVE_USABLE_MPI_LOGICAL})
+  message(FATAL_ERROR "MPI Fortran datatype `MPI_LOGICAL` is not usable")
+endif()
+
+
 check_symbol_exists(MPI_LB mpi.h HAVE_MPI_LB)
 check_symbol_exists(MPI_UB mpi.h HAVE_MPI_UB)
 
@@ -334,10 +348,12 @@ check_fortran_source_compiles(
 )
 
 # Check level of MPI 4 support
+## Constants
 check_symbol_exists(MPI_BUFFER_AUTOMATIC mpi.h HAVE_MPI_BUFFER_AUTOMATIC)
 check_symbol_exists(MPI_COMM_TYPE_HW_GUIDED mpi.h HAVE_MPI_COMM_TYPE_HW_GUIDED)
 check_symbol_exists(MPI_COMM_TYPE_HW_UNGUIDED mpi.h HAVE_MPI_COMM_TYPE_HW_UNGUIDED)
 check_symbol_exists(MPI_COMM_TYPE_RESOURCE_GUIDED mpi.h HAVE_MPI_COMM_TYPE_RESOURCE_GUIDED)
+## Types
 check_type_size(MPI_Session SIZEOF_MPI_SESSION)
 check_type_size(MPI_User_function_c SIZEOF_MPI_USER_FUNCTION_C)
 
