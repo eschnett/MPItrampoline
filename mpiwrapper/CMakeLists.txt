@@ -39,7 +39,7 @@ find_package(MPI REQUIRED COMPONENTS C Fortran)
 # include(FindOpenMP)
 find_package(Threads REQUIRED)
 
-# include(CheckCSourceCompiles)
+include(CheckCSourceCompiles)
 include(CheckFunctionExists)
 include(CheckIncludeFile)
 include(CheckIncludeFiles)
@@ -78,29 +78,229 @@ check_type_size(MPI_Offset SIZEOF_MPI_OFFSET)
 # check_type_size(MPI_Session SIZEOF_MPI_SESSION)
 # check_type_size(MPI_Win SIZEOF_MPI_WIN)
 
-check_symbol_exists(MPI_INTEGER1 mpi.h HAVE_MPI_INTEGER1)
-check_symbol_exists(MPI_INTEGER2 mpi.h HAVE_MPI_INTEGER2)
-check_symbol_exists(MPI_INTEGER4 mpi.h HAVE_MPI_INTEGER4)
-check_symbol_exists(MPI_INTEGER8 mpi.h HAVE_MPI_INTEGER8)
-check_symbol_exists(MPI_INTEGER16 mpi.h HAVE_MPI_INTEGER16)
+# check_symbol_exists(MPI_INTEGER mpi.h HAVE_MPI_INTEGER)
+# check_symbol_exists(MPI_INTEGER1 mpi.h HAVE_MPI_INTEGER1)
+# check_symbol_exists(MPI_INTEGER2 mpi.h HAVE_MPI_INTEGER2)
+# check_symbol_exists(MPI_INTEGER4 mpi.h HAVE_MPI_INTEGER4)
+# check_symbol_exists(MPI_INTEGER8 mpi.h HAVE_MPI_INTEGER8)
+# check_symbol_exists(MPI_INTEGER16 mpi.h HAVE_MPI_INTEGER16)
+# 
+# check_symbol_exists(MPI_REAL mpi.h HAVE_MPI_REAL)
+# check_symbol_exists(MPI_REAL1 mpi.h HAVE_MPI_REAL1)
+# check_symbol_exists(MPI_REAL2 mpi.h HAVE_MPI_REAL2)
+# check_symbol_exists(MPI_REAL4 mpi.h HAVE_MPI_REAL4)
+# check_symbol_exists(MPI_REAL8 mpi.h HAVE_MPI_REAL8)
+# check_symbol_exists(MPI_REAL16 mpi.h HAVE_MPI_REAL16)
+# 
+# check_symbol_exists(MPI_COMPLEX mpi.h HAVE_MPI_COMPLEX)
+# check_symbol_exists(MPI_COMPLEX2 mpi.h HAVE_MPI_COMPLEX2)
+# check_symbol_exists(MPI_COMPLEX4 mpi.h HAVE_MPI_COMPLEX4)
+# check_symbol_exists(MPI_COMPLEX8 mpi.h HAVE_MPI_COMPLEX8)
+# check_symbol_exists(MPI_COMPLEX16 mpi.h HAVE_MPI_COMPLEX16)
+# check_symbol_exists(MPI_COMPLEX32 mpi.h HAVE_MPI_COMPLEX32)
+# 
+# check_symbol_exists(MPI_LOGICAL mpi.h HAVE_MPI_LOGICAL)
+# check_symbol_exists(MPI_LOGICAL1 mpi.h HAVE_MPI_LOGICAL1)
+# check_symbol_exists(MPI_LOGICAL2 mpi.h HAVE_MPI_LOGICAL2)
+# check_symbol_exists(MPI_LOGICAL4 mpi.h HAVE_MPI_LOGICAL4)
+# check_symbol_exists(MPI_LOGICAL8 mpi.h HAVE_MPI_LOGICAL8)
+# check_symbol_exists(MPI_LOGICAL16 mpi.h HAVE_MPI_LOGICAL16)
 
-check_symbol_exists(MPI_REAL1 mpi.h HAVE_MPI_REAL1)
-check_symbol_exists(MPI_REAL2 mpi.h HAVE_MPI_REAL2)
-check_symbol_exists(MPI_REAL4 mpi.h HAVE_MPI_REAL4)
-check_symbol_exists(MPI_REAL8 mpi.h HAVE_MPI_REAL8)
-check_symbol_exists(MPI_REAL16 mpi.h HAVE_MPI_REAL16)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_INTEGER != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_INTEGER
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_INTEGER1 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_INTEGER1
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_INTEGER2 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_INTEGER2
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_INTEGER4 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_INTEGER4
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_INTEGER8 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_INTEGER8
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_INTEGER16 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_INTEGER16
+)
 
-check_symbol_exists(MPI_COMPLEX2 mpi.h HAVE_MPI_COMPLEX2)
-check_symbol_exists(MPI_COMPLEX4 mpi.h HAVE_MPI_COMPLEX4)
-check_symbol_exists(MPI_COMPLEX8 mpi.h HAVE_MPI_COMPLEX8)
-check_symbol_exists(MPI_COMPLEX16 mpi.h HAVE_MPI_COMPLEX16)
-check_symbol_exists(MPI_COMPLEX32 mpi.h HAVE_MPI_COMPLEX32)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_REAL != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_REAL
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_REAL1 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_REAL1
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_REAL2 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_REAL2
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_REAL4 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_REAL4
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_REAL8 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_REAL8
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_REAL16 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_REAL16
+)
 
-check_symbol_exists(MPI_LOGICAL1 mpi.h HAVE_MPI_LOGICAL1)
-check_symbol_exists(MPI_LOGICAL2 mpi.h HAVE_MPI_LOGICAL2)
-check_symbol_exists(MPI_LOGICAL4 mpi.h HAVE_MPI_LOGICAL4)
-check_symbol_exists(MPI_LOGICAL8 mpi.h HAVE_MPI_LOGICAL8)
-check_symbol_exists(MPI_LOGICAL16 mpi.h HAVE_MPI_LOGICAL16)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_COMPLEX != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_COMPLEX
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_COMPLEX2 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_COMPLEX2
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_COMPLEX4 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_COMPLEX4
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_COMPLEX8 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_COMPLEX8
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_COMPLEX16 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_COMPLEX16
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_COMPLEX32 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_COMPLEX32
+)
+
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_LOGICAL != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_LOGICAL
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_LOGICAL1 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_LOGICAL1
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_LOGICAL2 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_LOGICAL2
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_LOGICAL4 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_LOGICAL4
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_LOGICAL8 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_LOGICAL8
+)
+check_c_source_compiles(
+  "
+  \#include <mpi.h>
+  _Static_assert(MPI_LOGICAL16 != MPI_DATATYPE_NULL, \"\");
+  main () {}
+  "
+  HAVE_USABLE_MPI_LOGICAL16
+)
 
 check_symbol_exists(MPI_LB mpi.h HAVE_MPI_LB)
 check_symbol_exists(MPI_UB mpi.h HAVE_MPI_UB)

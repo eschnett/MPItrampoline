@@ -703,6 +703,10 @@ contains
     case (MPIABI_LOGICAL8)
        abi2mpi_datatype = MPI_LOGICAL8
 #endif
+#ifdef HAVE_MPI_LOGICAL16
+    case (MPIABI_LOGICAL16)
+       abi2mpi_datatype = MPI_LOGICAL8
+#endif
        ! [Datatypes for reduction functions (C)]
     case (MPIABI_FLOAT_INT)
        abi2mpi_datatype = MPI_FLOAT_INT
@@ -739,15 +743,9 @@ contains
 
   integer function mpi2abi_datatype(datatype)
     integer, intent(in) :: datatype
-    ! MPICH defines `MPI_INTEGER16` to be `MPI_DATATYPE_NULL`, and this doesn't work with a `select case` statement
-    ! <https://github.com/pmodels/mpich/issues/6809>
-    if (datatype == MPI_DATATYPE_NULL) then
-       mpi2abi_datatype = MPIABI_DATATYPE_NULL
-       return
-    end if
     select case (datatype)
-    ! case (MPI_DATATYPE_NULL)
-    !    mpi2abi_datatype = MPIABI_DATATYPE_NULL
+    case (MPI_DATATYPE_NULL)
+       mpi2abi_datatype = MPIABI_DATATYPE_NULL
        ! [C types]
     case (MPI_CHAR)
        mpi2abi_datatype = MPIABI_CHAR
@@ -842,82 +840,86 @@ contains
        ! [Optional datatypes (Fortran)]
     case (MPI_DOUBLE_COMPLEX)
        mpi2abi_datatype = MPIABI_DOUBLE_COMPLEX
-#ifdef HAVE_MPI_INTEGER1
+#ifdef HAVE_USABLE_MPI_INTEGER1
     case (MPI_INTEGER1)
        mpi2abi_datatype = MPIABI_INTEGER1
 #endif
-#ifdef HAVE_MPI_INTEGER2
+#ifdef HAVE_USABLE_MPI_INTEGER2
     case (MPI_INTEGER2)
        mpi2abi_datatype = MPIABI_INTEGER2
 #endif
-#ifdef HAVE_MPI_INTEGER4
+#ifdef HAVE_USABLE_MPI_INTEGER4
     case (MPI_INTEGER4)
        mpi2abi_datatype = MPIABI_INTEGER4
 #endif
-#ifdef HAVE_MPI_INTEGER8
+#ifdef HAVE_USABLE_MPI_INTEGER8
     case (MPI_INTEGER8)
        mpi2abi_datatype = MPIABI_INTEGER8
 #endif
-#ifdef HAVE_MPI_INTEGER16
+#ifdef HAVE_USABLE_MPI_INTEGER16
     case (MPI_INTEGER16)
        mpi2abi_datatype = MPIABI_INTEGER16
 #endif
-#ifdef HAVE_MPI_REAL2
+#ifdef HAVE_USABLE_MPI_REAL2
     case (MPI_REAL2)
        mpi2abi_datatype = MPIABI_REAL2
 #endif
-#ifdef HAVE_MPI_REAL4
+#ifdef HAVE_USABLE_MPI_REAL4
     case (MPI_REAL4)
        mpi2abi_datatype = MPIABI_REAL4
 #endif
-#ifdef HAVE_MPI_REAL8
+#ifdef HAVE_USABLE_MPI_REAL8
     case (MPI_REAL8)
        mpi2abi_datatype = MPIABI_REAL8
 #endif
-#ifdef HAVE_MPI_REAL16
+#ifdef HAVE_USABLE_MPI_REAL16
     case (MPI_REAL16)
        mpi2abi_datatype = MPIABI_REAL16
 #endif
-#ifdef HAVE_MPI_COMPLEX2
+#ifdef HAVE_USABLE_MPI_COMPLEX2
     case (MPI_COMPLEX2)
        mpi2abi_datatype = MPIABI_COMPLEX2
 #endif
-#ifdef HAVE_MPI_COMPLEX4
+#ifdef HAVE_USABLE_MPI_COMPLEX4
     case (MPI_COMPLEX4)
        mpi2abi_datatype = MPIABI_COMPLEX4
 #endif
-#ifdef HAVE_MPI_COMPLEX8
+#ifdef HAVE_USABLE_MPI_COMPLEX8
     case (MPI_COMPLEX8)
        mpi2abi_datatype = MPIABI_COMPLEX8
 #endif
-#ifdef HAVE_MPI_COMPLEX16
+#ifdef HAVE_USABLE_MPI_COMPLEX16
     case (MPI_COMPLEX16)
        mpi2abi_datatype = MPIABI_COMPLEX16
 #endif
-#ifdef HAVE_MPI_COMPLEX32
+#ifdef HAVE_USABLE_MPI_COMPLEX32
     case (MPI_COMPLEX32)
        mpi2abi_datatype = MPIABI_COMPLEX32
 #endif
        ! [Extensions]
-#ifdef HAVE_MPI_REAL1
+#ifdef HAVE_USABLE_MPI_REAL1
     case (MPI_REAL1)
        mpi2abi_datatype = MPIABI_REAL1
 #endif
-#ifdef HAVE_MPI_LOGICAL1
+#ifdef HAVE_USABLE_MPI_LOGICAL1
     case (MPI_LOGICAL1)
        mpi2abi_datatype = MPIABI_LOGICAL1
 #endif
-#ifdef HAVE_MPI_LOGICAL2
+#ifdef HAVE_USABLE_MPI_LOGICAL2
     case (MPI_LOGICAL2)
        mpi2abi_datatype = MPIABI_LOGICAL2
 #endif
-#ifdef HAVE_MPI_LOGICAL4
+#ifdef HAVE_USABLE_MPI_LOGICAL4
     case (MPI_LOGICAL4)
        mpi2abi_datatype = MPIABI_LOGICAL4
 #endif
-#ifdef HAVE_MPI_LOGICAL8
+#ifdef HAVE_USABLE_MPI_LOGICAL8
     case (MPI_LOGICAL8)
        mpi2abi_datatype = MPIABI_LOGICAL8
+#endif
+#ifdef HAVE_USABLE_MPI_LOGICAL16
+    case (MPI_LOGICAL16)
+       mpi2abi_datatype = MPIABI_LOGICAL16
 #endif
        ! [Datatypes for reduction functions (C)]
     case (MPI_FLOAT_INT)

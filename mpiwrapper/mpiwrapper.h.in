@@ -19,29 +19,61 @@
 #cmakedefine HAVE_MPI_H
 #cmakedefine HAVE_MPI_EXT_H
 
-#cmakedefine HAVE_MPI_INTEGER1
-#cmakedefine HAVE_MPI_INTEGER2
-#cmakedefine HAVE_MPI_INTEGER4
-#cmakedefine HAVE_MPI_INTEGER8
-#cmakedefine HAVE_MPI_INTEGER16
+/* #cmakedefine HAVE_MPI_INTEGER */
+/* #cmakedefine HAVE_MPI_INTEGER1 */
+/* #cmakedefine HAVE_MPI_INTEGER2 */
+/* #cmakedefine HAVE_MPI_INTEGER4 */
+/* #cmakedefine HAVE_MPI_INTEGER8 */
+/* #cmakedefine HAVE_MPI_INTEGER16 */
 
-#cmakedefine HAVE_MPI_REAL1
-#cmakedefine HAVE_MPI_REAL2
-#cmakedefine HAVE_MPI_REAL4
-#cmakedefine HAVE_MPI_REAL8
-#cmakedefine HAVE_MPI_REAL16
+/* #cmakedefine HAVE_MPI_REAL */
+/* #cmakedefine HAVE_MPI_REAL1 */
+/* #cmakedefine HAVE_MPI_REAL2 */
+/* #cmakedefine HAVE_MPI_REAL4 */
+/* #cmakedefine HAVE_MPI_REAL8 */
+/* #cmakedefine HAVE_MPI_REAL16 */
 
-#cmakedefine HAVE_MPI_COMPLEX2
-#cmakedefine HAVE_MPI_COMPLEX4
-#cmakedefine HAVE_MPI_COMPLEX8
-#cmakedefine HAVE_MPI_COMPLEX16
-#cmakedefine HAVE_MPI_COMPLEX32
+/* #cmakedefine HAVE_MPI_COMPLEX */
+/* #cmakedefine HAVE_MPI_COMPLEX2 */
+/* #cmakedefine HAVE_MPI_COMPLEX4 */
+/* #cmakedefine HAVE_MPI_COMPLEX8 */
+/* #cmakedefine HAVE_MPI_COMPLEX16 */
+/* #cmakedefine HAVE_MPI_COMPLEX32 */
 
-#cmakedefine HAVE_MPI_LOGICAL1
-#cmakedefine HAVE_MPI_LOGICAL2
-#cmakedefine HAVE_MPI_LOGICAL4
-#cmakedefine HAVE_MPI_LOGICAL8
-#cmakedefine HAVE_MPI_LOGICAL16
+/* #cmakedefine HAVE_MPI_LOGICAL1 */
+/* #cmakedefine HAVE_MPI_LOGICAL */
+/* #cmakedefine HAVE_MPI_LOGICAL2 */
+/* #cmakedefine HAVE_MPI_LOGICAL4 */
+/* #cmakedefine HAVE_MPI_LOGICAL8 */
+/* #cmakedefine HAVE_MPI_LOGICAL16 */
+
+#cmakedefine HAVE_USABLE_MPI_INTEGER
+#cmakedefine HAVE_USABLE_MPI_INTEGER1
+#cmakedefine HAVE_USABLE_MPI_INTEGER2
+#cmakedefine HAVE_USABLE_MPI_INTEGER4
+#cmakedefine HAVE_USABLE_MPI_INTEGER8
+#cmakedefine HAVE_USABLE_MPI_INTEGER16
+
+#cmakedefine HAVE_USABLE_MPI_REAL
+#cmakedefine HAVE_USABLE_MPI_REAL1
+#cmakedefine HAVE_USABLE_MPI_REAL2
+#cmakedefine HAVE_USABLE_MPI_REAL4
+#cmakedefine HAVE_USABLE_MPI_REAL8
+#cmakedefine HAVE_USABLE_MPI_REAL16
+
+#cmakedefine HAVE_USABLE_MPI_COMPLEX
+#cmakedefine HAVE_USABLE_MPI_COMPLEX2
+#cmakedefine HAVE_USABLE_MPI_COMPLEX4
+#cmakedefine HAVE_USABLE_MPI_COMPLEX8
+#cmakedefine HAVE_USABLE_MPI_COMPLEX16
+#cmakedefine HAVE_USABLE_MPI_COMPLEX32
+
+#cmakedefine HAVE_USABLE_MPI_LOGICAL1
+#cmakedefine HAVE_USABLE_MPI_LOGICAL
+#cmakedefine HAVE_USABLE_MPI_LOGICAL2
+#cmakedefine HAVE_USABLE_MPI_LOGICAL4
+#cmakedefine HAVE_USABLE_MPI_LOGICAL8
+#cmakedefine HAVE_USABLE_MPI_LOGICAL16
 
 #cmakedefine HAVE_MPIX_QUERY_CUDA_SUPPORT
 #cmakedefine HAVE_MPIX_QUERY_HIP_SUPPORT
