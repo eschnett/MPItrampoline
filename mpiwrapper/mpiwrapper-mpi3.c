@@ -35,7 +35,6 @@ void MPI_Get_accumulate_c() { assert(0); }
 void MPI_Get_c() { assert(0); }
 void MPI_Get_count_c() { assert(0); }
 void MPI_Get_elements_c() { assert(0); }
-void MPI_Get_hw_resource_info() { assert(0); }
 void MPI_Iallgather_c() { assert(0); }
 void MPI_Iallgatherv_c() { assert(0); }
 void MPI_Iallreduce_c() { assert(0); }
@@ -91,9 +90,6 @@ void MPI_Reduce_scatter_block_c() { assert(0); }
 void MPI_Reduce_scatter_block_init_c() { assert(0); }
 void MPI_Reduce_scatter_c() { assert(0); }
 void MPI_Reduce_scatter_init_c() { assert(0); }
-void MPI_Remove_error_class() { assert(0); }
-void MPI_Remove_error_code() { assert(0); }
-void MPI_Remove_error_string() { assert(0); }
 void MPI_Rget_accumulate_c() { assert(0); }
 void MPI_Rget_c() { assert(0); }
 void MPI_Rput_c() { assert(0); }
@@ -112,9 +108,6 @@ void MPI_Sendrecv_replace_c() { assert(0); }
 void MPI_Ssend_c() { assert(0); }
 void MPI_Ssend_init_c() { assert(0); }
 void MPI_Status_set_elements_c() { assert(0); }
-void MPI_Status_set_error() { assert(0); }
-void MPI_Status_set_source() { assert(0); }
-void MPI_Status_set_tag() { assert(0); }
 void MPI_Type_contiguous_c() { assert(0); }
 void MPI_Type_create_darray_c() { assert(0); }
 void MPI_Type_create_hindexed_block_c() { assert(0); }
@@ -128,7 +121,6 @@ void MPI_Type_get_contents_c() { assert(0); }
 void MPI_Type_get_envelope_c() { assert(0); }
 void MPI_Type_get_extent_c() { assert(0); }
 void MPI_Type_get_true_extent_c() { assert(0); }
-void MPI_Type_get_value_index() { assert(0); }
 void MPI_Type_indexed_c() { assert(0); }
 void MPI_Type_size_c() { assert(0); }
 void MPI_Type_vector_c() { assert(0); }

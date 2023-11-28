@@ -4794,12 +4794,16 @@ int MPIABI_Scatterv_init_c(const void *sendbuf, const MPIABI_Count sendcounts[],
 int MPIABI_Type_get_value_index(MPIABI_Datatype value_type,
                                 MPIABI_Datatype index_type,
                                 MPIABI_Datatype *pair_type) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Datatype mpi_pair_type;
   int ierr =
       MPI_Type_get_value_index(abi2mpi_datatype(value_type),
                                abi2mpi_datatype(index_type), &mpi_pair_type);
   *pair_type = mpi2abi_datatype(mpi_pair_type);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 // A.3.5 Groups, Contexts, Communicators, and Caching C Bindings
@@ -6278,10 +6282,14 @@ int MPIABI_Free_mem(void *base) {
 }
 
 int MPIABI_Get_hw_resource_info(MPIABI_Info *hw_info) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Info mpi_hw_info;
   int ierr = MPI_Get_hw_resource_info(&mpi_hw_info);
   *hw_info = mpi2abi_info(mpi_hw_info);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Get_library_version(char *version, int *resultlen) {
@@ -6300,18 +6308,30 @@ int MPIABI_Get_version(int *version, int *subversion) {
 }
 
 int MPIABI_Remove_error_class(int errorclass) {
+#if MPI_VERSION_NUMBER >= 410
   int ierr = MPI_Remove_error_class(errorclass);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Remove_error_code(int errorcode) {
+#if MPI_VERSION_NUMBER >= 410
   int ierr = MPI_Remove_error_code(errorcode);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Remove_error_string(int errorcode) {
+#if MPI_VERSION_NUMBER >= 410
   int ierr = MPI_Remove_error_string(errorcode);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Session_call_errhandler(MPIABI_Session session, int errorcode) {
@@ -7133,24 +7153,36 @@ int MPIABI_Status_set_elements_c(MPIABI_Status *status,
 }
 
 int MPIABI_Status_set_error(MPIABI_Status *status, int err) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Status *mpi_status = abi2mpi_statusptr(status);
   int ierr = MPI_Status_set_error(mpi_status, err);
   mpi2abi_statusptr(mpi_status);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Status_set_source(MPIABI_Status *status, int source) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Status *mpi_status = abi2mpi_statusptr(status);
   int ierr = MPI_Status_set_source(mpi_status, source);
   mpi2abi_statusptr(mpi_status);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Status_set_tag(MPIABI_Status *status, int tag) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Status *mpi_status = abi2mpi_statusptr(status);
   int ierr = MPI_Status_set_tag(mpi_status, tag);
   mpi2abi_statusptr(mpi_status);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 // A.3.12 I/O C Bindings
