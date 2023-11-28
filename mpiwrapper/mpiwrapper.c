@@ -54,7 +54,6 @@
 #define MPI_User_function_c MPI_User_function
 #endif
 
-
 ////////////////////////////////////////////////////////////////////////////////
 
 // Consistency checks
@@ -1580,15 +1579,23 @@ int MPIABI_Buffer_detach_c(void *buffer_addr, MPIABI_Count *size) {
 }
 
 int MPIABI_Buffer_flush(void) {
+#if MPI_VERSION_NUMBER >= 410
   int ierr = MPI_Buffer_flush();
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Buffer_iflush(MPIABI_Request *request) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Request mpi_request;
   int ierr = MPI_Buffer_iflush(&mpi_request);
   *request = mpi2abi_request(mpi_request);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Cancel(MPIABI_Request *request) {
@@ -1600,6 +1607,7 @@ int MPIABI_Cancel(MPIABI_Request *request) {
 }
 
 int MPIABI_Comm_attach_buffer(MPIABI_Comm comm, void *buffer, int size) {
+#if MPI_VERSION_NUMBER >= 410
   if (buffer == MPIABI_BUFFER_AUTOMATIC)
     buffer = MPI_BUFFER_AUTOMATIC;
   int ierr = MPI_Comm_attach_buffer(abi2mpi_comm(comm), buffer, size);
@@ -1608,21 +1616,30 @@ int MPIABI_Comm_attach_buffer(MPIABI_Comm comm, void *buffer, int size) {
 
 int MPIABI_Comm_attach_buffer_c(MPIABI_Comm comm, void *buffer,
                                 MPIABI_Count size) {
+#if MPI_VERSION_NUMBER >= 410
   if (buffer == MPIABI_BUFFER_AUTOMATIC)
     buffer = MPI_BUFFER_AUTOMATIC;
   int ierr = MPI_Comm_attach_buffer_c(abi2mpi_comm(comm), buffer, size);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Comm_detach_buffer(MPIABI_Comm comm, void *buffer_addr, int *size) {
+#if MPI_VERSION_NUMBER >= 410
   int ierr = MPI_Comm_detach_buffer(abi2mpi_comm(comm), buffer_addr, size);
   if (*(void **)buffer_addr == MPI_BUFFER_AUTOMATIC)
     *(void **)buffer_addr = MPIABI_BUFFER_AUTOMATIC;
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Comm_detach_buffer_c(MPIABI_Comm comm, void *buffer_addr,
                                 MPIABI_Count *size) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Count mpi_size;
   int ierr =
       MPI_Comm_detach_buffer_c(abi2mpi_comm(comm), buffer_addr, &mpi_size);
@@ -1630,18 +1647,29 @@ int MPIABI_Comm_detach_buffer_c(MPIABI_Comm comm, void *buffer_addr,
     *(void **)buffer_addr = MPIABI_BUFFER_AUTOMATIC;
   *size = mpi_size;
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Comm_flush_buffer(MPIABI_Comm comm) {
+#if MPI_VERSION_NUMBER >= 410
   int ierr = MPI_Comm_flush_buffer(abi2mpi_comm(comm));
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Comm_iflush_buffer(MPIABI_Comm comm, MPIABI_Request *request) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Request mpi_request;
   int ierr = MPI_Comm_iflush_buffer(abi2mpi_comm(comm), &mpi_request);
   *request = mpi2abi_request(mpi_request);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Get_count(const MPIABI_Status *status, MPIABI_Datatype datatype,
@@ -1970,6 +1998,7 @@ int MPIABI_Request_get_status_all(int count,
                                   const MPIABI_Request array_of_requests[],
                                   int *flag,
                                   MPIABI_Status array_of_statuses[]) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Request array_of_mpi_requests[count];
   for (int n = 0; n < count; ++n)
     array_of_mpi_requests[n] = abi2mpi_request(array_of_requests[n]);
@@ -1982,12 +2011,16 @@ int MPIABI_Request_get_status_all(int count,
       array_of_statuses[n] =
           mpi2abi_status(((MPI_Status *)array_of_statuses)[n]);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Request_get_status_any(int count,
                                   const MPIABI_Request array_of_requests[],
                                   int *index, int *flag,
                                   MPIABI_Status *status) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Request array_of_mpi_requests[count];
   for (int n = 0; n < count; ++n)
     array_of_mpi_requests[n] = abi2mpi_request(array_of_requests[n]);
@@ -1997,12 +2030,16 @@ int MPIABI_Request_get_status_any(int count,
   if (*flag)
     mpi2abi_statusptr(mpi_status);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Request_get_status_some(int incount,
                                    const MPIABI_Request array_of_requests[],
                                    int *outcount, int array_of_indices[],
                                    MPIABI_Status array_of_statuses[]) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Request array_of_mpi_requests[incount];
   for (int n = 0; n < incount; ++n)
     array_of_mpi_requests[n] = abi2mpi_request(array_of_requests[n]);
@@ -2016,6 +2053,9 @@ int MPIABI_Request_get_status_some(int incount,
       array_of_statuses[n] =
           mpi2abi_status(((MPI_Status *)array_of_statuses)[n]);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Rsend(const void *buf, int count, MPIABI_Datatype datatype, int dest,
@@ -2147,32 +2187,45 @@ int MPIABI_Sendrecv_replace_c(void *buf, MPIABI_Count count,
 
 int MPIABI_Session_attach_buffer(MPIABI_Session session, void *buffer,
                                  int size) {
+#if MPI_VERSION_NUMBER >= 410
   if (buffer == MPIABI_BUFFER_AUTOMATIC)
     buffer = MPI_BUFFER_AUTOMATIC;
   int ierr = MPI_Session_attach_buffer(abi2mpi_session(session), buffer, size);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Session_attach_buffer_c(MPIABI_Session session, void *buffer,
                                    MPIABI_Count size) {
+#if MPI_VERSION_NUMBER >= 410
   if (buffer == MPIABI_BUFFER_AUTOMATIC)
     buffer = MPI_BUFFER_AUTOMATIC;
   int ierr =
       MPI_Session_attach_buffer_c(abi2mpi_session(session), buffer, size);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Session_detach_buffer(MPIABI_Session session, void *buffer_addr,
                                  int *size) {
+#if MPI_VERSION_NUMBER >= 410
   int ierr =
       MPI_Session_detach_buffer(abi2mpi_session(session), buffer_addr, size);
   if (*(void **)buffer_addr == MPI_BUFFER_AUTOMATIC)
     *(void **)buffer_addr = MPIABI_BUFFER_AUTOMATIC;
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Session_detach_buffer_c(MPIABI_Session session, void *buffer_addr,
                                    MPIABI_Count *size) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Count mpi_size;
   int ierr = MPI_Session_detach_buffer_c(abi2mpi_session(session), buffer_addr,
                                          &mpi_size);
@@ -2180,19 +2233,30 @@ int MPIABI_Session_detach_buffer_c(MPIABI_Session session, void *buffer_addr,
     *(void **)buffer_addr = MPIABI_BUFFER_AUTOMATIC;
   *size = mpi_size;
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Session_flush_buffer(MPIABI_Session session) {
+#if MPI_VERSION_NUMBER >= 410
   int ierr = MPI_Session_flush_buffer(abi2mpi_session(session));
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Session_iflush_buffer(MPIABI_Session session,
                                  MPIABI_Request *request) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Request mpi_request;
   int ierr = MPI_Session_iflush_buffer(abi2mpi_session(session), &mpi_request);
   *request = mpi2abi_request(mpi_request);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Ssend(const void *buf, int count, MPIABI_Datatype datatype, int dest,
@@ -2251,24 +2315,36 @@ int MPIABI_Startall(int count, MPIABI_Request array_of_requests[]) {
 }
 
 int MPIABI_Status_get_error(MPIABI_Status *status, int *err) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Status mpi_status = abi2mpi_status(*status);
   int ierr = MPI_Status_get_error(&mpi_status, err);
   *err = mpi2abi_errorcode(*err);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Status_get_source(MPIABI_Status *status, int *source) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Status mpi_status = abi2mpi_status(*status);
   int ierr = MPI_Status_get_source(&mpi_status, source);
   *source = mpi2abi_proc(*source);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Status_get_tag(MPIABI_Status *status, int *tag) {
+#if MPI_VERSION_NUMBER >= 410
   MPI_Status mpi_status = abi2mpi_status(*status);
   int ierr = MPI_Status_get_tag(&mpi_status, tag);
   *tag = mpi2abi_tag(*tag);
   return mpi2abi_errorcode(ierr);
+#else
+  assert(0);
+#endif
 }
 
 int MPIABI_Test(MPIABI_Request *request, int *flag, MPIABI_Status *status) {

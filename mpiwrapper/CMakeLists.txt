@@ -412,7 +412,6 @@ add_library(mpiwrapper
   mpiwrapper.h
   mpiwrapper.c
   mpiwrapper-mpi3.c
-  mpiwrapper-mpi40.c
   mpiwrapper.F90
   mpiwrapper_functions.F90
 )
