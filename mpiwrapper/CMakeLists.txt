@@ -39,7 +39,7 @@ find_package(MPI REQUIRED COMPONENTS C Fortran)
 # include(FindOpenMP)
 find_package(Threads REQUIRED)
 
-include(CheckCSourceCompiles)
+# include(CheckCSourceCompiles)
 include(CheckFunctionExists)
 include(CheckIncludeFile)
 include(CheckIncludeFiles)
@@ -106,200 +106,248 @@ check_type_size(MPI_Offset SIZEOF_MPI_OFFSET)
 # check_symbol_exists(MPI_LOGICAL8 mpi.h HAVE_MPI_LOGICAL8)
 # check_symbol_exists(MPI_LOGICAL16 mpi.h HAVE_MPI_LOGICAL16)
 
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_INTEGER != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_INTEGER - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_INTEGER
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_INTEGER1 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_INTEGER1 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_INTEGER1
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_INTEGER2 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_INTEGER2 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_INTEGER2
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_INTEGER4 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_INTEGER4 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_INTEGER4
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_INTEGER8 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_INTEGER8 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_INTEGER8
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_INTEGER16 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_INTEGER16 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_INTEGER16
+  SRC_EXT .f90
 )
 
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_REAL != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_REAL - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_REAL
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_REAL1 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_REAL1 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_REAL1
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_REAL2 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_REAL2 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_REAL2
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_REAL4 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_REAL4 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_REAL4
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_REAL8 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_REAL8 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_REAL8
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_REAL16 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_REAL16 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_REAL16
+  SRC_EXT .f90
 )
 
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_COMPLEX != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_COMPLEX - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_COMPLEX
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_COMPLEX2 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_COMPLEX2 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_COMPLEX2
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_COMPLEX4 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_COMPLEX4 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_COMPLEX4
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_COMPLEX8 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_COMPLEX8 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_COMPLEX8
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_COMPLEX16 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_COMPLEX16 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_COMPLEX16
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_COMPLEX32 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_COMPLEX32 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_COMPLEX32
+  SRC_EXT .f90
 )
 
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_LOGICAL != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_LOGICAL - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_LOGICAL
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_LOGICAL1 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_LOGICAL1 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_LOGICAL1
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_LOGICAL2 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_LOGICAL2 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_LOGICAL2
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_LOGICAL4 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_LOGICAL4 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_LOGICAL4
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_LOGICAL8 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_LOGICAL8 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_LOGICAL8
+  SRC_EXT .f90
 )
-check_c_source_compiles(
+check_fortran_source_compiles(
   "
-  \#include <mpi.h>
-  _Static_assert(MPI_LOGICAL16 != MPI_DATATYPE_NULL, \"\");
-  main () {}
+  implicit none
+  include 'mpif.h'
+  integer, parameter :: dummy = 1 / (MPI_LOGICAL16 - MPI_DATATYPE_NULL)
+  end
   "
   HAVE_USABLE_MPI_LOGICAL16
+  SRC_EXT .f90
 )
 
 if(NOT(${HAVE_USABLE_MPI_INTEGER}))
