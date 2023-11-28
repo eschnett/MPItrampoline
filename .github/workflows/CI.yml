@@ -66,6 +66,7 @@ jobs:
             -B build \
             -DCMAKE_BUILD_TYPE=Debug \
             -DCMAKE_C_COMPILER=mpicc \
+            -DCMAKE_Fortran_COMPILER=mpifort \
             -DCMAKE_INSTALL_PREFIX=$HOME/mpiwrapper-${{matrix.mpi}}
 
     - name: Build MPIwrapper
