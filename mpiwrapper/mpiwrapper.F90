@@ -51,6 +51,46 @@ contains
 
   ! Translate (non-handle) integers
 
+  integer function mpi2abi_combiner(combiner)
+    integer, intent(in) :: combiner
+    select case (combiner)
+    case (MPI_COMBINER_CONTIGUOUS)
+       mpi2abi_combiner = MPIABI_COMBINER_CONTIGUOUS
+    case (MPI_COMBINER_DARRAY)
+       mpi2abi_combiner = MPIABI_COMBINER_DARRAY
+    case (MPI_COMBINER_DUP)
+       mpi2abi_combiner = MPIABI_COMBINER_DUP
+    case (MPI_COMBINER_F90_COMPLEX)
+       mpi2abi_combiner = MPIABI_COMBINER_F90_COMPLEX
+    case (MPI_COMBINER_F90_INTEGER)
+       mpi2abi_combiner = MPIABI_COMBINER_F90_INTEGER
+    case (MPI_COMBINER_F90_REAL)
+       mpi2abi_combiner = MPIABI_COMBINER_F90_REAL
+    case (MPI_COMBINER_HINDEXED)
+       mpi2abi_combiner = MPIABI_COMBINER_HINDEXED
+    case (MPI_COMBINER_HVECTOR)
+       mpi2abi_combiner = MPIABI_COMBINER_HVECTOR
+    case (MPI_COMBINER_INDEXED_BLOCK)
+       mpi2abi_combiner = MPIABI_COMBINER_INDEXED_BLOCK
+    case (MPI_COMBINER_HINDEXED_BLOCK)
+       mpi2abi_combiner = MPIABI_COMBINER_HINDEXED_BLOCK
+    case (MPI_COMBINER_INDEXED)
+       mpi2abi_combiner = MPIABI_COMBINER_INDEXED
+    case (MPI_COMBINER_NAMED)
+       mpi2abi_combiner = MPIABI_COMBINER_NAMED
+    case (MPI_COMBINER_RESIZED)
+       mpi2abi_combiner = MPIABI_COMBINER_RESIZED
+    case (MPI_COMBINER_STRUCT)
+       mpi2abi_combiner = MPIABI_COMBINER_STRUCT
+    case (MPI_COMBINER_SUBARRAY)
+       mpi2abi_combiner = MPIABI_COMBINER_SUBARRAY
+    case (MPI_COMBINER_VECTOR)
+       mpi2abi_combiner = MPIABI_COMBINER_VECTOR
+    case default
+       call assert(.false.)
+    end select
+  end function mpi2abi_combiner
+
   integer function abi2mpi_distrib(distrib)
     integer, intent(in) :: distrib
     select case (distrib)

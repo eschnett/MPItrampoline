@@ -87,7 +87,7 @@ subroutine MPIABI_Buffer_flush(ierror)
   call MPI_Buffer_flush(ierror)
   ierror = mpi2abi_errorcode(ierror)
 #else
-call assert(.false.)
+  call assert(.false.)
 #endif
 end subroutine MPIABI_Buffer_flush
 
@@ -836,7 +836,7 @@ subroutine MPIABI_Startall(count, array_of_requests, ierror)
   integer, intent(in) :: count
   integer, intent(in) :: array_of_requests(count)
   integer, intent(out) :: ierror
-  integer :: wrap_array_of_requests(count)
+  integer wrap_array_of_requests(count)
   integer n
   do n = 1, count
      wrap_array_of_requests(n) = abi2mpi_request(array_of_requests(n))
@@ -1461,34 +1461,47 @@ subroutine MPIABI_Type_free(datatype, ierror)
   ierror = mpi2abi_errorcode(ierror)
 end subroutine MPIABI_Type_free
 
-! subroutine MPIABI_Type_get_contents(datatype, max_integers, max_addresses, max_datatypes, array_of_integers, array_of_addresses, array_of_datatypes, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_get_contents(datatype, max_integers, max_addresses, max_datatypes, array_of_integers, array_of_addresses, array_of_datatypes, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_get_contents
-! 
-! subroutine MPIABI_Type_get_contents_c(datatype, max_integers, max_addresses, max_large_counts, max_datatypes, array_of_integers, array_of_addresses, array_of_large_counts, array_of_datatypes, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_get_contents_c(datatype, max_integers, max_addresses, max_large_counts, max_datatypes, array_of_integers, array_of_addresses, array_of_large_counts, array_of_datatypes, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_get_contents_c
-! 
-! subroutine MPIABI_Type_get_envelope(datatype, num_integers, num_addresses, num_datatypes, combiner, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_get_envelope(datatype, num_integers, num_addresses, num_datatypes, combiner, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_get_envelope
-! 
-! subroutine MPIABI_Type_get_envelope_c(datatype, num_integers, num_addresses, num_large_counts, num_datatypes, combiner, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_get_envelope_c(datatype, num_integers, num_addresses, num_large_counts, num_datatypes, combiner, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_get_envelope_c
-! 
+subroutine MPIABI_Type_get_contents(datatype, max_integers, max_addresses, max_datatypes, array_of_integers, array_of_addresses, &
+     array_of_datatypes, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: datatype
+  integer, intent(in) :: max_integers
+  integer, intent(in) :: max_addresses
+  integer, intent(in) :: max_datatypes
+  integer, intent(out) :: array_of_integers(max_integers)
+  integer(MPIABI_ADDRESS_KIND), intent(out) :: array_of_addresses(max_addresses)
+  integer, intent(out) :: array_of_datatypes(max_datatypes)
+  integer, intent(out) :: ierror
+  integer(MPI_ADDRESS_KIND) wrap_array_of_addresses(max_addresses)
+  integer wrap_array_of_datatypes(max_datatypes)
+  integer n
+  call MPI_Type_get_contents(abi2mpi_datatype(datatype), max_integers, max_addresses, max_datatypes, array_of_integers, &
+       wrap_array_of_addresses, wrap_array_of_datatypes, ierror)
+  do n = 1, max_addresses
+     array_of_addresses(n) = wrap_array_of_addresses(n)
+  end do
+  do n = 1, max_datatypes
+     array_of_datatypes(n) = abi2mpi_datatype(wrap_array_of_datatypes(n))
+  end do
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_get_contents
+
+subroutine MPIABI_Type_get_envelope(datatype, num_integers, num_addresses, num_datatypes, combiner, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: datatype
+  integer, intent(out) :: num_integers
+  integer, intent(out) :: num_addresses
+  integer, intent(out) :: num_datatypes
+  integer, intent(out) :: combiner
+  integer, intent(out) :: ierror
+  integer wrap_combiner
+  call MPI_Type_get_envelope(abi2mpi_datatype(datatype), num_integers, num_addresses, num_datatypes, wrap_combiner, ierror)
+  combiner = mpi2abi_combiner(wrap_combiner)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_get_envelope
+
 ! subroutine MPIABI_Type_get_extent(datatype, lb, extent, ierror)
 !   use mpiwrapper
 !   implicit none
