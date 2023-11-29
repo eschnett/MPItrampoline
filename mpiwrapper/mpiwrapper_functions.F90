@@ -1,5 +1,7 @@
 #include "mpiwrapper.h"
   
+#define MPI_VERSION_NUMBER (100 * MPI_Fortran_VERSION_MAJOR + MPI_Fortran_VERSION_MINOR)
+
 ! Fake MPI 4 support, just enough to make the compiler happy
 #ifndef HAVE_MPI_BUFFER_AUTOMATIC
 #define MPI_BUFFER_AUTOMATIC MPIABI_BUFFER_AUTOMATIC
@@ -81,8 +83,12 @@ subroutine MPIABI_Buffer_flush(ierror)
   use mpiwrapper
   implicit none
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   call MPI_Buffer_flush(ierror)
   ierror = mpi2abi_errorcode(ierror)
+#else
+call assert(.false.)
+#endif
 end subroutine MPIABI_Buffer_flush
 
 subroutine MPIABI_Buffer_iflush(request, ierror)
@@ -90,10 +96,14 @@ subroutine MPIABI_Buffer_iflush(request, ierror)
   implicit none
   integer, intent(inout) :: request
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   integer wrap_request
   call MPI_Buffer_iflush(wrap_request, ierror)
   request = mpi2abi_request(wrap_request)
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Buffer_iflush
 
 subroutine MPIABI_Cancel(request, ierror)
@@ -115,6 +125,7 @@ subroutine MPIABI_Comm_attach_buffer(comm, buffer, size, ierror)
   integer, intent(in) :: buffer(*)
   integer, intent(in) :: size
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   integer(MPIABI_ADDRESS_KIND) buffer_addr
   integer(MPI_ADDRESS_KIND) wrap_buffer_addr
   integer wrap_buffer(*)
@@ -127,6 +138,9 @@ subroutine MPIABI_Comm_attach_buffer(comm, buffer, size, ierror)
   end if
   call MPI_Comm_attach_buffer(abi2mpi_comm(comm), wrap_buffer, size, ierror)
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Comm_attach_buffer
 
 subroutine MPIABI_Comm_detach_buffer(comm, buffer_addr, size, ierror)
@@ -136,6 +150,7 @@ subroutine MPIABI_Comm_detach_buffer(comm, buffer_addr, size, ierror)
   integer(MPIABI_ADDRESS_KIND), intent(out) :: buffer_addr
   integer, intent(out) :: size
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   integer(MPI_ADDRESS_KIND) wrap_buffer_addr
   call MPI_Comm_detach_buffer(abi2mpi_comm(comm), wrap_buffer_addr, size, ierror)
   if (wrap_buffer_addr == loc(MPI_BUFFER_AUTOMATIC)) then
@@ -144,6 +159,9 @@ subroutine MPIABI_Comm_detach_buffer(comm, buffer_addr, size, ierror)
      buffer_addr = wrap_buffer_addr
   end if
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Comm_detach_buffer
 
 subroutine MPIABI_Comm_flush_buffer(comm, ierror)
@@ -151,8 +169,12 @@ subroutine MPIABI_Comm_flush_buffer(comm, ierror)
   implicit none
   integer, intent(in) :: comm
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   call MPI_Comm_flush_buffer(abi2mpi_comm(comm), ierror)
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Comm_flush_buffer
 
 subroutine MPIABI_Comm_iflush_buffer(comm, request, ierror)
@@ -161,10 +183,14 @@ subroutine MPIABI_Comm_iflush_buffer(comm, request, ierror)
   integer, intent(in) :: comm
   integer, intent(out) :: request
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   integer wrap_request
   call MPI_Comm_iflush_buffer(abi2mpi_comm(comm), wrap_request, ierror)
   request = mpi2abi_request(wrap_request)
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Comm_iflush_buffer
 
 subroutine MPIABI_Get_count(status, datatype, count, ierror)
@@ -501,6 +527,7 @@ subroutine MPIABI_Request_get_status_all(count, array_of_requests, flag, array_o
   logical, intent(out) :: flag
   integer, intent(out) :: array_of_statuses(MPIABI_STATUS_SIZE, count)
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   integer wrap_array_of_requests(count)
   integer wrap_array_of_statuses(MPI_STATUS_SIZE, count)
   integer n
@@ -516,6 +543,9 @@ subroutine MPIABI_Request_get_status_all(count, array_of_requests, flag, array_o
      end do
   end if
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Request_get_status_all
 
 subroutine MPIABI_Request_get_status_any(count, array_of_requests, index, flag, status, ierror)
@@ -527,6 +557,7 @@ subroutine MPIABI_Request_get_status_any(count, array_of_requests, index, flag, 
   logical, intent(out) :: flag
   integer, intent(out) :: status(MPIABI_STATUS_SIZE)
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   integer wrap_array_of_requests(count)
   integer wrap_status(MPI_STATUS_SIZE)
   integer n
@@ -536,6 +567,9 @@ subroutine MPIABI_Request_get_status_any(count, array_of_requests, index, flag, 
   call MPI_Request_get_status_any(count, wrap_array_of_requests, index, flag, wrap_status, ierror)
   call mpi2abi_status(wrap_status, status)
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Request_get_status_any
 
 subroutine MPIABI_Request_get_status_some(incount, array_of_requests, outcount, array_of_indices, array_of_statuses, ierror)
@@ -547,6 +581,7 @@ subroutine MPIABI_Request_get_status_some(incount, array_of_requests, outcount, 
   integer, intent(out) :: array_of_indices(incount)
   integer, intent(out) :: array_of_statuses(MPIABI_STATUS_SIZE, incount)
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   integer wrap_array_of_requests(incount)
   integer wrap_array_of_statuses(MPI_STATUS_SIZE, incount)
   integer n
@@ -558,6 +593,9 @@ subroutine MPIABI_Request_get_status_some(incount, array_of_requests, outcount, 
      call mpi2abi_status(wrap_array_of_statuses(:, n), array_of_statuses(:, n))
   end do
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Request_get_status_some
 
 subroutine MPIABI_Rsend(buf, count, datatype, dest, tag, comm, ierror)
@@ -683,6 +721,7 @@ subroutine MPIABI_Session_attach_buffer(session, buffer, size, ierror)
   integer, intent(in) :: buffer(*)
   integer, intent(in) :: size
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   integer(MPIABI_ADDRESS_KIND) buffer_addr
   integer(MPI_ADDRESS_KIND) wrap_buffer_addr
   integer wrap_buffer(*)
@@ -695,6 +734,9 @@ subroutine MPIABI_Session_attach_buffer(session, buffer, size, ierror)
   end if
   call MPI_Session_attach_buffer(abi2mpi_session(session), wrap_buffer, size, ierror)
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Session_attach_buffer
 
 subroutine MPIABI_Session_detach_buffer(session, buffer_addr, size, ierror)
@@ -704,6 +746,7 @@ subroutine MPIABI_Session_detach_buffer(session, buffer_addr, size, ierror)
   integer(MPIABI_ADDRESS_KIND), intent(out) :: buffer_addr
   integer, intent(out) :: size
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   integer(MPI_ADDRESS_KIND) wrap_buffer_addr
   call MPI_Session_detach_buffer(abi2mpi_session(session), wrap_buffer_addr, size, ierror)
   if (wrap_buffer_addr == loc(MPI_BUFFER_AUTOMATIC)) then
@@ -712,6 +755,9 @@ subroutine MPIABI_Session_detach_buffer(session, buffer_addr, size, ierror)
      buffer_addr = wrap_buffer_addr
   end if
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Session_detach_buffer
 
 subroutine MPIABI_Session_flush_buffer(session, ierror)
@@ -719,8 +765,12 @@ subroutine MPIABI_Session_flush_buffer(session, ierror)
   implicit none
   integer, intent(in) :: session
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   call MPI_Session_flush_buffer(abi2mpi_session(session), ierror)
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Session_flush_buffer
 
 subroutine MPIABI_Session_iflush_buffer(session, request, ierror)
@@ -729,10 +779,14 @@ subroutine MPIABI_Session_iflush_buffer(session, request, ierror)
   integer, intent(in) :: session
   integer, intent(out) :: request
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   integer wrap_request
   call MPI_Session_iflush_buffer(abi2mpi_session(session), wrap_request, ierror)
   request = mpi2abi_request(wrap_request)
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Session_iflush_buffer
 
 subroutine MPIABI_Ssend(buf, count, datatype, dest, tag, comm, ierror)
@@ -797,11 +851,15 @@ subroutine MPIABI_Status_get_error(status, err, ierror)
   integer, intent(in) :: status(MPIABI_STATUS_SIZE)
   integer, intent(out) :: err
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   integer wrap_status(MPI_STATUS_SIZE)
   call abi2mpi_status(status, wrap_status)
   call MPI_Status_get_error(wrap_status, err, ierror)
   err = mpi2abi_errorcode(err)
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Status_get_error
 
 subroutine MPIABI_Status_get_source(status, source, ierror)
@@ -810,11 +868,15 @@ subroutine MPIABI_Status_get_source(status, source, ierror)
   integer, intent(in) :: status(MPIABI_STATUS_SIZE)
   integer, intent(out) :: source
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   integer wrap_status(MPI_STATUS_SIZE)
   call abi2mpi_status(status, wrap_status)
   call MPI_Status_get_source(wrap_status, source, ierror)
   source = mpi2abi_proc(source)
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Status_get_source
 
 subroutine MPIABI_Status_get_tag(status, tag, ierror)
@@ -823,11 +885,15 @@ subroutine MPIABI_Status_get_tag(status, tag, ierror)
   integer, intent(in) :: status(MPIABI_STATUS_SIZE)
   integer, intent(out) :: tag
   integer, intent(out) :: ierror
+#if MPI_VERSION_NUMBER >= 410
   integer wrap_status(MPI_STATUS_SIZE)
   call abi2mpi_status(status, wrap_status)
   call MPI_Status_get_tag(wrap_status, tag, ierror)
   tag = mpi2abi_proc(tag)
   ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Status_get_tag
 
 subroutine MPIABI_Test(request, flag, status, ierror)
@@ -3938,14 +4004,15 @@ subroutine MPIABI_Status_set_error(status, err, ierror)
   integer, intent(inout) :: status(MPIABI_STATUS_SIZE)
   integer, intent(in) :: err
   integer, intent(out) :: ierror
-  ! This function is not defined by OpenMPI so we implement it ourselves
-  ! integer wrap_status(MPI_STATUS_SIZE)
-  ! call abi2mpi_status(status, wrap_status)
-  ! call MPI_Status_set_error(wrap_status, abi2mpi_errorcode(err), ierror)
-  ! call mpi2abi_status(wrap_status, status)
-  ! ierror = mpi2abi_errorcode(ierror)
-  status(MPIABI_ERROR) = err
-  ierror = MPIABI_SUCCESS
+#if MPI_VERSION_NUMBER >= 410
+  integer wrap_status(MPI_STATUS_SIZE)
+  call abi2mpi_status(status, wrap_status)
+  call MPI_Status_set_error(wrap_status, abi2mpi_errorcode(err), ierror)
+  call mpi2abi_status(wrap_status, status)
+  ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Status_set_error
 
 subroutine MPIABI_Status_set_source(status, source, ierror)
@@ -3954,14 +4021,15 @@ subroutine MPIABI_Status_set_source(status, source, ierror)
   integer, intent(inout) :: status(MPIABI_STATUS_SIZE)
   integer, intent(in) :: source
   integer, intent(out) :: ierror
-  ! This function is not defined by OpenMPI so we implement it ourselves
-  ! integer wrap_status(MPI_STATUS_SIZE)
-  ! call abi2mpi_status(status, wrap_status)
-  ! call MPI_Status_set_source(wrap_status, abi2mpi_proc(source), ierror)
-  ! call mpi2abi_status(wrap_status, status)
-  ! ierror = mpi2abi_errorcode(ierror)
-  status(MPIABI_SOURCE) = source
-  ierror = MPIABI_SUCCESS
+#if MPI_VERSION_NUMBER >= 410
+  integer wrap_status(MPI_STATUS_SIZE)
+  call abi2mpi_status(status, wrap_status)
+  call MPI_Status_set_source(wrap_status, abi2mpi_proc(source), ierror)
+  call mpi2abi_status(wrap_status, status)
+  ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Status_set_source
 
 subroutine MPIABI_Status_set_tag(status, tag, ierror)
@@ -3970,14 +4038,15 @@ subroutine MPIABI_Status_set_tag(status, tag, ierror)
   integer, intent(inout) :: status(MPIABI_STATUS_SIZE)
   integer, intent(in) :: tag
   integer, intent(out) :: ierror
-  ! This function is not defined by OpenMPI so we implement it ourselves
-  ! integer wrap_status(MPI_STATUS_SIZE)
-  ! call abi2mpi_status(status, wrap_status)
-  ! call MPI_Status_set_tag(wrap_status, abi2mpi_tag(tag), ierror)
-  ! call mpi2abi_status(wrap_status, status)
-  ! ierror = mpi2abi_errorcode(ierror)
-  status(MPIABI_TAG) = tag
-  ierror = MPIABI_SUCCESS
+#if MPI_VERSION_NUMBER >= 410
+  integer wrap_status(MPI_STATUS_SIZE)
+  call abi2mpi_status(status, wrap_status)
+  call MPI_Status_set_tag(wrap_status, abi2mpi_tag(tag), ierror)
+  call mpi2abi_status(wrap_status, status)
+  ierror = mpi2abi_errorcode(ierror)
+#else
+  call assert(.false.)
+#endif
 end subroutine MPIABI_Status_set_tag
 
 ! A.3.12 I/O C Bindings

@@ -4,8 +4,6 @@
 
 #if MPI_VERSION_NUMBER < 400
 
-#error "don't want to be here"
-
 #include <assert.h>
 
 // Fake MPI 4 support, just enough to make the linker happy
