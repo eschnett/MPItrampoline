@@ -1,4 +1,10 @@
+#include <mpi.h>
+
+#define MPI_VERSION_NUMBER (100 * MPI_VERSION + MPI_SUBVERSION)
+
 #if MPI_VERSION_NUMBER < 400
+
+#error "don't want to be here"
 
 #include <assert.h>
 
