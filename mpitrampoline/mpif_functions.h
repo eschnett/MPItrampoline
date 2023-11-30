@@ -677,60 +677,325 @@
 
 !     A.3.3 Datatypes C Bindings
 
-      external MPI_Aint_add
-      integer(MPI_ADDRESS_KIND) MPI_Aint_add
-      external MPI_Aint_diff
-      integer(MPI_ADDRESS_KIND) MPI_Aint_diff
-      external MPI_Get_address
-      external MPI_Get_elements
-!     external MPI_Get_elements_c
-      external MPI_Pack
-!     external MPI_Pack_c
-      external MPI_Pack_external
-!     external MPI_Pack_external_c
-      external MPI_Pack_external_size
-!     external MPI_Pack_external_size_c
-      external MPI_Pack_size
-!     external MPI_Pack_size_c
-      external MPI_Type_commit
-      external MPI_Type_contiguous
-!     external MPI_Type_contiguous_c
-      external MPI_Type_create_darray
-!     external MPI_Type_create_darray_c
-      external MPI_Type_create_hindexed
-      external MPI_Type_create_hindexed_block
-!     external MPI_Type_create_hindexed_block_c
-!     external MPI_Type_create_hindexed_c
-      external MPI_Type_create_hvector
-!     external MPI_Type_create_hvector_c
-      external MPI_Type_create_indexed_block
-!     external MPI_Type_create_indexed_block_c
-      external MPI_Type_create_resized
-!     external MPI_Type_create_resized_c
-      external MPI_Type_create_struct
-!     external MPI_Type_create_struct_c
-      external MPI_Type_create_subarray
-!     external MPI_Type_create_subarray_c
-      external MPI_Type_dup
-      external MPI_Type_free
-      external MPI_Type_get_contents
-!     external MPI_Type_get_contents_c
-      external MPI_Type_get_envelope
-!     external MPI_Type_get_envelope_c
-      external MPI_Type_get_extent
-!     external MPI_Type_get_extent_c
-      external MPI_Type_get_true_extent
-!     external MPI_Type_get_true_extent_c
-      external MPI_Type_indexed
-!     external MPI_Type_indexed_c
-      external MPI_Type_size
-!     external MPI_Type_size_c
-      external MPI_Type_vector
-!     external MPI_Type_vector_c
-      external MPI_Unpack
-!     external MPI_Unpack_c
-      external MPI_Unpack_external
-!     external MPI_Unpack_external_c
+      interface
+
+        function MPIABI_Aint_add(base, disp) result(result)
+        implicit none
+        include "mpif_constants.h"
+        integer(MPIABI_ADDRESS_KIND), intent(in) :: base
+        integer(MPIABI_ADDRESS_KIND), intent(in) :: disp
+        integer(MPIABI_ADDRESS_KIND) result
+      end function MPIABI_Aint_add
+      
+      function MPIABI_Aint_diff(addr1, addr2) result(result)
+        implicit none
+        include "mpif_constants.h"
+        integer(MPIABI_ADDRESS_KIND), intent(in) :: addr1
+        integer(MPIABI_ADDRESS_KIND), intent(in) :: addr2
+        integer(MPIABI_ADDRESS_KIND) result
+      end function MPIABI_Aint_diff
+      
+      subroutine MPIABI_Get_address(location, address, ierror)
+        implicit none
+        include "mpif_constants.h"
+        integer :: location(*)
+        integer(MPIABI_ADDRESS_KIND), intent(out) :: address
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Get_address
+      
+      subroutine MPIABI_Get_elements(status, datatype, count, ierror)
+        implicit none
+        include "mpif_constants.h"
+        integer, intent(in) :: status(MPIABI_STATUS_SIZE)
+        integer, intent(in) :: datatype
+        integer, intent(out) :: count
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Get_elements
+      
+      subroutine MPIABI_Pack(inbuf, incount, datatype, outbuf, outsize, &
+     &     position, comm, ierror)
+        implicit none
+        include "mpif_constants.h"
+        integer, intent(in) :: inbuf(*)
+        integer, intent(in) :: incount
+        integer, intent(in) :: datatype
+        integer outbuf(*)
+        integer(MPIABI_ADDRESS_KIND), intent(in) :: outsize
+        integer(MPIABI_ADDRESS_KIND), intent(inout) :: position
+        integer, intent(in) :: comm
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Pack
+      
+      subroutine MPIABI_Pack_external(datarep, inbuf, incount,          &
+     &     datatype, outbuf, outsize, position, ierror)
+        implicit none
+        include "mpif_constants.h"
+        character(*), intent(in) :: datarep
+        integer, intent(in) :: inbuf(*)
+        integer, intent(in) :: incount
+        integer, intent(in) :: datatype
+        integer outbuf(*)
+        integer(MPIABI_ADDRESS_KIND), intent(in) :: outsize
+        integer(MPIABI_ADDRESS_KIND), intent(inout) :: position
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Pack_external
+      
+      subroutine MPIABI_Pack_external_size(datarep, incount, datatype,  &
+     &     size, ierror)
+        implicit none
+        include "mpif_constants.h"
+        character(*), intent(in) :: datarep
+        integer, intent(in) :: incount
+        integer, intent(in) :: datatype
+        integer(MPIABI_ADDRESS_KIND), intent(out) :: size
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Pack_external_size
+      
+      subroutine MPIABI_Pack_size(incount, datatype, comm, size, ierror)
+        implicit none
+        integer, intent(in) :: incount
+        integer, intent(in) :: datatype
+        integer, intent(in) :: comm
+        integer, intent(out) :: size
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Pack_size
+      
+      subroutine MPIABI_Type_commit(datatype, ierror)
+        implicit none
+        integer, intent(inout) :: datatype
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_commit
+      
+      subroutine MPIABI_Type_contiguous(count, oldtype, newtype, ierror)
+        implicit none
+        integer, intent(in) :: count
+        integer, intent(in) :: oldtype
+        integer, intent(out) :: newtype
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_contiguous
+      
+      subroutine MPIABI_Type_create_darray(size, rank, ndims,           &
+     &     array_of_gsizes, array_of_distribs, array_of_dargs,          &
+     &     array_of_psizes, order, oldtype, newtype, ierror)
+        implicit none
+        integer, intent(in) :: size
+        integer, intent(in) :: rank
+        integer, intent(in) :: ndims
+        integer, intent(in) :: array_of_gsizes(ndims)
+        integer, intent(in) :: array_of_distribs(ndims)
+        integer, intent(in) :: array_of_dargs(ndims)
+        integer, intent(in) :: array_of_psizes(ndims)
+        integer, intent(in) :: order
+        integer, intent(in) :: oldtype
+        integer, intent(out) :: newtype
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_create_darray
+      
+      subroutine MPIABI_Type_create_hindexed(count,                     &
+     &     array_of_blocklengths, array_of_displacements, oldtype,      &
+     &     newtype, ierror)
+        implicit none
+        integer, intent(in) :: count
+        integer, intent(in) :: array_of_blocklengths(count)
+        integer, intent(in) :: array_of_displacements(count)
+        integer, intent(in) :: oldtype
+        integer, intent(out) :: newtype
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_create_hindexed
+      
+      subroutine MPIABI_Type_create_hindexed_block(count, blocklength,  &
+     &     array_of_displacements, oldtype, newtype, ierror)
+        implicit none
+        integer, intent(in) ::count
+        integer, intent(in) ::blocklength
+        integer, intent(in) ::array_of_displacements
+        integer, intent(in) ::oldtype
+        integer, intent(out) ::newtype
+        integer, intent(out) ::ierror
+      end subroutine MPIABI_Type_create_hindexed_block
+      
+      subroutine MPIABI_Type_create_hvector(count, blocklength, stride, &
+     &     oldtype, newtype, ierror)
+        implicit none
+        integer, intent(in) :: count
+        integer, intent(in) :: blocklength
+        integer, intent(in) :: stride
+        integer, intent(in) :: oldtype
+        integer, intent(out) :: newtype
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_create_hvector
+      
+      subroutine MPIABI_Type_create_indexed_block(count, blocklength,   &
+     &     array_of_displacements, oldtype, newtype, ierror)
+        implicit none
+        integer, intent(in) :: count
+        integer, intent(in) :: blocklength
+        integer, intent(in) :: array_of_displacements
+        integer, intent(in) :: oldtype
+        integer, intent(out) :: newtype
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_create_indexed_block
+      
+      subroutine MPIABI_Type_create_resized(oldtype, lb, extent,        &
+     &     newtype, ierror)
+        implicit none
+        include "mpif_constants.h"
+        integer, intent(in) :: oldtype
+        integer(MPIABI_ADDRESS_KIND), intent(in) :: lb
+        integer(MPIABI_ADDRESS_KIND), intent(in) :: extent
+        integer, intent(out) :: newtype
+        integer, intent(out) :: ierror
+        integer(MPI_ADDRESS_KIND) wrap_lb
+        integer(MPI_ADDRESS_KIND) wrap_extent
+      end subroutine MPIABI_Type_create_resized
+      
+      subroutine MPIABI_Type_create_struct(count,                       &
+     &     array_of_blocklengths, array_of_displacements,               &
+     &     array_of_types, newtype, ierror)
+        implicit none
+        include "mpif_constants.h"
+        integer, intent(in) :: count
+        integer, intent(in) :: array_of_blocklengths(count)
+        integer(MPIABI_ADDRESS_KIND), intent(in) ::                     &
+     &       array_of_displacements(count)
+        integer, intent(in) :: array_of_types(count)
+        integer, intent(out) :: newtype
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_create_struct
+      
+      subroutine MPIABI_Type_create_subarray(ndims, array_of_sizes,     &
+     &     array_of_subsizes, array_of_starts, order, oldtype, newtype, &
+     &     ierror)
+        implicit none
+        integer, intent(in) :: ndims
+        integer, intent(in) :: array_of_sizes(ndims)
+        integer, intent(in) :: array_of_subsizes(ndims)
+        integer, intent(in) :: array_of_starts(ndims)
+        integer, intent(in) :: order
+        integer, intent(in) :: oldtype
+        integer, intent(out) :: newtype
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_create_subarray
+      
+      subroutine MPIABI_Type_dup(oldtype, newtype, ierror)
+        implicit none
+        integer, intent(in) :: oldtype
+        integer, intent(out) :: newtype
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_dup
+      
+      subroutine MPIABI_Type_free(datatype, ierror)
+        implicit none
+        integer, intent(inout) :: datatype
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_free
+      
+      subroutine MPIABI_Type_get_contents(datatype, max_integers,       &
+     &     max_addresses, max_datatypes, array_of_integers,             &
+     &     array_of_addresses, array_of_datatypes, ierror)
+        implicit none
+        include "mpif_constants.h"
+        integer, intent(in) :: datatype
+        integer, intent(in) :: max_integers
+        integer, intent(in) :: max_addresses
+        integer, intent(in) :: max_datatypes
+        integer, intent(out) :: array_of_integers(max_integers)
+        integer(MPIABI_ADDRESS_KIND), intent(out) ::                    &
+     &       array_of_addresses(max_addresses)
+        integer, intent(out) :: array_of_datatypes(max_datatypes)
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_get_contents
+      
+      subroutine MPIABI_Type_get_envelope(datatype, num_integers,       &
+     &     num_addresses, num_datatypes, combiner, ierror)
+        implicit none
+        integer, intent(in) :: datatype
+        integer, intent(out) :: num_integers
+        integer, intent(out) :: num_addresses
+        integer, intent(out) :: num_datatypes
+        integer, intent(out) :: combiner
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_get_envelope
+      
+      subroutine MPIABI_Type_get_extent(datatype, lb, extent, ierror)
+        implicit none
+        include "mpif_constants.h"
+        integer, intent(in) :: datatype
+        integer(MPIABI_ADDRESS_KIND), intent(out) :: lb
+        integer(MPIABI_ADDRESS_KIND), intent(out) :: extent
+        integer, intent(out) :: ierror
+        integer(MPI_ADDRESS_KIND) wrap_lb
+        integer(MPI_ADDRESS_KIND) wrap_extent
+      end subroutine MPIABI_Type_get_extent
+      
+      subroutine MPIABI_Type_get_true_extent(datatype, true_lb,         &
+     &     true_extent, ierror)
+        implicit none
+        include "mpif_constants.h"
+        integer, intent(in) :: datatype
+        integer(MPIABI_ADDRESS_KIND), intent(out) :: true_lb
+        integer(MPIABI_ADDRESS_KIND), intent(out) :: true_extent
+        integer, intent(out) :: ierror
+        integer(MPI_ADDRESS_KIND) wrap_true_lb
+        integer(MPI_ADDRESS_KIND) wrap_true_extent
+      end subroutine MPIABI_Type_get_true_extent
+      
+      subroutine MPIABI_Type_indexed(count, array_of_blocklengths,      &
+     &     array_of_displacements, oldtype, newtype, ierror)
+        implicit none
+        integer, intent(in) :: count
+        integer, intent(in) :: array_of_blocklengths(count)
+        integer, intent(in) :: array_of_displacements(count)
+        integer, intent(in) :: oldtype
+        integer, intent(out) :: newtype
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_indexed
+      
+      subroutine MPIABI_Type_size(datatype, size, ierror)
+        implicit none
+        integer, intent(in) :: datatype
+        integer, intent(out) :: size
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_size
+      
+      subroutine MPIABI_Type_vector(count, blocklength, stride,         &
+     &     oldtype, newtype, ierror)
+        implicit none
+        integer, intent(in) :: count
+        integer, intent(in) :: blocklength
+        integer, intent(in) :: stride
+        integer, intent(in) :: oldtype
+        integer, intent(out) :: newtype
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Type_vector
+      
+      subroutine MPIABI_Unpack(inbuf, insize, position, outbuf,         &
+     &     outcount, datatype, comm, ierror)
+        implicit none
+        integer, intent(in) :: inbuf(*)
+        integer, intent(in) :: insize
+        integer, intent(inout) :: position
+        integer, intent(out) :: outbuf(*)
+        integer, intent(in) :: outcount
+        integer, intent(in) :: datatype
+        integer, intent(in) :: comm
+        integer, intent(out) :: ierror  
+      end subroutine MPIABI_Unpack
+      
+      subroutine MPIABI_Unpack_external(datarep, inbuf, insize,         &
+     &     position, outbuf, outcount, datatype, ierror)
+        implicit none
+        character(*), intent(in) :: datarep
+        integer, intent(in) :: inbuf
+        integer, intent(in) :: insize
+        integer, intent(inout) :: position
+        integer, intent(out) :: outbuf
+        integer, intent(in) :: outcount
+        integer, intent(in) :: datatype
+        integer, intent(out) :: ierror
+      end subroutine MPIABI_Unpack_external
+
+      end interface
 
 !     A.3.4 Collective Communication C Bindings
 

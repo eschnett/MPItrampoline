@@ -1502,103 +1502,105 @@ subroutine MPIABI_Type_get_envelope(datatype, num_integers, num_addresses, num_d
   ierror = mpi2abi_errorcode(ierror)
 end subroutine MPIABI_Type_get_envelope
 
-! subroutine MPIABI_Type_get_extent(datatype, lb, extent, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_get_extent(datatype, lb, extent, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_get_extent
-! 
-! subroutine MPIABI_Type_get_extent_c(datatype, lb, extent, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_get_extent_c(datatype, lb, extent, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_get_extent_c
-! 
-! subroutine MPIABI_Type_get_true_extent(datatype, true_lb, true_extent, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_get_true_extent(datatype, true_lb, true_extent, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_get_true_extent
-! 
-! subroutine MPIABI_Type_get_true_extent_c(datatype, true_lb, true_extent, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_get_true_extent_c(datatype, true_lb, true_extent, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_get_true_extent_c
-! 
-! subroutine MPIABI_Type_indexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_indexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_indexed
-! 
-! subroutine MPIABI_Type_indexed_c(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_indexed_c(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_indexed_c
-! 
-! subroutine MPIABI_Type_size(datatype, size, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_size(datatype, size, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_size
-! 
-! subroutine MPIABI_Type_size_c(datatype, size, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_size_c(datatype, size, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_size_c
-! 
-! subroutine MPIABI_Type_vector(count, blocklength, stride, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_vector(count, blocklength, stride, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_vector
-! 
-! subroutine MPIABI_Type_vector_c(count, blocklength, stride, oldtype, newtype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Type_vector_c(count, blocklength, stride, oldtype, newtype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Type_vector_c
-! 
-! subroutine MPIABI_Unpack(inbuf, insize, position, outbuf, outcount, datatype, comm, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Unpack(inbuf, insize, position, outbuf, outcount, datatype, comm, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Unpack
-! 
-! subroutine MPIABI_Unpack_c(inbuf, insize, position, outbuf, outcount, datatype, comm, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Unpack_c(inbuf, insize, position, outbuf, outcount, datatype, comm, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Unpack_c
-! 
-! subroutine MPIABI_Unpack_external(datarep, inbuf, insize, position, outbuf, outcount, datatype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Unpack_external(datarep, inbuf, insize, position, outbuf, outcount, datatype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Unpack_external
-! 
-! subroutine MPIABI_Unpack_external_c(datarep, inbuf, insize, position, outbuf, outcount, datatype, ierror)
-!   use mpiwrapper
-!   implicit none
-!   call MPI_Unpack_external_c(datarep, inbuf, insize, position, outbuf, outcount, datatype, ierror)
-!   ierror = mpi2abi_errorcode(ierror)
-! end subroutine MPIABI_Unpack_external_c
+subroutine MPIABI_Type_get_extent(datatype, lb, extent, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: datatype
+  integer(MPIABI_ADDRESS_KIND), intent(out) :: lb
+  integer(MPIABI_ADDRESS_KIND), intent(out) :: extent
+  integer, intent(out) :: ierror
+  integer(MPI_ADDRESS_KIND) wrap_lb
+  integer(MPI_ADDRESS_KIND) wrap_extent
+  call MPI_Type_get_extent(abi2mpi_datatype(datatype), wrap_lb, wrap_extent, ierror)
+  lb = wrap_lb
+  extent = wrap_extent
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_get_extent
+
+subroutine MPIABI_Type_get_true_extent(datatype, true_lb, true_extent, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: datatype
+  integer(MPIABI_ADDRESS_KIND), intent(out) :: true_lb
+  integer(MPIABI_ADDRESS_KIND), intent(out) :: true_extent
+  integer, intent(out) :: ierror
+  integer(MPI_ADDRESS_KIND) wrap_true_lb
+  integer(MPI_ADDRESS_KIND) wrap_true_extent
+  call MPI_Type_get_true_extent(datatype, true_lb, true_extent, ierror)
+  true_lb = wrap_true_lb
+  true_extent = wrap_true_extent
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_get_true_extent
+
+subroutine MPIABI_Type_indexed(count, array_of_blocklengths, array_of_displacements, oldtype, newtype, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: array_of_blocklengths(count)
+  integer, intent(in) :: array_of_displacements(count)
+  integer, intent(in) :: oldtype
+  integer, intent(out) :: newtype
+  integer, intent(out) :: ierror
+  integer wrap_newtype
+  call MPI_Type_indexed(count, array_of_blocklengths, array_of_displacements, abi2mpi_datatype(oldtype), wrap_newtype, ierror)
+  newtype = mpi2abi_datatype(wrap_newtype)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_indexed
+
+subroutine MPIABI_Type_size(datatype, size, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: datatype
+  integer, intent(out) :: size
+  integer, intent(out) :: ierror
+  call MPI_Type_size(abi2mpi_datatype(datatype), size, ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_size
+
+subroutine MPIABI_Type_vector(count, blocklength, stride, oldtype, newtype, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: count
+  integer, intent(in) :: blocklength
+  integer, intent(in) :: stride
+  integer, intent(in) :: oldtype
+  integer, intent(out) :: newtype
+  integer, intent(out) :: ierror
+  integer wrap_newtype
+  call MPI_Type_vector(count, blocklength, stride, abi2mpi_datatype(oldtype), wrap_newtype, ierror)
+  newtype = mpi2abi_datatype(wrap_newtype)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Type_vector
+
+subroutine MPIABI_Unpack(inbuf, insize, position, outbuf, outcount, datatype, comm, ierror)
+  use mpiwrapper
+  implicit none
+  integer, intent(in) :: inbuf(*)
+  integer, intent(in) :: insize
+  integer, intent(inout) :: position
+  integer, intent(out) :: outbuf(*)
+  integer, intent(in) :: outcount
+  integer, intent(in) :: datatype
+  integer, intent(in) :: comm
+  integer, intent(out) :: ierror  
+  call MPI_Unpack(inbuf, insize, position, outbuf, outcount, abi2mpi_datatype(datatype), abi2mpi_comm(comm), ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Unpack
+
+subroutine MPIABI_Unpack_external(datarep, inbuf, insize, position, outbuf, outcount, datatype, ierror)
+  use mpiwrapper
+  implicit none
+  character(*), intent(in) :: datarep
+  integer, intent(in) :: inbuf
+  integer, intent(in) :: insize
+  integer, intent(inout) :: position
+  integer, intent(out) :: outbuf
+  integer, intent(in) :: outcount
+  integer, intent(in) :: datatype
+  integer, intent(out) :: ierror
+  call MPI_Unpack_external(datarep, inbuf, insize, position, outbuf, outcount, abi2mpi_datatype(datatype), ierror)
+  ierror = mpi2abi_errorcode(ierror)
+end subroutine MPIABI_Unpack_external
  
 ! A.3.4 Collective Communication C Bindings
 
