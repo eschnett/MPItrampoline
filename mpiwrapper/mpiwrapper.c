@@ -570,6 +570,12 @@ static int mpi2abi_proc(int proc) {
   case MPI_PROC_NULL:
     return MPIABI_PROC_NULL;
   default:
+    if (!(proc >= 0))
+      fprintf(stderr,
+              "mpi2abi_proc: proc=%d MPI_ANY_SOURCE=%d MPIABI_ANY_SOURCE=%d "
+              "MPI_PROC_NULL=%d MPIABI_PROC_NULL=%d\n",
+              proc, MPI_ANY_SOURCE, MPIABI_ANY_SOURCE, MPI_PROC_NULL,
+              MPIABI_PROC_NULL);
     assert(proc >= 0);
     return proc;
   }
