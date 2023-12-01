@@ -1731,7 +1731,8 @@ int MPIABI_Improbe(int source, int tag, MPIABI_Comm comm, int *flag,
   int ierr = MPI_Improbe(abi2mpi_proc(source), abi2mpi_tag(tag),
                          abi2mpi_comm(comm), flag, &mpi_message, mpi_status);
   *message = mpi2abi_message(mpi_message);
-  mpi2abi_statusptr(mpi_status);
+  if (*flag)
+    mpi2abi_statusptr(mpi_status);
   return mpi2abi_errorcode(ierr);
 }
 
@@ -1762,7 +1763,8 @@ int MPIABI_Iprobe(int source, int tag, MPIABI_Comm comm, int *flag,
   MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
   int ierr = MPI_Iprobe(abi2mpi_proc(source), abi2mpi_tag(tag),
                         abi2mpi_comm(comm), flag, mpi_status);
-  mpi2abi_statusptr(mpi_status);
+  if (*flag)
+    mpi2abi_statusptr(mpi_status);
   return mpi2abi_errorcode(ierr);
 }
 
@@ -2002,7 +2004,8 @@ int MPIABI_Request_get_status(MPIABI_Request request, int *flag,
                               MPIABI_Status *status) {
   MPI_Status *mpi_status = abi2mpi_statusptr_uninitialized(status);
   int ierr = MPI_Request_get_status(abi2mpi_request(request), flag, mpi_status);
-  mpi2abi_statusptr(mpi_status);
+  if (*flag)
+    mpi2abi_statusptr(mpi_status);
   return mpi2abi_errorcode(ierr);
 }
 
