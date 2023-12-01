@@ -79,9 +79,9 @@ static void *get_symbol(void *handle, const char *name) {
 #include "mpiabi_function_pointers.c"
 #include "mpiabi_function_pointers_fortran.c"
 
-void set_mpiabi_function_pointers(void *const handle) {
-#include "set_mpiabi_function_pointers.c"
-#include "set_mpiabi_function_pointers_fortran.c"
+void mpiabi_set_function_pointers(void *const handle) {
+#include "mpiabi_set_function_pointers.c"
+#include "mpiabi_set_function_pointers_fortran.c"
 }
 
 static void mpitrampoline_init(void) {
@@ -137,7 +137,7 @@ static void mpitrampoline_init(void) {
     exit(1);
   }
 
-  set_mpiabi_function_pointers(handle);
+  mpiabi_set_function_pointers(handle);
 }
 
 #ifdef __APPLE__

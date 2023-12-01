@@ -11,7 +11,16 @@ module mpiwrapper
   implicit none
   include "mpif.h"
   include "mpiabif_constants.h"
+
   public
+  private :: assert
+
+#ifndef HAVE_FORTRAN_DECLARATION_MPI_AINT_ADD
+  integer(MPI_ADDRESS_KIND), external :: MPI_Aint_add
+#endif
+#ifndef HAVE_FORTRAN_DECLARATION_MPI_AINT_DIFF
+  integer(MPI_ADDRESS_KIND), external :: MPI_Aint_diff
+#endif
 
   integer, parameter :: MAX_RESERVED_HANDLE = int(b'111111111111')
 
@@ -48,6 +57,38 @@ contains
     call assert(.not.handle_is_reserved(abi_handle))
     mpi2abi_unreserved = abi_handle
   end function mpi2abi_unreserved
+
+  ! Translate integers
+
+  integer(MPI_ADDRESS_KIND) function abi2mpi_address(address)
+    integer(MPIABI_ADDRESS_KIND), intent(in) :: address
+    abi2mpi_address = address
+  end function abi2mpi_address
+
+  integer(MPIABI_ADDRESS_KIND) function mpi2abi_address(address)
+    integer(MPI_ADDRESS_KIND), intent(in) :: address
+    mpi2abi_address = address
+  end function mpi2abi_address
+
+  integer(MPI_COUNT_KIND) function abi2mpi_count(count)
+    integer(MPIABI_COUNT_KIND), intent(in) :: count
+    abi2mpi_count = count
+  end function abi2mpi_count
+
+  integer(MPIABI_COUNT_KIND) function mpi2abi_count(count)
+    integer(MPI_COUNT_KIND), intent(in) :: count
+    mpi2abi_count = count
+  end function mpi2abi_count
+
+  integer(MPI_OFFSET_KIND) function abi2mpi_offset(offset)
+    integer(MPIABI_OFFSET_KIND), intent(in) :: offset
+    abi2mpi_offset = offset
+  end function abi2mpi_offset
+
+  integer(MPIABI_OFFSET_KIND) function mpi2abi_offset(offset)
+    integer(MPI_OFFSET_KIND), intent(in) :: offset
+    mpi2abi_offset = offset
+  end function mpi2abi_offset
 
   ! Translate (non-handle) integers
 
@@ -387,6 +428,26 @@ contains
     end select
   end function mpi2abi_errorcode
 
+  integer function abi2mpi_maybe_undefined(maybe_undefined)
+    integer, intent(in) :: maybe_undefined
+    select case (maybe_undefined)
+    case (MPIABI_UNDEFINED)
+       abi2mpi_maybe_undefined = MPI_UNDEFINED
+    case default
+       abi2mpi_maybe_undefined = maybe_undefined
+    end select
+  end function abi2mpi_maybe_undefined
+
+  integer function mpi2abi_maybe_undefined(maybe_undefined)
+    integer, intent(in) :: maybe_undefined
+    select case (maybe_undefined)
+    case (MPI_UNDEFINED)
+       mpi2abi_maybe_undefined = MPIABI_UNDEFINED
+    case default
+       mpi2abi_maybe_undefined = maybe_undefined
+    end select
+  end function mpi2abi_maybe_undefined
+
   integer function abi2mpi_order(order)
     integer, intent(in) :: order
     select case (order)
@@ -511,6 +572,24 @@ contains
 
   ! Translate addresses
 
+  integer(MPI_ADDRESS_KIND) function abi2mpi_argv_ptr(argv_ptr)
+    integer(MPIABI_ADDRESS_KIND), intent(in) :: argv_ptr
+    if (argv_ptr == loc(MPIABI_ARGV_NULL)) then
+       abi2mpi_argv_ptr = loc(MPI_ARGV_NULL)
+       return
+    end if
+    abi2mpi_argv_ptr = argv_ptr
+  end function abi2mpi_argv_ptr
+
+  integer(MPI_ADDRESS_KIND) function abi2mpi_argvs_ptr(argvs_ptr)
+    integer(MPIABI_ADDRESS_KIND), intent(in) :: argvs_ptr
+    if (argvs_ptr == loc(MPIABI_ARGVS_NULL)) then
+       abi2mpi_argvs_ptr = loc(MPI_ARGVS_NULL)
+       return
+    end if
+    abi2mpi_argvs_ptr = argvs_ptr
+  end function abi2mpi_argvs_ptr
+
   integer(MPI_ADDRESS_KIND) function abi2mpi_buffer_ptr(buffer_ptr)
     integer(MPIABI_ADDRESS_KIND), intent(in) :: buffer_ptr
     if (buffer_ptr == loc(MPIABI_IN_PLACE)) then
@@ -528,6 +607,32 @@ contains
     end if
     mpi2abi_buffer_ptr = buffer_ptr
   end function mpi2abi_buffer_ptr
+
+  integer(MPI_ADDRESS_KIND) function abi2mpi_weight_ptr(weight_ptr)
+    integer(MPIABI_ADDRESS_KIND), intent(in) :: weight_ptr
+    if (weight_ptr == loc(MPIABI_UNWEIGHTED)) then
+       abi2mpi_weight_ptr = loc(MPI_UNWEIGHTED)
+       return
+    end if
+    if (weight_ptr == loc(MPIABI_WEIGHTS_EMPTY)) then
+       abi2mpi_weight_ptr = loc(MPI_WEIGHTS_EMPTY)
+       return
+    end if
+    abi2mpi_weight_ptr = weight_ptr
+  end function abi2mpi_weight_ptr
+
+  integer(MPIABI_ADDRESS_KIND) function mpi2abi_weight_ptr(weight_ptr)
+    integer(MPI_ADDRESS_KIND), intent(in) :: weight_ptr
+    if (weight_ptr == loc(MPI_UNWEIGHTED)) then
+       mpi2abi_weight_ptr = loc(MPIABI_UNWEIGHTED)
+       return
+    end if
+    if (weight_ptr == loc(MPI_WEIGHTS_EMPTY)) then
+       mpi2abi_weight_ptr = loc(MPIABI_WEIGHTS_EMPTY)
+       return
+    end if
+    mpi2abi_weight_ptr = weight_ptr
+  end function mpi2abi_weight_ptr
 
   ! Translate handles
 
@@ -995,6 +1100,46 @@ contains
     end select
   end function mpi2abi_datatype
 
+  integer function abi2mpi_errhandler(errhandler)
+    integer, intent(in) :: errhandler
+    if (.not.handle_is_reserved(errhandler)) then
+       abi2mpi_errhandler = abi2mpi_unreserved(errhandler)
+       return
+    end if
+    select case (errhandler)
+    case (MPIABI_ERRHANDLER_NULL)
+       abi2mpi_errhandler = MPI_ERRHANDLER_NULL
+#if MPI_VERSION_NUMBER >= 400
+    case (MPIABI_ERRORS_ABORT)
+       abi2mpi_errhandler = MPI_ERRORS_ABORT
+#endif
+    case (MPIABI_ERRORS_ARE_FATAL)
+       abi2mpi_errhandler = MPI_ERRORS_ARE_FATAL
+    case (MPIABI_ERRORS_RETURN)
+       abi2mpi_errhandler = MPI_ERRORS_RETURN
+    case default
+       call assert(.false.)
+    end select
+  end function abi2mpi_errhandler
+
+  integer function mpi2abi_errhandler(errhandler)
+    integer, intent(in) :: errhandler
+    select case (errhandler)
+    case (MPI_ERRHANDLER_NULL)
+       mpi2abi_errhandler = MPIABI_ERRHANDLER_NULL
+#if MPI_VERSION_NUMBER >= 400
+    case (MPI_ERRORS_ABORT)
+       mpi2abi_errhandler = MPIABI_ERRORS_ABORT
+#endif
+    case (MPI_ERRORS_ARE_FATAL)
+       mpi2abi_errhandler = MPIABI_ERRORS_ARE_FATAL
+    case (MPI_ERRORS_RETURN)
+       mpi2abi_errhandler = MPIABI_ERRORS_RETURN
+    case default
+       mpi2abi_errhandler = mpi2abi_unreserved(errhandler)
+    end select
+  end function mpi2abi_errhandler
+
   integer function abi2mpi_file(file)
     integer, intent(in) :: file
     if (.not.handle_is_reserved(file)) then
@@ -1019,6 +1164,34 @@ contains
     end select
   end function mpi2abi_file
 
+  integer function abi2mpi_group(group)
+    integer, intent(in) :: group
+    if (.not.handle_is_reserved(group)) then
+       abi2mpi_group = abi2mpi_unreserved(group)
+       return
+    end if
+    select case (group)
+    case (MPIABI_GROUP_EMPTY)
+       abi2mpi_group = MPI_GROUP_EMPTY
+    case (MPIABI_GROUP_NULL)
+       abi2mpi_group = MPI_GROUP_NULL
+    case default
+       call assert(.false.)
+    end select
+  end function abi2mpi_group
+
+  integer function mpi2abi_group(group)
+    integer, intent(in) :: group
+    select case (group)
+    case (MPI_GROUP_EMPTY)
+       mpi2abi_group = MPIABI_GROUP_EMPTY
+    case (MPI_GROUP_NULL)
+       mpi2abi_group = MPIABI_GROUP_NULL
+    case default
+       mpi2abi_group = mpi2abi_unreserved(group)
+    end select
+  end function mpi2abi_group
+
   integer function abi2mpi_info(info)
     integer, intent(in) :: info
     if (.not.handle_is_reserved(info)) then
@@ -1035,6 +1208,18 @@ contains
     end select
   end function abi2mpi_info
 
+  integer function mpi2abi_info(info)
+    integer, intent(in) :: info
+    select case (info)
+    case (MPI_INFO_ENV)
+       mpi2abi_info = MPIABI_INFO_ENV
+    case (MPI_INFO_NULL)
+       mpi2abi_info = MPIABI_INFO_NULL
+    case default
+       mpi2abi_info = mpi2abi_unreserved(info)
+    end select
+  end function mpi2abi_info
+
   integer function abi2mpi_message(message)
     integer, intent(in) :: message
     select case (message)
@@ -1043,9 +1228,101 @@ contains
     case (MPIABI_MESSAGE_NULL)
        abi2mpi_message = MPI_MESSAGE_NULL
     case default
-       abi2mpi_message = mpi2abi_unreserved(message)
+       abi2mpi_message = abi2mpi_unreserved(message)
     end select
   end function abi2mpi_message
+
+  integer function mpi2abi_message(message)
+    integer, intent(in) :: message
+    select case (message)
+    case (MPI_MESSAGE_NO_PROC)
+       mpi2abi_message = MPIABI_MESSAGE_NO_PROC
+    case (MPI_MESSAGE_NULL)
+       mpi2abi_message = MPIABI_MESSAGE_NULL
+    case default
+       mpi2abi_message = mpi2abi_unreserved(message)
+    end select
+  end function mpi2abi_message
+
+  integer function abi2mpi_op(op)
+    integer, intent(in) :: op
+    if (.not.handle_is_reserved(op)) then
+       abi2mpi_op = abi2mpi_unreserved(op)
+       return
+    end if
+    select case (op)
+    case (MPIABI_OP_NULL)
+       abi2mpi_op = MPI_OP_NULL
+    case (MPIABI_MAX)
+       abi2mpi_op = MPI_MAX
+    case (MPIABI_MIN)
+       abi2mpi_op = MPI_MIN
+    case (MPIABI_SUM)
+       abi2mpi_op = MPI_SUM
+    case (MPIABI_PROD)
+       abi2mpi_op = MPI_PROD
+    case (MPIABI_MAXLOC)
+       abi2mpi_op = MPI_MAXLOC
+    case (MPIABI_MINLOC)
+       abi2mpi_op = MPI_MINLOC
+    case (MPIABI_BAND)
+       abi2mpi_op = MPI_BAND
+    case (MPIABI_BOR)
+       abi2mpi_op = MPI_BOR
+    case (MPIABI_BXOR)
+       abi2mpi_op = MPI_BXOR
+    case (MPIABI_LAND)
+       abi2mpi_op = MPI_LAND
+    case (MPIABI_LOR)
+       abi2mpi_op = MPI_LOR
+    case (MPIABI_LXOR)
+       abi2mpi_op = MPI_LXOR
+    case (MPIABI_REPLACE)
+       abi2mpi_op = MPI_REPLACE
+    case (MPIABI_NO_OP)
+       abi2mpi_op = MPI_NO_OP
+    case default
+       call assert(.false.)
+    end select
+  end function abi2mpi_op
+
+  integer function mpi2abi_op(op)
+    integer, intent(in) :: op
+    select case (op)
+    case (MPI_OP_NULL)
+       mpi2abi_op = MPIABI_OP_NULL
+    case (MPI_MAX)
+       mpi2abi_op = MPIABI_MAX
+    case (MPI_MIN)
+       mpi2abi_op = MPIABI_MIN
+    case (MPI_SUM)
+       mpi2abi_op = MPIABI_SUM
+    case (MPI_PROD)
+       mpi2abi_op = MPIABI_PROD
+    case (MPI_MAXLOC)
+       mpi2abi_op = MPIABI_MAXLOC
+    case (MPI_MINLOC)
+       mpi2abi_op = MPIABI_MINLOC
+    case (MPI_BAND)
+       mpi2abi_op = MPIABI_BAND
+    case (MPI_BOR)
+       mpi2abi_op = MPIABI_BOR
+    case (MPI_BXOR)
+       mpi2abi_op = MPIABI_BXOR
+    case (MPI_LAND)
+       mpi2abi_op = MPIABI_LAND
+    case (MPI_LOR)
+       mpi2abi_op = MPIABI_LOR
+    case (MPI_LXOR)
+       mpi2abi_op = MPIABI_LXOR
+    case (MPI_REPLACE)
+       mpi2abi_op = MPIABI_REPLACE
+    case (MPI_NO_OP)
+       mpi2abi_op = MPIABI_NO_OP
+    case default
+       mpi2abi_op = mpi2abi_unreserved(op)
+    end select
+  end function mpi2abi_op
 
   integer function abi2mpi_request(request)
     integer, intent(in) :: request
@@ -1084,6 +1361,40 @@ contains
     end select
   end function abi2mpi_session
 
+  integer function mpi2abi_session(session)
+    integer, intent(in) :: session
+    select case (session)
+    case (MPI_SESSION_NULL)
+       mpi2abi_session = MPIABI_SESSION_NULL
+    case default
+       mpi2abi_session = mpi2abi_unreserved(session)
+    end select
+  end function mpi2abi_session
+
+  integer function abi2mpi_win(win)
+    integer, intent(in) :: win
+    if (.not.handle_is_reserved(win)) then
+       abi2mpi_win = abi2mpi_unreserved(win)
+       return
+    end if
+    select case (win)
+    case (MPIABI_WIN_NULL)
+       abi2mpi_win = MPI_WIN_NULL
+    case default
+       call assert(.false.)
+    end select
+  end function abi2mpi_win
+
+  integer function mpi2abi_win(win)
+    integer, intent(in) :: win
+    select case (win)
+    case (MPI_WIN_NULL)
+       mpi2abi_win = MPIABI_WIN_NULL
+    case default
+       mpi2abi_win = mpi2abi_unreserved(win)
+    end select
+  end function mpi2abi_win
+
   ! Translate statuses
 
   subroutine abi2mpi_status(abi_status, mpi_status)
@@ -1120,7 +1431,7 @@ contains
 
   integer(MPI_ADDRESS_KIND) function abi2mpi_status_ptr_uninitialized(abi_status, mpi_status_storage)
     integer, intent(in) :: abi_status(MPIABI_STATUS_SIZE)
-    integer, intent(in) :: mpi_status_storage(MPI_STATUS_SIZE)
+    integer, intent(out) :: mpi_status_storage(MPI_STATUS_SIZE)
     if (loc(abi_status) == loc(MPIABI_STATUS_IGNORE)) then
        abi2mpi_status_ptr_uninitialized = loc(MPI_STATUS_IGNORE)
     else
@@ -1128,11 +1439,55 @@ contains
     end if
   end function abi2mpi_status_ptr_uninitialized
 
+  integer(MPI_ADDRESS_KIND) function abi2mpi_status_ptr(abi_status, mpi_status_storage)
+    integer, intent(in) :: abi_status(MPIABI_STATUS_SIZE)
+    integer, intent(out) :: mpi_status_storage(MPI_STATUS_SIZE)
+    if (loc(abi_status) == loc(MPIABI_STATUS_IGNORE)) then
+       abi2mpi_status_ptr = loc(MPI_STATUS_IGNORE)
+    else
+       abi2mpi_status_ptr = loc(mpi_status_storage)
+       call abi2mpi_status(abi_status, mpi_status_storage)
+    end if
+  end function abi2mpi_status_ptr
+
   subroutine mpi2abi_status_ptr(mpi_status, abi_status)
     integer, intent(in) :: mpi_status(MPI_STATUS_SIZE)
     integer, intent(out) :: abi_status(MPIABI_STATUS_SIZE)
     if (loc(abi_status) == loc(MPIABI_STATUS_IGNORE)) return
     call mpi2abi_status(mpi_status, abi_status)
   end subroutine mpi2abi_status_ptr
+
+  integer(MPI_ADDRESS_KIND) function abi2mpi_statuses_ptr_uninitialized(abi_status, mpi_status_storage, count)
+    integer, intent(in) :: count
+    integer, intent(in) :: abi_status(MPIABI_STATUS_SIZE, count)
+    integer, intent(out) :: mpi_status_storage(MPI_STATUS_SIZE, count)
+    if (loc(abi_status) == loc(MPIABI_STATUSES_IGNORE)) then
+       abi2mpi_statuses_ptr_uninitialized = loc(MPI_STATUSES_IGNORE)
+    else
+       abi2mpi_statuses_ptr_uninitialized = loc(mpi_status_storage)
+    end if
+  end function abi2mpi_statuses_ptr_uninitialized
+
+  ! integer(MPI_ADDRESS_KIND) function abi2mpi_statuses_ptr(abi_status, mpi_status_storage)
+  !   integer, intent(in) :: abi_status(MPIABI_STATUS_SIZE)
+  !   integer, intent(out) :: mpi_status_storage(MPI_STATUS_SIZE)
+  !   if (loc(abi_status) == loc(MPIABI_STATUS_IGNORE)) then
+  !      abi2mpi_status_ptr = loc(MPI_STATUS_IGNORE)
+  !   else
+  !      abi2mpi_status_ptr = loc(mpi_status_storage)
+  !      call abi2mpi_status(abi_status, mpi_status_storage)
+  !   end if
+  ! end function abi2mpi_status_ptr
+  
+  subroutine mpi2abi_statuses_ptr(mpi_status, abi_status, count)
+    integer, intent(in) :: count
+    integer, intent(in) :: mpi_status(MPI_STATUS_SIZE, count)
+    integer, intent(out) :: abi_status(MPIABI_STATUS_SIZE, count)
+    integer n
+    if (loc(abi_status) == loc(MPIABI_STATUS_IGNORE)) return
+    do n = 1, count
+       call mpi2abi_status(mpi_status(:, n), abi_status(:, n))
+    end do
+  end subroutine mpi2abi_statuses_ptr
 
 end module mpiwrapper

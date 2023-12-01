@@ -778,94 +778,9 @@
       pointer (MPIABI_WEIGHTS_EMPTY_PTR, MPIABI_WEIGHTS_EMPTY)
       common /MPIABI_WEIGHTS_EMPTY_PTR/ MPIABI_WEIGHTS_EMPTY_PTR
 
-!     C Constants Specifying Ignored Input (no Fortran)
-
 !     C preprocessor Constants and Fortran Parameters
 
       integer MPIABI_SUBVERSION
       parameter (MPIABI_SUBVERSION = 1)
       integer MPIABI_VERSION
       parameter (MPIABI_VERSION = 4)
-
-! // Null handles used in the MPI tool information interface
-!
-! #define MPIABI_T_ENUM_NULL ((MPIABI_T_enum))
-! #define MPIABI_T_CVAR_HANDLE_NULL ((MPIABI_T_cvar_handle))
-! #define MPIABI_T_PVAR_HANDLE_NULL ((MPIABI_T_pvar_handle))
-! #define MPIABI_T_PVAR_SESSION_NULL ((MPIABI_T_pvar_session))
-!
-! // Verbosity Levels in the MPI tool information interface
-!
-! enum {
-!   MPIABI_T_VERBOSITY_USER_BASIC, // [nonstandard]
-!   MPIABI_T_VERBOSITY_USER_DETAIL,
-!   MPIABI_T_VERBOSITY_USER_ALL,
-!   MPIABI_T_VERBOSITY_TUNER_BASIC,
-!   MPIABI_T_VERBOSITY_TUNER_DETAIL,
-!   MPIABI_T_VERBOSITY_TUNER_ALL,
-!   MPIABI_T_VERBOSITY_MPIDEV_BASIC,
-!   MPIABI_T_VERBOSITY_MPIDEV_DETAIL,
-!   MPIABI_T_VERBOSITY_MPIDEV_ALL,
-! };
-!
-! // Constants to identify associations of variables in the MPI tool information
-! // interface
-!
-! enum {
-!   MPIABI_T_BIND_NO_OBJECT, // [nonstandard]
-!   MPIABI_T_BIND_MPI_COMM,
-!   MPIABI_T_BIND_MPI_DATATYPE,
-!   MPIABI_T_BIND_MPI_ERRHANDLER,
-!   MPIABI_T_BIND_MPI_FILE,
-!   MPIABI_T_BIND_MPI_GROUP,
-!   MPIABI_T_BIND_MPI_OP,
-!   MPIABI_T_BIND_MPI_REQUEST,
-!   MPIABI_T_BIND_MPI_WIN,
-!   MPIABI_T_BIND_MPI_MESSAGE,
-!   MPIABI_T_BIND_MPI_INFO,
-!   MPIABI_T_BIND_MPI_SESSION,
-! };
-!
-! // Constants describing the scope of a control variable in the MPI tool
-! // information interface
-!
-! enum {
-!   MPIABI_T_SCOPE_CONSTANT, // [nonstandard]
-!   MPIABI_T_SCOPE_READONLY,
-!   MPIABI_T_SCOPE_LOCAL,
-!   MPIABI_T_SCOPE_GROUP,
-!   MPIABI_T_SCOPE_GROUP_EQ,
-!   MPIABI_T_SCOPE_ALL,
-!   MPIABI_T_SCOPE_ALL_EQ,
-! };
-!
-! // Additional constants used
-!
-! #define MPIABI_T_PVAR_ALL_HANDLES ((MPIABI_T_pvar_handle))
-!
-! // Performance variables classes used by the MPI tool information interface
-!
-! enum {
-!   MPIABI_T_PVAR_CLASS_STATE, // [nonstandard]
-!   MPIABI_T_PVAR_CLASS_LEVEL,
-!   MPIABI_T_PVAR_CLASS_SIZE,
-!   MPIABI_T_PVAR_CLASS_PERCENTAGE,
-!   MPIABI_T_PVAR_CLASS_HIGHWATERMARK,
-!   MPIABI_T_PVAR_CLASS_LOWWATERMARK,
-!   MPIABI_T_PVAR_CLASS_COUNTER,
-!   MPIABI_T_PVAR_CLASS_AGGREGATE,
-!   MPIABI_T_PVAR_CLASS_TIMER,
-!   MPIABI_T_PVAR_CLASS_GENERIC,
-! };
-!
-! // Source event ordering guarantees in the MPI tool information interface
-!
-! #define MPIABI_T_SOURCE_ORDERED ((MPIABI_T_source_order))
-! #define MPIABI_T_SOURCE_UNORDERED ((MPIABI_T_source_order))
-!
-! // Callback safety requirement levels used in the MPI tool information interface
-!
-! #define MPIABI_T_CB_REQUIRE_NONE ((MPIABI_T_cb_safety))
-! #define MPIABI_T_CB_REQUIRE_MPI_RESTRICTED ((MPIABI_T_cb_safety))
-! #define MPIABI_T_CB_REQUIRE_THREAD_SAFE ((MPIABI_T_cb_safety))
-! #define MPIABI_T_CB_REQUIRE_ASYNC_SIGNAL_SAFE ((MPIABI_T_cb_safety))

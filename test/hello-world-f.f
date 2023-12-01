@@ -4,7 +4,6 @@
 
       integer size, rank
       integer token
-      integer status(MPI_STATUS_SIZE)
       integer ierror
 
       print '("Hello, World!")'

@@ -387,6 +387,30 @@ check_fortran_source_compiles(
   "
   implicit none
   include 'mpif.h'
+  integer(MPI_ADDRESS_KIND) i
+  i = 0
+  i = MPI_Aint_add(i, i)
+  end
+  "
+  HAVE_FORTRAN_DECLARATION_MPI_AINT_ADD
+  SRC_EXT .f90
+)
+check_fortran_source_compiles(
+  "
+  implicit none
+  include 'mpif.h'
+  integer(MPI_ADDRESS_KIND) i
+  i = 0
+  i = MPI_Aint_diff(i, i)
+  end
+  "
+  HAVE_FORTRAN_DECLARATION_MPI_AINT_DIFF
+  SRC_EXT .f90
+)
+check_fortran_source_compiles(
+  "
+  implicit none
+  include 'mpif.h'
   integer session
   session = MPI_SESSION_NULL
   end
