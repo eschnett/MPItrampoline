@@ -111,6 +111,9 @@ add_library(mpitrampoline
   mpif_functions.f90
   mpi.f90
   mpi_f08.f90
+  mpi_f08_types.f90
+  mpi_f08_constants.f90
+  mpi_f08_functions.f90
   # mpiabi_function_pointers.c
 )
 # target_compile_options(mpitrampoline PRIVATE -Wall -Wextra -Wno-unused-dummy-argument -Wno-unused-parameter)
@@ -139,8 +142,11 @@ list(APPEND public_headers
   ../mpiabi/mpiabif_types.h
   ../mpiabi/mpiabif_constants.h
   ../mpiabi/mpiabif_functions.h
-  mpi.f90
-  mpi_f08.f90
+  # mpi.f90
+  # mpi_f08_types.f90
+  # mpi_f08_constants.f90
+  # mpi_f08_functions.f90
+  # mpi_f08.f90
 )
 set_target_properties(mpitrampoline PROPERTIES
   VERSION ${PROJECT_VERSION}
@@ -151,6 +157,9 @@ set_target_properties(mpitrampoline PROPERTIES
 install(TARGETS mpitrampoline EXPORT MPItrampolineTargets)
 
 install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_types.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_constants.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_functions.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Install pkgconfig files
