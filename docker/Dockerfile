@@ -110,42 +110,42 @@ RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    mpiexec $mpiexec_options -n 4 ./hello-world-c 4
+    timeout -k 1m -v 5m mpiexec $mpiexec_options -n 4 ./hello-world-c 4
 
 RUN ./hello-world-cxx 1
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    mpiexec $mpiexec_options -n 4 ./hello-world-cxx 4
+    timeout -k 1m -v 5m mpiexec $mpiexec_options -n 4 ./hello-world-cxx 4
 
 RUN ./hello-world-f 1
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    mpiexec $mpiexec_options -n 4 ./hello-world-f 4
+    timeout -k 1m -v 5m mpiexec $mpiexec_options -n 4 ./hello-world-f 4
 
 RUN ./hello-world-f90 1
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    mpiexec $mpiexec_options -n 4 ./hello-world-f90 4
+    timeout -k 1m -v 5m mpiexec $mpiexec_options -n 4 ./hello-world-f90 4
 
 RUN ./hello-world-fortran 1
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    mpiexec $mpiexec_options -n 4 ./hello-world-fortran 4
+    timeout -k 1m -v 5m mpiexec $mpiexec_options -n 4 ./hello-world-fortran 4
 
 RUN ./hello-world-fortran08 1
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    mpiexec $mpiexec_options -n 4 ./hello-world-fortran08 4
+    timeout -k 1m -v 5m mpiexec $mpiexec_options -n 4 ./hello-world-fortran08 4
 
 # 3.4. Run OpenMPI test suite
 
@@ -155,4 +155,4 @@ RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    if [ ${mpivendor} = openmpi ] ; then mpiexec $mpiexec_options -n 4 ./mpi_test_suite; fi
+    if [ ${mpivendor} = openmpi ] ; then timeout -k 1m -v 5m mpiexec $mpiexec_options -n 4 ./mpi_test_suite; fi
