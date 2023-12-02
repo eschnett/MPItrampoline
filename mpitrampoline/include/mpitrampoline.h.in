@@ -7,10 +7,4 @@
 
 #define MPITRAMPOLINE_VERSION "@PROJECT_VERSION@"
 
-extern const int mpitrampoline_version_major;
-extern const int mpitrampoline_version_minor;
-extern const int mpitrampoline_version_patch;
-
-extern const char * const mpitrampoline_version;
-
 #endif // #ifndef MPITRAMPOLINE_H

@@ -1,4 +1,4 @@
-#include "mpi.h"
+#include <mpi.h>
 
 #include <mpiabi_version.h>
 
@@ -28,6 +28,9 @@ int mpiwrapper_version_patch = -1;
 int mpiabi_loaded_version_major = -1;
 int mpiabi_loaded_version_minor = -1;
 int mpiabi_loaded_version_patch = -1;
+
+void mpiabi_set_function_pointers(void *handle);
+void mpiabi_set_function_pointers_fortran(void *handle);
 
 static bool did_init_mpitrampoline = false;
 
@@ -60,7 +63,7 @@ static void *load_library(const char *const libname) {
   return handle;
 }
 
-static void *get_symbol(void *handle, const char *name) {
+void *mpitrampoline_get_symbol(void *handle, const char *name) {
   void *ptr = dlsym(handle, name);
   if (!ptr) {
     fprintf(stderr, "MPItrampoline: Could not resolve symbol \"%s\"\n", name);
@@ -72,22 +75,16 @@ static void *get_symbol(void *handle, const char *name) {
   return ptr;
 }
 
-// We define the common symbols here in this file to ensure that this
-// file is linked into the executable, so that
-// `mpitrampoline_init_auto` is actually run
-
-#include "mpiabi_function_pointers.c"
-#include "mpiabi_function_pointers_fortran.c"
-
-void mpiabi_set_function_pointers(void *const handle) {
-#include "mpiabi_set_function_pointers.c"
-#include "mpiabi_set_function_pointers_fortran.c"
-}
-
-static void mpitrampoline_init(void) {
+void mpitrampoline_init(void) {
   if (did_init_mpitrampoline)
     return;
   did_init_mpitrampoline = true;
+
+  fprintf(stderr, "[MPItrampoline] This is MPItrampoline %d.%d.%d\n",
+          MPITRAMPOLINE_VERSION_MAJOR, MPITRAMPOLINE_VERSION_MINOR,
+          MPITRAMPOLINE_VERSION_PATCH);
+  fprintf(stderr, "[MPItrampoline] Requiring MPI ABI version %d.%d.%d\n",
+          MPIABI_VERSION_MAJOR, MPIABI_VERSION_MINOR, MPIABI_VERSION_PATCH);
 
   const char *const libname = getenv("MPITRAMPOLINE_LIB");
   if (!libname || libname[0] == '\0') {
@@ -99,22 +96,22 @@ static void mpitrampoline_init(void) {
 
   void *handle = load_library(libname);
 
-  mpiwrapper_version_major =
-      *(int const *)get_symbol(handle, "mpiwrapper_version_major");
-  mpiwrapper_version_minor =
-      *(int const *)get_symbol(handle, "mpiwrapper_version_minor");
-  mpiwrapper_version_patch =
-      *(int const *)get_symbol(handle, "mpiwrapper_version_patch");
+  mpiwrapper_version_major = *(int const *)mpitrampoline_get_symbol(
+      handle, "mpiwrapper_version_major");
+  mpiwrapper_version_minor = *(int const *)mpitrampoline_get_symbol(
+      handle, "mpiwrapper_version_minor");
+  mpiwrapper_version_patch = *(int const *)mpitrampoline_get_symbol(
+      handle, "mpiwrapper_version_patch");
   fprintf(stderr, "[MPItrampoline] Loaded MPIwrapper %d.%d.%d\n",
           mpiwrapper_version_major, mpiwrapper_version_minor,
           mpiwrapper_version_patch);
 
   mpiabi_loaded_version_major =
-      *(int const *)get_symbol(handle, "mpiabi_version_major");
+      *(int const *)mpitrampoline_get_symbol(handle, "mpiabi_version_major");
   mpiabi_loaded_version_minor =
-      *(int const *)get_symbol(handle, "mpiabi_version_minor");
+      *(int const *)mpitrampoline_get_symbol(handle, "mpiabi_version_minor");
   mpiabi_loaded_version_patch =
-      *(int const *)get_symbol(handle, "mpiabi_version_patch");
+      *(int const *)mpitrampoline_get_symbol(handle, "mpiabi_version_patch");
   fprintf(stderr, "[MPItrampoline] Found MPI ABI version %d.%d.%d\n",
           mpiabi_loaded_version_major, mpiabi_loaded_version_minor,
           mpiabi_loaded_version_patch);
@@ -137,7 +134,11 @@ static void mpitrampoline_init(void) {
     exit(1);
   }
 
+  fprintf(stderr, "MPItrampoline: Setting C function pointers\n");
   mpiabi_set_function_pointers(handle);
+  fprintf(stderr, "MPItrampoline: Setting Fortran function pointers\n");
+  mpiabi_set_function_pointers_fortran(handle);
+  fprintf(stderr, "MPItrampoline: Done setting Fortran pointers\n");
 }
 
 #ifdef __APPLE__
@@ -147,11 +148,5 @@ static void mpitrampoline_init(void) {
 #endif
 static void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
 mpitrampoline_init_auto(void) {
-  fprintf(stderr, "[MPItrampoline] This is MPItrampoline %d.%d.%d\n",
-          MPITRAMPOLINE_VERSION_MAJOR, MPITRAMPOLINE_VERSION_MINOR,
-          MPITRAMPOLINE_VERSION_PATCH);
-  fprintf(stderr, "[MPItrampoline] Requiring MPI ABI version %d.%d.%d\n",
-          MPIABI_VERSION_MAJOR, MPIABI_VERSION_MINOR, MPIABI_VERSION_PATCH);
-
   mpitrampoline_init();
 }

@@ -1,4 +1,4 @@
-#include "mpi_functions.h"
+#include <mpi_functions.h>
 
 // Define MPI functions
 

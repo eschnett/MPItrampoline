@@ -11,16 +11,18 @@ FROM ${cpuarch}/debian:12.2
 ENV DEBIAN_FRONTEND=noninteractive
 RUN apt update && \
     apt --yes --no-install-recommends install \
-        build-essential \
         autoconf \
         automake \
         autotools-dev \
         ca-certificates \
         cmake \
+        g++ \
+        gcc \
         gengetopt \
         gfortran \
         git \
         less \
+        make \
         ninja-build
 
 # 1.2. Download OpenMPI test suite

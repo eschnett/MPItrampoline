@@ -58,8 +58,7 @@ function fortran08(type::Typ, dim::Union{Nothing,Symbol}; hide_comm_size=false)
         type === external && return "external", ""
         type === logical && return "logical", ""
         type === offset && return "integer(MPI_OFFSET_KIND)", ""
-        type === status && return "type(MPI_Status)", "",
-        @assert type !== argv
+        type === status && return "type(MPI_Status)", "", @assert type !== argv
         @assert type !== argvs
         @assert type !== void
         @assert type !== weight
@@ -192,6 +191,8 @@ function generate_mpi_f08_functions_f90(io::IO)
     println(io, "! by `mpitrampoline/generate_trampoline.jl`.")
     println(io, "! Do not modify this file, changes will be overwritten.")
     println(io)
+    println(io, "#include <mpitrampoline.h>")
+    println(io)
     println(io, "module mpi_f08_functions_internal")
     println(io, "$(indent)use mpi_f08_types")
     println(io, "$(indent)use mpi_f08_constants")
@@ -222,8 +223,8 @@ function generate_mpi_f08_functions_f90(io::IO)
             intent = fortran(arg.intent)
             intent = isempty(intent) || arg.type === external ? "" : ", $intent"
             if arg.type === buffer
-                println(io, "$(indent)$(indent)$(indent)!dir\$ ignore_tkr(tkr) $(arg.name)")
-                println(io, "$(indent)$(indent)$(indent)!gcc\$ attributes no_arg_check :: $(arg.name)")
+                println(io, "$(indent)$(indent)$(indent)DIR_IGNORE_TKR !dir\$ ignore_tkr(tkr) $(arg.name)")
+                println(io, "$(indent)$(indent)$(indent)GCC_ATTRIBUTES_NO_ARG_CHECK !gcc\$ attributes no_arg_check :: $(arg.name)")
                 if arg.intent === out
                     intent = ""
                 end
@@ -331,6 +332,7 @@ function generate_mpiabi_function_pointers_fortran_h(io::IO)
     println(io, "// Do not modify this file, changes will be overwritten.")
     println(io)
     println(io, "#include <mpiabi_types.h>")
+    println(io, "#include <mpiabi_constants.h>")
     println(io)
     for fun in functions
         # Function name
@@ -362,7 +364,26 @@ function generate_mpiabi_function_pointers_fortran_c(io::IO)
     println(io, "// by `mpitrampoline/generate_trampoline.jl`.")
     println(io, "// Do not modify this file, changes will be overwritten.")
     println(io)
-    println(io, "#include \"mpiabi_function_pointers_fortran.h\"")
+    println(io, "#include <mpi.h>")
+    println(io, "#include <mpiabi_version.h>")
+    println(io, "#include <mpiabi_function_pointers_fortran.h>")
+    println(io)
+    println(
+        io,
+        """
+        void mpitrampoline_init(void);
+
+        #ifdef __APPLE__
+        #define CONSTRUCTOR_PRIORITY
+        #else
+        #define CONSTRUCTOR_PRIORITY (1000)
+        #endif
+        static void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
+        mpitrampoline_init_auto(void) {
+          mpitrampoline_init();
+        }
+        """,
+    )
     println(io)
     for fun in functions
         # Function name
@@ -394,11 +415,17 @@ function generate_mpiabi_set_function_pointers_fortran_c(io::IO)
     println(io, "// by `mpitrampoline/generate_trampoline.jl`.")
     println(io, "// Do not modify this file, changes will be overwritten.")
     println(io)
+    println(io, "#include <mpiabi_function_pointers_fortran.h>")
+    println(io)
+    println(io, "void *mpitrampoline_get_symbol(void *handle, const char *name);")
+    println(io)
+    println(io, "void mpiabi_set_function_pointers_fortran(void *handle) {")
     for fun in functions
         # Function name
         name = lowercase(mpi2abi(string(fun.name)))
-        println(io, "$(name)_ptr = get_symbol(handle, \"$(name)_\");")
+        println(io, "  $(name)_ptr = mpitrampoline_get_symbol(handle, \"$(name)_\");")
     end
+    println(io, "}")
     return nothing
 end
 
@@ -410,8 +437,8 @@ function generate_mpi_functions_fortran_c(io::IO)
     println(io, "// by `mpitrampoline/generate_trampoline.jl`.")
     println(io, "// Do not modify this file, changes will be overwritten.")
     println(io)
-    println(io, "#include \"mpi.h\"")
-    println(io, "#include \"mpiabi_function_pointers_fortran.h\"")
+    println(io, "#include <mpi.h>")
+    println(io, "#include <mpiabi_function_pointers_fortran.h>")
     println(io)
     for fun in functions
         # Function name
@@ -443,27 +470,27 @@ function generate_mpi_functions_fortran_c(io::IO)
     return nothing
 end
 
-open("mpif_functions.h", "w") do fh
+open("include/mpif_functions.h", "w") do fh
     generate_mpif_functions_h(fh)
     nothing
 end
-open("mpi_f08_functions.f90", "w") do fh
+open("src/mpi_f08_functions.F90", "w") do fh
     generate_mpi_f08_functions_f90(fh)
     nothing
 end
-open("mpiabi_function_pointers_fortran.h", "w") do fh
+open("include/mpiabi_function_pointers_fortran.h", "w") do fh
     generate_mpiabi_function_pointers_fortran_h(fh)
     nothing
 end
-open("mpiabi_function_pointers_fortran.c", "w") do fh
+open("src/mpiabi_function_pointers_fortran.c", "w") do fh
     generate_mpiabi_function_pointers_fortran_c(fh)
     nothing
 end
-open("mpiabi_set_function_pointers_fortran.c", "w") do fh
+open("src/mpiabi_set_function_pointers_fortran.c", "w") do fh
     generate_mpiabi_set_function_pointers_fortran_c(fh)
     nothing
 end
-open("mpi_functions_fortran.c", "w") do fh
+open("src/mpi_functions_fortran.c", "w") do fh
     generate_mpi_functions_fortran_c(fh)
     nothing
 end

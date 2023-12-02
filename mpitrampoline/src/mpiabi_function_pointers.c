@@ -1,4 +1,4 @@
-#include "mpiabi_function_pointers.h"
+#include <mpiabi_function_pointers.h>
 
 // Declare pointers to MPIABI functions
 

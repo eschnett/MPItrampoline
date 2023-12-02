@@ -4,8 +4,8 @@
 // by `mpitrampoline/generate_trampoline.jl`.
 // Do not modify this file, changes will be overwritten.
 
-#include "mpi.h"
-#include "mpiabi_function_pointers_fortran.h"
+#include <mpi.h>
+#include <mpiabi_function_pointers_fortran.h>
 
 void mpi_bsend_(
   const void *buf,

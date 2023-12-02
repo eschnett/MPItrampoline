@@ -1,9 +1,10 @@
 #ifndef MPI_FUNCTIONS_H
 #define MPI_FUNCTIONS_H
 
-#include "mpi_constants.h"
-#include "mpi_types.h"
-#include "mpiabi_function_pointers.h"
+#include <mpi_types.h>
+#include <mpi_constants.h>
+
+#include <mpiabi_function_pointers.h>
 
 // Declare (and inline-define) MPI functions
 

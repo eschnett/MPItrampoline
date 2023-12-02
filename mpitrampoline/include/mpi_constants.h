@@ -1,7 +1,7 @@
 #ifndef MPI_CONSTANTS_H
 #define MPI_CONSTANTS_H
 
-#include "mpi_types.h"
+#include <mpi_types.h>
 
 #include <mpiabi_constants.h>
 

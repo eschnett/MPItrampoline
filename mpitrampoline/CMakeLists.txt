@@ -87,66 +87,66 @@ else()
 endif()
 add_compile_definitions(ENABLE_FORTRAN)
 
-configure_file(mpitrampoline.h.in mpitrampoline.h @ONLY)
-configure_file(mpitrampolinef.h.in mpitrampolinef.h @ONLY)
+configure_file(include/mpitrampoline.h.in include/mpitrampoline.h @ONLY)
+configure_file(include/mpitrampolinef.h.in include/mpitrampolinef.h @ONLY)
 
 add_library(mpitrampoline
   # MPI C header files
-  mpi.h
-  mpi_types.h
-  mpi_constants.h
-  mpi_functions.h
-  mpiabi_function_pointers.h
-  mpitrampoline.h
+  include/mpitrampoline.h
+  include/mpi.h
+  include/mpi_mpitrampoline.h
+  include/mpi_types.h
+  include/mpi_constants.h
+  include/mpi_functions.h
+  include/mpiabi_function_pointers.h
   # MPI Fortran header files
-  mpif.h
-  mpif_types.h
-  mpif_constants.h
-  mpif_functions.h
-  mpitrampolinef.h
+  include/mpitrampolinef.h
+  include/mpif.h
+  include/mpif_types.h
+  include/mpif_constants.h
+  include/mpif_functions.h
+  # MPI Fortran modules
+  src/mpi.F90
+  src/mpi_f08.F90
+  src/mpi_f08_types.F90
+  src/mpi_f08_constants.F90
+  src/mpi_f08_functions.F90
   # Implementation
-  mpitrampoline.c
-  mpi_functions.c
-  mpi_functions_fortran.c
-  mpif_functions.f90
-  mpi.f90
-  mpi_f08.f90
-  mpi_f08_types.f90
-  mpi_f08_constants.f90
-  mpi_f08_functions.f90
-  # mpiabi_function_pointers.c
+  src/mpitrampoline.c
+  src/mpi_functions.c
+  src/mpi_functions_fortran.c
+  src/mpiabi_function_pointers.c
+  src/mpiabi_function_pointers_fortran.c
+  src/mpiabi_set_function_pointers.c
+  src/mpiabi_set_function_pointers_fortran.c
+  src/mpif_functions.F90
 )
 # target_compile_options(mpitrampoline PRIVATE -Wall -Wextra -Wno-unused-dummy-argument -Wno-unused-parameter)
 target_include_directories(
   mpitrampoline
-  PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+  PRIVATE include ${CMAKE_CURRENT_BINARY_DIR}/include
   PRIVATE ../mpiabi
 )
 target_link_libraries(mpitrampoline PRIVATE ${CMAKE_DL_LIBS})
 list(APPEND public_headers
-  mpi.h
-  mpi_types.h
-  mpi_constants.h
-  mpi_functions.h
-  mpiabi_function_pointers.h
-  mpiabi_function_pointers_fortran.h
-  ${CMAKE_CURRENT_BINARY_DIR}/mpitrampoline.h
+  ${CMAKE_CURRENT_BINARY_DIR}/include/mpitrampoline.h
+  include/mpi.h
+  include/mpi_mpitrampoline.h
+  include/mpi_types.h
+  include/mpi_constants.h
+  include/mpi_functions.h
+  include/mpiabi_function_pointers.h
   ../mpiabi/mpiabi_types.h
   ../mpiabi/mpiabi_constants.h
   ../mpiabi/mpiabi_version.h
-  mpif.h
-  mpif_types.h
-  mpif_constants.h
-  mpif_functions.h
-  ${CMAKE_CURRENT_BINARY_DIR}/mpitrampolinef.h
+  ${CMAKE_CURRENT_BINARY_DIR}/include/mpitrampolinef.h
+  include/mpif.h
+  include/mpif_types.h
+  include/mpif_constants.h
+  include/mpif_functions.h
   ../mpiabi/mpiabif_types.h
   ../mpiabi/mpiabif_constants.h
   ../mpiabi/mpiabif_functions.h
-  # mpi.f90
-  # mpi_f08_types.f90
-  # mpi_f08_constants.f90
-  # mpi_f08_functions.f90
-  # mpi_f08.f90
 )
 set_target_properties(mpitrampoline PROPERTIES
   VERSION ${PROJECT_VERSION}
