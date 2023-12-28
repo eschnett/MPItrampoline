@@ -56,7 +56,12 @@ module mpi_f08_types
 
   ! Status
 
-  type, bind(C), public :: MPI_Status
+  ! We cannot declare this type as `binc(C)` because Flang has a bug
+  ! (see <https://github.com/llvm/llvm-project/issues/76529>) that
+  ! requires us to use the `sequence` attribute.
+  ! type, bind(C), public :: MPI_Status
+  type, public :: MPI_Status
+     sequence
      integer :: MPI_VAL(MPI_STATUS_SIZE)
   end type MPI_Status
   

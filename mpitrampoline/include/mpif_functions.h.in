@@ -17,7 +17,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -40,7 +40,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -59,7 +59,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buffer
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buffer
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buffer
          integer :: buffer(*)
          integer, intent(in) :: size
@@ -115,7 +115,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: comm
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buffer
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buffer
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buffer
          integer, intent(in) :: buffer(*)
          integer, intent(in) :: size
@@ -184,7 +184,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -226,7 +226,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -266,7 +266,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -290,7 +290,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -314,7 +314,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -343,14 +343,14 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
          integer, intent(in) :: dest
          integer, intent(in) :: sendtag
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -376,7 +376,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(inout) :: buf(*)
          integer, intent(in) :: count
@@ -402,7 +402,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -442,7 +442,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -480,7 +480,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -504,7 +504,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -605,7 +605,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -628,7 +628,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -651,7 +651,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -674,7 +674,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -703,14 +703,14 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
          integer, intent(in) :: dest
          integer, intent(in) :: sendtag
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -736,7 +736,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(inout) :: buf(*)
          integer, intent(in) :: count
@@ -759,7 +759,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: session
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buffer
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buffer
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buffer
          integer, intent(in) :: buffer(*)
          integer, intent(in) :: size
@@ -813,7 +813,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -836,7 +836,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -1116,7 +1116,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: partitions
@@ -1144,7 +1144,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: partitions
@@ -1187,7 +1187,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) location
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) location
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: location
          integer, intent(in) :: location(*)
          integer(MPI_ADDRESS_KIND), intent(out) :: address
@@ -1220,12 +1220,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) inbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) inbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: inbuf
          integer, intent(in) :: inbuf(*)
          integer, intent(in) :: incount
          integer, intent(in) :: datatype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) outbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) outbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: outbuf
          integer :: outbuf(*)
          integer, intent(in) :: outsize
@@ -1247,12 +1247,12 @@
          implicit none
          include "mpif_constants.h"
          character(*), intent(in) :: datarep
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) inbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) inbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: inbuf
          integer, intent(in) :: inbuf(*)
          integer, intent(in) :: incount
          integer, intent(in) :: datatype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) outbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) outbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: outbuf
          integer :: outbuf(*)
          integer(MPI_ADDRESS_KIND), intent(in) :: outsize
@@ -1625,12 +1625,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) inbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) inbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: inbuf
          integer, intent(in) :: inbuf(*)
          integer, intent(in) :: insize
          integer, intent(out) :: position
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) outbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) outbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: outbuf
          integer :: outbuf(*)
          integer, intent(in) :: outcount
@@ -1652,12 +1652,12 @@
          implicit none
          include "mpif_constants.h"
          character(*), intent(in) :: datarep
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) inbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) inbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: inbuf
          integer, intent(in) :: inbuf(*)
          integer(MPI_ADDRESS_KIND), intent(in) :: insize
          integer(MPI_ADDRESS_KIND), intent(out) :: position
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) outbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) outbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: outbuf
          integer :: outbuf(*)
          integer, intent(in) :: outcount
@@ -1677,12 +1677,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -1705,12 +1705,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -1734,12 +1734,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -1764,12 +1764,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -1792,10 +1792,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: count
@@ -1818,10 +1818,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: count
@@ -1845,12 +1845,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -1873,12 +1873,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -1903,13 +1903,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer, intent(in) :: sdispls(*)
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -1935,13 +1935,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer, intent(in) :: sdispls(*)
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -1967,13 +1967,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer, intent(in) :: sdispls(*)
          integer, intent(in) :: sendtypes(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -1999,13 +1999,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer, intent(in) :: sdispls(*)
          integer, intent(in) :: sendtypes(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -2051,7 +2051,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buffer
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buffer
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buffer
          integer :: buffer(*)
          integer, intent(in) :: count
@@ -2073,7 +2073,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buffer
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buffer
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buffer
          integer :: buffer(*)
          integer, intent(in) :: count
@@ -2096,10 +2096,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: count
@@ -2122,10 +2122,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: count
@@ -2150,12 +2150,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -2180,12 +2180,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -2211,12 +2211,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -2243,12 +2243,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -2274,12 +2274,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -2303,12 +2303,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -2331,10 +2331,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: count
@@ -2358,12 +2358,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -2388,13 +2388,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer, intent(in) :: sdispls(*)
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -2420,13 +2420,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer, intent(in) :: sdispls(*)
          integer, intent(in) :: sendtypes(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -2460,7 +2460,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buffer
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buffer
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buffer
          integer :: buffer(*)
          integer, intent(in) :: count
@@ -2483,10 +2483,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: count
@@ -2511,12 +2511,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -2542,12 +2542,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -2572,10 +2572,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: count
@@ -2599,10 +2599,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -2625,10 +2625,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -2651,10 +2651,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: count
@@ -2679,12 +2679,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -2710,13 +2710,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer, intent(in) :: sdispls(*)
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -2775,10 +2775,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: count
@@ -2803,10 +2803,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: count
@@ -2829,10 +2829,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) inbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) inbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: inbuf
          integer, intent(in) :: inbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) inoutbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) inoutbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: inoutbuf
          integer :: inoutbuf(*)
          integer, intent(in) :: count
@@ -2852,10 +2852,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -2876,10 +2876,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -2902,10 +2902,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -2930,10 +2930,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -2956,10 +2956,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: count
@@ -2982,10 +2982,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: count
@@ -3010,12 +3010,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -3040,12 +3040,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -3071,13 +3071,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer, intent(in) :: displs(*)
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -3103,13 +3103,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer, intent(in) :: displs(*)
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -3209,7 +3209,7 @@
          external :: comm_copy_attr_fn
          external :: comm_delete_attr_fn
          integer, intent(out) :: comm_keyval
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) extra_state
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) extra_state
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: extra_state
          integer :: extra_state(*)
          integer, intent(out) :: ierror
@@ -3298,7 +3298,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: comm
          integer, intent(in) :: comm_keyval
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) attribute_val
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) attribute_val
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: attribute_val
          integer :: attribute_val(*)
          logical, intent(out) :: flag
@@ -3405,7 +3405,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: comm
          integer, intent(in) :: comm_keyval
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) attribute_val
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) attribute_val
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: attribute_val
          integer :: attribute_val(*)
          integer, intent(out) :: ierror
@@ -3749,7 +3749,7 @@
          external :: type_copy_attr_fn
          external :: type_delete_attr_fn
          integer, intent(out) :: type_keyval
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) extra_state
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) extra_state
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: extra_state
          integer :: extra_state(*)
          integer, intent(out) :: ierror
@@ -3788,7 +3788,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: datatype
          integer, intent(in) :: type_keyval
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) attribute_val
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) attribute_val
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: attribute_val
          integer :: attribute_val(*)
          logical, intent(out) :: flag
@@ -3819,7 +3819,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: datatype
          integer, intent(in) :: type_keyval
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) attribute_val
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) attribute_val
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: attribute_val
          integer :: attribute_val(*)
          integer, intent(out) :: ierror
@@ -3849,7 +3849,7 @@
          external :: win_copy_attr_fn
          external :: win_delete_attr_fn
          integer, intent(out) :: win_keyval
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) extra_state
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) extra_state
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: extra_state
          integer :: extra_state(*)
          integer, intent(out) :: ierror
@@ -3888,7 +3888,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: win
          integer, intent(in) :: win_keyval
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) attribute_val
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) attribute_val
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: attribute_val
          integer :: attribute_val(*)
          logical, intent(out) :: flag
@@ -3919,7 +3919,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: win
          integer, intent(in) :: win_keyval
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) attribute_val
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) attribute_val
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: attribute_val
          integer :: attribute_val(*)
          integer, intent(out) :: ierror
@@ -4286,12 +4286,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -4315,12 +4315,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -4344,12 +4344,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -4374,13 +4374,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer, intent(in) :: sdispls(*)
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -4406,13 +4406,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
          integer, intent(in) :: sendtypes(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -4435,12 +4435,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -4463,12 +4463,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -4492,12 +4492,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -4522,12 +4522,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -4551,12 +4551,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -4579,12 +4579,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcount
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcount
@@ -4609,13 +4609,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer, intent(in) :: sdispls(*)
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -4641,13 +4641,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer, intent(in) :: sdispls(*)
          integer, intent(in) :: sendtype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -4673,13 +4673,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
          integer, intent(in) :: sendtypes(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -4705,13 +4705,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) sendbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) sendbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: sendbuf
          integer, intent(in) :: sendbuf(*)
          integer, intent(in) :: sendcounts(*)
          integer(MPI_ADDRESS_KIND), intent(in) :: sdispls(*)
          integer, intent(in) :: sendtypes(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) recvbuf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) recvbuf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: recvbuf
          integer :: recvbuf(*)
          integer, intent(in) :: recvcounts(*)
@@ -4779,7 +4779,7 @@
          include "mpif_constants.h"
          integer(MPI_ADDRESS_KIND), intent(in) :: size
          integer, intent(in) :: info
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) baseptr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) baseptr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: baseptr
          integer :: baseptr(*)
          integer, intent(out) :: ierror
@@ -4923,7 +4923,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) base
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) base
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: base
          integer :: base(*)
          integer, intent(out) :: ierror
@@ -5585,7 +5585,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) origin_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) origin_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: origin_addr
          integer, intent(in) :: origin_addr(*)
          integer, intent(in) :: origin_count
@@ -5611,13 +5611,13 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) origin_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) origin_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: origin_addr
          integer, intent(in) :: origin_addr(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) compare_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) compare_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: compare_addr
          integer, intent(in) :: compare_addr(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) result_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) result_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: result_addr
          integer :: result_addr(*)
          integer, intent(in) :: datatype
@@ -5639,10 +5639,10 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) origin_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) origin_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: origin_addr
          integer, intent(in) :: origin_addr(*)
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) result_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) result_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: result_addr
          integer :: result_addr(*)
          integer, intent(in) :: datatype
@@ -5666,7 +5666,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) origin_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) origin_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: origin_addr
          integer :: origin_addr(*)
          integer, intent(in) :: origin_count
@@ -5696,12 +5696,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) origin_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) origin_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: origin_addr
          integer, intent(in) :: origin_addr(*)
          integer, intent(in) :: origin_count
          integer, intent(in) :: origin_datatype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) result_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) result_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: result_addr
          integer :: result_addr(*)
          integer, intent(in) :: result_count
@@ -5728,7 +5728,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) origin_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) origin_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: origin_addr
          integer, intent(in) :: origin_addr(*)
          integer, intent(in) :: origin_count
@@ -5756,7 +5756,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) origin_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) origin_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: origin_addr
          integer, intent(in) :: origin_addr(*)
          integer, intent(in) :: origin_count
@@ -5785,7 +5785,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) origin_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) origin_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: origin_addr
          integer :: origin_addr(*)
          integer, intent(in) :: origin_count
@@ -5817,12 +5817,12 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) origin_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) origin_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: origin_addr
          integer, intent(in) :: origin_addr(*)
          integer, intent(in) :: origin_count
          integer, intent(in) :: origin_datatype
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) result_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) result_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: result_addr
          integer :: result_addr(*)
          integer, intent(in) :: result_count
@@ -5851,7 +5851,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) origin_addr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) origin_addr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: origin_addr
          integer, intent(in) :: origin_addr(*)
          integer, intent(in) :: origin_count
@@ -5880,7 +5880,7 @@
          integer, intent(in) :: disp_unit
          integer, intent(in) :: info
          integer, intent(in) :: comm
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) baseptr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) baseptr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: baseptr
          integer :: baseptr(*)
          integer, intent(out) :: win
@@ -5902,7 +5902,7 @@
          integer, intent(in) :: disp_unit
          integer, intent(in) :: info
          integer, intent(in) :: comm
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) baseptr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) baseptr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: baseptr
          integer :: baseptr(*)
          integer, intent(out) :: win
@@ -5918,7 +5918,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: win
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) base
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) base
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: base
          integer :: base(*)
          integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -5946,7 +5946,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) base
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) base
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: base
          integer :: base(*)
          integer(MPI_ADDRESS_KIND), intent(in) :: size
@@ -5979,7 +5979,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: win
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) base
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) base
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: base
          integer, intent(in) :: base(*)
          integer, intent(out) :: ierror
@@ -6143,7 +6143,7 @@
          integer, intent(in) :: rank
          integer(MPI_ADDRESS_KIND), intent(out) :: size
          integer, intent(out) :: disp_unit
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) baseptr
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) baseptr
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: baseptr
          integer :: baseptr(*)
          integer, intent(out) :: ierror
@@ -6240,7 +6240,7 @@
          external :: query_fn
          external :: free_fn
          external :: cancel_fn
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) extra_state
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) extra_state
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: extra_state
          integer :: extra_state(*)
          integer, intent(out) :: request
@@ -6472,7 +6472,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -6492,7 +6492,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -6514,7 +6514,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: fh
          integer(MPI_OFFSET_KIND), intent(in) :: offset
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -6536,7 +6536,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: fh
          integer(MPI_OFFSET_KIND), intent(in) :: offset
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -6556,7 +6556,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -6576,7 +6576,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -6596,7 +6596,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -6618,7 +6618,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: fh
          integer(MPI_OFFSET_KIND), intent(in) :: offset
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -6640,7 +6640,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: fh
          integer(MPI_OFFSET_KIND), intent(in) :: offset
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -6660,7 +6660,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -6710,7 +6710,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -6730,7 +6730,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -6749,7 +6749,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -6766,7 +6766,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(out) :: status(MPI_STATUS_SIZE)
@@ -6786,7 +6786,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: fh
          integer(MPI_OFFSET_KIND), intent(in) :: offset
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -6808,7 +6808,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: fh
          integer(MPI_OFFSET_KIND), intent(in) :: offset
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -6829,7 +6829,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: fh
          integer(MPI_OFFSET_KIND), intent(in) :: offset
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -6846,7 +6846,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(out) :: status(MPI_STATUS_SIZE)
@@ -6864,7 +6864,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -6883,7 +6883,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -6900,7 +6900,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(out) :: status(MPI_STATUS_SIZE)
@@ -6918,7 +6918,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
          integer, intent(in) :: count
@@ -7032,7 +7032,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -7052,7 +7052,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -7071,7 +7071,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -7088,7 +7088,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(out) :: status(MPI_STATUS_SIZE)
@@ -7108,7 +7108,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: fh
          integer(MPI_OFFSET_KIND), intent(in) :: offset
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -7130,7 +7130,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: fh
          integer(MPI_OFFSET_KIND), intent(in) :: offset
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -7151,7 +7151,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: fh
          integer(MPI_OFFSET_KIND), intent(in) :: offset
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -7168,7 +7168,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(out) :: status(MPI_STATUS_SIZE)
@@ -7186,7 +7186,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -7205,7 +7205,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -7222,7 +7222,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(out) :: status(MPI_STATUS_SIZE)
@@ -7240,7 +7240,7 @@
          implicit none
          include "mpif_constants.h"
          integer, intent(in) :: fh
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer, intent(in) :: buf(*)
          integer, intent(in) :: count
@@ -7263,7 +7263,7 @@
          external :: read_conversion_fn
          external :: write_conversion_fn
          external :: dtype_file_extent_fn
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) extra_state
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) extra_state
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: extra_state
          integer :: extra_state(*)
          integer, intent(out) :: ierror
@@ -7274,7 +7274,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) buf
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) buf
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: buf
          integer :: buf(*)
       end subroutine MPI_F_sync_reg
@@ -7364,7 +7364,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: comm
          integer, intent(in) :: keyval
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) attribute_val
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) attribute_val
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: attribute_val
          integer :: attribute_val(*)
          logical, intent(out) :: flag
@@ -7381,7 +7381,7 @@
          include "mpif_constants.h"
          integer, intent(in) :: comm
          integer, intent(in) :: keyval
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) attribute_val
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) attribute_val
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: attribute_val
          integer :: attribute_val(*)
          integer, intent(out) :: ierror
@@ -7447,7 +7447,7 @@
          external :: copy_fn
          external :: delete_fn
          integer, intent(out) :: keyval
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) extra_state
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) extra_state
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: extra_state
          integer :: extra_state(*)
          integer, intent(out) :: ierror
@@ -7524,7 +7524,7 @@
      &)
          implicit none
          include "mpif_constants.h"
-@DIR_IGNORE_TKR@!dir$    ignore_tkr(tkr) location
+@DIR_IGNORE_TKR@!dir$ ignore_tkr(tkr) location
 @GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc$    attributes no_arg_check :: location
          integer :: location(*)
          integer(MPI_ADDRESS_KIND), intent(out) :: address

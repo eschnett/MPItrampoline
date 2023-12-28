@@ -56,11 +56,46 @@ endif()
 check_fortran_source_compiles(
   "
   end
-  subroutine attr(buf)
+  subroutine sub(buf)
     implicit none
-    !dir$ ignore_tkr(tkr) buf
-    integer buf
+    integer buf(*)
   end
+  subroutine caller1(buf)
+    implicit none
+    integer buf(1)
+    interface
+       subroutine sub(buf)
+         implicit none
+         integer buf(*)
+         !dir$ ignore_tkr(tkr) buf
+       end subroutine sub
+    end interface
+    call sub(buf)
+  end subroutine caller1
+  subroutine caller2(buf)
+    implicit none
+    real buf(1)
+    interface
+       subroutine sub(buf)
+         implicit none
+         integer buf(*)
+         !dir$ ignore_tkr(tkr) buf
+       end subroutine sub
+    end interface
+    call sub(buf)
+  end subroutine caller2
+  subroutine caller3(buf)
+    implicit none
+    real buf
+    interface
+       subroutine sub(buf)
+         implicit none
+         integer buf(*)
+         !dir$ ignore_tkr(tkr) buf
+       end subroutine sub
+    end interface
+    call sub(buf)
+  end subroutine caller3
   "
   HAVE_Fortran_attribute_dir_ignore_tkr
   SRC_EXT f90
@@ -68,16 +103,52 @@ check_fortran_source_compiles(
 if(HAVE_Fortran_attribute_dir_ignore_tkr)
   set(DIR_IGNORE_TKR "")
 else()
-  set(DIR_IGNORE_TKR "!")
+  set(DIR_IGNORE_TKR "!disabled ")
 endif()
 check_fortran_source_compiles(
   "
   end
-  subroutine attr(buf)
+  subroutine sub(buf)
     implicit none
-    integer buf
     !gcc$ attributes no_arg_check :: buf
+    integer buf(*)
   end
+  subroutine caller1(buf)
+    implicit none
+    integer buf(1)
+    interface
+       subroutine sub(buf)
+         implicit none
+         integer buf(*)
+         !gcc$ attributes no_arg_check :: buf
+       end subroutine sub
+    end interface
+    call sub(buf)
+  end subroutine caller1
+  subroutine caller2(buf)
+    implicit none
+    real buf(1)
+    interface
+       subroutine sub(buf)
+         implicit none
+         integer buf(*)
+         !gcc$ attributes no_arg_check :: buf
+       end subroutine sub
+    end interface
+    call sub(buf)
+  end subroutine caller2
+  subroutine caller3(buf)
+    implicit none
+    real buf
+    interface
+       subroutine sub(buf)
+         implicit none
+         integer buf(*)
+         !gcc$ attributes no_arg_check :: buf
+       end subroutine sub
+    end interface
+    call sub(buf)
+  end subroutine caller3
   "
   HAVE_Fortran_attribute_gcc_attributes_no_arg_check
   SRC_EXT f90
@@ -85,7 +156,7 @@ check_fortran_source_compiles(
 if(HAVE_Fortran_attribute_gcc_attributes_no_arg_check)
   set(GCC_ATTRIBUTES_NO_ARG_CHECK "")
 else()
-  set(GCC_ATTRIBUTES_NO_ARG_CHECK "!")
+  set(GCC_ATTRIBUTES_NO_ARG_CHECK "!disabled ")
 endif()
 add_compile_definitions(ENABLE_FORTRAN)
 
@@ -164,6 +235,7 @@ install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi.mod DESTINATION ${CMAKE_INST
 install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_types.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_constants.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_functions.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08_functions_internal.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 install(FILES ${CMAKE_Fortran_MODULE_DIRECTORY}/mpi_f08.mod DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
 
 # Install pkgconfig files
