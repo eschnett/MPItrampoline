@@ -84,8 +84,8 @@ function generate_mpiwrapper_functions_f90(io::IO)
             intent = fortran(arg.intent)
             intent = isempty(intent) || arg.type === external ? "" : ", $intent"
             # if arg.type === buffer
-            #     println(io, "$(indent)!dir\$ ignore_tkr(tkr) $(arg.name)")
-            #     println(io, "$(indent)!gcc\$ attributes no_arg_check :: $(arg.name)")
+            #     println(io, "$(indent)DIR_IGNORE_TKR !dir\$ ignore_tkr(tkr) $(arg.name)")
+            #     println(io, "$(indent)GCC_ATTRIBUTES_NO_ARG_CHECK !gcc\$ attributes no_arg_check :: $(arg.name)")
             #     if arg.intent === out
             #         intent = ""
             #     end

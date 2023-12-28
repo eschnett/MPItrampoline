@@ -57,38 +57,42 @@ check_fortran_source_compiles(
   "
   end
   subroutine attr(buf)
-    integer buf
+    implicit none
     !dir$ ignore_tkr(tkr) buf
+    integer buf
   end
   "
-  Fortran_attribute_dir_ignore_tkr
+  HAVE_Fortran_attribute_dir_ignore_tkr
   SRC_EXT f90
 )
-if(Fortran_attribute_dir_ignore_tkr)
-  add_compile_definitions(DIR_IGNORE_TKR=) # enabled
+if(HAVE_Fortran_attribute_dir_ignore_tkr)
+  set(DIR_IGNORE_TKR "")
 else()
-  add_compile_definitions(DIR_IGNORE_TKR=!) # disabled
+  set(DIR_IGNORE_TKR "!")
 endif()
 check_fortran_source_compiles(
   "
   end
   subroutine attr(buf)
+    implicit none
     integer buf
     !gcc$ attributes no_arg_check :: buf
   end
   "
-  Fortran_attribute_gcc_attributes_no_arg_check
+  HAVE_Fortran_attribute_gcc_attributes_no_arg_check
   SRC_EXT f90
 )
-if(Fortran_attribute_gcc_attributes_no_arg_check)
-  add_compile_definitions(GCC_ATTRIBUTES_NO_ARG_CHECK=) # enabled
+if(HAVE_Fortran_attribute_gcc_attributes_no_arg_check)
+  set(GCC_ATTRIBUTES_NO_ARG_CHECK "")
 else()
-  add_compile_definitions(GCC_ATTRIBUTES_NO_ARG_CHECK=!) # disabled
+  set(GCC_ATTRIBUTES_NO_ARG_CHECK "!")
 endif()
 add_compile_definitions(ENABLE_FORTRAN)
 
 configure_file(include/mpitrampoline.h.in include/mpitrampoline.h @ONLY)
 configure_file(include/mpitrampolinef.h.in include/mpitrampolinef.h @ONLY)
+configure_file(include/mpif_functions.h.in include/mpif_functions.h @ONLY)
+configure_file(src/mpi_f08_functions.F90.in src/mpi_f08_functions.F90 @ONLY)
 
 add_library(mpitrampoline
   # MPI C header files
@@ -119,7 +123,7 @@ add_library(mpitrampoline
   src/mpiabi_function_pointers_fortran.c
   src/mpiabi_set_function_pointers.c
   src/mpiabi_set_function_pointers_fortran.c
-  src/mpif_functions.F90
+  src/mpif_special_functions.F90
 )
 # target_compile_options(mpitrampoline PRIVATE -Wall -Wextra -Wno-unused-dummy-argument -Wno-unused-parameter)
 target_include_directories(
@@ -143,7 +147,7 @@ list(APPEND public_headers
   include/mpif.h
   include/mpif_types.h
   include/mpif_constants.h
-  include/mpif_functions.h
+  ${CMAKE_CURRENT_BINARY_DIR}/include/mpif_functions.h
   ../mpiabi/mpiabif_types.h
   ../mpiabi/mpiabif_constants.h
   ../mpiabi/mpiabif_functions.h

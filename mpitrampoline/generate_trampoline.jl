@@ -164,8 +164,8 @@ function generate_mpif_functions_h(io::IO)
             intent = fortran(arg.intent)
             intent = isempty(intent) || arg.type === external ? "" : ", $intent"
             if arg.type === buffer
-                println(io, "!dir\$ $(indent)ignore_tkr(tkr) $(arg.name)")
-                println(io, "!gcc\$ $(indent)attributes no_arg_check :: $(arg.name)")
+                println(io, "@DIR_IGNORE_TKR@!dir\$ $(indent)ignore_tkr(tkr) $(arg.name)")
+                println(io, "@GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc\$ $(indent)attributes no_arg_check :: $(arg.name)")
                 if arg.intent === out
                     intent = ""
                 end
@@ -223,8 +223,8 @@ function generate_mpi_f08_functions_f90(io::IO)
             intent = fortran(arg.intent)
             intent = isempty(intent) || arg.type === external ? "" : ", $intent"
             if arg.type === buffer
-                println(io, "$(indent)$(indent)$(indent)DIR_IGNORE_TKR !dir\$ ignore_tkr(tkr) $(arg.name)")
-                println(io, "$(indent)$(indent)$(indent)GCC_ATTRIBUTES_NO_ARG_CHECK !gcc\$ attributes no_arg_check :: $(arg.name)")
+                println(io, "$(indent)$(indent)$(indent)@DIR_IGNORE_TKR@!dir\$ ignore_tkr(tkr) $(arg.name)")
+                println(io, "$(indent)$(indent)$(indent)@GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc\$ attributes no_arg_check :: $(arg.name)")
                 if arg.intent === out
                     intent = ""
                 end
@@ -280,8 +280,8 @@ function generate_mpi_f08_functions_f90(io::IO)
             intent = fortran(arg.intent)
             intent = isempty(intent) || arg.type === external ? "" : ", $intent"
             if arg.type === buffer
-                println(io, "$(indent)$(indent)!dir\$ ignore_tkr(tkr) $(arg.name)")
-                println(io, "$(indent)$(indent)!gcc\$ attributes no_arg_check :: $(arg.name)")
+                println(io, "$(indent)$(indent)@DIR_IGNORE_TKR@!dir\$ ignore_tkr(tkr) $(arg.name)")
+                println(io, "$(indent)$(indent)@GCC_ATTRIBUTES_NO_ARG_CHECK@!gcc\$ attributes no_arg_check :: $(arg.name)")
                 if arg.intent === out
                     intent = ""
                 end
@@ -470,11 +470,11 @@ function generate_mpi_functions_fortran_c(io::IO)
     return nothing
 end
 
-open("include/mpif_functions.h", "w") do fh
+open("include/mpif_functions.h.in", "w") do fh
     generate_mpif_functions_h(fh)
     nothing
 end
-open("src/mpi_f08_functions.F90", "w") do fh
+open("src/mpi_f08_functions.F90.in", "w") do fh
     generate_mpi_f08_functions_f90(fh)
     nothing
 end
