@@ -1,10 +1,13 @@
 #ifndef MPI_FUNCTIONS_H
 #define MPI_FUNCTIONS_H
 
-#include <mpi_types.h>
 #include <mpi_constants.h>
+#include <mpi_mpiabi_function_pointers.h>
+#include <mpi_types.h>
 
-#include <mpiabi_function_pointers.h>
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 // Declare (and inline-define) MPI functions
 
@@ -4024,4 +4027,25 @@ inline int MPIX_Query_ze_support(void) {
   return (*MPIXABI_Query_ze_support_ptr)();
 }
 
+// Ensure MPItrampoline is initialized
+
+#ifdef __APPLE__
+#define MPITRAMPOLINE_CONSTRUCTOR_PRIORITY
+#else
+#define MPITRAMPOLINE_CONSTRUCTOR_PRIORITY (1000)
+#endif
+void mpitrampoline_init(void);
+static void __attribute__((__constructor__ MPITRAMPOLINE_CONSTRUCTOR_PRIORITY))
+mpitrampoline_init_auto(void) {
+  mpitrampoline_init();
+}
+
+#ifdef __cplusplus
+}
+#endif
+
+#define MPI_FUNCTIONS_H_INCLUDED
 #endif // #ifndef MPI_FUNCTIONS_H
+#ifndef MPI_FUNCTIONS_H_INCLUDED
+#error
+#endif

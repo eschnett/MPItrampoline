@@ -3,6 +3,10 @@
 
 #include <mpiabi_types.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Define MPI types
 
 // A.1.2 Types
@@ -73,4 +77,12 @@ typedef MPIABI_T_event_dropped_cb_function MPI_T_event_dropped_cb_function;
 typedef MPIABI_Copy_function MPI_Copy_function;
 typedef MPIABI_Delete_function MPI_Delete_function;
 
+#ifdef __cplusplus
+}
+#endif
+
+#define MPI_TYPES_H_INCLUDED
 #endif // #ifndef MPI_TYPES_H
+#ifndef MPI_TYPES_H_INCLUDED
+#error
+#endif

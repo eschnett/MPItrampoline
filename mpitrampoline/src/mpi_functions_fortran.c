@@ -5,7 +5,7 @@
 // Do not modify this file, changes will be overwritten.
 
 #include <mpi.h>
-#include <mpiabi_function_pointers_fortran.h>
+#include <mpi_mpiabi_function_pointers_fortran.h>
 
 void mpi_bsend_(
   const void *buf,

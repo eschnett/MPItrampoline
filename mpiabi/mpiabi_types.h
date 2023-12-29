@@ -122,4 +122,8 @@ typedef int MPIABI_Copy_function(MPIABI_Comm oldcomm, int keyval,
 typedef int MPIABI_Delete_function(MPIABI_Comm comm, int keyval,
                                    void *attribute_val, void *extra_state);
 
+#define MPIABI_TYPES_H_INCLUDED
 #endif // #ifndef MPIABI_TYPES_H
+#ifndef MPIABI_TYPES_H_INCLUDED
+#error
+#endif

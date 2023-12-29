@@ -323,7 +323,7 @@ function generate_mpi_f08_functions_f90(io::IO)
     return nothing
 end
 
-function generate_mpiabi_function_pointers_fortran_h(io::IO)
+function generate_mpi_mpiabi_function_pointers_fortran_h(io::IO)
     indent = "  "
     println(io, "// MPIABI Fortran function pointers")
     println(io)
@@ -356,7 +356,7 @@ function generate_mpiabi_function_pointers_fortran_h(io::IO)
     return nothing
 end
 
-function generate_mpiabi_function_pointers_fortran_c(io::IO)
+function generate_mpi_mpiabi_function_pointers_fortran_c(io::IO)
     indent = "  "
     println(io, "// MPIABI Fortran function pointers")
     println(io)
@@ -366,24 +366,7 @@ function generate_mpiabi_function_pointers_fortran_c(io::IO)
     println(io)
     println(io, "#include <mpi.h>")
     println(io, "#include <mpiabi_version.h>")
-    println(io, "#include <mpiabi_function_pointers_fortran.h>")
-    println(io)
-    println(
-        io,
-        """
-        void mpitrampoline_init(void);
-
-        #ifdef __APPLE__
-        #define CONSTRUCTOR_PRIORITY
-        #else
-        #define CONSTRUCTOR_PRIORITY (1000)
-        #endif
-        static void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
-        mpitrampoline_init_auto(void) {
-          mpitrampoline_init();
-        }
-        """,
-    )
+    println(io, "#include <mpi_mpiabi_function_pointers_fortran.h>")
     println(io)
     for fun in functions
         # Function name
@@ -407,19 +390,19 @@ function generate_mpiabi_function_pointers_fortran_c(io::IO)
     return nothing
 end
 
-function generate_mpiabi_set_function_pointers_fortran_c(io::IO)
+function generate_mpi_set_mpiabi_function_pointers_fortran_c(io::IO)
     indent = "  "
-    println(io, "// MPIABI Set Fortran function pointers")
+    println(io, "// Set MPIABI Fortran function pointers")
     println(io)
     println(io, "// This file has been generated automatically")
     println(io, "// by `mpitrampoline/generate_trampoline.jl`.")
     println(io, "// Do not modify this file, changes will be overwritten.")
     println(io)
-    println(io, "#include <mpiabi_function_pointers_fortran.h>")
+    println(io, "#include <mpi_mpiabi_function_pointers_fortran.h>")
     println(io)
     println(io, "void *mpitrampoline_get_symbol(void *handle, const char *name);")
     println(io)
-    println(io, "void mpiabi_set_function_pointers_fortran(void *handle) {")
+    println(io, "void mpi_set_mpiabi_function_pointers_fortran(void *handle) {")
     for fun in functions
         # Function name
         name = lowercase(mpi2abi(string(fun.name)))
@@ -438,7 +421,7 @@ function generate_mpi_functions_fortran_c(io::IO)
     println(io, "// Do not modify this file, changes will be overwritten.")
     println(io)
     println(io, "#include <mpi.h>")
-    println(io, "#include <mpiabi_function_pointers_fortran.h>")
+    println(io, "#include <mpi_mpiabi_function_pointers_fortran.h>")
     println(io)
     for fun in functions
         # Function name
@@ -478,16 +461,16 @@ open("src/mpi_f08_functions.F90.in", "w") do fh
     generate_mpi_f08_functions_f90(fh)
     nothing
 end
-open("include/mpiabi_function_pointers_fortran.h", "w") do fh
-    generate_mpiabi_function_pointers_fortran_h(fh)
+open("include/mpi_mpiabi_function_pointers_fortran.h", "w") do fh
+    generate_mpi_mpiabi_function_pointers_fortran_h(fh)
     nothing
 end
-open("src/mpiabi_function_pointers_fortran.c", "w") do fh
-    generate_mpiabi_function_pointers_fortran_c(fh)
+open("src/mpi_mpiabi_function_pointers_fortran.c", "w") do fh
+    generate_mpi_mpiabi_function_pointers_fortran_c(fh)
     nothing
 end
-open("src/mpiabi_set_function_pointers_fortran.c", "w") do fh
-    generate_mpiabi_set_function_pointers_fortran_c(fh)
+open("src/mpi_set_mpiabi_function_pointers_fortran.c", "w") do fh
+    generate_mpi_set_mpiabi_function_pointers_fortran_c(fh)
     nothing
 end
 open("src/mpi_functions_fortran.c", "w") do fh

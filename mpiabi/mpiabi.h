@@ -6,4 +6,8 @@
 #include "mpiabi_types.h"
 #include "mpiabi_version.h"
 
+#define MPIABI_H_INCLUDED
 #endif // #ifndef MPIABI_H
+#ifndef MPIABI_H_INCLUDED
+#error
+#endif

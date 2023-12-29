@@ -173,7 +173,7 @@ add_library(mpitrampoline
   include/mpi_types.h
   include/mpi_constants.h
   include/mpi_functions.h
-  include/mpiabi_function_pointers.h
+  include/mpi_mpiabi_function_pointers.h
   # MPI Fortran header files
   include/mpitrampolinef.h
   include/mpif.h
@@ -190,10 +190,10 @@ add_library(mpitrampoline
   src/mpitrampoline.c
   src/mpi_functions.c
   src/mpi_functions_fortran.c
-  src/mpiabi_function_pointers.c
-  src/mpiabi_function_pointers_fortran.c
-  src/mpiabi_set_function_pointers.c
-  src/mpiabi_set_function_pointers_fortran.c
+  src/mpi_mpiabi_function_pointers.c
+  src/mpi_mpiabi_function_pointers_fortran.c
+  src/mpi_set_mpiabi_function_pointers.c
+  src/mpi_set_mpiabi_function_pointers_fortran.c
   src/mpif_special_functions.F90
 )
 # target_compile_options(mpitrampoline PRIVATE -Wall -Wextra -Wno-unused-dummy-argument -Wno-unused-parameter)
@@ -210,7 +210,7 @@ list(APPEND public_headers
   include/mpi_types.h
   include/mpi_constants.h
   include/mpi_functions.h
-  include/mpiabi_function_pointers.h
+  include/mpi_mpiabi_function_pointers.h
   ../mpiabi/mpiabi_types.h
   ../mpiabi/mpiabi_constants.h
   ../mpiabi/mpiabi_version.h

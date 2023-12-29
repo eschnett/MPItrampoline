@@ -5,4 +5,8 @@
 #define MPIABI_VERSION_MINOR 0
 #define MPIABI_VERSION_PATCH 0
 
+#define MPIABI_VERSION_H_INCLUDED
 #endif // #ifndef MPIABI_VERSION_H
+#ifndef MPIABI_VERSION_H_INCLUDED
+#error
+#endif

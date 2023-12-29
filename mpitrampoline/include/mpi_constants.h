@@ -5,6 +5,10 @@
 
 #include <mpiabi_constants.h>
 
+#ifdef __cplusplus
+extern "C" {
+#endif
+
 // Define MPI constants
 
 // A.1.1 Defined Constants
@@ -568,4 +572,12 @@ enum {
 #define MPI_T_CB_REQUIRE_THREAD_SAFE MPIABI_T_CB_REQUIRE_THREAD_SAFE
 #define MPI_T_CB_REQUIRE_ASYNC_SIGNAL_SAFE MPIABI_T_CB_REQUIRE_ASYNC_SIGNAL_SAFE
 
+#ifdef __cplusplus
+}
+#endif
+
+#define MPI_CONSTANTS_H_INCLUDED
 #endif // #ifndef MPI_CONSTANTS_H
+#ifndef MPI_CONSTANTS_H_INCLUDED
+#error
+#endif

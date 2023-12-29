@@ -1740,4 +1740,8 @@ int MPIXABI_Query_ze_support(void);
 }
 #endif
 
+#define MPIABI_FUNCTIONS_H_INCLUDED
 #endif // #ifndef MPIABI_FUNCTIONS_H
+#ifndef MPIABI_FUNCTIONS_H_INCLUDED
+#error
+#endif

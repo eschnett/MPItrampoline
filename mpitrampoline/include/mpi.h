@@ -8,4 +8,8 @@
 #include <mpi_functions.h>
 #include <mpi_types.h>
 
+#define MPI_H_INCLUDED
 #endif // #ifndef MPI_H
+#ifndef MPI_H_INCLUDED
+#error
+#endif

@@ -596,4 +596,8 @@ enum {
 #define MPIABI_T_CB_REQUIRE_THREAD_SAFE ((MPIABI_T_cb_safety))
 #define MPIABI_T_CB_REQUIRE_ASYNC_SIGNAL_SAFE ((MPIABI_T_cb_safety))
 
+#define MPIABI_CONSTANTS_H_INCLUDED
 #endif // #ifndef MPIABI_CONSTANTS_H
+#ifndef MPIABI_CONSTANTS_H_INCLUDED
+#error
+#endif

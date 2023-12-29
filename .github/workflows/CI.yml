@@ -13,6 +13,8 @@ jobs:
   build:
     strategy:
       matrix:
+        # TODO: Build on macOS
+        # TODO: Build with Clang, Flang
         os: [ubuntu-22.04]
         mpi: [mpich, openmpi]
         shared: [shared-off, shared-on]

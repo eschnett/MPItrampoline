@@ -29,8 +29,8 @@ int mpiabi_loaded_version_major = -1;
 int mpiabi_loaded_version_minor = -1;
 int mpiabi_loaded_version_patch = -1;
 
-void mpiabi_set_function_pointers(void *handle);
-void mpiabi_set_function_pointers_fortran(void *handle);
+void mpi_set_mpiabi_function_pointers(void *handle);
+void mpi_set_mpiabi_function_pointers_fortran(void *handle);
 
 static bool did_init_mpitrampoline = false;
 
@@ -135,18 +135,18 @@ void mpitrampoline_init(void) {
   }
 
   fprintf(stderr, "MPItrampoline: Setting C function pointers\n");
-  mpiabi_set_function_pointers(handle);
+  mpi_set_mpiabi_function_pointers(handle);
   fprintf(stderr, "MPItrampoline: Setting Fortran function pointers\n");
-  mpiabi_set_function_pointers_fortran(handle);
+  mpi_set_mpiabi_function_pointers_fortran(handle);
   fprintf(stderr, "MPItrampoline: Done setting Fortran pointers\n");
 }
 
-#ifdef __APPLE__
-#define CONSTRUCTOR_PRIORITY
-#else
-#define CONSTRUCTOR_PRIORITY (1000)
-#endif
-static void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
-mpitrampoline_init_auto(void) {
-  mpitrampoline_init();
-}
+// #ifdef __APPLE__
+// #define CONSTRUCTOR_PRIORITY
+// #else
+// #define CONSTRUCTOR_PRIORITY (1000)
+// #endif
+// static void __attribute__((__constructor__ CONSTRUCTOR_PRIORITY))
+// mpitrampoline_init_auto(void) {
+//   mpitrampoline_init();
+// }
