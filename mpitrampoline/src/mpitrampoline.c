@@ -37,15 +37,16 @@ static bool did_init_mpitrampoline = false;
 static void *load_library(const char *const libname) {
   void *handle;
 
-#ifdef __APPLE__
+#if defined __APPLE__
 
   fprintf(stderr, "[MPItrampoline] Calling dlopen\n");
   handle = dlopen(libname, RTLD_LOCAL);
 
-#elif __linux__
+#elif defined __FreeBSD__ || defined __linux__
 
   fprintf(stderr, "[MPItrampoline] Calling dlopen\n");
   handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL
+  // musl does not have `RTLD_DEEPBIND`
 #ifdef RTLD_DEEPBIND
                                | RTLD_DEEPBIND
 #endif
