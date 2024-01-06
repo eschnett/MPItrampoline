@@ -48,9 +48,6 @@ static void *load_library(const char *const libname) {
   handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL
 #ifdef RTLD_DEEPBIND
                                | RTLD_DEEPBIND
-#error "good! have RTLD_DEEPBIND"
-#else
-#error "no RTLD_DEEPBIND"
 #endif
   );
 
