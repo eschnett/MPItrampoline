@@ -45,7 +45,14 @@ static void *load_library(const char *const libname) {
 #elif __linux__
 
   fprintf(stderr, "[MPItrampoline] Calling dlopen\n");
-  handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL | RTLD_DEEPBIND);
+  handle = dlopen(libname, RTLD_LAZY | RTLD_LOCAL
+#ifdef RTLD_DEEPBIND
+                               | RTLD_DEEPBIND
+#error "good! have RTLD_DEEPBIND"
+#else
+#error "no RTLD_DEEPBIND"
+#endif
+  );
 
 #else
 #error "Unsupported operating system"
