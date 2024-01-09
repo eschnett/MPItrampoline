@@ -1,2 +1,4 @@
-__pycache__
+BUILD.sh
 build
+build-*
+build.log
