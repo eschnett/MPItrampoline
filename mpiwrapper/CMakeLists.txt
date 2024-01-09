@@ -431,11 +431,22 @@ check_type_size(MPI_User_function_c SIZEOF_MPI_USER_FUNCTION_C)
 
 configure_file(mpiwrapper.h.in mpiwrapper.h @ONLY)
 
+message(STATUS "MPI_FOUND=${MPI_FOUND}")
+message(STATUS "MPI_C_FOUND=${MPI_C_FOUND}")
+message(STATUS "MPI_Fortran_FOUND=${MPI_Fortran_FOUND}")
+message(STATUS "MPI_VERSION=${MPI_VERSION}")
+message(STATUS "MPI_C_VERSION=${MPI_C_VERSION}")
+message(STATUS "MPI_C_VERSION_MAJOR=${MPI_C_VERSION_MAJOR}")
+message(STATUS "MPI_C_VERSION_MINOR=${MPI_C_VERSION_MINOR}")
+message(STATUS "MPI_Fortran_VERSION=${MPI_Fortran_VERSION}")
+message(STATUS "MPI_Fortran_VERSION_MAJOR=${MPI_Fortran_VERSION_MAJOR}")
+message(STATUS "MPI_Fortran_VERSION_MINOR=${MPI_Fortran_VERSION_MINOR}")
+
 add_library(mpiwrapper
   MODULE
   mpiwrapper.h
   mpiwrapper.c
-  mpiwrapper-mpi3.c
+  $<$<VERSION_LESS:${MPI_C_VERSION},4.0>:mpiwrapper-mpi3.c>
   mpiwrapper.F90
   mpiwrapper_functions.F90
 )
