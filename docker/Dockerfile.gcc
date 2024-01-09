@@ -1,0 +1,202 @@
+# docker build --build-arg cpuarch=amd64 --build-arg githash=$(git rev-parse HEAD) --build-arg mpivendor=mpich --tag mpitrampoline6 --progress plain .
+# docker run --interactive --rm --tty mpitrampoline6
+
+# amd64, arm32v5, arm32v7, arm64v8, i386, mips64le, ppc64le, riscv64
+ARG cpuarch=amd64
+
+FROM ${cpuarch}/debian:12.4
+
+# 1.1. Install dependencies
+
+ENV DEBIAN_FRONTEND=noninteractive
+RUN apt update && \
+    apt --yes --no-install-recommends install \
+        autoconf \
+        automake \
+        autotools-dev \
+        ca-certificates \
+        cmake \
+        g++ \
+        gcc \
+        gengetopt \
+        gfortran \
+        git \
+        less \
+        make \
+        ninja-build
+
+# 1.2. Download OpenMPI test suite
+
+WORKDIR /home/cactus
+ADD https://github.com/open-mpi/mpi-test-suite/archive/refs/tags/v1.1.1.tar.gz /home/cactus/mpi-test-suite-1.1.1.tar.gz
+RUN tar xzf mpi-test-suite-1.1.1.tar.gz
+WORKDIR /home/cactus/mpi-test-suite-1.1.1
+RUN ./autogen.sh
+
+# 1.3 Download MPItrampoline
+
+WORKDIR /home/cactus
+ARG githash
+RUN git clone -b eschnett/MPItrampoline6 https://github.com/eschnett/MPItrampoline && \
+    cd MPItrampoline && \
+    git checkout ${githash}
+
+# 2.1 Build MPItrampoline
+
+WORKDIR /home/cactus/MPItrampoline/mpitrampoline
+RUN cmake -B build -G Ninja \
+        -DCMAKE_BUILD_TYPE=Debug \
+        -DCMAKE_INSTALL_PREFIX=/mpitrampoline
+RUN cmake --build build
+RUN cmake --install build
+
+# 2.2. Build simple tests
+
+WORKDIR /home/cactus/MPItrampoline/test
+
+RUN /mpitrampoline/bin/mpicc -c hello-world-c.c
+RUN /mpitrampoline/bin/mpicc -o hello-world-c hello-world-c.o
+
+RUN /mpitrampoline/bin/mpicxx -c hello-world-cxx.cxx
+RUN /mpitrampoline/bin/mpicxx -o hello-world-cxx hello-world-cxx.o
+
+RUN /mpitrampoline/bin/mpifc -c hello-world-f.f
+RUN /mpitrampoline/bin/mpifc -o hello-world-f hello-world-f.o
+
+RUN /mpitrampoline/bin/mpifc -c hello-world-f90.f90
+RUN /mpitrampoline/bin/mpifc -o hello-world-f90 hello-world-f90.o
+
+RUN /mpitrampoline/bin/mpifc -c hello-world-fortran.f90
+RUN /mpitrampoline/bin/mpifc -o hello-world-fortran hello-world-fortran.o
+
+RUN /mpitrampoline/bin/mpifc -c hello-world-fortran08.f90
+RUN /mpitrampoline/bin/mpifc -o hello-world-fortran08 hello-world-fortran08.o
+
+# 2.3. Build OpenMPI test suite
+
+WORKDIR /home/cactus/mpi-test-suite-1.1.1
+RUN ./configure CC=/mpitrampoline/bin/mpicc
+RUN  make -j$(nproc)
+
+# 3.1 Install system MPI
+
+# mpich, openmpi
+ARG mpivendor=mpich
+
+RUN apt update && \
+    case ${mpivendor} in \
+        mpich) pkgs=libmpich-dev;; \
+        openmpi) pkgs=libopenmpi-dev;; \
+        *) exit 1;; \
+    esac && \
+    apt-get --yes --no-install-recommends install ${pkgs}
+
+# 3.2 Build MPIwrapper
+
+WORKDIR /home/cactus/MPItrampoline/mpiwrapper
+RUN cmake -B build -G Ninja \
+        -DCMAKE_BUILD_TYPE=Debug \
+        -DCMAKE_C_COMPILER=mpicc \
+        -DCMAKE_Fortran_COMPILER=mpifort \
+        -DCMAKE_INSTALL_PREFIX=/mpiwrapper
+RUN cmake --build build
+RUN cmake --install build
+ENV MPITRAMPOLINE_LIB=/mpiwrapper/lib/libmpiwrapper.so
+
+# 3.3. Run simple tests
+
+WORKDIR /home/cactus/MPItrampoline/test
+
+RUN ./hello-world-c 1
+RUN case "${mpivendor}" in \
+        mpich) mpiexec_options='';; \
+        openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
+    esac && \
+    timeout -k 1m -v 5m mpiexec ${mpiexec_options} -n 4 ./hello-world-c 4
+
+RUN ./hello-world-cxx 1
+RUN case "${mpivendor}" in \
+        mpich) mpiexec_options='';; \
+        openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
+    esac && \
+    timeout -k 1m -v 5m mpiexec ${mpiexec_options} -n 4 ./hello-world-cxx 4
+
+RUN ./hello-world-f 1
+RUN case "${mpivendor}" in \
+        mpich) mpiexec_options='';; \
+        openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
+    esac && \
+    timeout -k 1m -v 5m mpiexec ${mpiexec_options} -n 4 ./hello-world-f 4
+
+RUN ./hello-world-f90 1
+RUN case "${mpivendor}" in \
+        mpich) mpiexec_options='';; \
+        openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
+    esac && \
+    timeout -k 1m -v 5m mpiexec ${mpiexec_options} -n 4 ./hello-world-f90 4
+
+RUN ./hello-world-fortran 1
+RUN case "${mpivendor}" in \
+        mpich) mpiexec_options='';; \
+        openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
+    esac && \
+    timeout -k 1m -v 5m mpiexec ${mpiexec_options} -n 4 ./hello-world-fortran 4
+
+RUN ./hello-world-fortran08 1
+RUN case "${mpivendor}" in \
+        mpich) mpiexec_options='';; \
+        openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
+    esac && \
+    timeout -k 1m -v 5m mpiexec ${mpiexec_options} -n 4 ./hello-world-fortran08 4
+
+# 3.4. Run OpenMPI test suite
+
+WORKDIR /home/cactus/mpi-test-suite-1.1.1
+RUN case "${mpivendor}" in \
+        mpich) \
+            mpiexec_options='' && \
+            tests='0 1 2 3 4 5 6   13 14 15 16 17 18 19 20   28 29 30   32 33 34   36 37 38 39 40 41 42 43 43 44 45 46 47' && \
+            true;; \
+        openmpi) \
+            mpiexec_options='--allow-run-as-root --oversubscribe' && \
+            tests=$(seq 0 47) && \
+            true;; \
+    esac && \
+    for testnum in ${tests}; do \
+        timeout -k 1m -v 5m ./mpi_test_suite --test ${testnum} 2>&1 | \
+            tee test-${testnum}.log && \
+        if ! grep -q 'Number of failed tests: 0$' test-${testnum}.log; then \
+            echo "Test ${testnum} failed" >>test-broken && \
+            true; \
+        fi && \
+        true; \
+    done && \
+    if test -f test-broken; then  \
+        cat test-broken && \
+        false && \
+        true; \
+    fi
+RUN case "${mpivendor}" in \
+        mpich) \
+            mpiexec_options='' && \
+            tests='0 1 2 3 4 5 6   13 14 15 16 17 18 19 20   28 29 30   32 33 34   36 37 38 39 40 41 42 43 43 44 45 46 47' && \
+            true;; \
+        openmpi) \
+            mpiexec_options='--allow-run-as-root --oversubscribe' && \
+            tests=$(seq 0 47) && \
+            true;; \
+    esac && \
+    for testnum in ${tests}; do \
+        timeout -k 1m -v 5m mpiexec ${mpiexec_options} -n 4 ./mpi_test_suite --test ${testnum} 2>&1 | \
+            tee test-${testnum}.log && \
+        if ! grep -q 'Number of failed tests: 0$' test-${testnum}.log; then \
+            echo "Test ${testnum} failed" >>test-broken && \
+            true; \
+        fi && \
+        true; \
+    done && \
+    if test -f test-broken; then  \
+        cat test-broken && \
+        false && \
+        true; \
+    fi

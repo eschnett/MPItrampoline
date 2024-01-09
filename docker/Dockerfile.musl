@@ -1,39 +1,85 @@
 # docker build --build-arg cpuarch=amd64 --build-arg githash=$(git rev-parse HEAD) --build-arg mpivendor=mpich --tag mpitrampoline6 --progress plain .
 # docker run --interactive --rm --tty mpitrampoline6
 
-# amd64, arm32v5, arm32v7, arm64v8, i386, mips64le, ppc64le, riscv64
+# amd64, arm32v6, arm32v7, arm64v8, i386, ppc64le, riscv64, s390x
 ARG cpuarch=amd64
 
-FROM ${cpuarch}/debian:12.2
+# FROM muslcc/x86_64:x86_64-linux-musl
+FROM ${cpuarch}/alpine:3.19.0
 
 # 1.1. Install dependencies
 
-ENV DEBIAN_FRONTEND=noninteractive
-RUN apt update && \
-    apt --yes --no-install-recommends install \
+RUN apk update && \
+    apk add \
         autoconf \
         automake \
-        autotools-dev \
-        ca-certificates \
+        bash \
+        binutils \
         cmake \
-        g++ \
         gcc \
+        g++ \
         gengetopt \
         gfortran \
         git \
-        less \
         make \
-        ninja-build
+        musl-dev \
+        ninja \
+        openssh \
+        python3
 
-# 1.2. Download OpenMPI test suite
+SHELL ["/bin/bash", "-c"]
+
+# 1.2 Install MPI
+
+# mpich, openmpi
+ARG mpivendor=openmpi
 
 WORKDIR /home/cactus
+# RUN case ${mpivendor} in \
+#         mpich) pkgs=mpich;; \
+#         openmpi) pkgs=openmpi-dev;; \
+#         *) exit 1;; \
+#     esac && \
+#     apk add ${pkgs} && \
+#     ln -s /usr /mpi
+RUN case ${mpivendor} in \
+        mpich) \
+            mkdir /home/cactus/mpich-4.1.2 && \
+            cd /home/cactus/mpich-4.1.2 && \
+            wget https://www.mpich.org/static/downloads/4.1.2/mpich-4.1.2.tar.gz && \
+            tar xzf mpich-4.1.2.tar.gz && \
+            cd mpich-4.1.2 && \
+            mkdir build && \
+            cd build && \
+            ../configure --prefix=/mpi && \
+            make -j$(nproc) && \
+            make install && \
+            true \
+        ;; \
+        openmpi) \
+            mkdir /home/cactus/openmpi-5.0.1 && \
+            cd /home/cactus/openmpi-5.0.1 && \
+            wget https://download.open-mpi.org/release/open-mpi/v5.0/openmpi-5.0.1.tar.gz && \
+            tar xzf openmpi-5.0.1.tar.gz && \
+            cd openmpi-5.0.1 && \
+            mkdir build && \
+            cd build && \
+            ../configure --enable-mpi-fortran --prefix=/mpi && \
+            make -j$(nproc) && \
+            make install && \
+            true \
+        ;; \
+        *) exit 1;; \
+    esac
+
+# 1.3. Download OpenMPI test suite
+
 ADD https://github.com/open-mpi/mpi-test-suite/archive/refs/tags/v1.1.1.tar.gz /home/cactus/mpi-test-suite-1.1.1.tar.gz
 RUN tar xzf mpi-test-suite-1.1.1.tar.gz
 WORKDIR /home/cactus/mpi-test-suite-1.1.1
 RUN ./autogen.sh
 
-# 1.3 Download MPItrampoline
+# 1.4 Download MPItrampoline
 
 WORKDIR /home/cactus
 ARG githash
@@ -44,10 +90,13 @@ RUN git clone -b eschnett/MPItrampoline6 https://github.com/eschnett/MPItrampoli
 # 2.1 Build MPItrampoline
 
 WORKDIR /home/cactus/MPItrampoline/mpitrampoline
-RUN cmake -B build -G Ninja \
+RUN cmake -B build \
         -DCMAKE_BUILD_TYPE=Debug \
+        -DCMAKE_C_COMPILER=gcc \
+        -DCMAKE_CXX_COMPILER=g++ \
+        -DCMAKE_Fortran_COMPILER=gfortran \
         -DCMAKE_INSTALL_PREFIX=/mpitrampoline
-RUN cmake --build build
+RUN cmake --build build --parallel $(nproc)
 RUN cmake --install build
 
 # 2.2. Build simple tests
@@ -78,32 +127,19 @@ WORKDIR /home/cactus/mpi-test-suite-1.1.1
 RUN ./configure CC=/mpitrampoline/bin/mpicc
 RUN  make -j$(nproc)
 
-# 3.1 Install system MPI
-
-# mpich, openmpi
-ARG mpivendor=mpich
-
-RUN apt update && \
-    case ${mpivendor} in \
-        mpich) pkgs=libmpich-dev;; \
-        openmpi) pkgs=libopenmpi-dev;; \
-        *) exit 1;; \
-    esac && \
-    apt-get --yes --no-install-recommends install ${pkgs}
-
-# 3.2 Build MPIwrapper
+# 3.1 Build MPIwrapper
 
 WORKDIR /home/cactus/MPItrampoline/mpiwrapper
-RUN cmake -B build -G Ninja \
+RUN cmake -B build \
         -DCMAKE_BUILD_TYPE=Debug \
-        -DCMAKE_C_COMPILER=mpicc \
-        -DCMAKE_Fortran_COMPILER=mpifort \
+        -DMPI_C_COMPILER=/mpi/bin/mpicc \
+        -DMPI_Fortran_COMPILER=/mpi/bin/mpifort \
         -DCMAKE_INSTALL_PREFIX=/mpiwrapper
 RUN cmake --build build
 RUN cmake --install build
 ENV MPITRAMPOLINE_LIB=/mpiwrapper/lib/libmpiwrapper.so
 
-# 3.3. Run simple tests
+# 3.2. Run simple tests
 
 WORKDIR /home/cactus/MPItrampoline/test
 
@@ -112,44 +148,44 @@ RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    timeout -k 1m -v 5m mpiexec $mpiexec_options -n 4 ./hello-world-c 4
+    timeout -k 1m 5m /mpi/bin/mpiexec $mpiexec_options -n 4 ./hello-world-c 4
 
 RUN ./hello-world-cxx 1
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    timeout -k 1m -v 5m mpiexec $mpiexec_options -n 4 ./hello-world-cxx 4
+    timeout -k 1m 5m /mpi/bin/mpiexec $mpiexec_options -n 4 ./hello-world-cxx 4
 
 RUN ./hello-world-f 1
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    timeout -k 1m -v 5m mpiexec $mpiexec_options -n 4 ./hello-world-f 4
+    timeout -k 1m 5m /mpi/bin/mpiexec $mpiexec_options -n 4 ./hello-world-f 4
 
 RUN ./hello-world-f90 1
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    timeout -k 1m -v 5m mpiexec $mpiexec_options -n 4 ./hello-world-f90 4
+    timeout -k 1m 5m /mpi/bin/mpiexec $mpiexec_options -n 4 ./hello-world-f90 4
 
 RUN ./hello-world-fortran 1
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    timeout -k 1m -v 5m mpiexec $mpiexec_options -n 4 ./hello-world-fortran 4
+    timeout -k 1m 5m /mpi/bin/mpiexec $mpiexec_options -n 4 ./hello-world-fortran 4
 
 RUN ./hello-world-fortran08 1
 RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    timeout -k 1m -v 5m mpiexec $mpiexec_options -n 4 ./hello-world-fortran08 4
+    timeout -k 1m 5m /mpi/bin/mpiexec $mpiexec_options -n 4 ./hello-world-fortran08 4
 
-# 3.4. Run OpenMPI test suite
+# 3.3. Run OpenMPI test suite
 
 WORKDIR /home/cactus/mpi-test-suite-1.1.1
 RUN if [ ${mpivendor} = openmpi ]; then ./mpi_test_suite; fi
@@ -157,4 +193,4 @@ RUN case "${mpivendor}" in \
         mpich) mpiexec_options='';; \
         openmpi) mpiexec_options='--allow-run-as-root --oversubscribe';; \
     esac && \
-    if [ ${mpivendor} = openmpi ] ; then timeout -k 1m -v 5m mpiexec $mpiexec_options -n 4 ./mpi_test_suite; fi
+    if [ ${mpivendor} = openmpi ] ; then timeout -k 1m 5m /mpi/bin/mpiexec $mpiexec_options -n 4 ./mpi_test_suite; fi

@@ -6,10 +6,10 @@ mpivendors="mpich openmpi"
 githash=$(git rev-parse HEAD)
 for cpuarch in ${cpuarchs}; do
     for mpivendor in ${mpivendors}; do
-        tag="mpi-test-suite-debian.cpuarch-${cpuarch}.mpivendor-${mpivendor}"
+        tag="mpi-test-suite-debian.compiler-llvm.cpuarch-${cpuarch}.mpivendor-${mpivendor}"
         rm -f "${tag}".*
         {
-	    docker build --build-arg cpuarch="${cpuarch}" --build-arg githash="${githash}" --build-arg mpivendor="${mpivendor}" --tag "mpitrampoline6-${cpuarch}-${mpivendor}" --progress plain . &&
+	    docker build --build-arg cpuarch="${cpuarch}" --build-arg githash="${githash}" --build-arg mpivendor="${mpivendor}" --file Dockerfile.llvm --progress plain --tag "mpitrampoline6-llvm-${cpuarch}-${mpivendor}" . &&
                 : >"${tag}.succeeded" ||
                     : >"${tag}.failed";
         } 2>&1 |
