@@ -2807,6 +2807,9 @@ functions = [
     ("int", "MPIX_Query_hip_support", [
     ], "manual"),
 
+    ("int", "MPIX_Query_rocm_support", [
+    ], "manual"),
+
     ("int", "MPIX_Query_ze_support", [
     ], "manual"),
 
