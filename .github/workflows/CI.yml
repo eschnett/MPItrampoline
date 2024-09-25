@@ -11,7 +11,7 @@ env:
 
 jobs:
   shellcheck:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
     steps:
     - uses: actions/checkout@v4
     - name: shellcheck
@@ -19,7 +19,7 @@ jobs:
   build:
     strategy:
       matrix:
-        os: [ubuntu-22.04, macos-12]
+        os: [ubuntu-24.04, macos-13, macos-14]
         fortran: [fortran-off, fortran-on]
         shared: [shared-off, shared-on]
 
@@ -41,12 +41,12 @@ jobs:
                 -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline
             ;;
         macOS)
-            # Use GCC-12 from Homebrew
+            # Use GCC-14 from Homebrew
             cmake -B ${{github.workspace}}/build \
                 -DENABLE_FORTRAN=${fortran} \
-                -DCMAKE_C_COMPILER=gcc-12 \
-                -DCMAKE_CXX_COMPILER=g++-12 \
-                -DCMAKE_Fortran_COMPILER=gfortran-12 \
+                -DCMAKE_C_COMPILER=gcc-14 \
+                -DCMAKE_CXX_COMPILER=g++-14 \
+                -DCMAKE_Fortran_COMPILER=gfortran-14 \
                 -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}} \
                 -DBUILD_SHARED_LIBS=${shared} \
                 -DCMAKE_INSTALL_PREFIX=$HOME/mpitrampoline

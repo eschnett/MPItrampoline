@@ -230,21 +230,21 @@ int PMPI_Pcontrol(int level, ...) { return MPI_SUCCESS; }
 
 // Sentinel values
 
-char **mpiabi_argv_null_ptr_;
-char ***mpiabi_argvs_null_ptr_;
+char **mpiabi_argv_null_ptr_ __attribute__((__aligned__(64))) = 0;
+char ***mpiabi_argvs_null_ptr_ __attribute__((__aligned__(64))) = 0;
 
-MPI_Fint *mpiabi_bottom_ptr_;
+MPI_Fint *mpiabi_bottom_ptr_ __attribute__((__aligned__(64))) = 0;
 
-MPI_Fint *mpiabi_errcodes_ignore_ptr_;
+MPI_Fint *mpiabi_errcodes_ignore_ptr_ __attribute__((__aligned__(64))) = 0;
 
-MPI_Fint *mpiabi_in_place_ptr_;
+MPI_Fint *mpiabi_in_place_ptr_ __attribute__((__aligned__(64))) = 0;
 
-MPI_Fint *mpiabi_status_ignore_ptr_;
-MPI_Fint *mpiabi_statuses_ignore_ptr_;
+MPI_Fint *mpiabi_status_ignore_ptr_ __attribute__((__aligned__(64))) = 0;
+MPI_Fint *mpiabi_statuses_ignore_ptr_ __attribute__((__aligned__(64))) = 0;
 
-MPI_Fint *mpiabi_unweighted_ptr_;
+MPI_Fint *mpiabi_unweighted_ptr_ __attribute__((__aligned__(64))) = 0;
 
-MPI_Fint *mpiabi_weights_empty_ptr_;
+MPI_Fint *mpiabi_weights_empty_ptr_ __attribute__((__aligned__(64))) = 0;
 
 #include "mpi_defn_constants_fortran.h"
 #include "mpi_defn_functions_fortran.h"
