@@ -5,7 +5,7 @@
 ```sh
 # -DBUILD_SHARED_LIBS=ON
 rm -rf mpitrampoline $HOME/src/c/MPIstuff/mpitrampoline
-cmake -S . -B mpitrampoline -G Ninja -DCMAKE_C_COMPILER=gcc-mp-12 -DCMAKE_CXX_COMPILER=g++-mp-12 -DCMAKE_Fortran_COMPILER=gfortran-mp-12 -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff/mpitrampoline
+cmake -B mpitrampoline -G Ninja -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++ -DCMAKE_Fortran_COMPILER=gfortran -DCMAKE_BUILD_TYPE=Debug -DCMAKE_INSTALL_PREFIX=$HOME/src/c/MPIstuff/mpitrampoline
 cmake --build mpitrampoline && cmake --install mpitrampoline
 ```
 

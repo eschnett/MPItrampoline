@@ -504,6 +504,13 @@ static void *load_library(const char *const libname) {
     assert(0);
   }
 
+#elif __FreeBSD__
+
+  // dlmopen is not supported, always use dlopen instead
+  if (verbose)
+    fprintf(stderr, "[MPItrampoline] Calling dlopen\n");
+  handle = dlopen(libname, dlopen_flags | RTLD_LOCAL | RTLD_DEEPBIND);
+
 #else
 #error "Unsupported operating system"
 #endif
