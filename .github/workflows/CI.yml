@@ -31,6 +31,8 @@ jobs:
       run: |
         fortran=$(echo ${{matrix.fortran}} | sed -e 's/fortran-//')
         shared=$(echo ${{matrix.shared}} | sed -e 's/shared-//')
+        export CFLAGS="-Wall"
+        export CXXFLAGS="-Wall"
         case $RUNNER_OS in
         Linux)
             cmake -B ${{github.workspace}}/build \
