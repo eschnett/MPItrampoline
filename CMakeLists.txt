@@ -85,7 +85,12 @@ else()
 endif()
 
 if(ENABLE_FORTRAN)
-  set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_BINARY_DIR}/include)
+  # Use CMAKE_CURRENT_BINARY_DIR (not CMAKE_BINARY_DIR) so that the path
+  # resolves correctly when MPItrampoline is included as a subproject via
+  # FetchContent.  CMAKE_BINARY_DIR always points to the top-level build
+  # tree, whereas CMAKE_CURRENT_BINARY_DIR follows the currently processed
+  # CMakeLists.txt.
+  set(CMAKE_Fortran_MODULE_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}/include)
 endif()
 
 include(CMakePackageConfigHelpers)
@@ -299,16 +304,21 @@ configure_file(MPItrampoline.pc.in MPItrampoline.pc @ONLY)
 configure_file(mpi-c.pc.in mpi-c.pc @ONLY)
 configure_file(mpi-cxx.pc.in mpi-cxx.pc @ONLY)
 configure_file(mpi-fort.pc.in mpi-fort.pc @ONLY)
+# Use CMAKE_CURRENT_BINARY_DIR (not CMAKE_BINARY_DIR) for the generated .pc
+# files so that the paths resolve correctly when MPItrampoline is included as
+# a subproject via FetchContent.  CMAKE_BINARY_DIR always points to the
+# top-level build tree, whereas CMAKE_CURRENT_BINARY_DIR follows the currently
+# processed CMakeLists.txt.
 install(
   FILES
-  ${CMAKE_BINARY_DIR}/MPItrampoline.pc
-  ${CMAKE_BINARY_DIR}/mpi-c.pc
-  ${CMAKE_BINARY_DIR}/mpi-cxx.pc
-  ${CMAKE_BINARY_DIR}/mpi-fort.pc
+  ${CMAKE_CURRENT_BINARY_DIR}/MPItrampoline.pc
+  ${CMAKE_CURRENT_BINARY_DIR}/mpi-c.pc
+  ${CMAKE_CURRENT_BINARY_DIR}/mpi-cxx.pc
+  ${CMAKE_CURRENT_BINARY_DIR}/mpi-fort.pc
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
   )
 install(
-  FILES ${CMAKE_BINARY_DIR}/mpi-c.pc
+  FILES ${CMAKE_CURRENT_BINARY_DIR}/mpi-c.pc
   DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
   )
 
