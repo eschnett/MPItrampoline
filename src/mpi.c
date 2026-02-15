@@ -29,7 +29,6 @@
 #endif
 #include <dlfcn.h>
 
-#include <assert.h>
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdio.h>
@@ -465,7 +464,7 @@ static int get_dlopen_flags() {
     dlopen_flags = RTLD_NOW;
     break;
   default:
-    assert(0);
+    abort();
   }
   return dlopen_flags;
 }
@@ -501,7 +500,7 @@ static void *load_library(const char *const libname) {
     handle = dlopen(libname, dlopen_flags | RTLD_LOCAL | RTLD_DEEPBIND);
     break;
   default:
-    assert(0);
+    abort();
   }
 
 #elif __FreeBSD__
@@ -536,7 +535,8 @@ static void *load_library(const char *const libname) {
   }
 
   if (have_dlopen_lmid) {
-    assert(dlopen_lmid == lmid);
+    if (dlopen_lmid != lmid)
+      abort();
   } else {
     dlopen_lmid = lmid;
     have_dlopen_lmid = true;
