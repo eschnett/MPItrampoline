@@ -14,7 +14,30 @@ from mpi_functions_fortran import functions_fortran
 
 support_profiling = True
 have_weak_symbols = False
-replace_sentinels = False
+replace_sentinels = True
+
+def generate_fortran_sentinel_checks(args):
+    """Generate sentinel replacement code for Fortran wrapper functions.
+
+    Detects Fortran-level sentinel values (Cray pointers from mpif.h) and
+    replaces them with the corresponding C-level ABI constants so that
+    the underlying MPI wrapper library recognises them.
+    """
+    checks = []
+    for (i, (atp, anm)) in enumerate(args):
+        # MPI_IN_PLACE: passed via sendbuf in collective operations
+        if anm == "sendbuf" and "void" in atp:
+            checks.append("  if ($anm{0} == (const void *)mpiabi_in_place_ptr_)".format(i))
+            checks.append("    $anm{0} = MPI_IN_PLACE;".format(i))
+        # MPI_STATUS_IGNORE / MPI_STATUSES_IGNORE
+        if "MPI_Status" in atp:
+            if anm == "status":
+                checks.append("  if ($anm{0} == mpiabi_status_ignore_ptr_)".format(i))
+                checks.append("    $anm{0} = (void *)MPI_STATUS_IGNORE;".format(i))
+            elif anm == "array_of_statuses":
+                checks.append("  if ($anm{0} == mpiabi_statuses_ignore_ptr_)".format(i))
+                checks.append("    $anm{0} = (void *)MPI_STATUSES_IGNORE;".format(i))
+    return checks
 
 with open("src/mpi_defn_constants_c.h", "w") as file:
     file.write("// Define C MPI constants")
@@ -125,16 +148,7 @@ with open("src/mpi_defn_functions_fortran.h", "w") as file:
             tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
             tmpl.append(") {")
             if replace_sentinels:
-                for (i, (atp, anm)) in enumerate(args):
-                    if "MPI_Status" in atp:
-                        if anm == "status":
-                            tmpl.append("  if ($anm{0} == mpi_status_ignore_)".format(i))
-                            tmpl.append("    $anm{0} = mpiabi_status_ignore_;".format(i))
-                        elif anm == "array_of_statuses":
-                            tmpl.append("  if ($anm{0} == mpi_statuses_ignore_)".format(i))
-                            tmpl.append("    $anm{0} = mpiabi_statuses_ignore_;".format(i))
-                        else:
-                            assert False
+                tmpl.extend(generate_fortran_sentinel_checks(args))
             tmpl.append("  return (* $abi_nm)(")
             for (i, (atp, anm)) in enumerate(args):
                 tmpl.append("    $anm{0},".format(i))
@@ -153,16 +167,7 @@ with open("src/mpi_defn_functions_fortran.h", "w") as file:
                 tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
                 tmpl.append(") {")
                 if replace_sentinels:
-                    for (i, (atp, anm)) in enumerate(args):
-                        if "MPI_Status" in atp:
-                            if anm == "status":
-                                tmpl.append("  if ($anm{0} == mpi_status_ignore_)".format(i))
-                                tmpl.append("    $anm{0} = mpiabi_status_ignore_;".format(i))
-                            elif anm == "array_of_statuses":
-                                tmpl.append("  if ($anm{0} == mpi_statuses_ignore_)".format(i))
-                                tmpl.append("    $anm{0} = mpiabi_statuses_ignore_;".format(i))
-                            else:
-                                assert False
+                    tmpl.extend(generate_fortran_sentinel_checks(args))
                 tmpl.append("  return (* $abi_nm)(")
                 for (i, (atp, anm)) in enumerate(args):
                     tmpl.append("    $anm{0},".format(i))
@@ -176,16 +181,7 @@ with open("src/mpi_defn_functions_fortran.h", "w") as file:
             tmpl[-1] = re.sub(r",?$", "", tmpl[-1])  # remove trailing comma of last argument
             tmpl.append(") {")
             if replace_sentinels:
-                for (i, (atp, anm)) in enumerate(args):
-                    if "MPI_Status" in atp:
-                        if anm == "status":
-                            tmpl.append("  if ($anm{0} == mpi_status_ignore_)".format(i))
-                            tmpl.append("    $anm{0} = mpiabi_status_ignore_;".format(i))
-                        elif anm == "array_of_statuses":
-                            tmpl.append("  if ($anm{0} == mpi_statuses_ignore_)".format(i))
-                            tmpl.append("    $anm{0} = mpiabi_statuses_ignore_;".format(i))
-                        else:
-                            assert False
+                tmpl.extend(generate_fortran_sentinel_checks(args))
             tmpl.append("  return (* $abi_nm)(")
             for (i, (atp, anm)) in enumerate(args):
                 tmpl.append("    $anm{0},".format(i))
